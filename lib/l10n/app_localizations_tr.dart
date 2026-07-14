@@ -123,7 +123,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get privacyLocalDescription =>
-      'Tema, dil, dokunsal geri bildirim ve Metronom ayarları yerel olarak saklanır. Tunathic mikrofon izni istemez; ses kaydetmez veya karşıya yüklemez.';
+      'Tema, dil, dokunsal geri bildirim ve Metronom ayarları bu cihazda yerel olarak saklanır.';
+
+  @override
+  String get privacyMicrophoneTitle => 'Mikrofon prototipi yerel kalır';
+
+  @override
+  String get privacyMicrophoneDescription =>
+      'Mikrofon erişimi yalnızca Akort Ses Prototipi etkin olarak yakalama yaparken kullanılır. Ham ses cihazda işlenir, kaydedilmez veya yüklenmez; ekrandan ayrıldığınızda ya da uygulama arka plana geçtiğinde yakalama durur.';
 
   @override
   String get privacyNoCollectionTitle =>
@@ -135,7 +142,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get privacyFutureChanges =>
-      'Mikrofon, reklam, analiz, hesap, bulut veya sunucu özellikleri yayınlanmadan önce bu gizlilik bilgileri güncellenmelidir.';
+      'Üretim akort cihazı, kayıt, reklam, analiz, hesap, bulut veya sunucu özellikleri yayınlanmadan önce bu gizlilik bilgileri gözden geçirilmelidir.';
 
   @override
   String get comingSoon => 'Yakında';
@@ -332,4 +339,169 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get capoCalculator => 'Kapo Hesaplayıcı';
+
+  @override
+  String get tunerAudioPrototypeTitle => 'Akort Ses Prototipi';
+
+  @override
+  String get tunerAudioPrototypeWarning =>
+      'Yalnızca teknik prototip. Bu ekran mikrofon girişini doğrular; çalışan bir gitar akort cihazı değildir.';
+
+  @override
+  String get microphonePermissionLabel => 'Mikrofon izni';
+
+  @override
+  String get microphonePermissionNotRequested => 'İstenmedi';
+
+  @override
+  String get microphonePermissionGranted => 'Verildi';
+
+  @override
+  String get microphonePermissionDenied => 'Reddedildi';
+
+  @override
+  String get startCapture => 'Yakalamayı başlat';
+
+  @override
+  String get stopCapture => 'Yakalamayı durdur';
+
+  @override
+  String get captureStatusLabel => 'Yakalama durumu';
+
+  @override
+  String get captureStatusIdle => 'Durduruldu';
+
+  @override
+  String get captureStatusRequestingPermission => 'İzin isteniyor';
+
+  @override
+  String get captureStatusStarting => 'Mikrofon başlatılıyor';
+
+  @override
+  String get captureStatusCapturing => 'Yakalanıyor';
+
+  @override
+  String get captureStatusStopping => 'Durduruluyor';
+
+  @override
+  String get captureStatusError => 'Yakalama hatası';
+
+  @override
+  String get requestedSampleRateLabel => 'İstenen örnekleme hızı';
+
+  @override
+  String get reportedSampleRateLabel => 'Bildirilen örnekleme hızı';
+
+  @override
+  String get reportedSampleRateUnavailable =>
+      'Ses altyapısı tarafından bildirilmedi';
+
+  @override
+  String sampleRateValue(int sampleRate) {
+    return '$sampleRate Hz';
+  }
+
+  @override
+  String get channelCountLabel => 'Kanallar';
+
+  @override
+  String channelCountValue(int channelCount) {
+    return '$channelCount (mono)';
+  }
+
+  @override
+  String get pcmEncodingLabel => 'Kodlama';
+
+  @override
+  String get pcm16LittleEndian => 'İşaretli PCM16, little-endian';
+
+  @override
+  String get signalStatisticsTitle => 'Sinyal istatistikleri';
+
+  @override
+  String get inputLevelLabel => 'Giriş seviyesi';
+
+  @override
+  String get peakAmplitudeLabel => 'Tepe genliği';
+
+  @override
+  String get rmsAmplitudeLabel => 'RMS genliği';
+
+  @override
+  String get dbfsLabel => 'dBFS';
+
+  @override
+  String get silenceDbfs => '−∞ dBFS';
+
+  @override
+  String dbfsValue(String value) {
+    return '$value dBFS';
+  }
+
+  @override
+  String get framesReceivedLabel => 'Alınan çerçeveler';
+
+  @override
+  String get samplesReceivedLabel => 'Alınan örnekler';
+
+  @override
+  String get streamDurationLabel => 'Akış süresi';
+
+  @override
+  String durationSecondsValue(String value) {
+    return '$value sn';
+  }
+
+  @override
+  String get observedFrameSizesLabel => 'Gözlenen çerçeve boyutları';
+
+  @override
+  String frameSizesValue(int minimum, int maximum, String average) {
+    return '$minimum–$maximum örnek; ortalama $average';
+  }
+
+  @override
+  String get frameArrivalRateLabel => 'Yaklaşık çerçeve geliş hızı';
+
+  @override
+  String framesPerSecondValue(String value) {
+    return '$value çerçeve/sn';
+  }
+
+  @override
+  String get malformedFramesLabel => 'Hatalı çerçeveler';
+
+  @override
+  String get prototypePrivacyTitle => 'Gizlilik odaklı';
+
+  @override
+  String get prototypePrivacyDescription =>
+      'Ses yalnızca bu cihazın belleğinde işlenir. Ham mikrofon verileri ve sinyal istatistikleri kaydedilmez veya iletilmez.';
+
+  @override
+  String get prototypeLifecycleTitle => 'Yalnızca ön planda yakalama';
+
+  @override
+  String get prototypeLifecycleDescription =>
+      'Bu ekrandan ayrıldığınızda, uygulamayı arka plana aldığınızda veya gizlediğinizde ya da ekranı kilitlediğinizde yakalama durur. Otomatik olarak yeniden başlamaz.';
+
+  @override
+  String get permissionDeniedMessage =>
+      'Mikrofon erişimi reddedildi. Yalnızca yeniden denemek istiyorsanız tekrar başlatın; Tunathic sistem ayarlarını otomatik açmaz.';
+
+  @override
+  String get unsupportedAudioMessage =>
+      'Bu cihaz prototip PCM ses yapılandırmasını kabul etmedi.';
+
+  @override
+  String get audioStartFailedMessage =>
+      'Tunathic mikrofon yakalamayı başlatamadı. Yeniden deneyebilirsiniz.';
+
+  @override
+  String get audioStreamFailedMessage =>
+      'Ses akışı başarısız olduğu için mikrofon yakalama durdu. Yeniden deneyebilirsiniz.';
+
+  @override
+  String get audioStopFailedMessage =>
+      'Tunathic mikrofonu temiz biçimde serbest bırakamadı. Yeniden deneyebilirsiniz.';
 }

@@ -4,8 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tunathic/app/app.dart';
 import 'package:tunathic/app/settings/app_settings.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
+import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_controller.dart';
 
 import 'support/fakes.dart';
+import 'support/tuner_audio_fakes.dart';
 
 void main() {
   testWidgets(
@@ -26,19 +28,17 @@ void main() {
     },
   );
 
-  testWidgets('tool card opens its placeholder route', (tester) async {
+  testWidgets('tuner card opens the clearly labeled audio prototype', (
+    tester,
+  ) async {
     await tester.pumpWidget(_testApp());
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Guitar Tuner'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Guitar Tuner'), findsOneWidget);
-    expect(find.text('Coming Soon'), findsOneWidget);
-    expect(
-      find.text('Guitar Tuner is planned for a future milestone.'),
-      findsOneWidget,
-    );
+    expect(find.text('Tuner Audio Prototype'), findsOneWidget);
+    expect(find.textContaining('not a working guitar tuner'), findsOneWidget);
   });
 
   testWidgets('Turkish is available as an application locale', (tester) async {
@@ -72,6 +72,7 @@ Widget _testApp({AppSettings settings = const AppSettings()}) {
     overrides: [
       preferencesStoreProvider.overrideWithValue(MemoryPreferencesStore()),
       initialAppSettingsProvider.overrideWithValue(settings),
+      tunerAudioInputFactoryProvider.overrideWithValue(FakeTunerAudioInput.new),
     ],
     child: const TunathicApp(),
   );

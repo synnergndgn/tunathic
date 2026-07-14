@@ -9,6 +9,7 @@ import 'package:tunathic/features/settings/presentation/settings_screen.dart';
 import 'package:tunathic/features/tool_placeholder/presentation/not_found_screen.dart';
 import 'package:tunathic/features/tool_placeholder/presentation/tool_placeholder_screen.dart';
 import 'package:tunathic/features/tools/tool_definition.dart';
+import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_prototype_screen.dart';
 
 abstract final class AppRoutes {
   static const dashboard = '/';
@@ -49,6 +50,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           }
           if (tool == ToolDefinition.metronome) {
             return const MetronomeScreen();
+          }
+          if (tool == ToolDefinition.guitarTuner) {
+            return const TunerAudioPrototypeScreen();
           }
           return ToolPlaceholderScreen(tool: tool);
         },

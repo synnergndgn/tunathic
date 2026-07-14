@@ -2,7 +2,7 @@
 
 **Tune. Train. Create.**
 
-Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 1C — Application Polish**: it combines two fully offline practice tools with a coherent, localized, accessible application shell.
+Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 2A — Tuner Audio Prototype**: two practice tools remain functional while a local, foreground-only microphone pipeline validates the foundation for a future guitar tuner.
 
 ## Current contents
 
@@ -16,6 +16,8 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Friendly application and route error presentation
 - Functional BPM Tap with a robust rolling tempo estimate
 - Functional foreground metronome with 20–300 BPM, four time signatures, first-beat accent, volume, and visual beat feedback
+- Explicit microphone-permission flow and continuous mono PCM16 input prototype
+- Local transient signal-level and stream diagnostics with lifecycle-safe cleanup
 - Persisted metronome settings and explicit BPM transfer from BPM Tap
 - Grouped responsive dashboard and polished Settings hierarchy
 - Localized About and Privacy screens with standard open-source license access
@@ -24,7 +26,7 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Minimal GitHub Actions formatting, analysis, and test verification
 - Unit and widget tests
 
-All tools except BPM Tap and Metronome display **Coming Soon**. Phase 1C does not request microphone access, perform pitch detection or recording, play audio in the background, persist tap sessions, serve advertisements, collect analytics, require accounts, or connect to a Tunathic backend. It does not claim Play Store readiness.
+Guitar Tuner remains labeled **Coming Soon** even though its technical audio prototype can be opened for evaluation. Every other unfinished tool also remains Coming Soon. Phase 2A performs no pitch or note detection, audio-file recording, background capture, sample persistence, upload, advertising, analytics, account, or backend work. It does not claim Play Store readiness.
 
 ## Requirements
 

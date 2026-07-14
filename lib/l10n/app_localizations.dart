@@ -317,8 +317,20 @@ abstract class AppLocalizations {
   /// No description provided for @privacyLocalDescription.
   ///
   /// In en, this message translates to:
-  /// **'Theme, language, haptic, and Metronome settings are stored locally. Tunathic does not request microphone permission and does not record or upload audio.'**
+  /// **'Theme, language, haptic, and Metronome settings are stored locally on this device.'**
   String get privacyLocalDescription;
+
+  /// No description provided for @privacyMicrophoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone prototype stays local'**
+  String get privacyMicrophoneTitle;
+
+  /// No description provided for @privacyMicrophoneDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone access is used only while the Tuner Audio Prototype is actively capturing. Raw audio is processed locally, never saved or uploaded, and capture stops when you leave the screen or the app enters the background.'**
+  String get privacyMicrophoneDescription;
 
   /// No description provided for @privacyNoCollectionTitle.
   ///
@@ -335,7 +347,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyFutureChanges.
   ///
   /// In en, this message translates to:
-  /// **'This privacy information must be updated before microphone, advertising, analytics, account, cloud, or backend features are released.'**
+  /// **'This privacy information must be reviewed before production tuner, recording, advertising, analytics, account, cloud, or backend features are released.'**
   String get privacyFutureChanges;
 
   /// No description provided for @comingSoon.
@@ -679,6 +691,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Capo Calculator'**
   String get capoCalculator;
+
+  /// No description provided for @tunerAudioPrototypeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuner Audio Prototype'**
+  String get tunerAudioPrototypeTitle;
+
+  /// No description provided for @tunerAudioPrototypeWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical prototype only. This validates microphone input and is not a working guitar tuner.'**
+  String get tunerAudioPrototypeWarning;
+
+  /// No description provided for @microphonePermissionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission'**
+  String get microphonePermissionLabel;
+
+  /// No description provided for @microphonePermissionNotRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Not requested'**
+  String get microphonePermissionNotRequested;
+
+  /// No description provided for @microphonePermissionGranted.
+  ///
+  /// In en, this message translates to:
+  /// **'Granted'**
+  String get microphonePermissionGranted;
+
+  /// No description provided for @microphonePermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Denied'**
+  String get microphonePermissionDenied;
+
+  /// No description provided for @startCapture.
+  ///
+  /// In en, this message translates to:
+  /// **'Start capture'**
+  String get startCapture;
+
+  /// No description provided for @stopCapture.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop capture'**
+  String get stopCapture;
+
+  /// No description provided for @captureStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture status'**
+  String get captureStatusLabel;
+
+  /// No description provided for @captureStatusIdle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get captureStatusIdle;
+
+  /// No description provided for @captureStatusRequestingPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Requesting permission'**
+  String get captureStatusRequestingPermission;
+
+  /// No description provided for @captureStatusStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting microphone'**
+  String get captureStatusStarting;
+
+  /// No description provided for @captureStatusCapturing.
+  ///
+  /// In en, this message translates to:
+  /// **'Capturing'**
+  String get captureStatusCapturing;
+
+  /// No description provided for @captureStatusStopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopping'**
+  String get captureStatusStopping;
+
+  /// No description provided for @captureStatusError.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture error'**
+  String get captureStatusError;
+
+  /// No description provided for @requestedSampleRateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested sample rate'**
+  String get requestedSampleRateLabel;
+
+  /// No description provided for @reportedSampleRateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reported sample rate'**
+  String get reportedSampleRateLabel;
+
+  /// No description provided for @reportedSampleRateUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not reported by the audio backend'**
+  String get reportedSampleRateUnavailable;
+
+  /// No description provided for @sampleRateValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{sampleRate} Hz'**
+  String sampleRateValue(int sampleRate);
+
+  /// No description provided for @channelCountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Channels'**
+  String get channelCountLabel;
+
+  /// No description provided for @channelCountValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{channelCount} (mono)'**
+  String channelCountValue(int channelCount);
+
+  /// No description provided for @pcmEncodingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Encoding'**
+  String get pcmEncodingLabel;
+
+  /// No description provided for @pcm16LittleEndian.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed PCM16, little-endian'**
+  String get pcm16LittleEndian;
+
+  /// No description provided for @signalStatisticsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Signal statistics'**
+  String get signalStatisticsTitle;
+
+  /// No description provided for @inputLevelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Input level'**
+  String get inputLevelLabel;
+
+  /// No description provided for @peakAmplitudeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak amplitude'**
+  String get peakAmplitudeLabel;
+
+  /// No description provided for @rmsAmplitudeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'RMS amplitude'**
+  String get rmsAmplitudeLabel;
+
+  /// No description provided for @dbfsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'dBFS'**
+  String get dbfsLabel;
+
+  /// No description provided for @silenceDbfs.
+  ///
+  /// In en, this message translates to:
+  /// **'−∞ dBFS'**
+  String get silenceDbfs;
+
+  /// No description provided for @dbfsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} dBFS'**
+  String dbfsValue(String value);
+
+  /// No description provided for @framesReceivedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Frames received'**
+  String get framesReceivedLabel;
+
+  /// No description provided for @samplesReceivedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Samples received'**
+  String get samplesReceivedLabel;
+
+  /// No description provided for @streamDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Stream duration'**
+  String get streamDurationLabel;
+
+  /// No description provided for @durationSecondsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} s'**
+  String durationSecondsValue(String value);
+
+  /// No description provided for @observedFrameSizesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Observed frame sizes'**
+  String get observedFrameSizesLabel;
+
+  /// No description provided for @frameSizesValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{minimum}–{maximum} samples; {average} average'**
+  String frameSizesValue(int minimum, int maximum, String average);
+
+  /// No description provided for @frameArrivalRateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Approximate frame arrival rate'**
+  String get frameArrivalRateLabel;
+
+  /// No description provided for @framesPerSecondValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} frames/s'**
+  String framesPerSecondValue(String value);
+
+  /// No description provided for @malformedFramesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Malformed frames'**
+  String get malformedFramesLabel;
+
+  /// No description provided for @prototypePrivacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Private by design'**
+  String get prototypePrivacyTitle;
+
+  /// No description provided for @prototypePrivacyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio is processed only in memory on this device. Raw microphone data and signal statistics are not saved or transmitted.'**
+  String get prototypePrivacyDescription;
+
+  /// No description provided for @prototypeLifecycleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Foreground capture only'**
+  String get prototypeLifecycleTitle;
+
+  /// No description provided for @prototypeLifecycleDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture stops when you leave this screen, background or hide the app, or lock the screen. It never restarts automatically.'**
+  String get prototypeLifecycleDescription;
+
+  /// No description provided for @permissionDeniedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone access was denied. Start again only if you want to retry; Tunathic will not open system settings automatically.'**
+  String get permissionDeniedMessage;
+
+  /// No description provided for @unsupportedAudioMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This device did not accept the prototype PCM audio configuration.'**
+  String get unsupportedAudioMessage;
+
+  /// No description provided for @audioStartFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tunathic could not start microphone capture. You can try again.'**
+  String get audioStartFailedMessage;
+
+  /// No description provided for @audioStreamFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone capture stopped because the audio stream failed. You can try again.'**
+  String get audioStreamFailedMessage;
+
+  /// No description provided for @audioStopFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tunathic could not finish releasing the microphone cleanly. You can try again.'**
+  String get audioStopFailedMessage;
 }
 
 class _AppLocalizationsDelegate

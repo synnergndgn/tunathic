@@ -67,6 +67,12 @@ void main() {
       await tester.tap(find.byKey(const Key('aboutPrivacy')));
       await tester.pumpAndSettle();
       expect(find.text('Privacy'), findsOneWidget);
+      expect(find.text('Microphone prototype stays local'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('No accounts, ads, analytics, or backend'),
+        220,
+        scrollable: _scrollableInside('privacyScroll'),
+      );
       expect(
         find.text('No accounts, ads, analytics, or backend'),
         findsOneWidget,

@@ -1,59 +1,64 @@
-# Current Milestone: Phase 1C — Application Polish
+# Current Milestone: Phase 2A — Tuner Audio Prototype
 
-Phase 1C turns the existing Foundation, BPM Tap, and Core Metronome into a coherent, branded, accessible Android application shell. It does not add a new music tool or complete all of Phase 1.
+Phase 2A validates the microphone-input foundation needed by a future guitar tuner. Foundation, BPM Tap, Core Metronome, its physical-device hotfix, and Application Polish are complete. This milestone is deliberately a technical audio prototype, not a working tuner.
 
 ## In scope
 
-- A grouped dashboard with prominent BPM Tap and Metronome entries
-- Settings sections for appearance, interaction, and application information
-- A persisted, default-on global haptic-feedback preference
-- An injectable haptic boundary used only for meaningful direct interactions
-- Localized About and Privacy screens
-- Flutter’s standard open-source license page
-- Runtime package-version display through an injectable package-information boundary
-- Centralized color, spacing, radius, typography, elevation, and motion tokens
-- Navigation, feedback, accessibility, and responsive-layout refinements
-- Minimal GitHub Actions verification for pushes and pull requests to `main`
-- Application-shell, haptic, navigation, version, responsive, and regression tests
-- Product version `0.2.0+1`, reflecting a pre-1.0 application with two working tools
+- One application-owned audio-input boundary with a `record`-based Android implementation
+- Explicit runtime microphone permission requested only after the user presses Start
+- Continuous mono signed PCM16 little-endian capture, requesting 48,000 Hz
+- Immediate conversion of PCM16 bytes into frame-owned normalized `Float32List` samples in `[-1.0, 1.0)`
+- Scalar diagnostics for peak, RMS, dBFS, frames, samples, duration, malformed frames, observed frame sizes, and arrival rate
+- A maximum 10 Hz presentation update rate while every received frame contributes to statistics
+- Explicit start, stop, lifecycle, stream-error, route-exit, and disposal cleanup
+- A localized English and Turkish prototype screen with requested/reported format and clear privacy language
+- Unit, controller, lifecycle, cleanup, and widget coverage with injectable fake audio input
+- Android manifest permission limited to `RECORD_AUDIO`
 
-## Dashboard hierarchy
+## Capture contract
 
-The dashboard retains every planned tool without an essential carousel. It groups tools into Practice, Theory and Reference, and Training. Metronome and BPM Tap appear first and use stronger visual emphasis; Guitar Tuner and every remaining unfinished tool remain clearly marked Coming Soon.
+The client requests one 48 kHz mono PCM16 little-endian stream. Android and the audio backend may adjust a request; the screen distinguishes the requested configuration from a backend-reported adjustment. If the backend does not report an adjustment, Tunathic labels the reported sample rate unavailable and does not claim the requested rate was measured.
 
-## Interaction and feedback
+Frame sizes and arrival intervals are observed rather than assumed. The current backend selects its Android stream buffer unless a later milestone demonstrates a measured reason to override it. Raw bytes and normalized samples are held only for the current frame; long-running diagnostics retain counters and scalar aggregates, not audio history.
 
-Haptic feedback is enabled by default and stored locally with other application preferences. Flutter’s platform haptic API sits behind `HapticFeedbackOutput` and `AppHaptics`, allowing tests to replace hardware behavior. Subtle feedback accompanies direct taps, start/stop, applying BPM Tap, reset, navigation, and important selections. Timers, passive changes, sliders, and individual Metronome beats never trigger haptics.
+## Lifecycle, routing, and coexistence
 
-Inline content communicates ongoing screen state, SnackBars acknowledge brief user-triggered results such as applying a BPM estimate, and full error presentation is reserved for a screen that cannot function. Technical details remain in `AppLogger`.
+Capture starts only through a visible user action. Opening the screen does not request permission or activate the microphone. Capture stops when requested, when the app leaves the foreground, when the route is left, or when an unrecoverable stream error occurs. It never resumes automatically.
 
-## Privacy and application information
+Starting microphone capture first releases Metronome audio. Bluetooth routing is not managed by the prototype, no audio route is forced, and Android remains responsible for the selected input. This is intentional until physical-device evidence justifies more routing policy.
 
-The in-app Privacy screen and `docs/PRIVACY_POLICY_DRAFT.md` describe the current implementation: BPM Tap sessions remain in memory, preferences stay local, and there is no microphone permission, recording, account, advertising, analytics, Tunathic backend, upload, or GUNDEV data collection. The draft must change before future data-affecting features ship.
+## User interface contract
 
-`package_info_plus` reads the installed version once during bootstrap. Settings, About, and the standard Flutter license page consume the application-owned `ApplicationInfo` value rather than calling the package from widgets.
+The dashboard continues to label Guitar Tuner **Coming Soon**. Opening it shows a clearly named **Tuner Audio Prototype** with permission state, capture state, requested/reported PCM format, input level, and diagnostic counters. It must not display a detected note, frequency, cents offset, confidence, tuning needle, smoothing, or calibration control.
+
+## Privacy
+
+Microphone data is processed locally and only while foreground capture is active. Raw PCM, normalized samples, and signal statistics are not saved, uploaded, logged, or sent to GUNDEV. Debug logs contain configuration, aggregate counters, lifecycle reasons, and failures only—never sample values. The app still has no account, advertising, analytics, backend, or cloud transfer.
 
 ## Out of scope
 
-- Guitar Tuner, microphone access, pitch detection, recording, or DSP
-- New music tools or additional Metronome capabilities
-- Native audio scheduling or background playback
-- Advertisements, analytics, accounts, backend, cloud, purchases, or synchronization
-- App icon, adaptive icon, splash branding, signing, deployment, or store publishing
+- Pitch or fundamental-frequency detection
+- Note mapping, cents calculation, confidence, smoothing, or a tuner needle
+- Calibration, alternate tunings, instrument profiles, or noise gating
+- Recording files, playback, sharing, persistence, upload, or background capture
+- Forced microphone routing or automatic Bluetooth SCO management
+- Changes to BPM Tap or Metronome behavior beyond releasing playback before capture
+- Store publishing, signing, advertising, analytics, accounts, backend, or cloud features
 
 ## Completion criteria
 
-- Existing BPM Tap and Metronome behavior remains covered and operational.
-- Dashboard, Settings, About, Privacy, licenses, and version metadata are localized and navigable with natural Android back behavior.
-- Haptics persist, honor the disabled preference, and remain absent from passive/timing-driven behavior.
-- Representative narrow, common, large, tablet, and large-text layouts avoid overflow in automated coverage where practical.
-- Formatting checks, analysis, all tests, and an Android debug APK build pass.
-- CI performs dependency resolution, formatting verification, analysis, and tests without secrets or deployment.
+- Permission grant and denial, successful start, unsupported format, retry, duplicate start, rapid stop, lifecycle stop, stream failure, stop failure, malformed input, throttling, configuration updates, navigation cleanup, and disposal failure have automated coverage.
+- PCM16 conversion and signal statistics have deterministic pure-Dart tests.
+- The prototype remains localized, scrollable, text-scale tolerant, and explicit about its non-tuner status.
+- Formatting verification, analysis, the complete test suite, and an Android debug APK build pass.
+- Final reporting records connected-device availability and does not claim physical validation when no physical Android target is present.
 
 ## Known limitations
 
-- The application is not Play Store ready; privacy, store disclosure, signing, brand assets, and release work remain.
-- Metronome playback is foreground-only and not sample-accurate. Millisecond-scale scheduler, platform-channel, buffering, or device latency jitter may remain on some Android devices.
-- The rare stutter observed on an earlier physical Android test is not declared resolved without repeat device validation.
-- Haptic strength and availability depend on Android device hardware and system behavior.
-- No physical Android device was connected during the latest automated validation unless separately reported.
+- This milestone proves audio capture plumbing only; it cannot tune a guitar.
+- `record` exposes permission as granted or denied but does not distinguish Android's permanent-denial state. The UI therefore provides a neutral retry instruction rather than claiming that distinction.
+- The backend can report an adjusted client configuration, but this is not a measurement of the hardware endpoint sample rate.
+- Frame arrival timing is measured when Dart receives a buffer, not with native capture timestamps, so it includes platform and scheduling delay.
+- Audio focus, route selection, Bluetooth input behavior, interruptions, and device-specific sample-rate adjustment require physical-device observation.
+- No physical Android target was connected during final Phase 2A validation, so permission, live PCM activity, denial/retry, background/foreground behavior, route changes, contention, and five-minute stability remain physically unverified.
+- The app is not Play Store ready; its privacy draft and store disclosures require release review.

@@ -1,16 +1,16 @@
 # Architecture
 
-Tunathic uses a pragmatic feature-first Flutter structure. Phase 1C polishes the application shell around BPM Tap and the foreground Metronome while keeping responsibilities explicit and avoiding data or repository layers that have no current use.
+Tunathic uses a pragmatic feature-first Flutter structure. Phase 2A adds a foreground-only microphone prototype beside BPM Tap and the Metronome while keeping platform access, audio conversion, state, and presentation responsibilities explicit.
 
 ## Folder responsibilities
 
 - `lib/app/` owns application composition: bootstrap, router, persisted application settings, and Material themes.
 - `lib/core/` owns app-wide technical boundaries for logging, preferences, package information, and haptic output.
-- `lib/features/` groups user-facing areas. Dashboard, Settings, About, and Privacy compose the application shell. BPM Tap separates pure estimation logic from presentation state. Metronome separates configuration and beat sequencing, scheduling and orchestration, audio output, persistence, and presentation. Unfinished tools share one placeholder presentation.
+- `lib/features/` groups user-facing areas. Dashboard, Settings, About, and Privacy compose the application shell. BPM Tap separates pure estimation logic from presentation state. Metronome separates configuration and beat sequencing, scheduling and orchestration, audio output, persistence, and presentation. Tuner Audio separates its input boundary and package adapter, immutable PCM/frame domain types and pure statistics, controller orchestration, and prototype UI. Other unfinished tools share one placeholder presentation.
 - `lib/shared/` contains reusable interface elements that are not specific to one feature. Foundation contains the friendly error view.
 - `lib/l10n/` contains source ARB files and generated Flutter localization classes.
 
-No UI component imports `shared_preferences` or contains audio timing logic. Platform-facing playback is isolated behind `MetronomeAudioOutput`. Both tools are fully offline, and BPM Tap does not persist sessions or timestamps.
+No UI component imports `shared_preferences`, calls the microphone package, or contains audio conversion or DSP. Platform-facing playback is isolated behind `MetronomeAudioOutput`; microphone input is isolated behind `TunerAudioInput`. Current tools operate offline, and neither BPM Tap sessions nor microphone samples are persisted.
 
 ## State management
 
@@ -22,6 +22,8 @@ Riverpod provides scoped dependency injection and reactive application settings.
 
 `MetronomeController` owns immutable runtime state and coordinates the scheduler, audio boundary, and preferences. Widgets forward user actions and render state. Playback stops when the app loses foreground focus and does not resume automatically. Leaving the screen synchronously invalidates pending start work, stops the scheduler, and releases audio without mutating Riverpod during widget teardown; a later screen entry normalizes the retained runtime state before rendering.
 
+`TunerAudioController` owns the capture state machine and creates its audio input through an injectable factory. It requests permission only in response to Start, releases Metronome audio before capture, rejects duplicate operations, subscribes to frames and configuration changes, and owns all cleanup. Operation versioning invalidates delayed permission/start completions after a rapid stop or route exit. Backgrounding stops capture and foregrounding never restarts it automatically. The UI observes immutable scalar state and never receives PCM bytes directly.
+
 ## Navigation
 
 GoRouter provides one central route table:
@@ -32,13 +34,14 @@ GoRouter provides one central route table:
 - `/privacy` displays the current local/offline privacy summary.
 - `/tools/bpm-tap` displays the functional BPM Tap screen.
 - `/tools/metronome` displays the functional Metronome screen.
-- `/tools/:toolId` resolves every other known tool to its Coming Soon placeholder.
+- `/tools/guitar-tuner` displays the Tuner Audio Prototype while the dashboard entry remains Coming Soon.
+- `/tools/:toolId` resolves every other unfinished known tool to its Coming Soon placeholder.
 
 Unknown paths and tool identifiers display a friendly localized not-found screen. Tool IDs are stable, nonlocalized route segments; tool names are localized at presentation time.
 
 The Metronome opens BPM Tap with an explicit result contract. BPM Tap returns only a valid whole-number estimate when the user chooses Apply; the metronome validates the 20–300 BPM range and then updates and persists its tempo. Ordinary dashboard use of BPM Tap has no Apply action.
 
-The dashboard groups stable tool definitions into Practice, Theory and Reference, and Training. Metronome and BPM Tap are the only available tools and receive stronger surface treatment; all planned tools remain visible and explicitly labeled Coming Soon. Navigation uses pushes for drill-in screens so Android back naturally returns to the previous context. Unknown routes continue to use the localized not-found screen.
+The dashboard groups stable tool definitions into Practice, Theory and Reference, and Training. Metronome and BPM Tap remain the only production-available tools and receive stronger surface treatment. Guitar Tuner stays explicitly labeled Coming Soon despite its evaluable technical prototype. Navigation uses pushes for drill-in screens so Android back naturally returns to the previous context. Unknown routes continue to use the localized not-found screen.
 
 ## Application information and licenses
 
@@ -55,6 +58,22 @@ Open-source notices use Flutter’s standard `showLicensePage`, which reads Flut
 The scheduler callback carries its intended deadline, actual callback time, lateness, and skipped count to `MetronomeController`. In debug builds, the controller records those values with beat number, BPM, and audio-request pending/completed/failed state through `AppLogger`. Per-beat logging is compiled out of release builds. Audio playback futures are deliberately not awaited by the scheduler, so platform-channel completion cannot postpone arming the next deadline. Visual state and the audio request use the same beat number, although visual rendering may follow the request by a few milliseconds.
 
 This foreground design is maintainable and testable but not sample-accurate: Dart scheduling, platform-channel transit, Android audio buffering, and device hardware all contribute latency. A native scheduled-audio engine would be required for stronger real-time guarantees.
+
+## Tuner audio capture prototype
+
+`TunerAudioInput` is the application-owned platform boundary. It covers nonprompting permission inspection, explicit permission request, continuous capture start, stop, and disposal. `RecordTunerAudioInput` is the only production implementation. It uses [`record` 7.1.1](https://pub.dev/packages/record) because its official [`AudioRecorder`](https://pub.dev/documentation/record/latest/record/AudioRecorder-class.html) and [`RecordConfig`](https://pub.dev/documentation/record/latest/record/RecordConfig-class.html) APIs support PCM16 byte streams, Android's native `AudioRecord` implementation, encoder capability checks, and backend configuration-change callbacks without adding a general recording or DSP layer. `record` supports Android API 23 and newer; Tunathic's current Flutter 3.44 debug manifest resolves to API 24, so the package does not raise the app's current minimum. The evaluated native alternative was a custom Android platform-channel wrapper around [`AudioRecord`](https://developer.android.com/reference/android/media/AudioRecord); it would add lifecycle, threading, byte transport, and error-mapping code that the current prototype does not yet need.
+
+The requested stream is 48,000 Hz, one channel, signed 16-bit PCM in little-endian byte order, matching Android's documented [`AudioFormat`](https://developer.android.com/reference/android/media/AudioFormat.html) representation. Automatic gain control, echo cancellation, and noise suppression are disabled because they can alter an instrument signal. Bluetooth management is disabled and the default Android audio source is retained, so the prototype does not request route-control permissions or force an input. Only `android.permission.RECORD_AUDIO` is declared. Following Android's [runtime-permission guidance](https://developer.android.com/training/permissions/requesting), the request occurs after Start; the package currently exposes granted/denied as a boolean and cannot reliably distinguish a permanent denial, which is why the UI does not claim that state.
+
+The adapter converts every even-length byte frame immediately with little-endian signed 16-bit reads and divides by 32768. Each `AudioFrame` owns its `Float32List`, reported/client format, monotonic Dart arrival time, and sequence number. Odd-length frames become typed malformed-frame errors; the controller counts them and continues. No raw byte buffer or sample array is placed in state, history, storage, or logs.
+
+`SignalStatisticsAccumulator` processes every frame but retains only scalar aggregates. It computes peak, RMS, dBFS, frame/sample counts, stream duration, minimum/maximum/average frame size, average arrival interval, and derived arrival rate. The controller publishes at most once per 100 milliseconds so widget rebuild frequency is bounded at 10 Hz. Arrival timing begins when Dart receives data and therefore includes native buffering, platform transport, and scheduler delay; it is diagnostic rather than a native capture timestamp.
+
+PCM conversion and scalar accumulation currently run synchronously on Flutter's main Dart isolate when each package stream event is delivered. Phase 2A adds no isolate because this linear pass has not shown a measured need for one. The app does not enqueue frames: after conversion and accumulation, a frame becomes collectible, and UI throttling only skips state publication—not audio processing. Backpressure below the Dart stream remains controlled by the package and Android buffer; if profiling shows event-loop backlog or dropped native input, isolate/native processing becomes a measured follow-up.
+
+The `record` Android backend selects its stream buffer because Phase 2A has no measured evidence for a fixed override. Frame size is observed at runtime. The client requests 48 kHz, and an adjustment callback is shown as the reported format if available; absent that callback the screen explicitly says the reported sample rate is unavailable. Neither value is presented as a measured hardware endpoint rate.
+
+Capture cleanup is idempotent across explicit stop, application backgrounding, stream failure, navigation, provider disposal, and partial start failure. Starting capture first releases Metronome playback to avoid simultaneous Tunathic playback/input activity. Android may still arbitrate other apps, calls, audio focus, input routing, and Bluetooth behavior. A native `AudioRecord` implementation becomes justified if physical testing demonstrates a need for native timestamps, explicit buffer sizing, preferred-device routing, audio-session callbacks, lower-copy transport, or controls the package cannot expose.
 
 ## Audio playback and assets
 
@@ -97,9 +116,10 @@ Shared maximum widths produce readable phone, large-phone, and tablet columns. C
 - `flutter_localizations` and the SDK-compatible `intl` version generate and support English and Turkish localization.
 - `shared_preferences` persists scalar application and metronome settings behind an application-owned abstraction.
 - `audioplayers` preloads and plays the two bundled metronome clicks through low-latency Android audio pools.
+- `record` 7.1.1 supplies continuous PCM16 microphone streaming and the Android `AudioRecord` bridge behind `TunerAudioInput`; it is used for transient capture, never file recording.
 - `package_info_plus` supplies the installed version and build number behind `ApplicationInfoLoader`; platform metadata cannot be read reliably from `pubspec.yaml` at runtime.
 
-No microphone, recording, DSP, database, analytics, advertising, account, backend, or purchase package is included.
+No pitch-analysis, DSP, database, analytics, advertising, account, backend, or purchase package is included.
 
 ## Testing approach
 
@@ -109,14 +129,17 @@ Scheduler tests use fake monotonic time and fake one-shot timers; they do not wa
 
 Application-shell tests cover haptic persistence and enabled/disabled behavior, dashboard grouping and availability, injected package versions, About and Privacy navigation, standard license entry, theme and language regression, large text, narrow layout, BPM Tap and Metronome regressions, corrected 6/8 timing, and Metronome cleanup on back navigation. GitHub Actions repeats dependency resolution, formatting verification, analysis, and tests for pushes and pull requests to `main` without secrets or deployment steps.
 
+Tuner Audio pure-Dart tests cover PCM16 little-endian normalization, signed boundaries, malformed input, peak, RMS, dBFS, silence, and aggregate frame timing. Controller tests inject a fake audio input and cover grant/denial, unsupported configuration, retry, duplicate and rapid operations, foreground lifecycle, stream and stop failures, malformed-frame recovery, 10 Hz publication throttling, backend format adjustment, route cleanup, and disposal failure. Widget tests cover the non-tuner warning, privacy language, denied permission, start/statistics/stop interaction, Turkish localization, and narrow large-text scrolling. They intentionally use deterministic synthetic frames and make no claim about Android hardware.
+
 ## Known limitations
 
-- BPM Tap and the foreground Metronome are functional; every other listed music tool remains a nonfunctional Coming Soon placeholder.
+- BPM Tap and the foreground Metronome are functional. Guitar Tuner remains Coming Soon and opens only a microphone-input prototype; it has no pitch result.
 - Metronome playback is not sample-accurate, does not run in the background, and supports no subdivisions, swing, custom rhythms, or custom accent patterns.
 - Rare audible stuttering was observed on a physical Android device in the original Phase 1B build. Debug instrumentation can now distinguish Dart scheduler lateness, skipped deadlines, and overlapping platform audio requests, but repeat physical-device validation is required before declaring the symptom resolved. No physical Android target was connected during automated validation of this hotfix.
 - Haptic response varies with Android hardware and system settings.
 - The privacy policy is a product draft and the application is not Play Store ready.
-- There is no microphone permission, recording, pitch detection, DSP, or content database.
+- Microphone capture is foreground-only, transient, and local. There is no file recording, pitch detection, tuner DSP, or content database.
+- The prototype does not force an input route or manage Bluetooth SCO. Permission permanent-denial state, device interruptions, route changes, and adjusted sample rates depend on Android and require physical observation.
 - Preferences store only scalar application and metronome settings; future structured data needs a separate decision when its requirements exist.
 - Logging is local developer output only. No remote reporting or analytics exists.
 - Foundation targets Android; other generated platform projects are intentionally absent.

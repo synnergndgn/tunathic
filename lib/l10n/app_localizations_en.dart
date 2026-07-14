@@ -123,7 +123,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyLocalDescription =>
-      'Theme, language, haptic, and Metronome settings are stored locally. Tunathic does not request microphone permission and does not record or upload audio.';
+      'Theme, language, haptic, and Metronome settings are stored locally on this device.';
+
+  @override
+  String get privacyMicrophoneTitle => 'Microphone prototype stays local';
+
+  @override
+  String get privacyMicrophoneDescription =>
+      'Microphone access is used only while the Tuner Audio Prototype is actively capturing. Raw audio is processed locally, never saved or uploaded, and capture stops when you leave the screen or the app enters the background.';
 
   @override
   String get privacyNoCollectionTitle =>
@@ -135,7 +142,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyFutureChanges =>
-      'This privacy information must be updated before microphone, advertising, analytics, account, cloud, or backend features are released.';
+      'This privacy information must be reviewed before production tuner, recording, advertising, analytics, account, cloud, or backend features are released.';
 
   @override
   String get comingSoon => 'Coming Soon';
@@ -339,4 +346,169 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get capoCalculator => 'Capo Calculator';
+
+  @override
+  String get tunerAudioPrototypeTitle => 'Tuner Audio Prototype';
+
+  @override
+  String get tunerAudioPrototypeWarning =>
+      'Technical prototype only. This validates microphone input and is not a working guitar tuner.';
+
+  @override
+  String get microphonePermissionLabel => 'Microphone permission';
+
+  @override
+  String get microphonePermissionNotRequested => 'Not requested';
+
+  @override
+  String get microphonePermissionGranted => 'Granted';
+
+  @override
+  String get microphonePermissionDenied => 'Denied';
+
+  @override
+  String get startCapture => 'Start capture';
+
+  @override
+  String get stopCapture => 'Stop capture';
+
+  @override
+  String get captureStatusLabel => 'Capture status';
+
+  @override
+  String get captureStatusIdle => 'Stopped';
+
+  @override
+  String get captureStatusRequestingPermission => 'Requesting permission';
+
+  @override
+  String get captureStatusStarting => 'Starting microphone';
+
+  @override
+  String get captureStatusCapturing => 'Capturing';
+
+  @override
+  String get captureStatusStopping => 'Stopping';
+
+  @override
+  String get captureStatusError => 'Capture error';
+
+  @override
+  String get requestedSampleRateLabel => 'Requested sample rate';
+
+  @override
+  String get reportedSampleRateLabel => 'Reported sample rate';
+
+  @override
+  String get reportedSampleRateUnavailable =>
+      'Not reported by the audio backend';
+
+  @override
+  String sampleRateValue(int sampleRate) {
+    return '$sampleRate Hz';
+  }
+
+  @override
+  String get channelCountLabel => 'Channels';
+
+  @override
+  String channelCountValue(int channelCount) {
+    return '$channelCount (mono)';
+  }
+
+  @override
+  String get pcmEncodingLabel => 'Encoding';
+
+  @override
+  String get pcm16LittleEndian => 'Signed PCM16, little-endian';
+
+  @override
+  String get signalStatisticsTitle => 'Signal statistics';
+
+  @override
+  String get inputLevelLabel => 'Input level';
+
+  @override
+  String get peakAmplitudeLabel => 'Peak amplitude';
+
+  @override
+  String get rmsAmplitudeLabel => 'RMS amplitude';
+
+  @override
+  String get dbfsLabel => 'dBFS';
+
+  @override
+  String get silenceDbfs => '−∞ dBFS';
+
+  @override
+  String dbfsValue(String value) {
+    return '$value dBFS';
+  }
+
+  @override
+  String get framesReceivedLabel => 'Frames received';
+
+  @override
+  String get samplesReceivedLabel => 'Samples received';
+
+  @override
+  String get streamDurationLabel => 'Stream duration';
+
+  @override
+  String durationSecondsValue(String value) {
+    return '$value s';
+  }
+
+  @override
+  String get observedFrameSizesLabel => 'Observed frame sizes';
+
+  @override
+  String frameSizesValue(int minimum, int maximum, String average) {
+    return '$minimum–$maximum samples; $average average';
+  }
+
+  @override
+  String get frameArrivalRateLabel => 'Approximate frame arrival rate';
+
+  @override
+  String framesPerSecondValue(String value) {
+    return '$value frames/s';
+  }
+
+  @override
+  String get malformedFramesLabel => 'Malformed frames';
+
+  @override
+  String get prototypePrivacyTitle => 'Private by design';
+
+  @override
+  String get prototypePrivacyDescription =>
+      'Audio is processed only in memory on this device. Raw microphone data and signal statistics are not saved or transmitted.';
+
+  @override
+  String get prototypeLifecycleTitle => 'Foreground capture only';
+
+  @override
+  String get prototypeLifecycleDescription =>
+      'Capture stops when you leave this screen, background or hide the app, or lock the screen. It never restarts automatically.';
+
+  @override
+  String get permissionDeniedMessage =>
+      'Microphone access was denied. Start again only if you want to retry; Tunathic will not open system settings automatically.';
+
+  @override
+  String get unsupportedAudioMessage =>
+      'This device did not accept the prototype PCM audio configuration.';
+
+  @override
+  String get audioStartFailedMessage =>
+      'Tunathic could not start microphone capture. You can try again.';
+
+  @override
+  String get audioStreamFailedMessage =>
+      'Microphone capture stopped because the audio stream failed. You can try again.';
+
+  @override
+  String get audioStopFailedMessage =>
+      'Tunathic could not finish releasing the microphone cleanly. You can try again.';
 }
