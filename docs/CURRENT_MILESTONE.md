@@ -1,64 +1,100 @@
-# Current Milestone: Phase 2A — Tuner Audio Prototype
+# Current Milestone: Phase 2B — Offline Pitch Detection Engine
 
-Phase 2A validates the microphone-input foundation needed by a future guitar tuner. Foundation, BPM Tap, Core Metronome, its physical-device hotfix, and Application Polish are complete. This milestone is deliberately a technical audio prototype, not a working tuner.
+Phase 2B adds a deterministic, Flutter-independent pitch engine for normalized mono samples. Phase 2A microphone capture has been physically validated separately and remains unchanged. The new engine is not connected to that live stream, so Guitar Tuner remains Coming Soon and Tunathic still does not present a working tuner.
 
 ## In scope
 
-- One application-owned audio-input boundary with a `record`-based Android implementation
-- Explicit runtime microphone permission requested only after the user presses Start
-- Continuous mono signed PCM16 little-endian capture, requesting 48,000 Hz
-- Immediate conversion of PCM16 bytes into frame-owned normalized `Float32List` samples in `[-1.0, 1.0)`
-- Scalar diagnostics for peak, RMS, dBFS, frames, samples, duration, malformed frames, observed frame sizes, and arrival rate
-- A maximum 10 Hz presentation update rate while every received frame contributes to statistics
-- Explicit start, stop, lifecycle, stream-error, route-exit, and disposal cleanup
-- A localized English and Turkish prototype screen with requested/reported format and clear privacy language
-- Unit, controller, lifecycle, cleanup, and widget coverage with injectable fake audio input
-- Android manifest permission limited to `RECORD_AUDIO`
+- A project-owned pure Dart YIN pitch detector under `lib/features/tuner_pitch/`
+- Immutable detector configuration and typed detected/no-pitch results
+- A 40–1,200 Hz fundamental-frequency range for guitar and bass
+- 44.1 kHz and 48 kHz normalized mono `Float32List` input
+- A4 = 440 Hz 12-tone equal-temperament conversion to MIDI, sharp note name, octave, and signed cents
+- Deterministic synthetic sine, harmonic, noise, DC-offset, envelope, combined-signal, and silence utilities for tests
+- Pure tests for accuracy, range boundaries, confidence, harmonics, octave resistance, noise, numeric validation, and determinism
+- An optional non-production diagnostic command for error and execution-time observations
 
-## Capture contract
+## Algorithm and defaults
 
-The client requests one 48 kHz mono PCM16 little-endian stream. Android and the audio backend may adjust a request; the screen distinguishes the requested configuration from a backend-reported adjustment. If the backend does not report an adjustment, Tunathic labels the reported sample rate unavailable and does not claim the requested rate was measured.
+The primary algorithm is YIN with a direct time-domain difference function, cumulative mean normalized difference, absolute threshold selection, and parabolic period refinement. Defaults are:
 
-Frame sizes and arrival intervals are observed rather than assumed. The current backend selects its Android stream buffer unless a later milestone demonstrates a measured reason to override it. Raw bytes and normalized samples are held only for the current frame; long-running diagnostics retain counters and scalar aggregates, not audio history.
+- Minimum frequency: 40 Hz
+- Maximum frequency: 1,200 Hz
+- Minimum centered RMS: 0.002
+- YIN threshold: 0.18
+- Minimum confidence: 0.82
+- Minimum low-frequency periods: 3
+- Lower-range rejection guard: 10% beyond the configured maximum lag
+- Harmonic candidate multiples inspected: up to 4
+- Required score improvement before preferring a longer fundamental period: 0.01
+- Equal-temperament reference: A4 = 440 Hz
 
-## Lifecycle, routing, and coexistence
+The default minimum frame length is 3,600 samples at 48 kHz and 3,308 samples at 44.1 kHz. A 4,096-sample frame is the practical recommendation: it spans 85.3 ms at 48 kHz and contains enough periods for E1 and the 40 Hz lower boundary. No power-of-two frame length is required.
 
-Capture starts only through a visible user action. Opening the screen does not request permission or activate the microphone. Capture stops when requested, when the app leaves the foreground, when the route is left, or when an unrecoverable stream error occurs. It never resumes automatically.
+## Input and output contract
 
-Starting microphone capture first releases Metronome audio. Bluetooth routing is not managed by the prototype, no audio route is forced, and Android remains responsible for the selected input. This is intentional until physical-device evidence justifies more routing policy.
+`PitchDetector.detect` accepts a frame-owned normalized mono `Float32List` and a positive sample rate. It returns a `PitchEstimate`; normal unusable input never throws. A detected result contains frequency, confidence, period, MIDI note, sharp note class, octave, and signed cents. A no-pitch result contains a typed reason without localized text.
 
-## User interface contract
+No-pitch reasons cover empty frames, invalid sample rates, non-finite or out-of-range normalized samples, insufficient frames, centered near-silence, incompatible detection range, and low confidence. Frequencies outside 40–1,200 Hz are not returned as valid estimates.
 
-The dashboard continues to label Guitar Tuner **Coming Soon**. Opening it shows a clearly named **Tuner Audio Prototype** with permission state, capture state, requested/reported PCM format, input level, and diagnostic counters. It must not display a detected note, frequency, cents offset, confidence, tuning needle, smoothing, or calibration control.
+## Preprocessing and confidence
 
-## Privacy
+The detector computes mean-centered RMS before analysis. A constant DC offset cancels mathematically in each difference term, so it requires no copied, filtered buffer. No window, gain normalization, high-pass filter, complex gate, or isolate is added. Silence is rejected below the configured RMS threshold.
 
-Microphone data is processed locally and only while foreground capture is active. Raw PCM, normalized samples, and signal statistics are not saved, uploaded, logged, or sent to GUNDEV. Debug logs contain configuration, aggregate counters, lifecycle reasons, and failures only—never sample values. The app still has no account, advertising, analytics, backend, or cloud transfer.
+Confidence is `1 - CMNDF(period)`, clamped to 0–1. A candidate must cross the 0.18 YIN threshold and retain at least 0.82 confidence. White noise and the tested very-low-SNR input return no pitch rather than a low-confidence frequency.
+
+## Harmonics and octave resistance
+
+YIN selects the first threshold-crossing local minimum. Tunathic then inspects nearby integer period multiples through four and selects a longer period only when its normalized difference improves by at least 0.01. This general rule corrected the tested dominant-second, dominant-third, weak-fundamental, missing-fundamental-with-second-and-third, and bass-like spectra without note-specific fixes.
+
+A single isolated harmonic contains no mathematical evidence of an absent lower fundamental. Real instruments can also be inharmonic or transient, so octave ambiguity is reduced but not eliminated.
+
+## Measured deterministic results
+
+The 4,096-sample, 48 kHz clean-sine diagnostic produced the following representative results on the development machine. Error cents compare estimated frequency with the synthetic expected frequency, not with the nearest note.
+
+| Expected Hz | Estimated Hz | Error % | Error cents | Confidence |
+| ---: | ---: | ---: | ---: | ---: |
+| 40.00 | 40.000000 | 0.000000 | 0.0000 | 1.000000 |
+| 41.20 | 41.200000 | 0.000000 | -0.0000 | 1.000000 |
+| 55.00 | 54.999993 | 0.000013 | -0.0002 | 0.999998 |
+| 61.74 | 61.739995 | 0.000008 | -0.0001 | 0.999993 |
+| 82.41 | 82.410000 | 0.000000 | -0.0000 | 0.999988 |
+| 110.00 | 109.999986 | 0.000013 | -0.0002 | 0.999986 |
+| 146.83 | 146.829952 | 0.000033 | -0.0006 | 0.999998 |
+| 196.00 | 195.999888 | 0.000057 | -0.0010 | 0.999997 |
+| 246.94 | 246.939971 | 0.000012 | -0.0002 | 0.999926 |
+| 329.63 | 329.629848 | 0.000046 | -0.0008 | 0.999864 |
+| 440.00 | 440.000053 | 0.000012 | 0.0002 | 0.999986 |
+| 659.25 | 659.247713 | 0.000347 | -0.0060 | 0.999865 |
+| 880.00 | 879.998312 | 0.000192 | -0.0033 | 0.998615 |
+| 1,000.00 | 999.997120 | 0.000288 | -0.0050 | 1.000000 |
+| 1,200.00 | 1199.997845 | 0.000180 | -0.0031 | 1.000000 |
+
+These synthetic results exceed the milestone's 0.5% target but are not evidence of equivalent recorded-instrument or live-device accuracy.
+
+The optional JIT diagnostic warms the detector and performs 30 non-asserted runs. One representative Windows development-machine run measured an 11.35 ms median and 12.00 ms average for 4,096 samples, and a 26.23 ms median and 25.84 ms average for 8,192 samples. Wall-clock timing varies with machine load and is deliberately excluded from pass/fail tests.
 
 ## Out of scope
 
-- Pitch or fundamental-frequency detection
-- Note mapping, cents calculation, confidence, smoothing, or a tuner needle
-- Calibration, alternate tunings, instrument profiles, or noise gating
-- Recording files, playback, sharing, persistence, upload, or background capture
-- Forced microphone routing or automatic Bluetooth SCO management
-- Changes to BPM Tap or Metronome behavior beyond releasing playback before capture
-- Store publishing, signing, advertising, analytics, accounts, backend, or cloud features
+- Connecting pitch detection to Phase 2A microphone frames
+- Live buffering, overlapping analysis windows, scheduling, isolates, or backpressure
+- Real-time controller state, smoothing, hysteresis, debounce, or result history
+- User-facing frequency, note, cents, confidence, strings, or tuner needle UI
+- Tuning presets, alternate tunings, calibration controls, or string selection
+- Recording, playback monitoring, visualization, analytics, advertising, backend, or cloud work
 
 ## Completion criteria
 
-- Permission grant and denial, successful start, unsupported format, retry, duplicate start, rapid stop, lifecycle stop, stream failure, stop failure, malformed input, throttling, configuration updates, navigation cleanup, and disposal failure have automated coverage.
-- PCM16 conversion and signal statistics have deterministic pure-Dart tests.
-- The prototype remains localized, scrollable, text-scale tolerant, and explicit about its non-tuner status.
-- Formatting verification, analysis, the complete test suite, and an Android debug APK build pass.
-- Final reporting records connected-device availability and does not claim physical validation when no physical Android target is present.
+- The DSP and note domain import no Flutter, platform, audio, timer, widget, or networking API.
+- Required clean frequencies, exact range limits, semitone boundaries, sharp/flat cents, harmonics, noise, DC, envelope, phase, sample rates, frame sizes, invalid numbers, and no-pitch behavior have deterministic coverage.
+- Existing Phase 2A and application behavior remains unchanged and all regression tests pass.
+- Formatting verification, analysis, complete tests, and an Android debug APK build pass.
 
 ## Known limitations
 
-- This milestone proves audio capture plumbing only; it cannot tune a guitar.
-- `record` exposes permission as granted or denied but does not distinguish Android's permanent-denial state. The UI therefore provides a neutral retry instruction rather than claiming that distinction.
-- The backend can report an adjusted client configuration, but this is not a measurement of the hardware endpoint sample rate.
-- Frame arrival timing is measured when Dart receives a buffer, not with native capture timestamps, so it includes platform and scheduling delay.
-- Audio focus, route selection, Bluetooth input behavior, interruptions, and device-specific sample-rate adjustment require physical-device observation.
-- No physical Android target was connected during final Phase 2A validation, so permission, live PCM activity, denial/retry, background/foreground behavior, route changes, contention, and five-minute stability remain physically unverified.
-- The app is not Play Store ready; its privacy draft and store disclosures require release review.
+- Only a single monophonic fundamental is estimated; chords and multiple simultaneous sources are unsupported.
+- Confidence is YIN periodicity clarity, not a calibrated probability that a note is correct.
+- The direct implementation is `O(N × L)` time and `O(L)` temporary memory. At 48 kHz the configured 40 Hz limit is a 1,200-sample lag; a 10% rejection guard searches to 1,320 samples to distinguish just-below-range pitches.
+- Each call allocates raw and normalized `Float64List` lag buffers plus its immutable result. Reuse may be considered only after Phase 2C profiling establishes a need.
+- Synthetic periodic signals are cleaner than plucked strings with attack transients, decay, inharmonicity, body resonances, environmental noise, and microphone processing.
+- Real-time latency, frame overlap, Android CPU cost, isolate placement, smoothing, and display stability are intentionally unmeasured until Phase 2C.

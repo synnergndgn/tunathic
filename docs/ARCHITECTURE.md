@@ -1,16 +1,16 @@
 # Architecture
 
-Tunathic uses a pragmatic feature-first Flutter structure. Phase 2A adds a foreground-only microphone prototype beside BPM Tap and the Metronome while keeping platform access, audio conversion, state, and presentation responsibilities explicit.
+Tunathic uses a pragmatic feature-first Flutter structure. Phase 2B adds an offline pure Dart pitch engine beside the physically validated Phase 2A microphone prototype while deliberately keeping capture and detection disconnected.
 
 ## Folder responsibilities
 
 - `lib/app/` owns application composition: bootstrap, router, persisted application settings, and Material themes.
 - `lib/core/` owns app-wide technical boundaries for logging, preferences, package information, and haptic output.
-- `lib/features/` groups user-facing areas. Dashboard, Settings, About, and Privacy compose the application shell. BPM Tap separates pure estimation logic from presentation state. Metronome separates configuration and beat sequencing, scheduling and orchestration, audio output, persistence, and presentation. Tuner Audio separates its input boundary and package adapter, immutable PCM/frame domain types and pure statistics, controller orchestration, and prototype UI. Other unfinished tools share one placeholder presentation.
+- `lib/features/` groups user-facing areas. Dashboard, Settings, About, and Privacy compose the application shell. BPM Tap separates pure estimation logic from presentation state. Metronome separates configuration and beat sequencing, scheduling and orchestration, audio output, persistence, and presentation. Tuner Audio separates its input boundary and package adapter, immutable PCM/frame domain types and pure statistics, controller orchestration, and prototype UI. Tuner Pitch contains only Flutter-independent configuration, results, musical-note conversion, the detector boundary, and DSP. Other unfinished tools share one placeholder presentation.
 - `lib/shared/` contains reusable interface elements that are not specific to one feature. Foundation contains the friendly error view.
 - `lib/l10n/` contains source ARB files and generated Flutter localization classes.
 
-No UI component imports `shared_preferences`, calls the microphone package, or contains audio conversion or DSP. Platform-facing playback is isolated behind `MetronomeAudioOutput`; microphone input is isolated behind `TunerAudioInput`. Current tools operate offline, and neither BPM Tap sessions nor microphone samples are persisted.
+No UI component imports `shared_preferences`, calls the microphone package, or contains audio conversion or DSP. Platform-facing playback is isolated behind `MetronomeAudioOutput`; microphone input is isolated behind `TunerAudioInput`; offline pitch analysis is isolated behind `PitchDetector`. Current tools operate offline, and neither BPM Tap sessions nor microphone samples are persisted.
 
 ## State management
 
@@ -75,6 +75,62 @@ The `record` Android backend selects its stream buffer because Phase 2A has no m
 
 Capture cleanup is idempotent across explicit stop, application backgrounding, stream failure, navigation, provider disposal, and partial start failure. Starting capture first releases Metronome playback to avoid simultaneous Tunathic playback/input activity. Android may still arbitrate other apps, calls, audio focus, input routing, and Bluetooth behavior. A native `AudioRecord` implementation becomes justified if physical testing demonstrates a need for native timestamps, explicit buffer sizing, preferred-device routing, audio-session callbacks, lower-copy transport, or controls the package cannot expose.
 
+## Offline pitch detection
+
+Phase 2B introduces `lib/features/tuner_pitch/` without importing it from Tuner Audio, controllers, routes, or widgets. `PitchDetector` is the small future-facing API: provide one normalized mono `Float32List` plus sample rate and receive one immutable `PitchEstimate`. `YinPitchDetector` owns no history, timers, smoothing, state, or platform resources, so identical input and configuration produce identical output.
+
+### Algorithm decision
+
+The selected method is YIN, following de Cheveigné and Kawahara's primary paper, [“YIN, a fundamental frequency estimator for speech and music”](https://pubmed.ncbi.nlm.nih.gov/12002874/). YIN modifies autocorrelation-style period estimation with a squared difference function, cumulative mean normalization, an absolute threshold, and interpolation. Its periodicity score maps cleanly to Tunathic's required confidence/no-pitch contract, it is intended for musical as well as speech signals, and it avoids FFT-bin resolution and spectral-peak assumptions.
+
+Alternatives were evaluated as follows:
+
+- Plain autocorrelation is established but its peaks remain sensitive to amplitude, finite-window effects, and harmonic multiples without additional normalization and selection rules; Rabiner's primary [autocorrelation analysis](https://doi.org/10.1109/TASSP.1977.1162905) describes the importance of preprocessing and peak behavior.
+- Normalized autocorrelation and the McLeod Pitch Method are strong musical alternatives. McLeod and Wyvill's [MPM paper](https://quod.lib.umich.edu/i/icmc/bbp2372.2005.107/1/--smarter-way-to-find-pitch?page=root;size=75;view=text) reports real-time monophonic musical use, normalized square difference, and a clarity measure. YIN was retained because its first-threshold-minimum rule and cumulative normalization provide the more direct conservative no-pitch behavior needed for this milestone; MPM remains a valid comparison candidate if recorded-instrument tests expose YIN-specific octave errors.
+- A raw FFT peak is not a reliable fundamental when a guitar harmonic is stronger than its fundamental. It also requires windowing, bin interpolation, and harmonic candidate scoring to address spectral leakage and low-frequency resolution. An FFT implementation or dependency would broaden Phase 2B without evidence that time-domain analysis is insufficient.
+
+The direct implementation has `O(N × L)` execution and `O(L)` temporary memory, where `N` is the comparison span and `L` is the maximum searched lag. At 48 kHz, the configured 40 Hz boundary has a 1,200-sample lag. A 10% lower-range guard extends only the search to 1,320 samples so a just-below-range periodic minimum is rejected instead of rounded onto 40 Hz. In-range lags retain a fixed comparison span; guard-only lags use their available overlap scaled to the same span. The detector allocates two `Float64List` lag arrays per call but does not copy or normalize the input samples. An FFT-accelerated difference calculation could reduce asymptotic cost later, but it is not justified by the current measurements.
+
+### Difference, selection, and interpolation
+
+For each lag `τ`, the detector calculates the fixed-span squared difference:
+
+`d(τ) = Σ (x[j] - x[j + τ])²`
+
+It then calculates the cumulative mean normalized difference:
+
+`d′(τ) = d(τ) × τ / Σ d(k), k = 1…τ`
+
+The first local minimum below 0.18 is the initial period candidate. Confidence is `clamp(1 - d′(τ), 0, 1)` and must be at least 0.82. Parabolic interpolation of the raw difference around the selected integer lag produces a fractional period; frequency is `sampleRate / period`. Inputs or refined results outside 40–1,200 Hz return typed no-pitch results.
+
+Guitar spectra may make a shorter harmonic period cross the threshold first. Without hardcoding notes, the detector checks neighborhoods around two, three, and four times the initial period and prefers a longer candidate only when its normalized difference improves by at least 0.01. Tests cover dominant second and third harmonics, a weak fundamental, a synthetic missing fundamental supported by second and third harmonics, and a noisy bass-like spectrum. A waveform containing only one isolated harmonic cannot reveal an absent lower fundamental, so octave ambiguity remains possible.
+
+### Frame sizing, preprocessing, and latency
+
+The configured minimum frame contains three periods at the 40 Hz lower bound: 3,600 samples at 48 kHz or 3,308 at 44.1 kHz. The recommended 4,096-sample frame spans 85.3 ms at 48 kHz and 92.9 ms at 44.1 kHz. That acquisition span is the minimum practical low-note latency before future overlap, scheduling, and display smoothing. The detector also accepts larger or non-power-of-two frames.
+
+All samples must be finite and within `[-1, 1]`. The detector calculates mean-centered RMS and rejects values below 0.002. DC offset needs no filtered copy because subtraction in `d(τ)` cancels any constant component. YIN does not require a Hann window for this time-domain comparison, and Phase 2B adds no gain normalization, automatic gain control, high-pass filter, or complex noise gate.
+
+### Musical-note conversion
+
+`MusicalNoteConverter` is independent of YIN. For reference frequency `A4`, defaulting to 440 Hz:
+
+`continuousMidi = 69 + 12 × log₂(frequency / A4)`
+
+The nearest integer gives MIDI note; note class uses the sharp-name sequence C through B; octave is `midi ~/ 12 - 1`; cents are `100 × (continuousMidi - nearestMidi)`. The reference is a function argument so a later milestone can introduce calibration without changing detector math or adding a setting now.
+
+### Accuracy and performance observations
+
+The checked-in diagnostic command, `dart run tool/pitch_detector_diagnostic.dart`, prints synthetic expected/estimated frequency, percent error, detector error in cents, note-relative cents, confidence, and non-asserted timings. The complete matrix is recorded in `docs/CURRENT_MILESTONE.md`. Across clean 4,096-sample 48 kHz sines from 40 through 1,200 Hz, the largest observed error was 0.000347%, approximately 0.006 cents. These are deterministic synthetic results, not recorded-guitar claims.
+
+One warmed 30-run Windows JIT observation measured 4,096 samples at 11.35 ms median/12.00 ms average and 8,192 samples at 26.23 ms median/25.84 ms average. Timings vary with JIT state and machine load and are never test assertions. Phase 2C must profile representative Android hardware before choosing main-isolate, reusable-buffer, or isolate execution.
+
+### No-pitch and real-time boundary
+
+Typed no-pitch reasons cover empty frames, invalid sample rate, non-finite or non-normalized samples, insufficient length, centered near-silence, incompatible range, and low confidence. Deterministic white noise and an approximately -19 dB synthetic signal-to-noise case were rejected; an approximately +15 dB case was detected. No probability calibration is claimed: confidence is a bounded periodicity clarity measure.
+
+Phase 2C may assemble Phase 2A chunks into overlapping analysis frames, profile execution and allocations on Android, choose scheduling/isolate placement, define smoothing outside the detector, and expose development diagnostics. Phase 2B does not connect either feature, change microphone capture, or expose note/frequency/cents UI.
+
 ## Audio playback and assets
 
 `audioplayers` 6.8.1 is used because its maintained, multiplatform API includes `AudioPool` preloading and Android low-latency playback for short, repetitive effects. The discontinued `soundpool` package was rejected. Separate regular and accented pools are created once before the first beat, reused throughout the screen session, and released when the screen is disposed or audio fails. Each pool prewarms three players and can grow to four. This small amount of extra capacity provides headroom when 6/8 at 300 BPM requests a click every 100 milliseconds and a previous platform request is still being reclaimed. Android audio context is configured for sonification.
@@ -119,7 +175,7 @@ Shared maximum widths produce readable phone, large-phone, and tablet columns. C
 - `record` 7.1.1 supplies continuous PCM16 microphone streaming and the Android `AudioRecord` bridge behind `TunerAudioInput`; it is used for transient capture, never file recording.
 - `package_info_plus` supplies the installed version and build number behind `ApplicationInfoLoader`; platform metadata cannot be read reliably from `pubspec.yaml` at runtime.
 
-No pitch-analysis, DSP, database, analytics, advertising, account, backend, or purchase package is included.
+No pitch-analysis, FFT, DSP, scientific-computing, database, analytics, advertising, account, backend, or purchase package is included. Phase 2B uses only `dart:math` and typed-data SDK libraries.
 
 ## Testing approach
 
@@ -131,15 +187,18 @@ Application-shell tests cover haptic persistence and enabled/disabled behavior, 
 
 Tuner Audio pure-Dart tests cover PCM16 little-endian normalization, signed boundaries, malformed input, peak, RMS, dBFS, silence, and aggregate frame timing. Controller tests inject a fake audio input and cover grant/denial, unsupported configuration, retry, duplicate and rapid operations, foreground lifecycle, stream and stop failures, malformed-frame recovery, 10 Hz publication throttling, backend format adjustment, route cleanup, and disposal failure. Widget tests cover the non-tuner warning, privacy language, denied permission, start/statistics/stop interaction, Turkish localization, and narrow large-text scrolling. They intentionally use deterministic synthetic frames and make no claim about Android hardware.
 
+Tuner Pitch tests are pure and require no microphone, Flutter widget, real timer, audio file, Android target, or network. They cover configuration validation, empty/short/non-finite/out-of-contract input, silence thresholds, all required clean frequencies, exact 40/1,200 Hz limits, 44.1/48 kHz, multiple frame lengths and phases, 12-TET semitone boundaries, reference-frequency injection, dominant harmonics, missing/weak fundamental, deterministic white noise, low/moderate SNR, DC offset, clipping-like amplitude, envelopes, bass spectra, and repeatability. Wall-clock performance is observed only by the optional tool and is never asserted in tests.
+
 ## Known limitations
 
-- BPM Tap and the foreground Metronome are functional. Guitar Tuner remains Coming Soon and opens only a microphone-input prototype; it has no pitch result.
+- BPM Tap and the foreground Metronome are functional. Guitar Tuner remains Coming Soon and opens only the Phase 2A microphone-input prototype; the Phase 2B pitch engine is offline and is not imported by that route.
 - Metronome playback is not sample-accurate, does not run in the background, and supports no subdivisions, swing, custom rhythms, or custom accent patterns.
 - Rare audible stuttering was observed on a physical Android device in the original Phase 1B build. Debug instrumentation can now distinguish Dart scheduler lateness, skipped deadlines, and overlapping platform audio requests, but repeat physical-device validation is required before declaring the symptom resolved. No physical Android target was connected during automated validation of this hotfix.
 - Haptic response varies with Android hardware and system settings.
 - The privacy policy is a product draft and the application is not Play Store ready.
-- Microphone capture is foreground-only, transient, and local. There is no file recording, pitch detection, tuner DSP, or content database.
-- The prototype does not force an input route or manage Bluetooth SCO. Permission permanent-denial state, device interruptions, route changes, and adjusted sample rates depend on Android and require physical observation.
+- Microphone capture is foreground-only, transient, local, and was physically validated separately in Phase 2A. There is no file recording or content database.
+- The capture prototype does not force an input route or manage Bluetooth SCO; its physical validation does not turn Android-controlled routing into a guaranteed route policy.
+- Pitch detection is monophonic and validated only with deterministic synthetic/offline signals. Plucked-string transients, inharmonicity, real microphone processing, live scheduling, smoothing, and Android execution cost remain Phase 2C work.
 - Preferences store only scalar application and metronome settings; future structured data needs a separate decision when its requirements exist.
 - Logging is local developer output only. No remote reporting or analytics exists.
 - Foundation targets Android; other generated platform projects are intentionally absent.

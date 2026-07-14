@@ -2,7 +2,7 @@
 
 **Tune. Train. Create.**
 
-Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 2A — Tuner Audio Prototype**: two practice tools remain functional while a local, foreground-only microphone pipeline validates the foundation for a future guitar tuner.
+Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 2B — Offline Pitch Detection Engine**: two practice tools remain functional, the foreground microphone foundation has been validated, and a separate pure Dart pitch engine is tested with deterministic offline signals.
 
 ## Current contents
 
@@ -18,6 +18,8 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Functional foreground metronome with 20–300 BPM, four time signatures, first-beat accent, volume, and visual beat feedback
 - Explicit microphone-permission flow and continuous mono PCM16 input prototype
 - Local transient signal-level and stream diagnostics with lifecycle-safe cleanup
+- Pure Dart YIN pitch detection from 40–1,200 Hz with typed confidence/no-pitch results
+- A4 = 440 Hz MIDI, sharp note-name, octave, and signed-cents conversion tested offline
 - Persisted metronome settings and explicit BPM transfer from BPM Tap
 - Grouped responsive dashboard and polished Settings hierarchy
 - Localized About and Privacy screens with standard open-source license access
@@ -26,7 +28,7 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Minimal GitHub Actions formatting, analysis, and test verification
 - Unit and widget tests
 
-Guitar Tuner remains labeled **Coming Soon** even though its technical audio prototype can be opened for evaluation. Every other unfinished tool also remains Coming Soon. Phase 2A performs no pitch or note detection, audio-file recording, background capture, sample persistence, upload, advertising, analytics, account, or backend work. It does not claim Play Store readiness.
+Guitar Tuner remains labeled **Coming Soon** even though its technical audio prototype can be opened for evaluation. The Phase 2B engine is not connected to live microphone frames and no pitch result is shown in the app. The current work adds no audio-file recording, background capture, sample persistence, upload, advertising, analytics, account, or backend behavior and does not claim Play Store readiness.
 
 ## Requirements
 

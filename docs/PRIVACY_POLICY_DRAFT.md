@@ -1,6 +1,6 @@
 # Tunathic Privacy Policy Draft
 
-**Status:** Product draft for the current Phase 2A prototype. This is not a final store-publishing policy and contains no invented legal contact details.
+**Status:** Product draft for the application through Phase 2B. The Phase 2B detector is offline, is not connected to microphone capture, and changes no data flow. This is not a final store-publishing policy and contains no invented legal contact details.
 
 Tunathic – Guitar Toolkit is published by GUNDEV. The current application is designed to operate offline and keep its practice data on the user's device.
 

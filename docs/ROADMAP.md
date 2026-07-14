@@ -12,7 +12,11 @@ The first functional timing-sensitive practice tools, followed by application-sh
 
 ## Phase 2: Guitar tuner
 
-Phase 2A validates permission, lifecycle, and continuous local PCM input without pitch detection or tuner results. Later Phase 2 milestones may add measured pitch analysis and the production tuner interface only when separately authorized.
+- **Phase 2A — Tuner Audio Prototype:** physically validated permission, lifecycle, and continuous local PCM input without tuner results.
+- **Phase 2B — Offline Pitch Detection Engine:** deterministic pure Dart YIN analysis and note conversion using synthetic offline signals; no live integration.
+- **Phase 2C — Real-time Pitch Integration:** future microphone-frame buffering, scheduling, profiling, smoothing policy, lifecycle coordination, and diagnostic presentation when separately authorized.
+
+A production tuner interface, presets, calibration, and release claims remain later decisions.
 
 ## Phase 3: Chord library, scale library and circle of fifths
 
