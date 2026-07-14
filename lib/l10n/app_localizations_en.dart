@@ -89,6 +89,99 @@ class AppLocalizationsEn extends AppLocalizations {
   String get metronome => 'Metronome';
 
   @override
+  String get startMetronome => 'Start';
+
+  @override
+  String get stopMetronome => 'Stop';
+
+  @override
+  String get tempo => 'Tempo';
+
+  @override
+  String get beatsPerMinute => 'Beats per minute';
+
+  @override
+  String tempoValue(int bpm) {
+    return '$bpm beats per minute';
+  }
+
+  @override
+  String get decreaseTempo => 'Decrease tempo';
+
+  @override
+  String get increaseTempo => 'Increase tempo';
+
+  @override
+  String get timeSignature => 'Time signature';
+
+  @override
+  String get currentBeat => 'Current beat';
+
+  @override
+  String currentBeatValue(int beat, int total) {
+    return 'Current beat: $beat of $total';
+  }
+
+  @override
+  String get metronomeStopped => 'Stopped';
+
+  @override
+  String get preparingAudio => 'Preparing audio';
+
+  @override
+  String get sound => 'Sound';
+
+  @override
+  String get accentFirstBeat => 'Accent first beat';
+
+  @override
+  String volumePercent(int percent) {
+    return '$percent% volume';
+  }
+
+  @override
+  String get openBpmTapForMetronome => 'Open BPM Tap';
+
+  @override
+  String get applyBpmTapResult => 'Apply BPM Tap result';
+
+  @override
+  String bpmTapApplied(int bpm) {
+    return 'Applied $bpm BPM to the metronome.';
+  }
+
+  @override
+  String get metronomeGuidance =>
+      'Choose a tempo and time signature, then start. The first beat is accented when accent is enabled.';
+
+  @override
+  String get audioUnavailableTitle => 'Metronome audio unavailable';
+
+  @override
+  String get audioUnavailableDescription =>
+      'Tunathic stopped the metronome because audio could not be prepared or played.';
+
+  @override
+  String get retryAudio => 'Retry audio';
+
+  @override
+  String get currentAccentedBeat => 'current accented beat';
+
+  @override
+  String get currentBeatDetail => 'current beat';
+
+  @override
+  String get accentedBeat => 'accented first beat';
+
+  @override
+  String get inactiveBeat => 'inactive beat';
+
+  @override
+  String beatIndicatorSemantics(int beat, String details) {
+    return 'Beat $beat, $details';
+  }
+
+  @override
   String get bpmTap => 'BPM Tap';
 
   @override

@@ -7,6 +7,8 @@ import 'package:tunathic/app/bootstrap.dart';
 import 'package:tunathic/app/settings/app_settings.dart';
 import 'package:tunathic/core/logging/app_logger.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
+import 'package:tunathic/features/metronome/application/metronome_controller.dart';
+import 'package:tunathic/features/metronome/application/metronome_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +16,10 @@ Future<void> main() async {
   final logger = DebugAppLogger();
   final preferencesStore = SharedPreferencesStore();
   final initialSettings = await loadInitialSettings(preferencesStore, logger);
+  final initialMetronomeConfig = await loadInitialMetronomeConfig(
+    preferencesStore,
+    logger,
+  );
 
   FlutterError.onError = (details) {
     logger.error(
@@ -35,6 +41,9 @@ Future<void> main() async {
         appLoggerProvider.overrideWithValue(logger),
         preferencesStoreProvider.overrideWithValue(preferencesStore),
         initialAppSettingsProvider.overrideWithValue(initialSettings),
+        initialMetronomeConfigProvider.overrideWithValue(
+          initialMetronomeConfig,
+        ),
       ],
       child: const TunathicApp(),
     ),

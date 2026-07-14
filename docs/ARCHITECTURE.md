@@ -1,22 +1,24 @@
 # Architecture
 
-Tunathic uses a pragmatic feature-first Flutter structure. Phase 1A adds the first functional tool while keeping responsibilities explicit and avoiding data or repository layers that have no current use.
+Tunathic uses a pragmatic feature-first Flutter structure. Phase 1B adds a foreground metronome beside BPM Tap while keeping responsibilities explicit and avoiding data or repository layers that have no current use.
 
 ## Folder responsibilities
 
 - `lib/app/` owns application composition: bootstrap, router, persisted application settings, and Material themes.
 - `lib/core/` owns app-wide technical boundaries. Foundation contains only logging and preferences abstractions.
-- `lib/features/` groups user-facing areas. The dashboard and settings have presentation code, tool metadata is centralized, BPM Tap separates pure domain logic from presentation state, and unfinished tools share one placeholder presentation.
+- `lib/features/` groups user-facing areas. BPM Tap separates pure estimation logic from presentation state. Metronome separates configuration and beat sequencing, scheduling and orchestration, audio output, persistence, and presentation. Unfinished tools share one placeholder presentation.
 - `lib/shared/` contains reusable interface elements that are not specific to one feature. Foundation contains the friendly error view.
 - `lib/l10n/` contains source ARB files and generated Flutter localization classes.
 
-No UI component imports `shared_preferences`, and no audio or platform-specific feature code exists. BPM Tap is fully offline and does not persist sessions or timestamps.
+No UI component imports `shared_preferences` or contains audio timing logic. Platform-facing playback is isolated behind `MetronomeAudioOutput`. Both tools are fully offline, and BPM Tap does not persist sessions or timestamps.
 
 ## State management
 
 Riverpod provides scoped dependency injection and reactive application settings. `ProviderScope` is the application root. `AppSettingsController` owns theme and locale changes; widgets observe its immutable state and never read or write storage directly. The initially persisted settings are loaded before `runApp`, preventing a visible theme or language change after the first frame.
 
 `BpmTapController` owns the in-memory tap session, monotonic elapsed-time reads, manual reset, and inactivity timer. The BPM Tap widget only observes immutable state and forwards tap or reset actions. Its elapsed-time provider can be replaced in tests, keeping controller behavior deterministic without a platform clock dependency.
+
+`MetronomeController` owns immutable runtime state and coordinates the scheduler, audio boundary, and preferences. Widgets forward user actions and render state. Playback stops when the app loses foreground focus and does not resume automatically. Leaving the screen synchronously invalidates pending start work, stops the scheduler, and releases audio without mutating Riverpod during widget teardown; a later screen entry normalizes the retained runtime state before rendering.
 
 ## Navigation
 
@@ -25,9 +27,26 @@ GoRouter provides one central route table:
 - `/` displays the responsive dashboard.
 - `/settings` displays theme and language preferences.
 - `/tools/bpm-tap` displays the functional BPM Tap screen.
+- `/tools/metronome` displays the functional Metronome screen.
 - `/tools/:toolId` resolves every other known tool to its Coming Soon placeholder.
 
 Unknown paths and tool identifiers display a friendly localized not-found screen. Tool IDs are stable, nonlocalized route segments; tool names are localized at presentation time.
+
+The Metronome opens BPM Tap with an explicit result contract. BPM Tap returns only a valid whole-number estimate when the user chooses Apply; the metronome validates the 20–300 BPM range and then updates and persists its tempo. Ordinary dashboard use of BPM Tap has no Apply action.
+
+## Metronome timing and beat model
+
+`BeatSequence` is pure Dart. It advances and wraps a one-based beat number for 2/4, 3/4, 4/4, and 6/8, marking only beat one as accented when the preference is enabled. In Phase 1B, 6/8 means six eighth-note clicks per measure and BPM refers to that written eighth-note pulse; dotted-quarter interpretation is out of scope.
+
+`AnchoredMetronomeScheduler` uses a monotonic `Stopwatch` and one-shot timers. Each deadline is calculated from the original anchor instead of chaining the previous timer completion, limiting cumulative drift. If execution is late by one or more intervals, missed deadlines are skipped rather than played in a catch-up burst. BPM changes replace the interval while retaining a single scheduler. The same callback advances visual state and requests the audible click.
+
+This foreground design is maintainable and testable but not sample-accurate: Dart scheduling, platform-channel transit, Android audio buffering, and device hardware all contribute latency. A native scheduled-audio engine would be required for stronger real-time guarantees.
+
+## Audio playback and assets
+
+`audioplayers` 6.8.1 is used because its maintained, multiplatform API includes `AudioPool` preloading and Android low-latency playback for short, repetitive effects. The discontinued `soundpool` package was rejected. Two pools preload separate regular and accented WAV assets, each with two players prewarmed and capacity for a third so closely spaced requests do not contend for a single player. Android audio context is configured for sonification.
+
+The click WAV files are original project assets generated deterministically by `tool/generate_metronome_clicks.dart`; they are short decaying synthesized tones and contain no third-party recording. The script records the exact generation parameters and can reproduce the checked-in assets.
 
 ## BPM estimation
 
@@ -43,9 +62,9 @@ Flutter's generated localization infrastructure uses English `app_en.arb` as the
 
 ## Preferences abstraction
 
-`PreferencesStore` is the small asynchronous key-value boundary used by application settings. Its production implementation uses `SharedPreferencesAsync`, while tests use an in-memory implementation. Shared Preferences is sufficient for two non-sensitive scalar settings and is smaller and easier to maintain than introducing a database. The asynchronous API avoids stale cache behavior across isolates and engine instances.
+`PreferencesStore` is the small asynchronous key-value boundary used by application settings. Its production implementation uses `SharedPreferencesAsync`, while tests use an in-memory implementation. Shared Preferences is sufficient for this small set of non-sensitive scalar settings and is smaller and easier to maintain than introducing a database. The asynchronous API avoids stale cache behavior across isolates and engine instances.
 
-The stored values are theme mode and optional locale code. Unknown or missing values safely fall back to system settings. Preferences are not suitable for secrets or future structured practice data.
+The stored values are theme mode, optional locale code, metronome BPM, time signature, accent enabled state, and volume. Unknown, missing, or out-of-range metronome values safely fall back to or clamp within supported defaults. Preferences are not suitable for secrets or future structured practice data.
 
 ## Theme system
 
@@ -60,18 +79,20 @@ The application uses Material 3 with light, dark, and system modes. Centralized 
 - `flutter_riverpod` supplies scoped state management and dependency injection without global mutable state.
 - `go_router` supplies centralized declarative navigation, path parsing, and route-level error handling.
 - `flutter_localizations` and the SDK-compatible `intl` version generate and support English and Turkish localization.
-- `shared_preferences` persist the two Foundation settings behind an application-owned abstraction.
+- `shared_preferences` persists scalar application and metronome settings behind an application-owned abstraction.
+- `audioplayers` preloads and plays the two bundled metronome clicks through low-latency Android audio pools.
 
-No microphone, audio, DSP, database, analytics, advertising, account, backend, or purchase package is included.
+No microphone, recording, DSP, database, analytics, advertising, account, backend, or purchase package is included.
 
 ## Testing approach
 
-Unit tests cover preference parsing, safe defaults, settings persistence, BPM estimates at common tempos, rolling-window behavior, invalid intervals, outlier resistance, inactivity, and reset behavior. Controller tests use a deterministic elapsed-time reader. Widget tests verify dashboard availability, placeholder navigation, Turkish content, repeated BPM tapping, reset, and inactivity behavior. Fakes implement the same application-owned boundaries used by production code.
+Unit tests cover preference parsing and persistence, BPM estimation, metronome beat progression, wrapping, accents, time signatures, tempo interval calculation, lifecycle stopping, failure recovery, reset, and duplicate-start prevention. Controller tests replace clocks, audio, and scheduling with deterministic fakes. Widget tests verify both functional dashboard tools, English and Turkish content, scaled compact layouts, metronome controls, and BPM Tap result transfer. Fakes implement the same application-owned boundaries used by production code.
 
 ## Known limitations
 
-- BPM Tap is functional; every other listed music tool remains a nonfunctional Coming Soon placeholder.
-- There is no microphone permission, recording, pitch detection, DSP, metronome timing engine, or content database.
-- Preferences store only theme and locale; future structured data needs a separate decision when its requirements exist.
+- BPM Tap and the foreground Metronome are functional; every other listed music tool remains a nonfunctional Coming Soon placeholder.
+- Metronome playback is not sample-accurate, does not run in the background, and supports no subdivisions, swing, custom rhythms, or custom accent patterns.
+- There is no microphone permission, recording, pitch detection, DSP, or content database.
+- Preferences store only scalar application and metronome settings; future structured data needs a separate decision when its requirements exist.
 - Logging is local developer output only. No remote reporting or analytics exists.
 - Foundation targets Android; other generated platform projects are intentionally absent.

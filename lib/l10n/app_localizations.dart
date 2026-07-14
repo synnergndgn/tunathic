@@ -248,6 +248,168 @@ abstract class AppLocalizations {
   /// **'Metronome'**
   String get metronome;
 
+  /// No description provided for @startMetronome.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get startMetronome;
+
+  /// No description provided for @stopMetronome.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get stopMetronome;
+
+  /// No description provided for @tempo.
+  ///
+  /// In en, this message translates to:
+  /// **'Tempo'**
+  String get tempo;
+
+  /// No description provided for @beatsPerMinute.
+  ///
+  /// In en, this message translates to:
+  /// **'Beats per minute'**
+  String get beatsPerMinute;
+
+  /// No description provided for @tempoValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{bpm} beats per minute'**
+  String tempoValue(int bpm);
+
+  /// No description provided for @decreaseTempo.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrease tempo'**
+  String get decreaseTempo;
+
+  /// No description provided for @increaseTempo.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase tempo'**
+  String get increaseTempo;
+
+  /// No description provided for @timeSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'Time signature'**
+  String get timeSignature;
+
+  /// No description provided for @currentBeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Current beat'**
+  String get currentBeat;
+
+  /// No description provided for @currentBeatValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Current beat: {beat} of {total}'**
+  String currentBeatValue(int beat, int total);
+
+  /// No description provided for @metronomeStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get metronomeStopped;
+
+  /// No description provided for @preparingAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing audio'**
+  String get preparingAudio;
+
+  /// No description provided for @sound.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound'**
+  String get sound;
+
+  /// No description provided for @accentFirstBeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent first beat'**
+  String get accentFirstBeat;
+
+  /// No description provided for @volumePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% volume'**
+  String volumePercent(int percent);
+
+  /// No description provided for @openBpmTapForMetronome.
+  ///
+  /// In en, this message translates to:
+  /// **'Open BPM Tap'**
+  String get openBpmTapForMetronome;
+
+  /// No description provided for @applyBpmTapResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply BPM Tap result'**
+  String get applyBpmTapResult;
+
+  /// No description provided for @bpmTapApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'Applied {bpm} BPM to the metronome.'**
+  String bpmTapApplied(int bpm);
+
+  /// No description provided for @metronomeGuidance.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a tempo and time signature, then start. The first beat is accented when accent is enabled.'**
+  String get metronomeGuidance;
+
+  /// No description provided for @audioUnavailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Metronome audio unavailable'**
+  String get audioUnavailableTitle;
+
+  /// No description provided for @audioUnavailableDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Tunathic stopped the metronome because audio could not be prepared or played.'**
+  String get audioUnavailableDescription;
+
+  /// No description provided for @retryAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry audio'**
+  String get retryAudio;
+
+  /// No description provided for @currentAccentedBeat.
+  ///
+  /// In en, this message translates to:
+  /// **'current accented beat'**
+  String get currentAccentedBeat;
+
+  /// No description provided for @currentBeatDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'current beat'**
+  String get currentBeatDetail;
+
+  /// No description provided for @accentedBeat.
+  ///
+  /// In en, this message translates to:
+  /// **'accented first beat'**
+  String get accentedBeat;
+
+  /// No description provided for @inactiveBeat.
+  ///
+  /// In en, this message translates to:
+  /// **'inactive beat'**
+  String get inactiveBeat;
+
+  /// No description provided for @beatIndicatorSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Beat {beat}, {details}'**
+  String beatIndicatorSemantics(int beat, String details);
+
   /// No description provided for @bpmTap.
   ///
   /// In en, this message translates to:

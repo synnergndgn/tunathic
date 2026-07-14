@@ -17,8 +17,8 @@ void main() {
       expect(find.text('Guitar toolkit'), findsOneWidget);
       expect(find.text('Guitar Tuner'), findsOneWidget);
       expect(find.text('Capo Calculator'), findsOneWidget);
-      expect(find.text('Open tool'), findsOneWidget);
-      expect(find.text('Coming Soon'), findsNWidgets(9));
+      expect(find.text('Open tool'), findsNWidgets(2));
+      expect(find.text('Coming Soon'), findsNWidgets(8));
     },
   );
 
@@ -45,8 +45,8 @@ void main() {
 
     expect(find.text('Gitar araç seti'), findsOneWidget);
     expect(find.text('Gitar Akort Cihazı'), findsOneWidget);
-    expect(find.text('Aracı aç'), findsOneWidget);
-    expect(find.text('Yakında'), findsNWidgets(9));
+    expect(find.text('Aracı aç'), findsNWidgets(2));
+    expect(find.text('Yakında'), findsNWidgets(8));
   });
 }
 

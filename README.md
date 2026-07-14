@@ -2,7 +2,7 @@
 
 **Tune. Train. Create.**
 
-Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 1A — BPM Tap**: it includes the localized, accessible Foundation shell and its first fully offline practice tool.
+Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 1B — Core Metronome**: it includes the localized, accessible Foundation shell and two fully offline practice tools.
 
 ## Current contents
 
@@ -15,9 +15,11 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Abstracted preferences and logging
 - Friendly application and route error presentation
 - Functional BPM Tap with a robust rolling tempo estimate
+- Functional foreground metronome with 20–300 BPM, four time signatures, first-beat accent, volume, and visual beat feedback
+- Persisted metronome settings and explicit BPM transfer from BPM Tap
 - Unit and widget tests
 
-All tools except BPM Tap display **Coming Soon**. Phase 1A does not request microphone access, process audio, persist tap sessions, serve advertisements, or connect to a backend.
+All tools except BPM Tap and Metronome display **Coming Soon**. Phase 1B does not request microphone access, perform pitch detection or recording, play in the background, persist tap sessions, serve advertisements, or connect to a backend.
 
 ## Requirements
 

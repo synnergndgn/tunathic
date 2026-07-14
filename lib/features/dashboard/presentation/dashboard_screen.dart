@@ -31,6 +31,7 @@ final class DashboardScreen extends StatelessWidget {
               maxWidth: AppSpacing.pageMaxWidth,
             ),
             child: ListView(
+              key: const Key('dashboardScroll'),
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.medium,
                 AppSpacing.large,
@@ -98,7 +99,8 @@ final class _ToolCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final title = tool.title(localizations);
-    final isAvailable = tool == ToolDefinition.bpmTap;
+    final isAvailable =
+        tool == ToolDefinition.bpmTap || tool == ToolDefinition.metronome;
     final availability = isAvailable
         ? localizations.openTool
         : localizations.comingSoon;

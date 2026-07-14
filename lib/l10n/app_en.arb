@@ -30,6 +30,60 @@
   "unexpectedErrorDescription": "Tunathic could not show this screen. Please return to the dashboard and try again.",
   "guitarTuner": "Guitar Tuner",
   "metronome": "Metronome",
+  "startMetronome": "Start",
+  "stopMetronome": "Stop",
+  "tempo": "Tempo",
+  "beatsPerMinute": "Beats per minute",
+  "tempoValue": "{bpm} beats per minute",
+  "@tempoValue": {
+    "placeholders": {
+      "bpm": {"type": "int"}
+    }
+  },
+  "decreaseTempo": "Decrease tempo",
+  "increaseTempo": "Increase tempo",
+  "timeSignature": "Time signature",
+  "currentBeat": "Current beat",
+  "currentBeatValue": "Current beat: {beat} of {total}",
+  "@currentBeatValue": {
+    "placeholders": {
+      "beat": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "metronomeStopped": "Stopped",
+  "preparingAudio": "Preparing audio",
+  "sound": "Sound",
+  "accentFirstBeat": "Accent first beat",
+  "volumePercent": "{percent}% volume",
+  "@volumePercent": {
+    "placeholders": {
+      "percent": {"type": "int"}
+    }
+  },
+  "openBpmTapForMetronome": "Open BPM Tap",
+  "applyBpmTapResult": "Apply BPM Tap result",
+  "bpmTapApplied": "Applied {bpm} BPM to the metronome.",
+  "@bpmTapApplied": {
+    "placeholders": {
+      "bpm": {"type": "int"}
+    }
+  },
+  "metronomeGuidance": "Choose a tempo and time signature, then start. The first beat is accented when accent is enabled.",
+  "audioUnavailableTitle": "Metronome audio unavailable",
+  "audioUnavailableDescription": "Tunathic stopped the metronome because audio could not be prepared or played.",
+  "retryAudio": "Retry audio",
+  "currentAccentedBeat": "current accented beat",
+  "currentBeatDetail": "current beat",
+  "accentedBeat": "accented first beat",
+  "inactiveBeat": "inactive beat",
+  "beatIndicatorSemantics": "Beat {beat}, {details}",
+  "@beatIndicatorSemantics": {
+    "placeholders": {
+      "beat": {"type": "int"},
+      "details": {"type": "String"}
+    }
+  },
   "bpmTap": "BPM Tap",
   "bpmLabel": "BPM",
   "tapToBegin": "Tap to begin",

@@ -88,6 +88,99 @@ class AppLocalizationsTr extends AppLocalizations {
   String get metronome => 'Metronom';
 
   @override
+  String get startMetronome => 'Başlat';
+
+  @override
+  String get stopMetronome => 'Durdur';
+
+  @override
+  String get tempo => 'Tempo';
+
+  @override
+  String get beatsPerMinute => 'Dakikadaki vuruş';
+
+  @override
+  String tempoValue(int bpm) {
+    return 'Dakikada $bpm vuruş';
+  }
+
+  @override
+  String get decreaseTempo => 'Tempoyu azalt';
+
+  @override
+  String get increaseTempo => 'Tempoyu artır';
+
+  @override
+  String get timeSignature => 'Ölçü birimi';
+
+  @override
+  String get currentBeat => 'Geçerli vuruş';
+
+  @override
+  String currentBeatValue(int beat, int total) {
+    return 'Geçerli vuruş: $beat/$total';
+  }
+
+  @override
+  String get metronomeStopped => 'Durduruldu';
+
+  @override
+  String get preparingAudio => 'Ses hazırlanıyor';
+
+  @override
+  String get sound => 'Ses';
+
+  @override
+  String get accentFirstBeat => 'İlk vuruşu vurgula';
+
+  @override
+  String volumePercent(int percent) {
+    return '%$percent ses düzeyi';
+  }
+
+  @override
+  String get openBpmTapForMetronome => 'BPM Dokunuşu\'nu aç';
+
+  @override
+  String get applyBpmTapResult => 'BPM Dokunuşu sonucunu uygula';
+
+  @override
+  String bpmTapApplied(int bpm) {
+    return '$bpm BPM metronoma uygulandı.';
+  }
+
+  @override
+  String get metronomeGuidance =>
+      'Tempo ve ölçü birimini seçip başlat. Vurgu açıksa ilk vuruş farklı çalar.';
+
+  @override
+  String get audioUnavailableTitle => 'Metronom sesi kullanılamıyor';
+
+  @override
+  String get audioUnavailableDescription =>
+      'Ses hazırlanamadığı veya çalınamadığı için Tunathic metronomu durdurdu.';
+
+  @override
+  String get retryAudio => 'Sesi yeniden dene';
+
+  @override
+  String get currentAccentedBeat => 'geçerli vurgulu vuruş';
+
+  @override
+  String get currentBeatDetail => 'geçerli vuruş';
+
+  @override
+  String get accentedBeat => 'vurgulu ilk vuruş';
+
+  @override
+  String get inactiveBeat => 'etkin olmayan vuruş';
+
+  @override
+  String beatIndicatorSemantics(int beat, String details) {
+    return '$beat. vuruş, $details';
+  }
+
+  @override
   String get bpmTap => 'BPM Dokunuşu';
 
   @override

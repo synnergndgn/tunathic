@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tunathic/app/theme/app_radii.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
 import 'package:tunathic/features/bpm_tap/domain/bpm_tap_engine.dart';
@@ -7,7 +8,9 @@ import 'package:tunathic/features/bpm_tap/presentation/bpm_tap_controller.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 
 final class BpmTapScreen extends ConsumerWidget {
-  const BpmTapScreen({super.key});
+  const BpmTapScreen({this.allowApplyResult = false, super.key});
+
+  final bool allowApplyResult;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,6 +38,7 @@ final class BpmTapScreen extends ConsumerWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 640),
             child: ListView(
+              key: const Key('bpmTapScroll'),
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.medium,
                 AppSpacing.small,
@@ -158,6 +162,17 @@ final class BpmTapScreen extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
+                if (allowApplyResult) ...[
+                  const SizedBox(height: AppSpacing.medium),
+                  FilledButton.icon(
+                    key: const Key('applyBpmTapResult'),
+                    onPressed: state.bpm == null
+                        ? null
+                        : () => context.pop(state.bpm),
+                    icon: const Icon(Icons.check),
+                    label: Text(localizations.applyBpmTapResult),
+                  ),
+                ],
               ],
             ),
           ),

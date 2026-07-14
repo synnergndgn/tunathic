@@ -30,6 +30,60 @@
   "unexpectedErrorDescription": "Tunathic bu ekranı gösteremedi. Lütfen ana ekrana dönüp tekrar deneyin.",
   "guitarTuner": "Gitar Akort Cihazı",
   "metronome": "Metronom",
+  "startMetronome": "Başlat",
+  "stopMetronome": "Durdur",
+  "tempo": "Tempo",
+  "beatsPerMinute": "Dakikadaki vuruş",
+  "tempoValue": "Dakikada {bpm} vuruş",
+  "@tempoValue": {
+    "placeholders": {
+      "bpm": {"type": "int"}
+    }
+  },
+  "decreaseTempo": "Tempoyu azalt",
+  "increaseTempo": "Tempoyu artır",
+  "timeSignature": "Ölçü birimi",
+  "currentBeat": "Geçerli vuruş",
+  "currentBeatValue": "Geçerli vuruş: {beat}/{total}",
+  "@currentBeatValue": {
+    "placeholders": {
+      "beat": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "metronomeStopped": "Durduruldu",
+  "preparingAudio": "Ses hazırlanıyor",
+  "sound": "Ses",
+  "accentFirstBeat": "İlk vuruşu vurgula",
+  "volumePercent": "%{percent} ses düzeyi",
+  "@volumePercent": {
+    "placeholders": {
+      "percent": {"type": "int"}
+    }
+  },
+  "openBpmTapForMetronome": "BPM Dokunuşu'nu aç",
+  "applyBpmTapResult": "BPM Dokunuşu sonucunu uygula",
+  "bpmTapApplied": "{bpm} BPM metronoma uygulandı.",
+  "@bpmTapApplied": {
+    "placeholders": {
+      "bpm": {"type": "int"}
+    }
+  },
+  "metronomeGuidance": "Tempo ve ölçü birimini seçip başlat. Vurgu açıksa ilk vuruş farklı çalar.",
+  "audioUnavailableTitle": "Metronom sesi kullanılamıyor",
+  "audioUnavailableDescription": "Ses hazırlanamadığı veya çalınamadığı için Tunathic metronomu durdurdu.",
+  "retryAudio": "Sesi yeniden dene",
+  "currentAccentedBeat": "geçerli vurgulu vuruş",
+  "currentBeatDetail": "geçerli vuruş",
+  "accentedBeat": "vurgulu ilk vuruş",
+  "inactiveBeat": "etkin olmayan vuruş",
+  "beatIndicatorSemantics": "{beat}. vuruş, {details}",
+  "@beatIndicatorSemantics": {
+    "placeholders": {
+      "beat": {"type": "int"},
+      "details": {"type": "String"}
+    }
+  },
   "bpmTap": "BPM Dokunuşu",
   "bpmLabel": "BPM",
   "tapToBegin": "Başlamak için dokun",
