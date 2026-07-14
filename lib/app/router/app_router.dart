@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tunathic/features/bpm_tap/presentation/bpm_tap_screen.dart';
 import 'package:tunathic/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:tunathic/features/settings/presentation/settings_screen.dart';
 import 'package:tunathic/features/tool_placeholder/presentation/not_found_screen.dart';
@@ -30,6 +31,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final tool = ToolDefinition.fromId(state.pathParameters['toolId']);
           if (tool == null) return const NotFoundScreen();
+          if (tool == ToolDefinition.bpmTap) return const BpmTapScreen();
           return ToolPlaceholderScreen(tool: tool);
         },
       ),

@@ -58,6 +58,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get comingSoon => 'Coming Soon';
 
   @override
+  String get openTool => 'Open tool';
+
+  @override
   String comingSoonDescription(String toolName) {
     return '$toolName is planned for a future milestone.';
   }
@@ -87,6 +90,58 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bpmTap => 'BPM Tap';
+
+  @override
+  String get bpmLabel => 'BPM';
+
+  @override
+  String get tapToBegin => 'Tap to begin';
+
+  @override
+  String get keepTapping => 'Keep tapping';
+
+  @override
+  String get bpmEstimateReady => 'Tempo detected. Keep tapping to refine it.';
+
+  @override
+  String get reset => 'Reset';
+
+  @override
+  String get sessionReset =>
+      'Session reset after inactivity. Tap to begin again.';
+
+  @override
+  String get invalidTapIgnored =>
+      'That tap was outside the valid tempo range and was ignored.';
+
+  @override
+  String get bpmTapGuidance =>
+      'Tap steadily with the beat. The latest taps keep the reading responsive.';
+
+  @override
+  String get noRecentInterval => 'Waiting for an interval';
+
+  @override
+  String tapCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count taps',
+      one: '1 tap',
+      zero: 'No taps',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String recentInterval(int milliseconds) {
+    return '$milliseconds ms since last tap';
+  }
+
+  @override
+  String tapSurfaceSemantics(String status, int count, String bpm) {
+    return '$status. $count accepted taps. $bpm BPM.';
+  }
 
   @override
   String get chordLibrary => 'Chord Library';

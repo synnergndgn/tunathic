@@ -58,6 +58,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get comingSoon => 'Yakında';
 
   @override
+  String get openTool => 'Aracı aç';
+
+  @override
   String comingSoonDescription(String toolName) {
     return '$toolName gelecek bir aşama için planlandı.';
   }
@@ -86,6 +89,52 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get bpmTap => 'BPM Dokunuşu';
+
+  @override
+  String get bpmLabel => 'BPM';
+
+  @override
+  String get tapToBegin => 'Başlamak için dokun';
+
+  @override
+  String get keepTapping => 'Dokunmaya devam et';
+
+  @override
+  String get bpmEstimateReady =>
+      'Tempo algılandı. Sonucu iyileştirmek için dokunmaya devam et.';
+
+  @override
+  String get reset => 'Sıfırla';
+
+  @override
+  String get sessionReset =>
+      'Oturum hareketsizlik nedeniyle sıfırlandı. Yeniden başlamak için dokun.';
+
+  @override
+  String get invalidTapIgnored =>
+      'Bu dokunuş geçerli tempo aralığının dışındaydı ve yok sayıldı.';
+
+  @override
+  String get bpmTapGuidance =>
+      'Ritimle birlikte düzenli dokun. Son dokunuşlar sonucu güncel tutar.';
+
+  @override
+  String get noRecentInterval => 'Aralık bekleniyor';
+
+  @override
+  String tapCount(int count) {
+    return '$count dokunuş';
+  }
+
+  @override
+  String recentInterval(int milliseconds) {
+    return 'Son dokunuştan beri $milliseconds ms';
+  }
+
+  @override
+  String tapSurfaceSemantics(String status, int count, String bpm) {
+    return '$status. $count geçerli dokunuş. $bpm BPM.';
+  }
 
   @override
   String get chordLibrary => 'Akor Kütüphanesi';

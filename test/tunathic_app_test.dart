@@ -8,17 +8,19 @@ import 'package:tunathic/core/preferences/preferences_store.dart';
 import 'support/fakes.dart';
 
 void main() {
-  testWidgets('dashboard lists every Foundation tool as coming soon', (
-    tester,
-  ) async {
-    await tester.pumpWidget(_testApp());
-    await tester.pumpAndSettle();
+  testWidgets(
+    'dashboard lists BPM Tap as available and other tools as coming soon',
+    (tester) async {
+      await tester.pumpWidget(_testApp());
+      await tester.pumpAndSettle();
 
-    expect(find.text('Guitar toolkit'), findsOneWidget);
-    expect(find.text('Guitar Tuner'), findsOneWidget);
-    expect(find.text('Capo Calculator'), findsOneWidget);
-    expect(find.text('Coming Soon'), findsNWidgets(10));
-  });
+      expect(find.text('Guitar toolkit'), findsOneWidget);
+      expect(find.text('Guitar Tuner'), findsOneWidget);
+      expect(find.text('Capo Calculator'), findsOneWidget);
+      expect(find.text('Open tool'), findsOneWidget);
+      expect(find.text('Coming Soon'), findsNWidgets(9));
+    },
+  );
 
   testWidgets('tool card opens its placeholder route', (tester) async {
     await tester.pumpWidget(_testApp());
@@ -43,7 +45,8 @@ void main() {
 
     expect(find.text('Gitar araç seti'), findsOneWidget);
     expect(find.text('Gitar Akort Cihazı'), findsOneWidget);
-    expect(find.text('Yakında'), findsNWidgets(10));
+    expect(find.text('Aracı aç'), findsOneWidget);
+    expect(find.text('Yakında'), findsNWidgets(9));
   });
 }
 

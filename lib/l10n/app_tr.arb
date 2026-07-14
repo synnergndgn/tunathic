@@ -16,6 +16,7 @@
   "languageEnglish": "İngilizce",
   "languageTurkish": "Türkçe",
   "comingSoon": "Yakında",
+  "openTool": "Aracı aç",
   "comingSoonDescription": "{toolName} gelecek bir aşama için planlandı.",
   "@comingSoonDescription": {
     "placeholders": {
@@ -30,6 +31,35 @@
   "guitarTuner": "Gitar Akort Cihazı",
   "metronome": "Metronom",
   "bpmTap": "BPM Dokunuşu",
+  "bpmLabel": "BPM",
+  "tapToBegin": "Başlamak için dokun",
+  "keepTapping": "Dokunmaya devam et",
+  "bpmEstimateReady": "Tempo algılandı. Sonucu iyileştirmek için dokunmaya devam et.",
+  "reset": "Sıfırla",
+  "sessionReset": "Oturum hareketsizlik nedeniyle sıfırlandı. Yeniden başlamak için dokun.",
+  "invalidTapIgnored": "Bu dokunuş geçerli tempo aralığının dışındaydı ve yok sayıldı.",
+  "bpmTapGuidance": "Ritimle birlikte düzenli dokun. Son dokunuşlar sonucu güncel tutar.",
+  "noRecentInterval": "Aralık bekleniyor",
+  "tapCount": "{count} dokunuş",
+  "@tapCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "recentInterval": "Son dokunuştan beri {milliseconds} ms",
+  "@recentInterval": {
+    "placeholders": {
+      "milliseconds": {"type": "int"}
+    }
+  },
+  "tapSurfaceSemantics": "{status}. {count} geçerli dokunuş. {bpm} BPM.",
+  "@tapSurfaceSemantics": {
+    "placeholders": {
+      "status": {"type": "String"},
+      "count": {"type": "int"},
+      "bpm": {"type": "String"}
+    }
+  },
   "chordLibrary": "Akor Kütüphanesi",
   "scaleLibrary": "Gam Kütüphanesi",
   "circleOfFifths": "Beşliler Çemberi",

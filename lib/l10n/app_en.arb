@@ -16,6 +16,7 @@
   "languageEnglish": "English",
   "languageTurkish": "Turkish",
   "comingSoon": "Coming Soon",
+  "openTool": "Open tool",
   "comingSoonDescription": "{toolName} is planned for a future milestone.",
   "@comingSoonDescription": {
     "placeholders": {
@@ -30,6 +31,35 @@
   "guitarTuner": "Guitar Tuner",
   "metronome": "Metronome",
   "bpmTap": "BPM Tap",
+  "bpmLabel": "BPM",
+  "tapToBegin": "Tap to begin",
+  "keepTapping": "Keep tapping",
+  "bpmEstimateReady": "Tempo detected. Keep tapping to refine it.",
+  "reset": "Reset",
+  "sessionReset": "Session reset after inactivity. Tap to begin again.",
+  "invalidTapIgnored": "That tap was outside the valid tempo range and was ignored.",
+  "bpmTapGuidance": "Tap steadily with the beat. The latest taps keep the reading responsive.",
+  "noRecentInterval": "Waiting for an interval",
+  "tapCount": "{count, plural, =0{No taps} =1{1 tap} other{{count} taps}}",
+  "@tapCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "recentInterval": "{milliseconds} ms since last tap",
+  "@recentInterval": {
+    "placeholders": {
+      "milliseconds": {"type": "int"}
+    }
+  },
+  "tapSurfaceSemantics": "{status}. {count} accepted taps. {bpm} BPM.",
+  "@tapSurfaceSemantics": {
+    "placeholders": {
+      "status": {"type": "String"},
+      "count": {"type": "int"},
+      "bpm": {"type": "String"}
+    }
+  },
   "chordLibrary": "Chord Library",
   "scaleLibrary": "Scale Library",
   "circleOfFifths": "Circle of Fifths",

@@ -98,10 +98,14 @@ final class _ToolCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final title = tool.title(localizations);
+    final isAvailable = tool == ToolDefinition.bpmTap;
+    final availability = isAvailable
+        ? localizations.openTool
+        : localizations.comingSoon;
 
     return Semantics(
       button: true,
-      label: '$title, ${localizations.comingSoon}',
+      label: '$title, $availability',
       child: Card(
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -131,7 +135,7 @@ final class _ToolCard extends StatelessWidget {
                           ),
                           const SizedBox(height: AppSpacing.small),
                           Text(
-                            localizations.comingSoon,
+                            availability,
                             style: Theme.of(context).textTheme.labelMedium
                                 ?.copyWith(
                                   color: Theme.of(

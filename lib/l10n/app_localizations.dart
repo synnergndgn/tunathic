@@ -194,6 +194,12 @@ abstract class AppLocalizations {
   /// **'Coming Soon'**
   String get comingSoon;
 
+  /// No description provided for @openTool.
+  ///
+  /// In en, this message translates to:
+  /// **'Open tool'**
+  String get openTool;
+
   /// No description provided for @comingSoonDescription.
   ///
   /// In en, this message translates to:
@@ -247,6 +253,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'BPM Tap'**
   String get bpmTap;
+
+  /// No description provided for @bpmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'BPM'**
+  String get bpmLabel;
+
+  /// No description provided for @tapToBegin.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to begin'**
+  String get tapToBegin;
+
+  /// No description provided for @keepTapping.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep tapping'**
+  String get keepTapping;
+
+  /// No description provided for @bpmEstimateReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Tempo detected. Keep tapping to refine it.'**
+  String get bpmEstimateReady;
+
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// No description provided for @sessionReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Session reset after inactivity. Tap to begin again.'**
+  String get sessionReset;
+
+  /// No description provided for @invalidTapIgnored.
+  ///
+  /// In en, this message translates to:
+  /// **'That tap was outside the valid tempo range and was ignored.'**
+  String get invalidTapIgnored;
+
+  /// No description provided for @bpmTapGuidance.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap steadily with the beat. The latest taps keep the reading responsive.'**
+  String get bpmTapGuidance;
+
+  /// No description provided for @noRecentInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for an interval'**
+  String get noRecentInterval;
+
+  /// No description provided for @tapCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No taps} =1{1 tap} other{{count} taps}}'**
+  String tapCount(int count);
+
+  /// No description provided for @recentInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'{milliseconds} ms since last tap'**
+  String recentInterval(int milliseconds);
+
+  /// No description provided for @tapSurfaceSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{status}. {count} accepted taps. {bpm} BPM.'**
+  String tapSurfaceSemantics(String status, int count, String bpm);
 
   /// No description provided for @chordLibrary.
   ///
