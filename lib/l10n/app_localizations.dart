@@ -122,6 +122,24 @@ abstract class AppLocalizations {
   /// **'Everything you need for focused practice, in one place.'**
   String get dashboardIntro;
 
+  /// No description provided for @practiceSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice'**
+  String get practiceSection;
+
+  /// No description provided for @theoryReferenceSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Theory and Reference'**
+  String get theoryReferenceSection;
+
+  /// No description provided for @trainingSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Training'**
+  String get trainingSection;
+
   /// No description provided for @settingsTitle.
   ///
   /// In en, this message translates to:
@@ -187,6 +205,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Turkish'**
   String get languageTurkish;
+
+  /// No description provided for @interactionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Interaction'**
+  String get interactionTitle;
+
+  /// No description provided for @hapticFeedbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Haptic feedback'**
+  String get hapticFeedbackTitle;
+
+  /// No description provided for @hapticFeedbackDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Use subtle vibration for meaningful taps and selections.'**
+  String get hapticFeedbackDescription;
+
+  /// No description provided for @applicationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Application'**
+  String get applicationTitle;
+
+  /// No description provided for @aboutTunathic.
+  ///
+  /// In en, this message translates to:
+  /// **'About Tunathic'**
+  String get aboutTunathic;
+
+  /// No description provided for @privacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get privacyTitle;
+
+  /// No description provided for @openSourceLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-source licenses'**
+  String get openSourceLicenses;
+
+  /// No description provided for @versionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get versionLabel;
+
+  /// No description provided for @productFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Tunathic – Guitar Toolkit'**
+  String get productFullName;
+
+  /// No description provided for @aboutProductDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A focused, offline-first toolkit for guitar practice, timing, and music theory.'**
+  String get aboutProductDescription;
+
+  /// No description provided for @publisherLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Publisher'**
+  String get publisherLabel;
+
+  /// No description provided for @copyrightNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'© 2026 GUNDEV. All rights reserved.'**
+  String get copyrightNotice;
+
+  /// No description provided for @availableToolsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Available tools'**
+  String get availableToolsTitle;
+
+  /// No description provided for @plannedToolsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Planned tools'**
+  String get plannedToolsTitle;
+
+  /// No description provided for @privacySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Tunathic is designed to keep the current practice experience private and local to your device.'**
+  String get privacySummary;
+
+  /// No description provided for @privacyBpmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice sessions stay temporary'**
+  String get privacyBpmTitle;
+
+  /// No description provided for @privacyBpmDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'BPM Tap sessions remain in memory and are cleared when the session ends. They are not uploaded.'**
+  String get privacyBpmDescription;
+
+  /// No description provided for @privacyLocalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences stay on this device'**
+  String get privacyLocalTitle;
+
+  /// No description provided for @privacyLocalDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme, language, haptic, and Metronome settings are stored locally. Tunathic does not request microphone permission and does not record or upload audio.'**
+  String get privacyLocalDescription;
+
+  /// No description provided for @privacyNoCollectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No accounts, ads, analytics, or backend'**
+  String get privacyNoCollectionTitle;
+
+  /// No description provided for @privacyNoCollectionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The current app requires no account, includes no advertising or analytics, has no Tunathic backend, and sends no app data to GUNDEV servers.'**
+  String get privacyNoCollectionDescription;
+
+  /// No description provided for @privacyFutureChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'This privacy information must be updated before microphone, advertising, analytics, account, cloud, or backend features are released.'**
+  String get privacyFutureChanges;
 
   /// No description provided for @comingSoon.
   ///

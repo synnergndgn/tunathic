@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tunathic/app/theme/app_radii.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
+import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/features/bpm_tap/domain/bpm_tap_engine.dart';
 import 'package:tunathic/features/bpm_tap/presentation/bpm_tap_controller.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
@@ -17,6 +20,7 @@ final class BpmTapScreen extends ConsumerWidget {
     final localizations = AppLocalizations.of(context);
     final state = ref.watch(bpmTapProvider);
     final controller = ref.read(bpmTapProvider.notifier);
+    final haptics = ref.read(appHapticsProvider);
     final status = _status(localizations, state);
     final bpmText = state.bpm?.toString() ?? '—';
 
@@ -27,7 +31,12 @@ final class BpmTapScreen extends ConsumerWidget {
           IconButton(
             key: const Key('bpmTapReset'),
             tooltip: localizations.reset,
-            onPressed: state.tapCount == 0 ? null : controller.reset,
+            onPressed: state.tapCount == 0
+                ? null
+                : () {
+                    unawaited(haptics.selection());
+                    controller.reset();
+                  },
             icon: const Icon(Icons.restart_alt),
           ),
           const SizedBox(width: AppSpacing.small),
@@ -117,7 +126,10 @@ final class BpmTapScreen extends ConsumerWidget {
                     clipBehavior: Clip.antiAlias,
                     child: InkWell(
                       key: const Key('bpmTapSurface'),
-                      onTap: controller.tap,
+                      onTap: () {
+                        unawaited(haptics.lightImpact());
+                        controller.tap();
+                      },
                       borderRadius: AppRadii.mediumBorder,
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(minHeight: 220),
@@ -168,7 +180,10 @@ final class BpmTapScreen extends ConsumerWidget {
                     key: const Key('applyBpmTapResult'),
                     onPressed: state.bpm == null
                         ? null
-                        : () => context.pop(state.bpm),
+                        : () {
+                            unawaited(haptics.lightImpact());
+                            context.pop(state.bpm);
+                          },
                     icon: const Icon(Icons.check),
                     label: Text(localizations.applyBpmTapResult),
                   ),

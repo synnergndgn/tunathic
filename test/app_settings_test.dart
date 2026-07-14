@@ -13,12 +13,14 @@ void main() {
       final store = MemoryPreferencesStore({
         'settings.themeMode': 'dark',
         'settings.locale': 'tr',
+        'settings.hapticsEnabled': 'false',
       });
 
       final settings = await AppSettingsPreferences(store).load();
 
       expect(settings.themeMode, ThemeMode.dark);
       expect(settings.locale, AppLocale.turkish);
+      expect(settings.hapticsEnabled, isFalse);
     });
 
     test('falls back safely when values are unknown', () async {
@@ -30,6 +32,7 @@ void main() {
       final settings = await AppSettingsPreferences(store).load();
 
       expect(settings, const AppSettings());
+      expect(settings.hapticsEnabled, isTrue);
     });
   });
 
@@ -46,11 +49,14 @@ void main() {
     final controller = container.read(appSettingsProvider.notifier);
     await controller.setThemeMode(ThemeMode.dark);
     await controller.setLocale(AppLocale.turkish);
+    await controller.setHapticsEnabled(false);
 
     expect(container.read(appSettingsProvider).themeMode, ThemeMode.dark);
     expect(container.read(appSettingsProvider).locale, AppLocale.turkish);
+    expect(container.read(appSettingsProvider).hapticsEnabled, isFalse);
     expect(store.values['settings.themeMode'], 'dark');
     expect(store.values['settings.locale'], 'tr');
+    expect(store.values['settings.hapticsEnabled'], 'false');
 
     await controller.setLocale(AppLocale.system);
     expect(store.values.containsKey('settings.locale'), isFalse);

@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tunathic/features/bpm_tap/presentation/bpm_tap_screen.dart';
+import 'package:tunathic/features/about/presentation/about_screen.dart';
 import 'package:tunathic/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:tunathic/features/metronome/presentation/metronome_screen.dart';
+import 'package:tunathic/features/privacy/presentation/privacy_screen.dart';
 import 'package:tunathic/features/settings/presentation/settings_screen.dart';
 import 'package:tunathic/features/tool_placeholder/presentation/not_found_screen.dart';
 import 'package:tunathic/features/tool_placeholder/presentation/tool_placeholder_screen.dart';
@@ -11,6 +13,8 @@ import 'package:tunathic/features/tools/tool_definition.dart';
 abstract final class AppRoutes {
   static const dashboard = '/';
   static const settings = '/settings';
+  static const about = '/about';
+  static const privacy = '/privacy';
 
   static String tool(ToolDefinition tool) => '/tools/${tool.id}';
 }
@@ -26,6 +30,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.settings,
         builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.about,
+        builder: (context, state) => const AboutScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.privacy,
+        builder: (context, state) => const PrivacyScreen(),
       ),
       GoRoute(
         path: '/tools/:toolId',

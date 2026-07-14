@@ -173,6 +173,33 @@ void main() {
 
     await tester.pumpWidget(const SizedBox());
   });
+
+  testWidgets('navigating back stops and releases a running metronome', (
+    tester,
+  ) async {
+    final audio = FakeMetronomeAudioOutput();
+    final scheduler = FakeMetronomeScheduler();
+    await tester.pumpWidget(_testApp(audio: audio, scheduler: scheduler));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Metronome'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('metronomeStartStop')),
+      220,
+      scrollable: _scrollableInside('metronomeScroll'),
+    );
+    await tester.tap(find.byKey(const Key('metronomeStartStop')));
+    await tester.pumpAndSettle();
+    expect(scheduler.isRunning, isTrue);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    expect(scheduler.isRunning, isFalse);
+    expect(audio.disposeCount, greaterThanOrEqualTo(1));
+
+    await tester.pumpWidget(const SizedBox());
+  });
 }
 
 Finder _scrollableInside(String key) => find

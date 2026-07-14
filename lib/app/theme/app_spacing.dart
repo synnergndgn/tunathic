@@ -6,5 +6,7 @@ abstract final class AppSpacing {
   static const xLarge = 32.0;
   static const xxLarge = 48.0;
   static const pageMaxWidth = 1200.0;
+  static const contentMaxWidth = 760.0;
+  static const readingMaxWidth = 680.0;
   static const minTouchTarget = 48.0;
 }

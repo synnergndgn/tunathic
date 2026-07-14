@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 
+enum ToolCategory { practice, theoryReference, training }
+
 enum ToolDefinition {
   guitarTuner('guitar-tuner', Icons.graphic_eq),
   metronome('metronome', Icons.timer_outlined),
@@ -17,6 +19,22 @@ enum ToolDefinition {
 
   final String id;
   final IconData icon;
+
+  bool get isAvailable =>
+      this == ToolDefinition.bpmTap || this == ToolDefinition.metronome;
+
+  ToolCategory get category => switch (this) {
+    ToolDefinition.guitarTuner ||
+    ToolDefinition.metronome ||
+    ToolDefinition.bpmTap => ToolCategory.practice,
+    ToolDefinition.chordLibrary ||
+    ToolDefinition.scaleLibrary ||
+    ToolDefinition.circleOfFifths ||
+    ToolDefinition.chordFinder ||
+    ToolDefinition.capoCalculator => ToolCategory.theoryReference,
+    ToolDefinition.intervalTrainer ||
+    ToolDefinition.earTraining => ToolCategory.training,
+  };
 
   static ToolDefinition? fromId(String? id) {
     for (final tool in values) {

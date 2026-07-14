@@ -22,6 +22,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'Everything you need for focused practice, in one place.';
 
   @override
+  String get practiceSection => 'Practice';
+
+  @override
+  String get theoryReferenceSection => 'Theory and Reference';
+
+  @override
+  String get trainingSection => 'Training';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override
@@ -53,6 +62,80 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageTurkish => 'Turkish';
+
+  @override
+  String get interactionTitle => 'Interaction';
+
+  @override
+  String get hapticFeedbackTitle => 'Haptic feedback';
+
+  @override
+  String get hapticFeedbackDescription =>
+      'Use subtle vibration for meaningful taps and selections.';
+
+  @override
+  String get applicationTitle => 'Application';
+
+  @override
+  String get aboutTunathic => 'About Tunathic';
+
+  @override
+  String get privacyTitle => 'Privacy';
+
+  @override
+  String get openSourceLicenses => 'Open-source licenses';
+
+  @override
+  String get versionLabel => 'Version';
+
+  @override
+  String get productFullName => 'Tunathic – Guitar Toolkit';
+
+  @override
+  String get aboutProductDescription =>
+      'A focused, offline-first toolkit for guitar practice, timing, and music theory.';
+
+  @override
+  String get publisherLabel => 'Publisher';
+
+  @override
+  String get copyrightNotice => '© 2026 GUNDEV. All rights reserved.';
+
+  @override
+  String get availableToolsTitle => 'Available tools';
+
+  @override
+  String get plannedToolsTitle => 'Planned tools';
+
+  @override
+  String get privacySummary =>
+      'Tunathic is designed to keep the current practice experience private and local to your device.';
+
+  @override
+  String get privacyBpmTitle => 'Practice sessions stay temporary';
+
+  @override
+  String get privacyBpmDescription =>
+      'BPM Tap sessions remain in memory and are cleared when the session ends. They are not uploaded.';
+
+  @override
+  String get privacyLocalTitle => 'Preferences stay on this device';
+
+  @override
+  String get privacyLocalDescription =>
+      'Theme, language, haptic, and Metronome settings are stored locally. Tunathic does not request microphone permission and does not record or upload audio.';
+
+  @override
+  String get privacyNoCollectionTitle =>
+      'No accounts, ads, analytics, or backend';
+
+  @override
+  String get privacyNoCollectionDescription =>
+      'The current app requires no account, includes no advertising or analytics, has no Tunathic backend, and sends no app data to GUNDEV servers.';
+
+  @override
+  String get privacyFutureChanges =>
+      'This privacy information must be updated before microphone, advertising, analytics, account, cloud, or backend features are released.';
 
   @override
   String get comingSoon => 'Coming Soon';

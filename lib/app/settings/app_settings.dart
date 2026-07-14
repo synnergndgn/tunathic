@@ -30,15 +30,22 @@ final class AppSettings {
   const AppSettings({
     this.themeMode = ThemeMode.system,
     this.locale = AppLocale.system,
+    this.hapticsEnabled = true,
   });
 
   final ThemeMode themeMode;
   final AppLocale locale;
+  final bool hapticsEnabled;
 
-  AppSettings copyWith({ThemeMode? themeMode, AppLocale? locale}) {
+  AppSettings copyWith({
+    ThemeMode? themeMode,
+    AppLocale? locale,
+    bool? hapticsEnabled,
+  }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
       locale: locale ?? this.locale,
+      hapticsEnabled: hapticsEnabled ?? this.hapticsEnabled,
     );
   }
 
@@ -46,11 +53,12 @@ final class AppSettings {
   bool operator ==(Object other) {
     return other is AppSettings &&
         other.themeMode == themeMode &&
-        other.locale == locale;
+        other.locale == locale &&
+        other.hapticsEnabled == hapticsEnabled;
   }
 
   @override
-  int get hashCode => Object.hash(themeMode, locale);
+  int get hashCode => Object.hash(themeMode, locale, hapticsEnabled);
 }
 
 final class AppSettingsPreferences {
@@ -58,6 +66,7 @@ final class AppSettingsPreferences {
 
   static const _themeModeKey = 'settings.themeMode';
   static const _localeKey = 'settings.locale';
+  static const _hapticsEnabledKey = 'settings.hapticsEnabled';
 
   final PreferencesStore _store;
 
@@ -65,10 +74,12 @@ final class AppSettingsPreferences {
     final values = await Future.wait([
       _store.getString(_themeModeKey),
       _store.getString(_localeKey),
+      _store.getString(_hapticsEnabledKey),
     ]);
     return AppSettings(
       themeMode: _themeModeFromName(values[0]),
       locale: AppLocale.fromLanguageCode(values[1]),
+      hapticsEnabled: values[2] != 'false',
     );
   }
 
@@ -83,6 +94,9 @@ final class AppSettingsPreferences {
     }
     await _store.setString(_localeKey, code);
   }
+
+  Future<void> saveHapticsEnabled(bool enabled) =>
+      _store.setString(_hapticsEnabledKey, enabled.toString());
 
   ThemeMode _themeModeFromName(String? value) {
     return ThemeMode.values.firstWhere(
@@ -129,6 +143,16 @@ final class AppSettingsController extends Notifier<AppSettings> {
       await _preferences.saveLocale(locale);
     } on Object catch (error, stackTrace) {
       _logger.error('Could not save locale preference', error, stackTrace);
+    }
+  }
+
+  Future<void> setHapticsEnabled(bool enabled) async {
+    if (state.hapticsEnabled == enabled) return;
+    state = state.copyWith(hapticsEnabled: enabled);
+    try {
+      await _preferences.saveHapticsEnabled(enabled);
+    } on Object catch (error, stackTrace) {
+      _logger.error('Could not save haptic preference', error, stackTrace);
     }
   }
 }

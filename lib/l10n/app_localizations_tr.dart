@@ -22,6 +22,15 @@ class AppLocalizationsTr extends AppLocalizations {
       'Odaklı bir çalışma için ihtiyacınız olan her şey bir arada.';
 
   @override
+  String get practiceSection => 'Pratik';
+
+  @override
+  String get theoryReferenceSection => 'Teori ve Başvuru';
+
+  @override
+  String get trainingSection => 'Eğitim';
+
+  @override
   String get settingsTitle => 'Ayarlar';
 
   @override
@@ -53,6 +62,80 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get languageTurkish => 'Türkçe';
+
+  @override
+  String get interactionTitle => 'Etkileşim';
+
+  @override
+  String get hapticFeedbackTitle => 'Dokunsal geri bildirim';
+
+  @override
+  String get hapticFeedbackDescription =>
+      'Anlamlı dokunuşlar ve seçimler için hafif titreşim kullan.';
+
+  @override
+  String get applicationTitle => 'Uygulama';
+
+  @override
+  String get aboutTunathic => 'Tunathic Hakkında';
+
+  @override
+  String get privacyTitle => 'Gizlilik';
+
+  @override
+  String get openSourceLicenses => 'Açık kaynak lisansları';
+
+  @override
+  String get versionLabel => 'Sürüm';
+
+  @override
+  String get productFullName => 'Tunathic – Gitar Araç Seti';
+
+  @override
+  String get aboutProductDescription =>
+      'Gitar pratiği, tempo ve müzik teorisi için odaklı, çevrimdışı öncelikli bir araç seti.';
+
+  @override
+  String get publisherLabel => 'Yayıncı';
+
+  @override
+  String get copyrightNotice => '© 2026 GUNDEV. Tüm hakları saklıdır.';
+
+  @override
+  String get availableToolsTitle => 'Kullanılabilir araçlar';
+
+  @override
+  String get plannedToolsTitle => 'Planlanan araçlar';
+
+  @override
+  String get privacySummary =>
+      'Tunathic, mevcut pratik deneyimini özel ve cihazında yerel tutacak şekilde tasarlanmıştır.';
+
+  @override
+  String get privacyBpmTitle => 'Pratik oturumları geçicidir';
+
+  @override
+  String get privacyBpmDescription =>
+      'BPM Dokunma oturumları bellekte kalır ve oturum sona erdiğinde temizlenir. Karşıya yüklenmez.';
+
+  @override
+  String get privacyLocalTitle => 'Tercihler bu cihazda kalır';
+
+  @override
+  String get privacyLocalDescription =>
+      'Tema, dil, dokunsal geri bildirim ve Metronom ayarları yerel olarak saklanır. Tunathic mikrofon izni istemez; ses kaydetmez veya karşıya yüklemez.';
+
+  @override
+  String get privacyNoCollectionTitle =>
+      'Hesap, reklam, analiz veya sunucu yok';
+
+  @override
+  String get privacyNoCollectionDescription =>
+      'Mevcut uygulama hesap gerektirmez; reklam veya analiz içermez, Tunathic sunucusu yoktur ve GUNDEV sunucularına uygulama verisi göndermez.';
+
+  @override
+  String get privacyFutureChanges =>
+      'Mikrofon, reklam, analiz, hesap, bulut veya sunucu özellikleri yayınlanmadan önce bu gizlilik bilgileri güncellenmelidir.';
 
   @override
   String get comingSoon => 'Yakında';

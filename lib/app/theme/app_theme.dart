@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tunathic/app/theme/app_colors.dart';
+import 'package:tunathic/app/theme/app_elevation.dart';
 import 'package:tunathic/app/theme/app_radii.dart';
+import 'package:tunathic/app/theme/app_spacing.dart';
 import 'package:tunathic/app/theme/app_typography.dart';
 
 abstract final class AppTheme {
@@ -39,9 +41,9 @@ abstract final class AppTheme {
         centerTitle: false,
       ),
       cardTheme: CardThemeData(
-        elevation: 0,
+        elevation: AppElevation.flat,
         margin: EdgeInsets.zero,
-        color: isDark ? AppColors.charcoalSurface : Colors.white,
+        color: isDark ? AppColors.charcoalSurface : AppColors.lightCard,
         shape: RoundedRectangleBorder(
           borderRadius: AppRadii.mediumBorder,
           side: BorderSide(color: scheme.outlineVariant),
@@ -49,6 +51,10 @@ abstract final class AppTheme {
       ),
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(minimumSize: const Size.square(48)),
+      ),
+      dividerTheme: DividerThemeData(color: scheme.outlineVariant),
+      listTileTheme: const ListTileThemeData(
+        minTileHeight: AppSpacing.minTouchTarget,
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(

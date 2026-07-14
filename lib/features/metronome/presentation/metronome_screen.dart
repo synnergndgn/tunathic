@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tunathic/app/router/app_router.dart';
 import 'package:tunathic/app/theme/app_radii.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
+import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/features/metronome/application/metronome_controller.dart';
 import 'package:tunathic/features/metronome/domain/metronome_config.dart';
 import 'package:tunathic/features/tools/tool_definition.dart';
@@ -58,6 +59,7 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
     final localizations = AppLocalizations.of(context);
     final state = ref.watch(metronomeProvider);
     final controller = _metronomeController;
+    final haptics = ref.read(appHapticsProvider);
     final config = state.config;
 
     if (!_tempoFocusNode.hasFocus &&
@@ -72,7 +74,10 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
           IconButton(
             key: const Key('metronomeReset'),
             tooltip: localizations.reset,
-            onPressed: () => unawaited(controller.reset()),
+            onPressed: () {
+              unawaited(haptics.selection());
+              unawaited(controller.reset());
+            },
             icon: const Icon(Icons.restart_alt),
           ),
           const SizedBox(width: AppSpacing.small),
@@ -166,8 +171,10 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                             key: Key('signature-${signature.id}'),
                             label: Text(signature.id),
                             selected: config.timeSignature == signature,
-                            onSelected: (_) =>
-                                controller.setTimeSignature(signature),
+                            onSelected: (_) {
+                              unawaited(haptics.selection());
+                              controller.setTimeSignature(signature);
+                            },
                           ),
                         ),
                     ],
@@ -183,7 +190,10 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                         contentPadding: EdgeInsets.zero,
                         title: Text(localizations.accentFirstBeat),
                         value: config.accentEnabled,
-                        onChanged: controller.setAccentEnabled,
+                        onChanged: (enabled) {
+                          unawaited(haptics.selection());
+                          controller.setAccentEnabled(enabled);
+                        },
                       ),
                       Row(
                         children: [
@@ -231,7 +241,10 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                     key: const Key('metronomeStartStop'),
                     onPressed: state.isInitializing
                         ? null
-                        : () => unawaited(controller.toggle()),
+                        : () {
+                            unawaited(haptics.lightImpact());
+                            unawaited(controller.toggle());
+                          },
                     icon: state.isInitializing
                         ? const SizedBox.square(
                             dimension: 20,
@@ -250,7 +263,10 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                 const SizedBox(height: AppSpacing.small),
                 OutlinedButton.icon(
                   key: const Key('openBpmTapFromMetronome'),
-                  onPressed: () => _openBpmTap(context, controller),
+                  onPressed: () {
+                    unawaited(haptics.selection());
+                    unawaited(_openBpmTap(context, controller));
+                  },
                   icon: const Icon(Icons.touch_app_outlined),
                   label: Text(localizations.openBpmTapForMetronome),
                 ),
@@ -291,6 +307,7 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
     );
     if (!context.mounted || bpm == null) return;
     if (controller.applyBpmTap(bpm)) {
+      unawaited(ref.read(appHapticsProvider).lightImpact());
       _tempoTextController.text = bpm.toString();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

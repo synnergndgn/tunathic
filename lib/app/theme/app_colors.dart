@@ -7,5 +7,6 @@ abstract final class AppColors {
   static const softCyan = Color(0xFF72D7F3);
   static const offWhite = Color(0xFFF3F7FA);
   static const lightSurface = Color(0xFFF6F8FA);
+  static const lightCard = Color(0xFFFFFFFF);
   static const lightOutline = Color(0xFF71808E);
 }

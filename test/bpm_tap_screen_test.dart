@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tunathic/app/app.dart';
 import 'package:tunathic/app/settings/app_settings.dart';
+import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
 import 'package:tunathic/features/bpm_tap/presentation/bpm_tap_controller.dart';
 
@@ -13,12 +14,14 @@ void main() {
     tester,
   ) async {
     var elapsed = Duration.zero;
+    final haptics = FakeHapticFeedbackOutput();
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           preferencesStoreProvider.overrideWithValue(MemoryPreferencesStore()),
           initialAppSettingsProvider.overrideWithValue(const AppSettings()),
           bpmTapElapsedTimeProvider.overrideWithValue(() => elapsed),
+          hapticFeedbackOutputProvider.overrideWithValue(haptics),
         ],
         child: const TunathicApp(),
       ),
@@ -43,12 +46,15 @@ void main() {
     expect(find.text('120'), findsOneWidget);
     expect(find.text('3 taps'), findsOneWidget);
     expect(find.text('500 ms since last tap'), findsOneWidget);
+    expect(haptics.lightImpactCount, 3);
 
     await tester.tap(find.byKey(const Key('bpmTapReset')));
     await tester.pump();
 
     expect(find.text('—'), findsOneWidget);
     expect(find.text('No taps'), findsOneWidget);
+    // One selection opens the tool and one resets its active session.
+    expect(haptics.selectionCount, 2);
 
     await tester.pumpWidget(const SizedBox());
   });

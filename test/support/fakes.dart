@@ -1,3 +1,4 @@
+import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/core/logging/app_logger.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
 
@@ -17,6 +18,21 @@ final class MemoryPreferencesStore implements PreferencesStore {
   @override
   Future<void> setString(String key, String value) async {
     values[key] = value;
+  }
+}
+
+final class FakeHapticFeedbackOutput implements HapticFeedbackOutput {
+  int selectionCount = 0;
+  int lightImpactCount = 0;
+
+  @override
+  Future<void> selection() async {
+    selectionCount++;
+  }
+
+  @override
+  Future<void> lightImpact() async {
+    lightImpactCount++;
   }
 }
 
