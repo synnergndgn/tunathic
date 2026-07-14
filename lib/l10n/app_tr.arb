@@ -1,0 +1,40 @@
+{
+  "@@locale": "tr",
+  "appTitle": "Tunathic",
+  "tagline": "Akort Et. Çalış. Üret.",
+  "dashboardTitle": "Gitar araç seti",
+  "dashboardIntro": "Odaklı bir çalışma için ihtiyacınız olan her şey bir arada.",
+  "settingsTitle": "Ayarlar",
+  "settingsTooltip": "Ayarları aç",
+  "appearanceTitle": "Görünüm",
+  "themeModeLabel": "Tema modu",
+  "themeSystem": "Sistem",
+  "themeLight": "Açık",
+  "themeDark": "Koyu",
+  "languageTitle": "Dil",
+  "languageSystem": "Sistem varsayılanı",
+  "languageEnglish": "İngilizce",
+  "languageTurkish": "Türkçe",
+  "comingSoon": "Yakında",
+  "comingSoonDescription": "{toolName} gelecek bir aşama için planlandı.",
+  "@comingSoonDescription": {
+    "placeholders": {
+      "toolName": {"type": "String"}
+    }
+  },
+  "backToDashboard": "Ana ekrana dön",
+  "pageNotFoundTitle": "Sayfa bulunamadı",
+  "pageNotFoundDescription": "Bu sayfa Tunathic'te mevcut değil.",
+  "unexpectedErrorTitle": "Bir sorun oluştu",
+  "unexpectedErrorDescription": "Tunathic bu ekranı gösteremedi. Lütfen ana ekrana dönüp tekrar deneyin.",
+  "guitarTuner": "Gitar Akort Cihazı",
+  "metronome": "Metronom",
+  "bpmTap": "BPM Dokunuşu",
+  "chordLibrary": "Akor Kütüphanesi",
+  "scaleLibrary": "Gam Kütüphanesi",
+  "circleOfFifths": "Beşliler Çemberi",
+  "intervalTrainer": "Aralık Eğitimi",
+  "earTraining": "Kulak Eğitimi",
+  "chordFinder": "Akor Bulucu",
+  "capoCalculator": "Kapo Hesaplayıcı"
+}

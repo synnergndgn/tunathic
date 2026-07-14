@@ -1,0 +1,40 @@
+{
+  "@@locale": "en",
+  "appTitle": "Tunathic",
+  "tagline": "Tune. Train. Create.",
+  "dashboardTitle": "Guitar toolkit",
+  "dashboardIntro": "Everything you need for focused practice, in one place.",
+  "settingsTitle": "Settings",
+  "settingsTooltip": "Open settings",
+  "appearanceTitle": "Appearance",
+  "themeModeLabel": "Theme mode",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "languageTitle": "Language",
+  "languageSystem": "System default",
+  "languageEnglish": "English",
+  "languageTurkish": "Turkish",
+  "comingSoon": "Coming Soon",
+  "comingSoonDescription": "{toolName} is planned for a future milestone.",
+  "@comingSoonDescription": {
+    "placeholders": {
+      "toolName": {"type": "String"}
+    }
+  },
+  "backToDashboard": "Back to dashboard",
+  "pageNotFoundTitle": "Page not found",
+  "pageNotFoundDescription": "That page is not available in Tunathic.",
+  "unexpectedErrorTitle": "Something went wrong",
+  "unexpectedErrorDescription": "Tunathic could not show this screen. Please return to the dashboard and try again.",
+  "guitarTuner": "Guitar Tuner",
+  "metronome": "Metronome",
+  "bpmTap": "BPM Tap",
+  "chordLibrary": "Chord Library",
+  "scaleLibrary": "Scale Library",
+  "circleOfFifths": "Circle of Fifths",
+  "intervalTrainer": "Interval Trainer",
+  "earTraining": "Ear Training",
+  "chordFinder": "Chord Finder",
+  "capoCalculator": "Capo Calculator"
+}
