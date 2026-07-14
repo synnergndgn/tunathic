@@ -36,15 +36,15 @@ final class AudioplayersMetronomeAudioOutput implements MetronomeAudioOutput {
     try {
       _regularPool = await AudioPool.create(
         source: AssetSource(_regularAsset),
-        maxPlayers: 3,
-        minPlayers: 2,
+        maxPlayers: 4,
+        minPlayers: 3,
         playerMode: PlayerMode.lowLatency,
         audioContext: context,
       );
       _accentPool = await AudioPool.create(
         source: AssetSource(_accentAsset),
-        maxPlayers: 3,
-        minPlayers: 2,
+        maxPlayers: 4,
+        minPlayers: 3,
         playerMode: PlayerMode.lowLatency,
         audioContext: context,
       );

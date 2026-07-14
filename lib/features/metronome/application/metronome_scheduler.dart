@@ -1,9 +1,26 @@
 import 'dart:async';
 
+final class MetronomeTick {
+  const MetronomeTick({
+    required this.intendedDeadline,
+    required this.callbackTime,
+    required this.lateness,
+    required this.skippedDeadlines,
+  });
+
+  final Duration intendedDeadline;
+  final Duration callbackTime;
+  final Duration lateness;
+  final int skippedDeadlines;
+}
+
 abstract interface class MetronomeScheduler {
   bool get isRunning;
 
-  void start({required Duration interval, required void Function() onBeat});
+  void start({
+    required Duration interval,
+    required void Function(MetronomeTick tick) onBeat,
+  });
 
   void updateInterval(Duration interval);
 
@@ -12,18 +29,45 @@ abstract interface class MetronomeScheduler {
   void dispose();
 }
 
+abstract interface class MetronomeClock {
+  Duration get elapsed;
+  bool get isRunning;
+
+  void reset();
+  void start();
+  void stop();
+}
+
+abstract interface class MetronomeTimer {
+  void cancel();
+}
+
+typedef MetronomeTimerFactory =
+    MetronomeTimer Function(Duration delay, void Function() callback);
+
 final class AnchoredMetronomeScheduler implements MetronomeScheduler {
-  Timer? _timer;
-  final Stopwatch _clock = Stopwatch();
+  AnchoredMetronomeScheduler({
+    MetronomeClock? clock,
+    MetronomeTimerFactory? timerFactory,
+  }) : _clock = clock ?? _StopwatchMetronomeClock(),
+       _timerFactory = timerFactory ?? _createTimer;
+
+  final MetronomeClock _clock;
+  final MetronomeTimerFactory _timerFactory;
+  MetronomeTimer? _timer;
   Duration _interval = Duration.zero;
   Duration _nextTarget = Duration.zero;
-  void Function()? _onBeat;
+  void Function(MetronomeTick tick)? _onBeat;
 
   @override
-  bool get isRunning => _timer != null || _clock.isRunning;
+  bool get isRunning => _clock.isRunning;
 
   @override
-  void start({required Duration interval, required void Function() onBeat}) {
+  void start({
+    required Duration interval,
+    required void Function(MetronomeTick tick) onBeat,
+  }) {
+    assert(interval > Duration.zero);
     stop();
     _interval = interval;
     _onBeat = onBeat;
@@ -36,9 +80,12 @@ final class AnchoredMetronomeScheduler implements MetronomeScheduler {
 
   @override
   void updateInterval(Duration interval) {
+    assert(interval > Duration.zero);
     _interval = interval;
     if (!isRunning) return;
+
     _timer?.cancel();
+    _timer = null;
     _clock
       ..reset()
       ..start();
@@ -60,18 +107,71 @@ final class AnchoredMetronomeScheduler implements MetronomeScheduler {
 
   void _fireAndSchedule() {
     if (!_clock.isRunning) return;
-    _onBeat?.call();
-    _nextTarget += _interval;
+    _timer = null;
 
-    // Skip missed targets after a long stall instead of emitting a burst.
-    while (_nextTarget <= _clock.elapsed) {
+    final intendedDeadline = _nextTarget;
+    final callbackTime = _clock.elapsed;
+    final rawLateness = callbackTime - intendedDeadline;
+    final lateness = rawLateness.isNegative ? Duration.zero : rawLateness;
+
+    _nextTarget = intendedDeadline + _interval;
+    var skippedDeadlines = 0;
+    while (_nextTarget <= callbackTime) {
       _nextTarget += _interval;
+      skippedDeadlines++;
     }
+
+    // Arm the next deadline before state or audio work can occupy this isolate.
     _scheduleNext();
+    _onBeat?.call(
+      MetronomeTick(
+        intendedDeadline: intendedDeadline,
+        callbackTime: callbackTime,
+        lateness: lateness,
+        skippedDeadlines: skippedDeadlines,
+      ),
+    );
   }
 
   void _scheduleNext() {
     final delay = _nextTarget - _clock.elapsed;
-    _timer = Timer(delay.isNegative ? Duration.zero : delay, _fireAndSchedule);
+    _timer = _timerFactory(
+      delay.isNegative ? Duration.zero : delay,
+      _fireAndSchedule,
+    );
   }
+
+  static MetronomeTimer _createTimer(
+    Duration delay,
+    void Function() callback,
+  ) => _DartMetronomeTimer(delay, callback);
+}
+
+final class _StopwatchMetronomeClock implements MetronomeClock {
+  final Stopwatch _stopwatch = Stopwatch();
+
+  @override
+  Duration get elapsed => _stopwatch.elapsed;
+
+  @override
+  bool get isRunning => _stopwatch.isRunning;
+
+  @override
+  void reset() => _stopwatch.reset();
+
+  @override
+  void start() => _stopwatch.start();
+
+  @override
+  void stop() => _stopwatch.stop();
+}
+
+final class _DartMetronomeTimer implements MetronomeTimer {
+  _DartMetronomeTimer(Duration delay, void Function() callback)
+    : _timer = Timer(delay, callback);
+
+  final Timer _timer;
+
+  @override
+  void cancel() => _timer.cancel();
 }

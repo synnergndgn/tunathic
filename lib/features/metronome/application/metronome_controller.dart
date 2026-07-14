@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tunathic/core/logging/app_logger.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
@@ -73,7 +74,10 @@ final class MetronomeController extends Notifier<MetronomeState> {
   late final AppLogger _logger;
   bool _audioInitialized = false;
   bool _acceptRuntimeEvents = true;
+  bool _handlingAudioFailure = false;
   int _operationVersion = 0;
+  int _audioRequestId = 0;
+  int _pendingAudioRequests = 0;
 
   @override
   MetronomeState build() {
@@ -160,10 +164,11 @@ final class MetronomeController extends Notifier<MetronomeState> {
 
   void setTimeSignature(MetronomeTimeSignature signature) {
     if (state.config.timeSignature == signature) return;
-    state = state.copyWith(
-      config: state.config.copyWith(timeSignature: signature),
-      currentBeat: 0,
-    );
+    final config = state.config.copyWith(timeSignature: signature);
+    state = state.copyWith(config: config, currentBeat: 0);
+    if (state.isRunning) {
+      _scheduler.updateInterval(config.beatDuration);
+    }
     unawaited(_persist());
   }
 
@@ -221,30 +226,111 @@ final class MetronomeController extends Notifier<MetronomeState> {
     }
   }
 
-  void _onBeat() {
+  void _onBeat(MetronomeTick tick) {
     if (!state.isRunning) return;
-    final beat = _sequence.nextBeat(state.currentBeat, state.config);
+    final config = state.config;
+    final beat = _sequence.nextBeat(state.currentBeat, config);
+    if (kDebugMode) {
+      _logger.debug(
+        'Metronome timing beat=${beat.number} bpm=${config.bpm} '
+        'deadlineMs=${_milliseconds(tick.intendedDeadline)} '
+        'callbackMs=${_milliseconds(tick.callbackTime)} '
+        'latenessMs=${_milliseconds(tick.lateness)} '
+        'skipped=${tick.skippedDeadlines} '
+        'audioPending=$_pendingAudioRequests',
+      );
+    }
     state = state.copyWith(currentBeat: beat.number);
-    unawaited(_playBeat(beat.isAccented));
+    unawaited(
+      _playBeat(
+        accented: beat.isAccented,
+        beatNumber: beat.number,
+        bpm: config.bpm,
+        volume: config.volume,
+      ),
+    );
   }
 
-  Future<void> _playBeat(bool accented) async {
+  Future<void> _playBeat({
+    required bool accented,
+    required int beatNumber,
+    required int bpm,
+    required double volume,
+  }) async {
+    final requestId = ++_audioRequestId;
+    _pendingAudioRequests++;
+    _debugAudioRequest(
+      requestId: requestId,
+      beatNumber: beatNumber,
+      bpm: bpm,
+      status: 'pending',
+      pending: _pendingAudioRequests,
+    );
     try {
-      await _audio.play(accented: accented, volume: state.config.volume);
+      await _audio.play(accented: accented, volume: volume);
+      _debugAudioRequest(
+        requestId: requestId,
+        beatNumber: beatNumber,
+        bpm: bpm,
+        status: 'completed',
+        pending: _pendingAudioRequests - 1,
+      );
     } on Object catch (error, stackTrace) {
-      if (!state.isRunning || !_acceptRuntimeEvents) return;
+      _debugAudioRequest(
+        requestId: requestId,
+        beatNumber: beatNumber,
+        bpm: bpm,
+        status: 'failed',
+        pending: _pendingAudioRequests - 1,
+      );
+      if (!state.isRunning || !_acceptRuntimeEvents || _handlingAudioFailure) {
+        return;
+      }
+      _handlingAudioFailure = true;
       _logger.error('Could not play metronome beat', error, stackTrace);
       _scheduler.stop();
       _audioInitialized = false;
-      await _audio.dispose();
-      state = state.copyWith(
-        currentBeat: 0,
-        isRunning: false,
-        isInitializing: false,
-        failure: MetronomeFailure.audioUnavailable,
-      );
+      if (_acceptRuntimeEvents) {
+        state = state.copyWith(
+          currentBeat: 0,
+          isRunning: false,
+          isInitializing: false,
+          failure: MetronomeFailure.audioUnavailable,
+        );
+      }
+      try {
+        await _audio.dispose();
+      } on Object catch (disposeError, disposeStackTrace) {
+        _logger.error(
+          'Could not dispose metronome audio after playback failure',
+          disposeError,
+          disposeStackTrace,
+        );
+      } finally {
+        _handlingAudioFailure = false;
+      }
+    } finally {
+      _pendingAudioRequests--;
     }
   }
+
+  void _debugAudioRequest({
+    required int requestId,
+    required int beatNumber,
+    required int bpm,
+    required String status,
+    required int pending,
+  }) {
+    if (!kDebugMode) return;
+    _logger.debug(
+      'Metronome audio request=$requestId beat=$beatNumber bpm=$bpm '
+      'status=$status pending=$pending',
+    );
+  }
+
+  String _milliseconds(Duration duration) =>
+      (duration.inMicroseconds / Duration.microsecondsPerMillisecond)
+          .toStringAsFixed(3);
 
   Future<void> _persist() async {
     try {

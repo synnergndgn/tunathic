@@ -37,8 +37,12 @@ final class MetronomeConfig {
   final bool accentEnabled;
   final double volume;
 
-  Duration get beatDuration =>
-      Duration(microseconds: (Duration.microsecondsPerMinute / bpm).round());
+  /// BPM uses a quarter-note reference; the denominator sets click duration.
+  Duration get beatDuration => Duration(
+    microseconds:
+        (Duration.microsecondsPerMinute * 4 / bpm / timeSignature.beatUnit)
+            .round(),
+  );
 
   MetronomeConfig copyWith({
     int? bpm,

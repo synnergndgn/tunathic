@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tunathic/core/logging/app_logger.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
 import 'package:tunathic/features/metronome/application/metronome_controller.dart';
+import 'package:tunathic/features/metronome/application/metronome_scheduler.dart';
 import 'package:tunathic/features/metronome/domain/metronome_config.dart';
 
 import 'support/fakes.dart';
@@ -42,9 +45,9 @@ void main() {
     expect(scheduler.startCount, 1);
 
     scheduler.fire();
-    await Future<void>.delayed(Duration.zero);
+    await _flushMicrotasks();
     scheduler.fire();
-    await Future<void>.delayed(Duration.zero);
+    await _flushMicrotasks();
 
     expect(audio.plays, [
       (accented: true, volume: MetronomeConfig.defaultVolume),
@@ -76,6 +79,67 @@ void main() {
     expect(container.read(metronomeProvider).config.bpm, 150);
     expect(scheduler.intervals.last, const Duration(milliseconds: 400));
   });
+
+  test('re-anchors from 4/4 to denominator-aware 6/8 while running', () async {
+    await controller.start();
+    scheduler.fire();
+
+    controller.setTimeSignature(MetronomeTimeSignature.sixEight);
+
+    expect(container.read(metronomeProvider).currentBeat, 0);
+    expect(scheduler.intervals.last, const Duration(milliseconds: 250));
+
+    scheduler.fire();
+    await _flushMicrotasks();
+    expect(container.read(metronomeProvider).currentBeat, 1);
+    expect(audio.plays.last.accented, isTrue);
+  });
+
+  test(
+    'logs deterministic timing and audio request status in debug mode',
+    () async {
+      await controller.start();
+      scheduler.nextTick = const MetronomeTick(
+        intendedDeadline: Duration(milliseconds: 500),
+        callbackTime: Duration(milliseconds: 512),
+        lateness: Duration(milliseconds: 12),
+        skippedDeadlines: 1,
+      );
+
+      scheduler.fire();
+      await _flushMicrotasks();
+
+      expect(
+        logger.debugMessages,
+        contains(
+          contains(
+            'beat=1 bpm=120 deadlineMs=500.000 callbackMs=512.000 '
+            'latenessMs=12.000 skipped=1 audioPending=0',
+          ),
+        ),
+      );
+      expect(logger.debugMessages, contains(contains('status=pending')));
+      expect(logger.debugMessages, contains(contains('status=completed')));
+    },
+  );
+
+  test(
+    'audio playback futures never block later scheduler callbacks',
+    () async {
+      audio.pendingPlayback = Completer<void>();
+      await controller.start();
+
+      scheduler.fire();
+      scheduler.fire();
+
+      expect(container.read(metronomeProvider).currentBeat, 2);
+      expect(audio.plays, hasLength(2));
+      expect(logger.debugMessages, contains(contains('audioPending=1')));
+
+      audio.pendingPlayback!.complete();
+      await _flushMicrotasks();
+    },
+  );
 
   test('stops on background lifecycle and remains stopped on return', () async {
     await controller.start();
@@ -128,8 +192,7 @@ void main() {
     await controller.start();
 
     scheduler.fire();
-    await Future<void>.delayed(Duration.zero);
-    await Future<void>.delayed(Duration.zero);
+    await _flushMicrotasks();
 
     expect(container.read(metronomeProvider).isRunning, isFalse);
     expect(
@@ -145,8 +208,7 @@ void main() {
     controller.setAccentEnabled(false);
     controller.previewVolume(0.3);
     controller.commitVolume();
-    await Future<void>.delayed(Duration.zero);
-    await Future<void>.delayed(Duration.zero);
+    await _flushMicrotasks();
 
     expect(store.values['metronome.bpm'], '132');
     expect(store.values['metronome.timeSignature'], '6/8');
@@ -167,4 +229,10 @@ void main() {
     expect(controller.applyBpmTap(301), isFalse);
     expect(container.read(metronomeProvider).config.bpm, 184);
   });
+}
+
+Future<void> _flushMicrotasks() async {
+  await Future<void>.value();
+  await Future<void>.value();
+  await Future<void>.value();
 }

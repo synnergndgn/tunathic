@@ -36,15 +36,17 @@ The Metronome opens BPM Tap with an explicit result contract. BPM Tap returns on
 
 ## Metronome timing and beat model
 
-`BeatSequence` is pure Dart. It advances and wraps a one-based beat number for 2/4, 3/4, 4/4, and 6/8, marking only beat one as accented when the preference is enabled. In Phase 1B, 6/8 means six eighth-note clicks per measure and BPM refers to that written eighth-note pulse; dotted-quarter interpretation is out of scope.
+`BeatSequence` is pure Dart. It advances and wraps a one-based beat number for 2/4, 3/4, 4/4, and 6/8, marking only beat one as accented when the preference is enabled. Displayed BPM uses a quarter-note reference, and click duration is `quarter-note duration × 4 ÷ denominator`. In 6/8 this produces six eighth-note clicks per measure: at 120 BPM each click is 250 milliseconds apart. Dotted-quarter interpretation is out of scope.
 
-`AnchoredMetronomeScheduler` uses a monotonic `Stopwatch` and one-shot timers. Each deadline is calculated from the original anchor instead of chaining the previous timer completion, limiting cumulative drift. If execution is late by one or more intervals, missed deadlines are skipped rather than played in a catch-up burst. BPM changes replace the interval while retaining a single scheduler. The same callback advances visual state and requests the audible click.
+`AnchoredMetronomeScheduler` uses a monotonic clock and one-shot timers. Its clock and timer factory are replaceable in deterministic tests. Each deadline is calculated from the original anchor instead of chaining the previous timer completion, limiting cumulative drift. The next timer is armed before controller state or audio work begins. A callback delayed by less than one interval retains the original next deadline; deadlines already reached during a longer stall are skipped rather than played in a catch-up burst. BPM or denominator changes cancel the previous timer and re-anchor the single scheduler.
+
+The scheduler callback carries its intended deadline, actual callback time, lateness, and skipped count to `MetronomeController`. In debug builds, the controller records those values with beat number, BPM, and audio-request pending/completed/failed state through `AppLogger`. Per-beat logging is compiled out of release builds. Audio playback futures are deliberately not awaited by the scheduler, so platform-channel completion cannot postpone arming the next deadline. Visual state and the audio request use the same beat number, although visual rendering may follow the request by a few milliseconds.
 
 This foreground design is maintainable and testable but not sample-accurate: Dart scheduling, platform-channel transit, Android audio buffering, and device hardware all contribute latency. A native scheduled-audio engine would be required for stronger real-time guarantees.
 
 ## Audio playback and assets
 
-`audioplayers` 6.8.1 is used because its maintained, multiplatform API includes `AudioPool` preloading and Android low-latency playback for short, repetitive effects. The discontinued `soundpool` package was rejected. Two pools preload separate regular and accented WAV assets, each with two players prewarmed and capacity for a third so closely spaced requests do not contend for a single player. Android audio context is configured for sonification.
+`audioplayers` 6.8.1 is used because its maintained, multiplatform API includes `AudioPool` preloading and Android low-latency playback for short, repetitive effects. The discontinued `soundpool` package was rejected. Separate regular and accented pools are created once before the first beat, reused throughout the screen session, and released when the screen is disposed or audio fails. Each pool prewarms three players and can grow to four. This small amount of extra capacity provides headroom when 6/8 at 300 BPM requests a click every 100 milliseconds and a previous platform request is still being reclaimed. Android audio context is configured for sonification.
 
 The click WAV files are original project assets generated deterministically by `tool/generate_metronome_clicks.dart`; they are short decaying synthesized tones and contain no third-party recording. The script records the exact generation parameters and can reproduce the checked-in assets.
 
@@ -88,10 +90,13 @@ No microphone, recording, DSP, database, analytics, advertising, account, backen
 
 Unit tests cover preference parsing and persistence, BPM estimation, metronome beat progression, wrapping, accents, time signatures, tempo interval calculation, lifecycle stopping, failure recovery, reset, and duplicate-start prevention. Controller tests replace clocks, audio, and scheduling with deterministic fakes. Widget tests verify both functional dashboard tools, English and Turkish content, scaled compact layouts, metronome controls, and BPM Tap result transfer. Fakes implement the same application-owned boundaries used by production code.
 
+Scheduler tests use fake monotonic time and fake one-shot timers; they do not wait on wall-clock time. They cover exact callbacks, mild and multi-interval lateness, original-deadline retention, skipped deadlines, no catch-up bursts, re-anchoring, and rapid stop/start. Controller tests additionally cover 4/4-to-6/8 reconfiguration, debug timing records, duplicate-start prevention, audio failure, and pending audio futures that do not block later beat callbacks.
+
 ## Known limitations
 
 - BPM Tap and the foreground Metronome are functional; every other listed music tool remains a nonfunctional Coming Soon placeholder.
 - Metronome playback is not sample-accurate, does not run in the background, and supports no subdivisions, swing, custom rhythms, or custom accent patterns.
+- Rare audible stuttering was observed on a physical Android device in the original Phase 1B build. Debug instrumentation can now distinguish Dart scheduler lateness, skipped deadlines, and overlapping platform audio requests, but repeat physical-device validation is required before declaring the symptom resolved. No physical Android target was connected during automated validation of this hotfix.
 - There is no microphone permission, recording, pitch detection, DSP, or content database.
 - Preferences store only scalar application and metronome settings; future structured data needs a separate decision when its requirements exist.
 - Logging is local developer output only. No remote reporting or analytics exists.
