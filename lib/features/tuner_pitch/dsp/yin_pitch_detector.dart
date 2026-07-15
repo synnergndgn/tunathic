@@ -10,6 +10,8 @@ final class YinPitchDetector implements PitchDetector {
   YinPitchDetector({PitchDetectorConfiguration? configuration})
     : configuration = configuration ?? PitchDetectorConfiguration();
 
+  static const _lowerBoundaryRelativeTolerance = 1e-6;
+
   final PitchDetectorConfiguration configuration;
 
   @override
@@ -64,7 +66,11 @@ final class YinPitchDetector implements PitchDetector {
       analysisLength: analysisLength,
     );
     final normalizedDifference = differenceFunctions.normalized;
-    final initialCandidate = _firstThresholdMinimum(normalizedDifference);
+    final initialCandidate = _firstThresholdMinimum(
+      normalizedDifference,
+      minimumLag: minimumLag,
+      maximumLag: maximumLag,
+    );
     if (initialCandidate == null) {
       return PitchEstimate.noPitch(
         NoPitchReason.lowConfidence,
@@ -79,9 +85,20 @@ final class YinPitchDetector implements PitchDetector {
     final candidate = _preferClearerSubharmonic(
       normalizedDifference,
       initialCandidate,
-      searchMaximumLag,
+      supportedMaximumLag: maximumLag,
+      searchMaximumLag: searchMaximumLag,
     );
-    if (candidate < minimumLag || candidate > maximumLag) {
+    if (candidate == null) {
+      return PitchEstimate.noPitch(
+        NoPitchReason.unsupportedRange,
+        confidence: 1 - normalizedDifference[initialCandidate],
+      );
+    }
+    if (_isUnsupportedHighFrequencyOnly(
+      normalizedDifference,
+      minimumLag,
+      candidate,
+    )) {
       return PitchEstimate.noPitch(
         NoPitchReason.unsupportedRange,
         confidence: 1 - normalizedDifference[candidate],
@@ -100,12 +117,15 @@ final class YinPitchDetector implements PitchDetector {
 
     final periodSamples = _parabolicMinimum(differenceFunctions.raw, candidate);
     var frequencyHz = sampleRate / periodSamples;
-    // Interpolation can drift just below the exact lower-frequency boundary.
-    // The guarded lag search has already rejected genuinely lower pitches, so
-    // keep the maximum in-range lag on the configured boundary.
+    final minimumFrequencyHz = configuration.minimumFrequencyHz;
+    // The guard sample above maximumLag lets interpolation distinguish a real
+    // below-range period. Only one-part-per-million numerical drift from an
+    // exact boundary is corrected; larger deviations remain unsupported.
     if (candidate == maximumLag &&
-        frequencyHz < configuration.minimumFrequencyHz) {
-      frequencyHz = configuration.minimumFrequencyHz;
+        frequencyHz < minimumFrequencyHz &&
+        frequencyHz >=
+            minimumFrequencyHz * (1 - _lowerBoundaryRelativeTolerance)) {
+      frequencyHz = minimumFrequencyHz;
     }
     if (!frequencyHz.isFinite ||
         frequencyHz < configuration.minimumFrequencyHz ||
@@ -162,11 +182,15 @@ final class YinPitchDetector implements PitchDetector {
     return (raw: difference, normalized: normalized);
   }
 
-  int? _firstThresholdMinimum(Float64List normalizedDifference) {
-    var lag = 2;
-    while (lag < normalizedDifference.length - 1) {
+  int? _firstThresholdMinimum(
+    Float64List normalizedDifference, {
+    required int minimumLag,
+    required int maximumLag,
+  }) {
+    var lag = minimumLag;
+    while (lag <= maximumLag) {
       if (normalizedDifference[lag] < configuration.yinThreshold) {
-        while (lag + 1 < normalizedDifference.length &&
+        while (lag < maximumLag &&
             normalizedDifference[lag + 1] < normalizedDifference[lag]) {
           lag++;
         }
@@ -177,11 +201,12 @@ final class YinPitchDetector implements PitchDetector {
     return null;
   }
 
-  int _preferClearerSubharmonic(
+  int? _preferClearerSubharmonic(
     Float64List normalizedDifference,
-    int initialCandidate,
-    int maximumLag,
-  ) {
+    int initialCandidate, {
+    required int supportedMaximumLag,
+    required int searchMaximumLag,
+  }) {
     var selectedLag = initialCandidate;
     var selectedScore = normalizedDifference[initialCandidate];
     for (
@@ -190,21 +215,40 @@ final class YinPitchDetector implements PitchDetector {
       multiple++
     ) {
       final target = initialCandidate * multiple;
-      if (target > maximumLag) break;
+      if (target > searchMaximumLag) break;
       final searchRadius = math.max(2, (target * 0.01).round());
       final nearbyMinimum = _minimumNear(
         normalizedDifference,
         target,
         searchRadius,
-        maximumLag,
+        searchMaximumLag,
       );
       final score = normalizedDifference[nearbyMinimum];
       if (selectedScore - score >= configuration.harmonicImprovementThreshold) {
+        if (nearbyMinimum > supportedMaximumLag) return null;
         selectedLag = nearbyMinimum;
         selectedScore = score;
       }
     }
     return selectedLag;
+  }
+
+  bool _isUnsupportedHighFrequencyOnly(
+    Float64List normalizedDifference,
+    int supportedMinimumLag,
+    int supportedCandidate,
+  ) {
+    if (supportedMinimumLag <= 2) return false;
+    final unsupportedCandidate = _firstThresholdMinimum(
+      normalizedDifference,
+      minimumLag: 2,
+      maximumLag: supportedMinimumLag - 1,
+    );
+    if (unsupportedCandidate == null) return false;
+    final unsupportedScore = normalizedDifference[unsupportedCandidate];
+    final supportedScore = normalizedDifference[supportedCandidate];
+    return unsupportedScore - supportedScore <
+        configuration.harmonicImprovementThreshold;
   }
 
   int _minimumNear(Float64List values, int target, int radius, int maximumLag) {

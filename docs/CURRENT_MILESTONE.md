@@ -44,7 +44,7 @@ Confidence is `1 - CMNDF(period)`, clamped to 0–1. A candidate must cross the 
 
 ## Harmonics and octave resistance
 
-YIN selects the first threshold-crossing local minimum. Tunathic then inspects nearby integer period multiples through four and selects a longer period only when its normalized difference improves by at least 0.01. This general rule corrected the tested dominant-second, dominant-third, weak-fundamental, missing-fundamental-with-second-and-third, and bass-like spectra without note-specific fixes.
+YIN selects the first threshold-crossing local minimum only inside the configured supported lag range. Tunathic then inspects nearby integer period multiples through four and selects a longer supported period only when its normalized difference improves by at least 0.01. Guard-only periods can reject a clearer below-range fundamental but cannot become a valid candidate. A separate clarity comparison prevents an unsupported high-only tone from being reported as an in-range subharmonic while allowing a valid fundamental beneath stronger high harmonics. This general rule corrected the tested dominant-second, dominant-third, weak-fundamental, missing-fundamental-with-second-and-third, and bass-like spectra without note-specific fixes.
 
 A single isolated harmonic contains no mathematical evidence of an absent lower fundamental. Real instruments can also be inharmonic or transient, so octave ambiguity is reduced but not eliminated.
 
@@ -95,6 +95,7 @@ The optional JIT diagnostic warms the detector and performs 30 non-asserted runs
 - Only a single monophonic fundamental is estimated; chords and multiple simultaneous sources are unsupported.
 - Confidence is YIN periodicity clarity, not a calibrated probability that a note is correct.
 - The direct implementation is `O(N × L)` time and `O(L)` temporary memory. At 48 kHz the configured 40 Hz limit is a 1,200-sample lag; a 10% rejection guard searches to 1,320 samples to distinguish just-below-range pitches.
+- Lower-bound interpolation uses a relative `1e-6` numerical tolerance only for an exact maximum-lag candidate; 39.9999 Hz and lower regression values remain rejected rather than clamped into range.
 - Each call allocates raw and normalized `Float64List` lag buffers plus its immutable result. Reuse may be considered only after Phase 2C profiling establishes a need.
 - Synthetic periodic signals are cleaner than plucked strings with attack transients, decay, inharmonicity, body resonances, environmental noise, and microphone processing.
 - Real-time latency, frame overlap, Android CPU cost, isolate placement, smoothing, and display stability are intentionally unmeasured until Phase 2C.
