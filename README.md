@@ -2,7 +2,7 @@
 
 **Tune. Train. Create.**
 
-Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 2B — Offline Pitch Detection Engine**: two practice tools remain functional, the foreground microphone foundation has been validated, and a separate pure Dart pitch engine is tested with deterministic offline signals.
+Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 2C — Real-Time Pitch Pipeline**: two practice tools remain functional, and a bounded development diagnostic connects the foreground microphone foundation to the pure Dart pitch engine.
 
 ## Current contents
 
@@ -19,6 +19,7 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Explicit microphone-permission flow and continuous mono PCM16 input prototype
 - Local transient signal-level and stream diagnostics with lifecycle-safe cleanup
 - Pure Dart YIN pitch detection from 40–1,200 Hz with typed confidence/no-pitch results
+- Bounded 4,096/1,024-sample real-time analysis with newest-frame backpressure, pitch stabilization, and stale clearing
 - A4 = 440 Hz MIDI, sharp note-name, octave, and signed-cents conversion tested offline
 - Persisted metronome settings and explicit BPM transfer from BPM Tap
 - Grouped responsive dashboard and polished Settings hierarchy
@@ -28,7 +29,7 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Minimal GitHub Actions formatting, analysis, and test verification
 - Unit and widget tests
 
-Guitar Tuner remains labeled **Coming Soon** even though its technical audio prototype can be opened for evaluation. The Phase 2B engine is not connected to live microphone frames and no pitch result is shown in the app. The current work adds no audio-file recording, background capture, sample persistence, upload, advertising, analytics, account, or backend behavior and does not claim Play Store readiness.
+Guitar Tuner remains labeled **Coming Soon**. Its development diagnostic shows live raw and stabilized pitch plus bounded-pipeline counters, but it is not the final tuner UI and has not completed physical Android pitch validation. The current work adds no audio-file recording, background capture, sample or pitch-history persistence, upload, advertising, analytics, account, or backend behavior and does not claim Play Store readiness.
 
 ## Requirements
 

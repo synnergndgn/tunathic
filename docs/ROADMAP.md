@@ -14,7 +14,7 @@ The first functional timing-sensitive practice tools, followed by application-sh
 
 - **Phase 2A — Tuner Audio Prototype:** physically validated permission, lifecycle, and continuous local PCM input without tuner results.
 - **Phase 2B — Offline Pitch Detection Engine:** deterministic pure Dart YIN analysis and note conversion using synthetic offline signals; no live integration.
-- **Phase 2C — Real-time Pitch Integration:** future microphone-frame buffering, scheduling, profiling, smoothing policy, lifecycle coordination, and diagnostic presentation when separately authorized.
+- **Phase 2C — Real-Time Pitch Pipeline:** bounded overlapping microphone-frame analysis, newest-frame backpressure, transient smoothing and note hysteresis, lifecycle coordination, and a development diagnostic. Physical Android/profile validation remains required.
 
 A production tuner interface, presets, calibration, and release claims remain later decisions.
 

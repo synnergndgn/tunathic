@@ -6,6 +6,7 @@ import 'package:tunathic/app/theme/app_radii.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
 import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_controller.dart';
+import 'package:tunathic/features/tuner_realtime/application/realtime_pitch_pipeline.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 
 final class TunerAudioPrototypeScreen extends ConsumerStatefulWidget {
@@ -56,6 +57,10 @@ final class _TunerAudioPrototypeScreenState
     final statistics = state.statistics;
     final requested = state.requestedConfiguration;
     final reported = state.reportedFormat;
+    final realtime = state.realtime;
+    final diagnostics = realtime.diagnostics;
+    final rawPitch = realtime.rawEstimate;
+    final stablePitch = realtime.stabilizedPitch;
 
     return Scaffold(
       appBar: AppBar(title: Text(localizations.tunerAudioPrototypeTitle)),
@@ -155,6 +160,129 @@ final class _TunerAudioPrototypeScreenState
                       _MetricRow(
                         label: localizations.pcmEncodingLabel,
                         value: localizations.pcm16LittleEndian,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.medium),
+                _SectionCard(
+                  title: localizations.pitchAnalysisTitle,
+                  child: Column(
+                    children: [
+                      _MetricRow(
+                        key: const Key('tunerAnalysisStatus'),
+                        label: localizations.pitchAnalysisStatusLabel,
+                        value: _analysisStatusLabel(localizations, state),
+                      ),
+                      _MetricRow(
+                        label: localizations.detectorExecutionModeLabel,
+                        value: diagnostics.executionMode,
+                      ),
+                      _MetricRow(
+                        label: localizations.bufferedSamplesLabel,
+                        value: diagnostics.bufferedSamples.toString(),
+                      ),
+                      _MetricRow(
+                        key: const Key('tunerFramesAssembled'),
+                        label: localizations.framesAssembledLabel,
+                        value: diagnostics.framesAssembled.toString(),
+                      ),
+                      _MetricRow(
+                        key: const Key('tunerFramesAnalyzed'),
+                        label: localizations.framesAnalyzedLabel,
+                        value: diagnostics.framesAnalyzed.toString(),
+                      ),
+                      _MetricRow(
+                        label: localizations.framesReplacedLabel,
+                        value: diagnostics.pendingFramesReplaced.toString(),
+                      ),
+                      _MetricRow(
+                        label: localizations.framesDroppedLabel,
+                        value: diagnostics.framesDropped.toString(),
+                      ),
+                      _MetricRow(
+                        label: localizations.averageDetectorDurationLabel,
+                        value: localizations.millisecondsValue(
+                          (diagnostics.averageDetectorDuration.inMicroseconds /
+                                  1000)
+                              .toStringAsFixed(2),
+                        ),
+                      ),
+                      _MetricRow(
+                        label: localizations.maximumDetectorDurationLabel,
+                        value: localizations.millisecondsValue(
+                          (diagnostics.maximumDetectorDuration.inMicroseconds /
+                                  1000)
+                              .toStringAsFixed(2),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.medium),
+                _SectionCard(
+                  title: localizations.rawPitchTitle,
+                  child: Column(
+                    children: [
+                      _MetricRow(
+                        key: const Key('tunerRawFrequency'),
+                        label: localizations.detectedFrequencyLabel,
+                        value: rawPitch?.frequencyHz == null
+                            ? localizations.pitchUnavailable
+                            : localizations.frequencyHzValue(
+                                rawPitch!.frequencyHz!.toStringAsFixed(2),
+                              ),
+                      ),
+                      _MetricRow(
+                        label: localizations.pitchConfidenceLabel,
+                        value: rawPitch == null
+                            ? localizations.pitchUnavailable
+                            : rawPitch.confidence.toStringAsFixed(3),
+                      ),
+                      _MetricRow(
+                        label: localizations.detectedNoteLabel,
+                        value: rawPitch?.noteName == null
+                            ? localizations.pitchUnavailable
+                            : '${rawPitch!.noteName}${rawPitch.octave}',
+                      ),
+                      _MetricRow(
+                        label: localizations.centsDeviationLabel,
+                        value: rawPitch?.centsDeviation == null
+                            ? localizations.pitchUnavailable
+                            : localizations.centsValue(
+                                rawPitch!.centsDeviation!.toStringAsFixed(1),
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.medium),
+                _SectionCard(
+                  title: localizations.stabilizedPitchTitle,
+                  child: Column(
+                    children: [
+                      _MetricRow(
+                        key: const Key('tunerStabilizedNote'),
+                        label: localizations.detectedNoteLabel,
+                        value: stablePitch == null
+                            ? localizations.pitchUnavailable
+                            : '${stablePitch.noteName}${stablePitch.octave}',
+                      ),
+                      _MetricRow(
+                        label: localizations.detectedFrequencyLabel,
+                        value: stablePitch == null
+                            ? localizations.pitchUnavailable
+                            : localizations.frequencyHzValue(
+                                stablePitch.frequencyHz.toStringAsFixed(2),
+                              ),
+                      ),
+                      _MetricRow(
+                        label: localizations.centsDeviationLabel,
+                        value: stablePitch == null
+                            ? localizations.pitchUnavailable
+                            : localizations.centsValue(
+                                stablePitch.centsDeviation.toStringAsFixed(1),
+                              ),
                       ),
                     ],
                   ),
@@ -275,6 +403,23 @@ final class _TunerAudioPrototypeScreenState
         TunerCaptureStatus.error => localizations.captureStatusError,
       };
 
+  String _analysisStatusLabel(
+    AppLocalizations localizations,
+    TunerAudioState state,
+  ) => switch (state.analysisStatus) {
+    RealtimePitchStatus.stopped => localizations.pitchStatusStopped,
+    RealtimePitchStatus.waitingForSamples =>
+      localizations.pitchStatusWaitingForSamples,
+    RealtimePitchStatus.analyzing => localizations.pitchStatusAnalyzing,
+    RealtimePitchStatus.stablePitch => localizations.pitchStatusStable,
+    RealtimePitchStatus.unstableSignal => localizations.pitchStatusUnstable,
+    RealtimePitchStatus.noSignal => localizations.pitchStatusNoSignal,
+    RealtimePitchStatus.permissionDenied =>
+      localizations.pitchStatusPermissionDenied,
+    RealtimePitchStatus.captureError => localizations.pitchStatusCaptureError,
+    RealtimePitchStatus.analysisError => localizations.pitchStatusAnalysisError,
+  };
+
   String _failureMessage(
     AppLocalizations localizations,
     TunerCaptureFailure failure,
@@ -285,6 +430,8 @@ final class _TunerAudioPrototypeScreenState
       localizations.unsupportedAudioMessage,
     TunerCaptureFailure.startFailed => localizations.audioStartFailedMessage,
     TunerCaptureFailure.streamFailed => localizations.audioStreamFailedMessage,
+    TunerCaptureFailure.analysisFailed =>
+      localizations.pitchAnalysisFailedMessage,
     TunerCaptureFailure.stopFailed => localizations.audioStopFailedMessage,
   };
 }

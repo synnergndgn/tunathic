@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:tunathic/features/tuner_audio/audio/tuner_audio_input.dart';
 import 'package:tunathic/features/tuner_audio/domain/audio_frame.dart';
 import 'package:tunathic/features/tuner_audio/domain/audio_input_configuration.dart';
+import 'package:tunathic/features/tuner_pitch/domain/pitch_estimate.dart';
+import 'package:tunathic/features/tuner_realtime/application/realtime_pitch_pipeline.dart';
 
 final class FakeTunerAudioInput implements TunerAudioInput {
   MicrophonePermissionResult permission = MicrophonePermissionResult.granted;
@@ -101,4 +103,35 @@ final class FakeTunerAudioInput implements TunerAudioInput {
   void emitFormat(AudioStreamFormat format) => _formats?.add(format);
 
   Future<void> closeFrames() => _frames?.close() ?? Future.value();
+}
+
+final class FakePitchDetectionExecutor implements PitchDetectionExecutor {
+  PitchEstimate result = PitchEstimate.noPitch(NoPitchReason.lowConfidence);
+  Object? error;
+  Completer<void>? gate;
+  int analyzeCount = 0;
+  int activeCount = 0;
+  int maximumActiveCount = 0;
+  int? lastSampleRate;
+  Float32List? lastSamples;
+
+  @override
+  String get modeLabel => 'fake-main-isolate';
+
+  @override
+  Future<PitchEstimate> analyze(Float32List samples, int sampleRate) async {
+    analyzeCount++;
+    activeCount++;
+    if (activeCount > maximumActiveCount) maximumActiveCount = activeCount;
+    lastSampleRate = sampleRate;
+    lastSamples = samples;
+    try {
+      await gate?.future;
+      final currentError = error;
+      if (currentError != null) throw currentError;
+      return result;
+    } finally {
+      activeCount--;
+    }
+  }
 }

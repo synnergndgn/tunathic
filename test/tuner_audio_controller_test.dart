@@ -7,6 +7,9 @@ import 'package:tunathic/features/tuner_audio/audio/tuner_audio_input.dart';
 import 'package:tunathic/features/tuner_audio/domain/audio_input_configuration.dart';
 import 'package:tunathic/features/tuner_audio/domain/pcm16_converter.dart';
 import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_controller.dart';
+import 'package:tunathic/features/tuner_pitch/domain/musical_note.dart';
+import 'package:tunathic/features/tuner_pitch/domain/pitch_estimate.dart';
+import 'package:tunathic/features/tuner_realtime/application/realtime_pitch_pipeline.dart';
 
 import 'support/fakes.dart';
 import 'support/tuner_audio_fakes.dart';
@@ -14,6 +17,7 @@ import 'support/tuner_audio_fakes.dart';
 void main() {
   late FakeTunerAudioInput audioInput;
   late RecordingLogger logger;
+  late FakePitchDetectionExecutor pitchExecutor;
   late ProviderContainer container;
   late ProviderSubscription<TunerAudioState> subscription;
   late TunerAudioController controller;
@@ -22,6 +26,7 @@ void main() {
   setUp(() {
     audioInput = FakeTunerAudioInput();
     logger = RecordingLogger();
+    pitchExecutor = FakePitchDetectionExecutor();
     metronomeStopCount = 0;
     container = ProviderContainer(
       overrides: [
@@ -30,6 +35,7 @@ void main() {
           metronomeStopCount++;
         }),
         appLoggerProvider.overrideWithValue(logger),
+        pitchDetectionExecutorProvider.overrideWithValue(pitchExecutor),
       ],
     );
     subscription = container.listen(
@@ -241,7 +247,45 @@ void main() {
       container.read(tunerAudioProvider).reportedFormat?.sampleRate,
       44100,
     );
+    expect(
+      container.read(tunerAudioProvider).realtime.diagnostics.sampleRateResets,
+      1,
+    );
   });
+
+  test('assembles microphone chunks and publishes stabilized pitch', () async {
+    pitchExecutor.result = _estimate(440);
+    await controller.start();
+
+    audioInput.emitSamples(
+      List<double>.filled(4096, 0.2),
+      arrivalTime: const Duration(milliseconds: 100),
+    );
+    await _flushMicrotasks();
+
+    final state = container.read(tunerAudioProvider);
+    expect(pitchExecutor.analyzeCount, 1);
+    expect(state.realtime.diagnostics.framesAssembled, 1);
+    expect(state.realtime.stabilizedPitch?.noteName, 'A');
+    expect(state.analysisStatus, RealtimePitchStatus.stablePitch);
+  });
+
+  test(
+    'detector failure stops capture with a friendly analysis state',
+    () async {
+      pitchExecutor.error = StateError('detector failed');
+      await controller.start();
+      audioInput.emitSamples(List<double>.filled(4096, 0.2));
+      await _flushMicrotasks();
+
+      final state = container.read(tunerAudioProvider);
+      expect(state.status, TunerCaptureStatus.error);
+      expect(state.failure, TunerCaptureFailure.analysisFailed);
+      expect(state.analysisStatus, RealtimePitchStatus.analysisError);
+      expect(audioInput.stopCount, 1);
+      expect(logger.errorMessages, isNotEmpty);
+    },
+  );
 
   test('route release stops and disposes capture resources', () async {
     await controller.start();
@@ -272,4 +316,17 @@ Future<void> _flushMicrotasks() async {
   for (var index = 0; index < 8; index++) {
     await Future<void>.delayed(Duration.zero);
   }
+}
+
+PitchEstimate _estimate(double frequency) {
+  final note = MusicalNoteConverter.fromFrequency(frequency)!;
+  return PitchEstimate.detected(
+    frequencyHz: frequency,
+    confidence: 0.95,
+    midiNote: note.midiNote,
+    noteName: note.noteName,
+    octave: note.octave,
+    centsDeviation: note.centsDeviation,
+    periodSamples: 48000 / frequency,
+  );
 }

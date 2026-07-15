@@ -126,11 +126,11 @@ class AppLocalizationsTr extends AppLocalizations {
       'Tema, dil, dokunsal geri bildirim ve Metronom ayarları bu cihazda yerel olarak saklanır.';
 
   @override
-  String get privacyMicrophoneTitle => 'Mikrofon prototipi yerel kalır';
+  String get privacyMicrophoneTitle => 'Mikrofon perde analizi yerel kalır';
 
   @override
   String get privacyMicrophoneDescription =>
-      'Mikrofon erişimi yalnızca Akort Ses Prototipi etkin olarak yakalama yaparken kullanılır. Ham ses cihazda işlenir, kaydedilmez veya yüklenmez; ekrandan ayrıldığınızda ya da uygulama arka plana geçtiğinde yakalama durur.';
+      'Mikrofon erişimi yalnızca Gerçek Zamanlı Perde Tanılaması etkinken kullanılır. Ham ses ve perde tahminleri geçici ve yerel kalır, kaydedilmez veya yüklenmez; ekrandan ayrıldığınızda ya da uygulama arka plana geçtiğinde durur.';
 
   @override
   String get privacyNoCollectionTitle =>
@@ -341,11 +341,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get capoCalculator => 'Kapo Hesaplayıcı';
 
   @override
-  String get tunerAudioPrototypeTitle => 'Akort Ses Prototipi';
+  String get tunerAudioPrototypeTitle => 'Gerçek Zamanlı Perde Tanılaması';
 
   @override
   String get tunerAudioPrototypeWarning =>
-      'Yalnızca teknik prototip. Bu ekran mikrofon girişini doğrular; çalışan bir gitar akort cihazı değildir.';
+      'Yalnızca geliştirme tanılaması. Bu ekran değerlendirme için canlı perde analizini bağlar; nihai Gitar Akort Cihazı değildir.';
 
   @override
   String get microphonePermissionLabel => 'Mikrofon izni';
@@ -476,7 +476,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get prototypePrivacyDescription =>
-      'Ses yalnızca bu cihazın belleğinde işlenir. Ham mikrofon verileri ve sinyal istatistikleri kaydedilmez veya iletilmez.';
+      'Ses ve geçici perde tanılamaları yalnızca bu cihazın belleğinde işlenir. Ham mikrofon verileri, perde geçmişi ve istatistikler kaydedilmez veya iletilmez.';
 
   @override
   String get prototypeLifecycleTitle => 'Yalnızca ön planda yakalama';
@@ -504,4 +504,101 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get audioStopFailedMessage =>
       'Tunathic mikrofonu temiz biçimde serbest bırakamadı. Yeniden deneyebilirsiniz.';
+
+  @override
+  String get pitchAnalysisTitle => 'Gerçek zamanlı perde analizi';
+
+  @override
+  String get pitchAnalysisStatusLabel => 'Analiz durumu';
+
+  @override
+  String get pitchStatusStopped => 'Durduruldu';
+
+  @override
+  String get pitchStatusWaitingForSamples => 'Yeterli örnek bekleniyor';
+
+  @override
+  String get pitchStatusAnalyzing => 'Analiz ediliyor';
+
+  @override
+  String get pitchStatusStable => 'Kararlı perde';
+
+  @override
+  String get pitchStatusUnstable => 'Kararsız sinyal';
+
+  @override
+  String get pitchStatusNoSignal => 'Güvenilir sinyal yok';
+
+  @override
+  String get pitchStatusPermissionDenied => 'Mikrofon izni reddedildi';
+
+  @override
+  String get pitchStatusCaptureError => 'Yakalama hatası';
+
+  @override
+  String get pitchStatusAnalysisError => 'Analiz hatası';
+
+  @override
+  String get detectorExecutionModeLabel => 'Dedektör yürütmesi';
+
+  @override
+  String get bufferedSamplesLabel => 'Tampondaki örnekler';
+
+  @override
+  String get framesAssembledLabel => 'Birleştirilen analiz çerçeveleri';
+
+  @override
+  String get framesAnalyzedLabel => 'Analiz edilen çerçeveler';
+
+  @override
+  String get framesReplacedLabel => 'Değiştirilen bekleyen çerçeveler';
+
+  @override
+  String get framesDroppedLabel => 'Atılan analiz çerçeveleri';
+
+  @override
+  String get averageDetectorDurationLabel => 'Ortalama dedektör süresi';
+
+  @override
+  String get maximumDetectorDurationLabel => 'En yüksek dedektör süresi';
+
+  @override
+  String millisecondsValue(String value) {
+    return '$value ms';
+  }
+
+  @override
+  String get rawPitchTitle => 'Ham dedektör sonucu';
+
+  @override
+  String get stabilizedPitchTitle => 'Kararlı sonuç';
+
+  @override
+  String get detectedFrequencyLabel => 'Algılanan frekans';
+
+  @override
+  String get pitchConfidenceLabel => 'Güven';
+
+  @override
+  String get detectedNoteLabel => 'Algılanan nota';
+
+  @override
+  String get centsDeviationLabel => 'Cent sapması';
+
+  @override
+  String frequencyHzValue(String value) {
+    return '$value Hz';
+  }
+
+  @override
+  String centsValue(String value) {
+    return '$value cent';
+  }
+
+  @override
+  String get pitchUnavailable => '—';
+
+  @override
+  String get pitchAnalysisFailedMessage =>
+      'Dedektör başarısız olduğu için canlı perde analizi durdu. Yeniden deneyebilirsiniz.';
 }

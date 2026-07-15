@@ -34,4 +34,4 @@ Tunathic is for beginner through experienced guitarists who want dependable tool
 
 ## Initial scope
 
-Tunathic launches Android-first. English is the source language and Turkish is supported from the first milestone. The product is designed around offline-first behavior. Phase 2A requests microphone access only after an explicit user action and processes transient audio locally in memory; it does not yet detect pitch or provide a working tuner.
+Tunathic launches Android-first. English is the source language and Turkish is supported from the first milestone. The product is designed around offline-first behavior. The Phase 2C development diagnostic requests microphone access only after an explicit user action and analyzes transient audio locally in memory. It is not the final Guitar Tuner and does not make production tuning claims.

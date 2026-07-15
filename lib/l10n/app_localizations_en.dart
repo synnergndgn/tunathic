@@ -126,11 +126,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Theme, language, haptic, and Metronome settings are stored locally on this device.';
 
   @override
-  String get privacyMicrophoneTitle => 'Microphone prototype stays local';
+  String get privacyMicrophoneTitle => 'Microphone pitch analysis stays local';
 
   @override
   String get privacyMicrophoneDescription =>
-      'Microphone access is used only while the Tuner Audio Prototype is actively capturing. Raw audio is processed locally, never saved or uploaded, and capture stops when you leave the screen or the app enters the background.';
+      'Microphone access is used only while the Real-Time Pitch Diagnostic is active. Raw audio and pitch estimates remain transient and local, are never saved or uploaded, and stop when you leave the screen or the app enters the background.';
 
   @override
   String get privacyNoCollectionTitle =>
@@ -348,11 +348,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get capoCalculator => 'Capo Calculator';
 
   @override
-  String get tunerAudioPrototypeTitle => 'Tuner Audio Prototype';
+  String get tunerAudioPrototypeTitle => 'Real-Time Pitch Diagnostic';
 
   @override
   String get tunerAudioPrototypeWarning =>
-      'Technical prototype only. This validates microphone input and is not a working guitar tuner.';
+      'Development diagnostic only. This connects live pitch analysis for evaluation and is not the final Guitar Tuner.';
 
   @override
   String get microphonePermissionLabel => 'Microphone permission';
@@ -483,7 +483,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get prototypePrivacyDescription =>
-      'Audio is processed only in memory on this device. Raw microphone data and signal statistics are not saved or transmitted.';
+      'Audio and transient pitch diagnostics are processed only in memory on this device. Raw microphone data, pitch history, and statistics are not saved or transmitted.';
 
   @override
   String get prototypeLifecycleTitle => 'Foreground capture only';
@@ -511,4 +511,101 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get audioStopFailedMessage =>
       'Tunathic could not finish releasing the microphone cleanly. You can try again.';
+
+  @override
+  String get pitchAnalysisTitle => 'Real-time pitch analysis';
+
+  @override
+  String get pitchAnalysisStatusLabel => 'Analysis state';
+
+  @override
+  String get pitchStatusStopped => 'Stopped';
+
+  @override
+  String get pitchStatusWaitingForSamples => 'Waiting for enough samples';
+
+  @override
+  String get pitchStatusAnalyzing => 'Analyzing';
+
+  @override
+  String get pitchStatusStable => 'Stable pitch';
+
+  @override
+  String get pitchStatusUnstable => 'Unstable signal';
+
+  @override
+  String get pitchStatusNoSignal => 'No reliable signal';
+
+  @override
+  String get pitchStatusPermissionDenied => 'Microphone permission denied';
+
+  @override
+  String get pitchStatusCaptureError => 'Capture error';
+
+  @override
+  String get pitchStatusAnalysisError => 'Analysis error';
+
+  @override
+  String get detectorExecutionModeLabel => 'Detector execution';
+
+  @override
+  String get bufferedSamplesLabel => 'Buffered samples';
+
+  @override
+  String get framesAssembledLabel => 'Analysis frames assembled';
+
+  @override
+  String get framesAnalyzedLabel => 'Frames analyzed';
+
+  @override
+  String get framesReplacedLabel => 'Pending frames replaced';
+
+  @override
+  String get framesDroppedLabel => 'Analysis frames dropped';
+
+  @override
+  String get averageDetectorDurationLabel => 'Average detector duration';
+
+  @override
+  String get maximumDetectorDurationLabel => 'Maximum detector duration';
+
+  @override
+  String millisecondsValue(String value) {
+    return '$value ms';
+  }
+
+  @override
+  String get rawPitchTitle => 'Raw detector result';
+
+  @override
+  String get stabilizedPitchTitle => 'Stabilized result';
+
+  @override
+  String get detectedFrequencyLabel => 'Detected frequency';
+
+  @override
+  String get pitchConfidenceLabel => 'Confidence';
+
+  @override
+  String get detectedNoteLabel => 'Detected note';
+
+  @override
+  String get centsDeviationLabel => 'Cents deviation';
+
+  @override
+  String frequencyHzValue(String value) {
+    return '$value Hz';
+  }
+
+  @override
+  String centsValue(String value) {
+    return '$value cents';
+  }
+
+  @override
+  String get pitchUnavailable => '—';
+
+  @override
+  String get pitchAnalysisFailedMessage =>
+      'Live pitch analysis stopped because the detector failed. You can try again.';
 }

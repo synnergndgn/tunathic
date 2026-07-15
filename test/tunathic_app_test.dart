@@ -37,8 +37,8 @@ void main() {
     await tester.tap(find.text('Guitar Tuner'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Tuner Audio Prototype'), findsOneWidget);
-    expect(find.textContaining('not a working guitar tuner'), findsOneWidget);
+    expect(find.text('Real-Time Pitch Diagnostic'), findsOneWidget);
+    expect(find.textContaining('not the final Guitar Tuner'), findsOneWidget);
   });
 
   testWidgets('Turkish is available as an application locale', (tester) async {

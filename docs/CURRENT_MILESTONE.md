@@ -1,101 +1,86 @@
-# Current Milestone: Phase 2B — Offline Pitch Detection Engine
+# Current Milestone: Phase 2C — Real-Time Pitch Pipeline
 
-Phase 2B adds a deterministic, Flutter-independent pitch engine for normalized mono samples. Phase 2A microphone capture has been physically validated separately and remains unchanged. The new engine is not connected to that live stream, so Guitar Tuner remains Coming Soon and Tunathic still does not present a working tuner.
+Phase 2C connects the physically validated Phase 2A normalized microphone stream to the synthetic/offline-validated Phase 2B YIN detector through a bounded foreground analysis pipeline. The routed screen is explicitly a development diagnostic, not the final Guitar Tuner. Guitar Tuner remains Coming Soon.
 
 ## In scope
 
-- A project-owned pure Dart YIN pitch detector under `lib/features/tuner_pitch/`
-- Immutable detector configuration and typed detected/no-pitch results
-- A 40–1,200 Hz fundamental-frequency range for guitar and bass
-- 44.1 kHz and 48 kHz normalized mono `Float32List` input
-- A4 = 440 Hz 12-tone equal-temperament conversion to MIDI, sharp note name, octave, and signed cents
-- Deterministic synthetic sine, harmonic, noise, DC-offset, envelope, combined-signal, and silence utilities for tests
-- Pure tests for accuracy, range boundaries, confidence, harmonics, octave resistance, noise, numeric validation, and determinism
-- An optional non-production diagnostic command for error and execution-time observations
+- Arbitrary normalized mono PCM chunks assembled into overlapping detector frames
+- One active detector operation and at most one newest pending frame
+- Log-pitch smoothing, octave rejection, note hysteresis, no-pitch clearing, and stale timeout outside `YinPitchDetector`
+- Riverpod-owned capture, analysis, lifecycle, error, and transient diagnostic state
+- English and Turkish development diagnostics without a needle, string UI, presets, or tuning modes
+- Local, in-memory processing with no raw sample, pitch-history, or diagnostic persistence
 
-## Algorithm and defaults
+## Analysis configuration
 
-The primary algorithm is YIN with a direct time-domain difference function, cumulative mean normalized difference, absolute threshold selection, and parabolic period refinement. Defaults are:
+Defaults are centralized in `RealtimePitchConfiguration`:
 
-- Minimum frequency: 40 Hz
-- Maximum frequency: 1,200 Hz
-- Minimum centered RMS: 0.002
-- YIN threshold: 0.18
+- Frame size: 4,096 samples
+- Hop size: 1,024 samples
+- Overlap: 75%
+- History length: 5 accepted estimates
 - Minimum confidence: 0.82
-- Minimum low-frequency periods: 3
-- Lower-range rejection guard: 10% beyond the configured maximum lag
-- Harmonic candidate multiples inspected: up to 4
-- Required score improvement before preferring a longer fundamental period: 0.01
-- Equal-temperament reference: A4 = 440 Hz
+- Median outlier threshold: 45 cents
+- Exponential smoothing factor: 0.35
+- Note-boundary margin: 8 cents
+- Note and octave switch confirmations: 2
+- Sustained no-pitch clearing: 4 analyzed results
+- Stale timeout: 350 ms
+- UI publication interval: 75 ms, at most approximately 13.3 updates/s
 
-The default minimum frame length is 3,600 samples at 48 kHz and 3,308 samples at 44.1 kHz. A 4,096-sample frame is the practical recommendation: it spans 85.3 ms at 48 kHz and contains enough periods for E1 and the 40 Hz lower boundary. No power-of-two frame length is required.
+At 48 kHz, a frame spans about 85.3 ms and a hop about 21.3 ms. At 44.1 kHz they span about 92.9 ms and 23.2 ms. The frame exceeds YIN's 3,600-sample requirement at 48 kHz and 3,308-sample requirement at 44.1 kHz while the hop provides responsive overlapping observations.
 
-## Input and output contract
+## Ring buffer and frame assembly
 
-`PitchDetector.detect` accepts a frame-owned normalized mono `Float32List` and a positive sample rate. It returns a `PitchEstimate`; normal unusable input never throws. A detected result contains frequency, confidence, period, MIDI note, sharp note class, octave, and signed cents. A no-pitch result contains a typed reason without localized text.
+`SampleWindowAssembler` owns one fixed `Float32List` ring whose capacity equals the frame size. It accepts arbitrary chunk boundaries, writes each sample once, emits a chronological frame-owned 4,096-sample snapshot when full, then emits after every 1,024 new samples. It does not concatenate growing arrays or retain samples older than the current analysis window.
 
-No-pitch reasons cover empty frames, invalid sample rates, non-finite or out-of-range normalized samples, insufficient frames, centered near-silence, incompatible detection range, and low confidence. Frequencies outside 40–1,200 Hz are not returned as valid estimates.
+One large chunk may produce several windows. Buffer use never exceeds 4,096 samples. Diagnostics track received samples, emitted frames, discarded partial samples, resets, current buffered samples, and maximum occupancy. A sample-rate change counts and discards the partial old-rate buffer before reset; different rates are never mixed.
 
-## Preprocessing and confidence
+## Backpressure and session safety
 
-The detector computes mean-centered RMS before analysis. A constant DC offset cancels mathematically in each difference term, so it requires no copied, filtered buffer. No window, gain normalization, high-pass filter, complex gate, or isolate is added. Silence is rejected below the configured RMS threshold.
+`RealtimePitchPipeline` permits one active detector future. If frames arrive during analysis, it retains only one pending frame; each newer frame replaces the older pending frame and increments replacement/drop counters. Capture callbacks enqueue no unbounded work and prioritize current audio.
 
-Confidence is `1 - CMNDF(period)`, clamped to 0–1. A candidate must cross the 0.18 YIN threshold and retain at least 0.82 confidence. White noise and the tested very-low-SNR input return no pitch rather than a low-confidence frequency.
+Every start and sample-rate change advances a generation. Stop, route disposal, lifecycle interruption, stream failure, analysis failure, and restart invalidate pending work. An already-running synchronous calculation cannot be cancelled, but its late result is ignored and cannot mutate a stopped or newer session.
 
-## Harmonics and octave resistance
+## Detector execution placement
 
-YIN selects the first threshold-crossing local minimum only inside the configured supported lag range. Tunathic then inspects nearby integer period multiples through four and selects a longer supported period only when its normalized difference improves by at least 0.01. Guard-only periods can reject a clearer below-range fundamental but cannot become a valid candidate. A separate clarity comparison prevents an unsupported high-only tone from being reported as an in-range subharmonic while allowing a valid fundamental beneath stronger high harmonics. This general rule corrected the tested dominant-second, dominant-third, weak-fundamental, missing-fundamental-with-second-and-third, and bass-like spectra without note-specific fixes.
+Detection currently uses one asynchronously scheduled main-isolate executor. It never uses `compute()` and does not spawn a per-frame isolate. The Phase 2B Windows JIT observation was approximately 11.35 ms median for a 4,096-sample frame, below the 21.3 ms 48 kHz hop, but that is not Android evidence.
 
-A single isolated harmonic contains no mathematical evidence of an absent lower fundamental. Real instruments can also be inharmonic or transient, so octave ambiguity is reduced but not eliminated.
+No Android device was connected during this implementation; `flutter devices` reported only Windows and Edge. Therefore no Android duration, UI-jank, allocation, thermal, replacement-rate, or real-guitar claim is made. Main-isolate placement remains provisional until a physical profile-mode session measures representative hardware. A single long-lived worker isolate is authorized only if those measurements show persistent responsiveness or cadence pressure and must account for typed-data transfer costs.
 
-## Measured deterministic results
+## Stabilization and note hysteresis
 
-The 4,096-sample, 48 kHz clean-sine diagnostic produced the following representative results on the development machine. Error cents compare estimated frequency with the synthetic expected frequency, not with the nearest note.
+`PitchStabilizer` converts frequency to continuous MIDI/log-pitch space. Estimates below 0.82 confidence follow the no-pitch path. For the locked note, a five-item rolling history is median-centered; values farther than 45 cents from the median are excluded, and the accepted target is followed with a 0.35 exponential factor.
 
-| Expected Hz | Estimated Hz | Error % | Error cents | Confidence |
-| ---: | ---: | ---: | ---: | ---: |
-| 40.00 | 40.000000 | 0.000000 | 0.0000 | 1.000000 |
-| 41.20 | 41.200000 | 0.000000 | -0.0000 | 1.000000 |
-| 55.00 | 54.999993 | 0.000013 | -0.0002 | 0.999998 |
-| 61.74 | 61.739995 | 0.000008 | -0.0001 | 0.999993 |
-| 82.41 | 82.410000 | 0.000000 | -0.0000 | 0.999988 |
-| 110.00 | 109.999986 | 0.000013 | -0.0002 | 0.999986 |
-| 146.83 | 146.829952 | 0.000033 | -0.0006 | 0.999998 |
-| 196.00 | 195.999888 | 0.000057 | -0.0010 | 0.999997 |
-| 246.94 | 246.939971 | 0.000012 | -0.0002 | 0.999926 |
-| 329.63 | 329.629848 | 0.000046 | -0.0008 | 0.999864 |
-| 440.00 | 440.000053 | 0.000012 | 0.0002 | 0.999986 |
-| 659.25 | 659.247713 | 0.000347 | -0.0060 | 0.999865 |
-| 880.00 | 879.998312 | 0.000192 | -0.0033 | 0.998615 |
-| 1,000.00 | 999.997120 | 0.000288 | -0.0050 | 1.000000 |
-| 1,200.00 | 1199.997845 | 0.000180 | -0.0031 | 1.000000 |
+The stabilizer never edits the raw detector result. An isolated octave or clearly different note is held as pending. Two consecutive estimates confirm a genuine switch. Near a semitone boundary, the current note remains locked until the other note is at least 8 cents beyond the midpoint and persists for two estimates. Smoothing history resets on a confirmed note change so clearly different notes are never averaged together.
 
-These synthetic results exceed the milestone's 0.5% target but are not evidence of equivalent recorded-instrument or live-device accuracy.
+A short no-pitch gap retains the previous stable value only as transient context while status becomes unstable. Four consecutive no-pitch/low-confidence results clear it. Independently, 350 ms without a reliable estimate clears the last pitch and exposes no signal. Stop, restart, sample-rate changes, and lifecycle cleanup reset smoothing, hysteresis, and stale deadlines.
 
-The optional JIT diagnostic warms the detector and performs 30 non-asserted runs. One representative Windows development-machine run measured an 11.35 ms median and 12.00 ms average for 4,096 samples, and a 26.23 ms median and 25.84 ms average for 8,192 samples. Wall-clock timing varies with machine load and is deliberately excluded from pass/fail tests.
+## Controller, lifecycle, and errors
 
-## Out of scope
+`TunerAudioController` still owns permission and Phase 2A capture. Before Start it releases Tunathic's Metronome audio. Once capture starts it configures the pipeline from the reported rate, or the requested rate when no report exists, and passes frame-owned normalized samples without assuming chunk size.
 
-- Connecting pitch detection to Phase 2A microphone frames
-- Live buffering, overlapping analysis windows, scheduling, isolates, or backpressure
-- Real-time controller state, smoothing, hysteresis, debounce, or result history
-- User-facing frequency, note, cents, confidence, strings, or tuner needle UI
-- Tuning presets, alternate tunings, calibration controls, or string selection
-- Recording, playback monitoring, visualization, analytics, advertising, backend, or cloud work
+Capture and analysis stop on user Stop, route disposal, provider disposal, all non-foreground lifecycle states, unexpected stream end, stream error, invalid reported sample rate, or detector exception. Foreground return never restarts capture. Operation versions and pipeline generations prevent duplicate starts, duplicate analysis loops, and stale callbacks. Technical errors go only to the local logger; UI uses localized permission, capture, and analysis messages.
 
-## Completion criteria
+## Development diagnostic screen
 
-- The DSP and note domain import no Flutter, platform, audio, timer, widget, or networking API.
-- Required clean frequencies, exact range limits, semitone boundaries, sharp/flat cents, harmonics, noise, DC, envelope, phase, sample rates, frame sizes, invalid numbers, and no-pitch behavior have deterministic coverage.
-- Existing Phase 2A and application behavior remains unchanged and all regression tests pass.
-- Formatting verification, analysis, complete tests, and an Android debug APK build pass.
+The existing prototype route now shows capture/permission state, requested and reported rate, PCM chunk statistics, buffer occupancy, frames assembled/analyzed/replaced/dropped, average and maximum detector time, raw frequency/confidence/note/cents, stabilized note/frequency/cents, no-signal state, execution mode, and friendly errors. Publication is throttled independently of PCM arrival.
 
-## Known limitations
+The screen remains scrollable for narrow and large-text layouts and contains no final tuner needle, in-tune visualization, string target, presets, calibration, waveform, spectrum, or fake precision claim.
 
-- Only a single monophonic fundamental is estimated; chords and multiple simultaneous sources are unsupported.
-- Confidence is YIN periodicity clarity, not a calibrated probability that a note is correct.
-- The direct implementation is `O(N × L)` time and `O(L)` temporary memory. At 48 kHz the configured 40 Hz limit is a 1,200-sample lag; a 10% rejection guard searches to 1,320 samples to distinguish just-below-range pitches.
-- Lower-bound interpolation uses a relative `1e-6` numerical tolerance only for an exact maximum-lag candidate; 39.9999 Hz and lower regression values remain rejected rather than clamped into range.
-- Each call allocates raw and normalized `Float64List` lag buffers plus its immutable result. Reuse may be considered only after Phase 2C profiling establishes a need.
-- Synthetic periodic signals are cleaner than plucked strings with attack transients, decay, inharmonicity, body resonances, environmental noise, and microphone processing.
-- Real-time latency, frame overlap, Android CPU cost, isolate placement, smoothing, and display stability are intentionally unmeasured until Phase 2C.
+## Privacy
+
+Raw PCM remains transient and local. The ring retains at most the current window and frame-owned work in flight. Replaced frames, retired samples, pitch history, and diagnostics are discarded in memory. No raw bytes, sample values, pitch history, or continuous telemetry are logged, persisted, uploaded, or transmitted.
+
+## Validation status and known limitations
+
+- Deterministic tests cover arbitrary chunks, exact overlap, multiple emission, bounded memory, sample-rate reset, slow-detector backpressure, late results, restart isolation, stale clearing, smoothing, octave changes, deliberate note changes, note-boundary flicker, controller lifecycle/errors, localization, and diagnostic presentation.
+- Physical Android and real-guitar validation was not performed because no Android device was connected.
+- Actual Android detector cadence, time to first pitch, settle time, note-change delay, octave errors, flicker, stale behavior, CPU, GC, thermal behavior, and five-minute stability remain unmeasured.
+- Main-isolate suitability is provisional, not a release conclusion.
+- The diagnostic is monophonic and inherits the offline detector's harmonic, transient, inharmonicity, and noise limitations.
+- The final production Guitar Tuner UI and product behavior remain out of scope.
+
+## Remaining physical validation gate
+
+On a connected Android device, run profile mode and record requested/reported rate, typical PCM chunk size, frame cadence, detector average/maximum duration, replacements/drops, responsiveness, first-pitch and settle time, note-change delay, octave errors, flicker, stale clearing, CPU/thermal behavior, microphone-indicator cleanup, and route/lifecycle cleanup. Exercise quiet/speech/noisy conditions, all open strings, fretted and repeated notes, soft/hard/muted plucks, rapid string changes, decay, five minutes of capture, repeated Start/Stop, backgrounding, route exit, and Metronome-to-tuner transition. Never save or upload raw audio.

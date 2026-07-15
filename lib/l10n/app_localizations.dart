@@ -323,13 +323,13 @@ abstract class AppLocalizations {
   /// No description provided for @privacyMicrophoneTitle.
   ///
   /// In en, this message translates to:
-  /// **'Microphone prototype stays local'**
+  /// **'Microphone pitch analysis stays local'**
   String get privacyMicrophoneTitle;
 
   /// No description provided for @privacyMicrophoneDescription.
   ///
   /// In en, this message translates to:
-  /// **'Microphone access is used only while the Tuner Audio Prototype is actively capturing. Raw audio is processed locally, never saved or uploaded, and capture stops when you leave the screen or the app enters the background.'**
+  /// **'Microphone access is used only while the Real-Time Pitch Diagnostic is active. Raw audio and pitch estimates remain transient and local, are never saved or uploaded, and stop when you leave the screen or the app enters the background.'**
   String get privacyMicrophoneDescription;
 
   /// No description provided for @privacyNoCollectionTitle.
@@ -695,13 +695,13 @@ abstract class AppLocalizations {
   /// No description provided for @tunerAudioPrototypeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Tuner Audio Prototype'**
+  /// **'Real-Time Pitch Diagnostic'**
   String get tunerAudioPrototypeTitle;
 
   /// No description provided for @tunerAudioPrototypeWarning.
   ///
   /// In en, this message translates to:
-  /// **'Technical prototype only. This validates microphone input and is not a working guitar tuner.'**
+  /// **'Development diagnostic only. This connects live pitch analysis for evaluation and is not the final Guitar Tuner.'**
   String get tunerAudioPrototypeWarning;
 
   /// No description provided for @microphonePermissionLabel.
@@ -935,7 +935,7 @@ abstract class AppLocalizations {
   /// No description provided for @prototypePrivacyDescription.
   ///
   /// In en, this message translates to:
-  /// **'Audio is processed only in memory on this device. Raw microphone data and signal statistics are not saved or transmitted.'**
+  /// **'Audio and transient pitch diagnostics are processed only in memory on this device. Raw microphone data, pitch history, and statistics are not saved or transmitted.'**
   String get prototypePrivacyDescription;
 
   /// No description provided for @prototypeLifecycleTitle.
@@ -979,6 +979,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tunathic could not finish releasing the microphone cleanly. You can try again.'**
   String get audioStopFailedMessage;
+
+  /// No description provided for @pitchAnalysisTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Real-time pitch analysis'**
+  String get pitchAnalysisTitle;
+
+  /// No description provided for @pitchAnalysisStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis state'**
+  String get pitchAnalysisStatusLabel;
+
+  /// No description provided for @pitchStatusStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Stopped'**
+  String get pitchStatusStopped;
+
+  /// No description provided for @pitchStatusWaitingForSamples.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for enough samples'**
+  String get pitchStatusWaitingForSamples;
+
+  /// No description provided for @pitchStatusAnalyzing.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing'**
+  String get pitchStatusAnalyzing;
+
+  /// No description provided for @pitchStatusStable.
+  ///
+  /// In en, this message translates to:
+  /// **'Stable pitch'**
+  String get pitchStatusStable;
+
+  /// No description provided for @pitchStatusUnstable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unstable signal'**
+  String get pitchStatusUnstable;
+
+  /// No description provided for @pitchStatusNoSignal.
+  ///
+  /// In en, this message translates to:
+  /// **'No reliable signal'**
+  String get pitchStatusNoSignal;
+
+  /// No description provided for @pitchStatusPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission denied'**
+  String get pitchStatusPermissionDenied;
+
+  /// No description provided for @pitchStatusCaptureError.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture error'**
+  String get pitchStatusCaptureError;
+
+  /// No description provided for @pitchStatusAnalysisError.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis error'**
+  String get pitchStatusAnalysisError;
+
+  /// No description provided for @detectorExecutionModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Detector execution'**
+  String get detectorExecutionModeLabel;
+
+  /// No description provided for @bufferedSamplesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Buffered samples'**
+  String get bufferedSamplesLabel;
+
+  /// No description provided for @framesAssembledLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis frames assembled'**
+  String get framesAssembledLabel;
+
+  /// No description provided for @framesAnalyzedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Frames analyzed'**
+  String get framesAnalyzedLabel;
+
+  /// No description provided for @framesReplacedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending frames replaced'**
+  String get framesReplacedLabel;
+
+  /// No description provided for @framesDroppedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis frames dropped'**
+  String get framesDroppedLabel;
+
+  /// No description provided for @averageDetectorDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Average detector duration'**
+  String get averageDetectorDurationLabel;
+
+  /// No description provided for @maximumDetectorDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum detector duration'**
+  String get maximumDetectorDurationLabel;
+
+  /// No description provided for @millisecondsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} ms'**
+  String millisecondsValue(String value);
+
+  /// No description provided for @rawPitchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Raw detector result'**
+  String get rawPitchTitle;
+
+  /// No description provided for @stabilizedPitchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stabilized result'**
+  String get stabilizedPitchTitle;
+
+  /// No description provided for @detectedFrequencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Detected frequency'**
+  String get detectedFrequencyLabel;
+
+  /// No description provided for @pitchConfidenceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confidence'**
+  String get pitchConfidenceLabel;
+
+  /// No description provided for @detectedNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Detected note'**
+  String get detectedNoteLabel;
+
+  /// No description provided for @centsDeviationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cents deviation'**
+  String get centsDeviationLabel;
+
+  /// No description provided for @frequencyHzValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} Hz'**
+  String frequencyHzValue(String value);
+
+  /// No description provided for @centsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} cents'**
+  String centsValue(String value);
+
+  /// No description provided for @pitchUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get pitchUnavailable;
+
+  /// No description provided for @pitchAnalysisFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Live pitch analysis stopped because the detector failed. You can try again.'**
+  String get pitchAnalysisFailedMessage;
 }
 
 class _AppLocalizationsDelegate

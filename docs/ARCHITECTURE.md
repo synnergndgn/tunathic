@@ -1,12 +1,12 @@
 # Architecture
 
-Tunathic uses a pragmatic feature-first Flutter structure. Phase 2B adds an offline pure Dart pitch engine beside the physically validated Phase 2A microphone prototype while deliberately keeping capture and detection disconnected.
+Tunathic uses a pragmatic feature-first Flutter structure. Phase 2C connects the physically validated Phase 2A capture boundary to the Phase 2B pure Dart detector through a bounded, transient real-time pipeline while keeping capture, buffering, detection, stabilization, lifecycle, and presentation responsibilities separate.
 
 ## Folder responsibilities
 
 - `lib/app/` owns application composition: bootstrap, router, persisted application settings, and Material themes.
 - `lib/core/` owns app-wide technical boundaries for logging, preferences, package information, and haptic output.
-- `lib/features/` groups user-facing areas. Dashboard, Settings, About, and Privacy compose the application shell. BPM Tap separates pure estimation logic from presentation state. Metronome separates configuration and beat sequencing, scheduling and orchestration, audio output, persistence, and presentation. Tuner Audio separates its input boundary and package adapter, immutable PCM/frame domain types and pure statistics, controller orchestration, and prototype UI. Tuner Pitch contains only Flutter-independent configuration, results, musical-note conversion, the detector boundary, and DSP. Other unfinished tools share one placeholder presentation.
+- `lib/features/` groups user-facing areas. Dashboard, Settings, About, and Privacy compose the application shell. BPM Tap separates pure estimation logic from presentation state. Metronome separates configuration and beat sequencing, scheduling and orchestration, audio output, persistence, and presentation. Tuner Audio separates its input boundary and package adapter, immutable PCM/frame domain types, pure statistics, capture orchestration, and diagnostic UI. Tuner Pitch contains only Flutter-independent configuration, results, musical-note conversion, the detector boundary, and DSP. Tuner Realtime owns bounded window assembly, backpressure, stabilization, hysteresis, stale timing, and transient diagnostics. Other unfinished tools share one placeholder presentation.
 - `lib/shared/` contains reusable interface elements that are not specific to one feature. Foundation contains the friendly error view.
 - `lib/l10n/` contains source ARB files and generated Flutter localization classes.
 
@@ -22,7 +22,7 @@ Riverpod provides scoped dependency injection and reactive application settings.
 
 `MetronomeController` owns immutable runtime state and coordinates the scheduler, audio boundary, and preferences. Widgets forward user actions and render state. Playback stops when the app loses foreground focus and does not resume automatically. Leaving the screen synchronously invalidates pending start work, stops the scheduler, and releases audio without mutating Riverpod during widget teardown; a later screen entry normalizes the retained runtime state before rendering.
 
-`TunerAudioController` owns the capture state machine and creates its audio input through an injectable factory. It requests permission only in response to Start, releases Metronome audio before capture, rejects duplicate operations, subscribes to frames and configuration changes, and owns all cleanup. Operation versioning invalidates delayed permission/start completions after a rapid stop or route exit. Backgrounding stops capture and foregrounding never restarts it automatically. The UI observes immutable scalar state and never receives PCM bytes directly.
+`TunerAudioController` owns the capture state machine and creates its audio input through an injectable factory. It requests permission only in response to Start, releases Metronome audio before capture, rejects duplicate operations, subscribes to frames and configuration changes, and owns all cleanup. It feeds normalized frame-owned samples into `RealtimePitchPipeline`; the UI observes only immutable scalar snapshots and never receives PCM bytes. Controller operation versions and pipeline generations invalidate delayed permission, detector, stop, and restart work. Backgrounding stops capture and analysis, and foregrounding never restarts them automatically.
 
 ## Navigation
 
@@ -34,7 +34,7 @@ GoRouter provides one central route table:
 - `/privacy` displays the current local/offline privacy summary.
 - `/tools/bpm-tap` displays the functional BPM Tap screen.
 - `/tools/metronome` displays the functional Metronome screen.
-- `/tools/guitar-tuner` displays the Tuner Audio Prototype while the dashboard entry remains Coming Soon.
+- `/tools/guitar-tuner` displays the Real-Time Pitch Diagnostic while the dashboard entry remains Coming Soon.
 - `/tools/:toolId` resolves every other unfinished known tool to its Coming Soon placeholder.
 
 Unknown paths and tool identifiers display a friendly localized not-found screen. Tool IDs are stable, nonlocalized route segments; tool names are localized at presentation time.
@@ -131,7 +131,19 @@ One warmed 30-run Windows JIT observation measured 4,096 samples at 11.35 ms med
 
 Typed no-pitch reasons cover empty frames, invalid sample rate, non-finite or non-normalized samples, insufficient length, centered near-silence, incompatible range, and low confidence. Deterministic white noise and an approximately -19 dB synthetic signal-to-noise case were rejected; an approximately +15 dB case was detected. No probability calibration is claimed: confidence is a bounded periodicity clarity measure.
 
-Phase 2C may assemble Phase 2A chunks into overlapping analysis frames, profile execution and allocations on Android, choose scheduling/isolate placement, define smoothing outside the detector, and expose development diagnostics. Phase 2B does not connect either feature, change microphone capture, or expose note/frequency/cents UI.
+## Real-time pitch pipeline
+
+`RealtimePitchConfiguration` centralizes the 4,096-sample frame, 1,024-sample hop, 75% overlap, stabilizer thresholds, 350 ms stale timeout, and 75 ms maximum UI publication cadence. At 48 kHz the frame/hop durations are approximately 85.3/21.3 ms. Configuration validation prevents a nonpositive hop, a hop larger than the frame, or a frame shorter than the detector's sample-rate-dependent low-frequency requirement.
+
+`SampleWindowAssembler` is a pure Dart fixed-capacity circular `Float32List`. It accepts arbitrary chunks and emits chronological frame-owned snapshots without growing concatenations. After the initial frame it overwrites only samples that have left the current window and emits after each hop. Sample-rate changes count and discard the partial old-rate window before reset, so samples from different rates never mix. Occupancy cannot exceed one analysis frame.
+
+`RealtimePitchPipeline` starts at most one `PitchDetectionExecutor` future. While it is active, one pending slot retains the newest ready frame; later frames replace that slot and increment replacement/drop counters. A generation changes on session start, stop, restart, and sample-rate change. Late futures from older generations are ignored. Stopping clears the ring, pending slot, stabilizer, hysteresis, and stale deadline even though an already-executing main-isolate calculation cannot be cancelled.
+
+The production executor schedules the existing synchronous YIN detector on the main isolate. It does not use per-frame `compute()` or an isolate. The Phase 2B Windows JIT observation of about 11.35 ms median for 4,096 samples is below the 48 kHz hop, but no Android device was connected for Phase 2C. Main-isolate placement is therefore provisional. Profile-mode Android duration, responsiveness, allocation/GC, and replacement counts must justify any later single long-lived worker isolate and its typed-data transfer cost.
+
+`PitchStabilizer` operates in continuous MIDI/log-frequency space and never changes the raw detector result. It applies a five-estimate median-centered 45-cent outlier filter followed by 0.35 exponential smoothing. Confidence below 0.82 follows no-pitch behavior. A different note or octave requires two consecutive confirmations; the current note is retained near semitone boundaries until evidence persists at least 8 cents beyond the midpoint. Confirmed note changes reset history instead of averaging unrelated notes. Four consecutive no-pitch results or 350 ms without a reliable estimate clear the old pitch.
+
+The diagnostic exposes requested/reported format, chunk statistics, ring occupancy, assembled/analyzed/replaced/dropped frames, detector average/maximum duration, raw and stabilized pitch, stale/no-signal state, execution mode, and friendly errors. UI publication is capped near 13.3 updates/s and is not driven by widget rebuilds or every PCM chunk. No raw bytes or samples are logged, persisted, or sent off-device.
 
 ## Audio playback and assets
 
@@ -177,7 +189,7 @@ Shared maximum widths produce readable phone, large-phone, and tablet columns. C
 - `record` 7.1.1 supplies continuous PCM16 microphone streaming and the Android `AudioRecord` bridge behind `TunerAudioInput`; it is used for transient capture, never file recording.
 - `package_info_plus` supplies the installed version and build number behind `ApplicationInfoLoader`; platform metadata cannot be read reliably from `pubspec.yaml` at runtime.
 
-No pitch-analysis, FFT, DSP, scientific-computing, database, analytics, advertising, account, backend, or purchase package is included. Phase 2B uses only `dart:math` and typed-data SDK libraries.
+No pitch-analysis, FFT, DSP, scientific-computing, database, analytics, advertising, account, backend, or purchase package is included. Pitch detection and the real-time buffer/stabilizer use only Dart SDK math, async, and typed-data libraries.
 
 ## Testing approach
 
@@ -191,16 +203,18 @@ Tuner Audio pure-Dart tests cover PCM16 little-endian normalization, signed boun
 
 Tuner Pitch tests are pure and require no microphone, Flutter widget, real timer, audio file, Android target, or network. They cover configuration validation, empty/short/non-finite/out-of-contract input, silence thresholds, all required clean frequencies, exact 40/1,200 Hz limits, near-boundary rejection through 39.9999 Hz and from 1,201 Hz, supported fundamentals beneath stronger out-of-range harmonics and a high transient, unsupported high-only tones, 44.1/48 kHz, multiple frame lengths and phases, 12-TET semitone boundaries, reference-frequency injection, dominant harmonics, missing/weak fundamental, deterministic white noise, low/moderate SNR, DC offset, clipping-like amplitude, envelopes, bass spectra, and repeatability. Wall-clock performance is observed only by the optional tool and is never asserted in tests.
 
+Tuner Realtime pure tests verify exact 4,096/1,024 overlap, arbitrary chunks, multiple frames from one chunk, partial reset, ordering without gaps/duplicates, and fixed memory. Controlled asynchronous detector fakes verify one active analysis, newest pending replacement, counters, stop/restart generation invalidation, sample-rate reset, stale clearing, and detector errors. Stabilizer tests cover steady variation, transient/octave rejection, repeated octave and deliberate note changes, short/sustained no-pitch, confidence, semitone flicker, bass, and high guitar notes. Controller and widget tests retain fake capture/time/detector dependencies and cover permission, Metronome release, lifecycle, route cleanup, raw/stable display, counters, errors, localization, narrow layout, and the absence of final tuner UI.
+
 ## Known limitations
 
-- BPM Tap and the foreground Metronome are functional. Guitar Tuner remains Coming Soon and opens only the Phase 2A microphone-input prototype; the Phase 2B pitch engine is offline and is not imported by that route.
+- BPM Tap and the foreground Metronome are functional. Guitar Tuner remains Coming Soon and opens a Phase 2C development diagnostic, not a production tuner interface.
 - Metronome playback is not sample-accurate, does not run in the background, and supports no subdivisions, swing, custom rhythms, or custom accent patterns.
 - Rare audible stuttering was observed on a physical Android device in the original Phase 1B build. Debug instrumentation can now distinguish Dart scheduler lateness, skipped deadlines, and overlapping platform audio requests, but repeat physical-device validation is required before declaring the symptom resolved. No physical Android target was connected during automated validation of this hotfix.
 - Haptic response varies with Android hardware and system settings.
 - The privacy policy is a product draft and the application is not Play Store ready.
 - Microphone capture is foreground-only, transient, local, and was physically validated separately in Phase 2A. There is no file recording or content database.
 - The capture prototype does not force an input route or manage Bluetooth SCO; its physical validation does not turn Android-controlled routing into a guaranteed route policy.
-- Pitch detection is monophonic and validated only with deterministic synthetic/offline signals. Plucked-string transients, inharmonicity, real microphone processing, live scheduling, smoothing, and Android execution cost remain Phase 2C work.
+- Pitch detection is monophonic. Buffering, backpressure, smoothing, hysteresis, and stale behavior have deterministic coverage, but plucked-string inharmonicity, real microphone processing, Android execution cost, UI responsiveness, octave/flicker behavior, and thermal stability still require physical profile-mode validation.
 - Preferences store only scalar application and metronome settings; future structured data needs a separate decision when its requirements exist.
 - Logging is local developer output only. No remote reporting or analytics exists.
 - Foundation targets Android; other generated platform projects are intentionally absent.

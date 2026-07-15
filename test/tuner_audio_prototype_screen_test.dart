@@ -7,6 +7,8 @@ import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
 import 'package:tunathic/features/tuner_audio/audio/tuner_audio_input.dart';
 import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_controller.dart';
+import 'package:tunathic/features/tuner_pitch/domain/musical_note.dart';
+import 'package:tunathic/features/tuner_pitch/domain/pitch_estimate.dart';
 
 import 'support/fakes.dart';
 import 'support/tuner_audio_fakes.dart';
@@ -19,11 +21,11 @@ void main() {
     await tester.pumpWidget(_testApp(audioInput));
     await _openPrototype(tester);
 
-    expect(find.text('Tuner Audio Prototype'), findsOneWidget);
+    expect(find.text('Real-Time Pitch Diagnostic'), findsOneWidget);
     expect(
       find.text(
-        'Technical prototype only. This validates microphone input and is not '
-        'a working guitar tuner.',
+        'Development diagnostic only. This connects live pitch analysis for '
+        'evaluation and is not the final Guitar Tuner.',
       ),
       findsOneWidget,
     );
@@ -34,8 +36,8 @@ void main() {
     );
     expect(find.text('Private by design'), findsOneWidget);
     expect(find.textContaining('Raw microphone data'), findsOneWidget);
-    expect(find.textContaining('Detected note'), findsNothing);
-    expect(find.textContaining('Detected frequency'), findsNothing);
+    expect(find.textContaining('Detected note'), findsWidgets);
+    expect(find.textContaining('Detected frequency'), findsWidgets);
     expect(find.byKey(const Key('tunerNeedle')), findsNothing);
   });
 
@@ -128,7 +130,7 @@ void main() {
     await tester.tap(find.text('Gitar Akort Cihazı'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Akort Ses Prototipi'), findsOneWidget);
+    expect(find.text('Gerçek Zamanlı Perde Tanılaması'), findsOneWidget);
     expect(find.text('Yakalamayı başlat'), findsOneWidget);
     expect(find.text('Mikrofon izni'), findsOneWidget);
     await tester.scrollUntilVisible(
@@ -137,6 +139,64 @@ void main() {
       scrollable: _scrollableInside('tunerAudioScroll'),
     );
     expect(find.text('Gizlilik odaklı'), findsOneWidget);
+  });
+
+  testWidgets('shows raw and stabilized pitch with performance counters', (
+    tester,
+  ) async {
+    final audioInput = FakeTunerAudioInput();
+    final pitchExecutor = FakePitchDetectionExecutor()..result = _estimate(440);
+    await tester.pumpWidget(_testApp(audioInput, pitchExecutor: pitchExecutor));
+    await _openPrototype(tester);
+    await tester.tap(find.byKey(const Key('startTunerAudioCapture')));
+    await tester.pumpAndSettle();
+
+    audioInput.emitSamples(
+      List<double>.filled(4096, 0.2),
+      arrivalTime: const Duration(milliseconds: 100),
+    );
+    await tester.pump();
+    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('tunerFramesAssembled')),
+      300,
+      scrollable: _scrollableInside('tunerAudioScroll'),
+      maxScrolls: 20,
+    );
+    expect(find.byKey(const Key('tunerFramesAssembled')), findsOneWidget);
+    expect(find.byKey(const Key('tunerFramesAnalyzed')), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('tunerStabilizedNote')),
+      400,
+      scrollable: _scrollableInside('tunerAudioScroll'),
+      maxScrolls: 20,
+    );
+
+    expect(find.text('A4'), findsWidgets);
+    expect(find.text('440.00 Hz'), findsWidgets);
+    expect(find.byKey(const Key('tunerNeedle')), findsNothing);
+  });
+
+  testWidgets('shows no-signal state without inventing a pitch', (
+    tester,
+  ) async {
+    final audioInput = FakeTunerAudioInput();
+    await tester.pumpWidget(_testApp(audioInput));
+    await _openPrototype(tester);
+    await tester.tap(find.byKey(const Key('startTunerAudioCapture')));
+    await tester.pumpAndSettle();
+
+    audioInput.emitSamples(List<double>.filled(4096, 0));
+    await tester.pump();
+    await tester.pump();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('tunerAnalysisStatus')),
+      300,
+      scrollable: _scrollableInside('tunerAudioScroll'),
+    );
+
+    expect(find.text('No reliable signal'), findsOneWidget);
+    expect(find.text('A4'), findsNothing);
   });
 
   testWidgets('narrow large-text layout remains scrollable without overflow', (
@@ -189,17 +249,34 @@ Finder _scrollableInside(String key) => find
 Widget _testApp(
   FakeTunerAudioInput audioInput, {
   AppSettings settings = const AppSettings(),
+  FakePitchDetectionExecutor? pitchExecutor,
 }) {
   return ProviderScope(
     overrides: [
       preferencesStoreProvider.overrideWithValue(MemoryPreferencesStore()),
       initialAppSettingsProvider.overrideWithValue(settings),
       tunerAudioInputFactoryProvider.overrideWithValue(() => audioInput),
+      pitchDetectionExecutorProvider.overrideWithValue(
+        pitchExecutor ?? FakePitchDetectionExecutor(),
+      ),
       stopMetronomeBeforeCaptureProvider.overrideWithValue(() async {}),
       hapticFeedbackOutputProvider.overrideWithValue(
         FakeHapticFeedbackOutput(),
       ),
     ],
     child: const TunathicApp(),
+  );
+}
+
+PitchEstimate _estimate(double frequency) {
+  final note = MusicalNoteConverter.fromFrequency(frequency)!;
+  return PitchEstimate.detected(
+    frequencyHz: frequency,
+    confidence: 0.95,
+    midiNote: note.midiNote,
+    noteName: note.noteName,
+    octave: note.octave,
+    centsDeviation: note.centsDeviation,
+    periodSamples: 48000 / frequency,
   );
 }
