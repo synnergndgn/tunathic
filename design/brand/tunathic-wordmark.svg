@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="220" viewBox="0 0 900 220" role="img" aria-label="Tunathic wordmark">
+  <title>Tunathic wordmark</title>
+  <desc>Slender tuning-fork mark next to the wordmark "Tunathic" with the tagline Tune. Train. Create.</desc>
+  <g transform="translate(20,8) scale(0.4)">
+    <g fill="none" stroke="#287DFF" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M170 116 L170 224 A86 86 0 0 0 342 224 L342 116"/>
+      <path d="M256 310 L256 396"/>
+    </g>
+  </g>
+  <text x="232" y="122" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="104" font-weight="600" letter-spacing="1" fill="#111820">Tunathic</text>
+  <text x="236" y="172" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="34" font-weight="400" letter-spacing="3" fill="#71808E">Tune. Train. Create.</text>
+</svg>

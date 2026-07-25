@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Tunathic tuning-fork mark">
+  <title>Tunathic mark</title>
+  <desc>A slender monoline tuning fork: two prongs joined by a semicircular head, with a stem.</desc>
+  <g fill="none" stroke="#287DFF" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M170 116 L170 224 A86 86 0 0 0 342 224 L342 116"/>
+    <path d="M256 310 L256 396"/>
+  </g>
+</svg>
