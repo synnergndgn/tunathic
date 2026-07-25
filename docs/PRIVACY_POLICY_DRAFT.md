@@ -1,17 +1,17 @@
 # Tunathic Privacy Policy Draft
 
-**Status:** Product draft for the application through Phase 2C. Live pitch analysis remains local, transient, and available only in a development diagnostic. This is not a final store-publishing policy and contains no invented legal contact details.
+**Status:** Product draft for the application through Phase 2D. Live pitch analysis remains local and transient. This is not a final store-publishing policy and contains no invented legal contact details.
 
 Tunathic – Guitar Toolkit is published by GUNDEV. The current application is designed to operate offline and keep its practice data on the user's device.
 
 ## Current data behavior
 
 - BPM Tap sessions exist only in application memory. Tap timestamps and estimates are not saved as session history or uploaded.
-- Theme, language, haptic-feedback, and Metronome preferences are stored locally on the device.
+- Theme, language, haptic-feedback, Metronome, and Guitar Tuner preset/mode/manual-string preferences are stored locally on the device.
 - Microphone permission is requested only after the user explicitly starts the Real-Time Pitch Diagnostic.
 - Microphone capture and analysis run only while that diagnostic is active in the foreground and stop on user request, backgrounding, route exit, capture failure, or analysis failure.
 - Raw PCM and normalized samples are processed locally through a bounded overlapping analysis window. They are not recorded to a file, retained as history, uploaded, or transmitted.
-- Raw and stabilized pitch estimates, short smoothing history, signal statistics, performance durations, and aggregate counters are transient values used by the development diagnostic. They are reset with the session and are not persisted or transmitted.
+- Raw and stabilized pitch estimates, automatic targets, cents results, short smoothing history, signal statistics, performance durations, and aggregate counters are transient values. They are reset with the session and are not persisted or transmitted.
 - Local debug diagnostics may contain requested or reported format, aggregate counters, lifecycle reasons, and technical failures. They never contain raw bytes or sample values.
 - No account is required.
 - The application contains no advertising or analytics SDK.

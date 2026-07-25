@@ -182,7 +182,7 @@ final class TunerAudioController extends Notifier<TunerAudioState> {
       onSnapshot: _onRealtimeSnapshot,
       onError: _onAnalysisError,
     );
-    ref.onDispose(releaseForNavigation);
+    ref.onDispose(_disposeController);
     return const TunerAudioState();
   }
 
@@ -329,12 +329,14 @@ final class TunerAudioController extends Notifier<TunerAudioState> {
 
   void releaseForNavigation() {
     if (_isDisposed) return;
+    unawaited(stop(reason: TunerCaptureStopReason.navigation));
+  }
+
+  void _disposeController() {
+    if (_isDisposed) return;
     _isDisposed = true;
     _operationVersion++;
     _pitchPipeline.stop();
-    _debugLog(
-      'Tuner audio stop reason=${TunerCaptureStopReason.navigation.name}',
-    );
     unawaited(_disposeResources());
   }
 

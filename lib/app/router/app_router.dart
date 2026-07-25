@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tunathic/features/bpm_tap/presentation/bpm_tap_screen.dart';
@@ -9,6 +10,7 @@ import 'package:tunathic/features/settings/presentation/settings_screen.dart';
 import 'package:tunathic/features/tool_placeholder/presentation/not_found_screen.dart';
 import 'package:tunathic/features/tool_placeholder/presentation/tool_placeholder_screen.dart';
 import 'package:tunathic/features/tools/tool_definition.dart';
+import 'package:tunathic/features/tuner/presentation/guitar_tuner_screen.dart';
 import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_prototype_screen.dart';
 
 abstract final class AppRoutes {
@@ -16,6 +18,7 @@ abstract final class AppRoutes {
   static const settings = '/settings';
   static const about = '/about';
   static const privacy = '/privacy';
+  static const tunerDiagnostics = '/debug/tuner-diagnostics';
 
   static String tool(ToolDefinition tool) => '/tools/${tool.id}';
 }
@@ -40,6 +43,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.privacy,
         builder: (context, state) => const PrivacyScreen(),
       ),
+      if (kDebugMode)
+        GoRoute(
+          path: AppRoutes.tunerDiagnostics,
+          builder: (context, state) => const TunerAudioPrototypeScreen(),
+        ),
       GoRoute(
         path: '/tools/:toolId',
         builder: (context, state) {
@@ -52,7 +60,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             return const MetronomeScreen();
           }
           if (tool == ToolDefinition.guitarTuner) {
-            return const TunerAudioPrototypeScreen();
+            return const GuitarTunerScreen();
           }
           return ToolPlaceholderScreen(tool: tool);
         },

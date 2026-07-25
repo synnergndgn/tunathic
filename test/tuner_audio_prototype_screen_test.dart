@@ -129,6 +129,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Gitar Akort Cihazı'));
     await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('openTunerDiagnostics')));
+    await tester.pumpAndSettle();
 
     expect(find.text('Gerçek Zamanlı Perde Tanılaması'), findsOneWidget);
     expect(find.text('Yakalamayı başlat'), findsOneWidget);
@@ -223,6 +225,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Guitar Tuner'));
     await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('openTunerDiagnostics')));
+    await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
 
     await tester.scrollUntilVisible(
@@ -239,6 +243,8 @@ void main() {
 Future<void> _openPrototype(WidgetTester tester) async {
   await tester.pumpAndSettle();
   await tester.tap(find.text('Guitar Tuner'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.byKey(const Key('openTunerDiagnostics')));
   await tester.pumpAndSettle();
 }
 

@@ -287,29 +287,35 @@ void main() {
     },
   );
 
-  test('route release stops and disposes capture resources', () async {
+  test('route release stops capture and allows a later restart', () async {
     await controller.start();
 
     controller.releaseForNavigation();
     await _flushMicrotasks();
 
     expect(audioInput.stopCount, 1);
-    expect(audioInput.disposeCount, 1);
+    expect(audioInput.disposeCount, 0);
+    expect(container.read(tunerAudioProvider).status, TunerCaptureStatus.idle);
+
+    await controller.start();
+
+    expect(audioInput.startCount, 2);
+    expect(
+      container.read(tunerAudioProvider).status,
+      TunerCaptureStatus.capturing,
+    );
   });
 
-  test(
-    'route release logs disposal failures without leaking an exception',
-    () async {
-      await controller.start();
-      audioInput.disposeError = StateError('platform dispose failed');
+  test('provider disposal releases capture resources', () async {
+    await controller.start();
 
-      controller.releaseForNavigation();
-      await _flushMicrotasks();
+    subscription.close();
+    container.dispose();
+    await _flushMicrotasks();
 
-      expect(audioInput.disposeCount, 1);
-      expect(logger.errorMessages, isNotEmpty);
-    },
-  );
+    expect(audioInput.stopCount, 1);
+    expect(audioInput.disposeCount, 1);
+  });
 }
 
 Future<void> _flushMicrotasks() async {

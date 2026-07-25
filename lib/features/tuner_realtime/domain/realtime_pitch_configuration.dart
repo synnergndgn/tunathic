@@ -1,14 +1,14 @@
 final class RealtimePitchConfiguration {
   const RealtimePitchConfiguration({
     this.frameSize = 4096,
-    this.hopSize = 1024,
+    this.hopSize = 2048,
     this.historyLength = 5,
     this.smoothingFactor = 0.35,
     this.outlierThresholdCents = 45,
     this.noteBoundaryMarginCents = 8,
     this.noteSwitchConfirmations = 2,
     this.octaveSwitchConfirmations = 2,
-    this.noPitchClearCount = 4,
+    this.noPitchClearCount = 8,
     this.minimumConfidence = 0.82,
     this.staleTimeout = const Duration(milliseconds: 350),
     this.uiPublicationInterval = const Duration(milliseconds: 75),

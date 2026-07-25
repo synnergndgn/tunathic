@@ -83,8 +83,11 @@ final class YinPitchDetector implements PitchDetector {
     }
 
     final candidate = _preferClearerSubharmonic(
+      samples,
       normalizedDifference,
       initialCandidate,
+      sampleRate: sampleRate,
+      mean: mean,
       supportedMaximumLag: maximumLag,
       searchMaximumLag: searchMaximumLag,
     );
@@ -202,13 +205,22 @@ final class YinPitchDetector implements PitchDetector {
   }
 
   int? _preferClearerSubharmonic(
+    Float32List samples,
     Float64List normalizedDifference,
     int initialCandidate, {
+    required int sampleRate,
+    required double mean,
     required int supportedMaximumLag,
     required int searchMaximumLag,
   }) {
     var selectedLag = initialCandidate;
     var selectedScore = normalizedDifference[initialCandidate];
+    final initialMagnitude = _spectralMagnitude(
+      samples,
+      frequencyHz: sampleRate / initialCandidate,
+      sampleRate: sampleRate,
+      mean: mean,
+    );
     for (
       var multiple = 2;
       multiple <= configuration.maximumHarmonicMultiple;
@@ -224,13 +236,63 @@ final class YinPitchDetector implements PitchDetector {
         searchMaximumLag,
       );
       final score = normalizedDifference[nearbyMinimum];
-      if (selectedScore - score >= configuration.harmonicImprovementThreshold) {
+      if (selectedScore - score >=
+              configuration.subharmonicImprovementThreshold &&
+          _hasSpectralSupport(
+            samples,
+            initialMagnitude: initialMagnitude,
+            candidateLag: nearbyMinimum,
+            sampleRate: sampleRate,
+            mean: mean,
+          )) {
         if (nearbyMinimum > supportedMaximumLag) return null;
         selectedLag = nearbyMinimum;
         selectedScore = score;
       }
     }
     return selectedLag;
+  }
+
+  bool _hasSpectralSupport(
+    Float32List samples, {
+    required double initialMagnitude,
+    required int candidateLag,
+    required int sampleRate,
+    required double mean,
+  }) {
+    if (initialMagnitude <= 1e-12) return false;
+    final candidateMagnitude = _spectralMagnitude(
+      samples,
+      frequencyHz: sampleRate / candidateLag,
+      sampleRate: sampleRate,
+      mean: mean,
+    );
+    return candidateMagnitude / initialMagnitude >=
+        configuration.minimumSubharmonicSpectralSupportRatio;
+  }
+
+  double _spectralMagnitude(
+    Float32List samples, {
+    required double frequencyHz,
+    required int sampleRate,
+    required double mean,
+  }) {
+    final angle = 2 * math.pi * frequencyHz / sampleRate;
+    final cosineStep = math.cos(angle);
+    final sineStep = math.sin(angle);
+    var cosine = 1.0;
+    var sine = 0.0;
+    var real = 0.0;
+    var imaginary = 0.0;
+    for (final sample in samples) {
+      final centered = sample - mean;
+      real += centered * cosine;
+      imaginary -= centered * sine;
+      final nextCosine = cosine * cosineStep - sine * sineStep;
+      sine = sine * cosineStep + cosine * sineStep;
+      cosine = nextCosine;
+    }
+    return math.sqrt(real * real + imaginary * imaginary);
   }
 
   bool _isUnsupportedHighFrequencyOnly(

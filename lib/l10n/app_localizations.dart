@@ -1159,6 +1159,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Live pitch analysis stopped because the detector failed. You can try again.'**
   String get pitchAnalysisFailedMessage;
+
+  /// No description provided for @tuningPresetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuning'**
+  String get tuningPresetLabel;
+
+  /// No description provided for @automaticMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic'**
+  String get automaticMode;
+
+  /// No description provided for @manualMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual'**
+  String get manualMode;
+
+  /// No description provided for @targetStringLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Target string'**
+  String get targetStringLabel;
+
+  /// No description provided for @flatLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Flat'**
+  String get flatLabel;
+
+  /// No description provided for @sharpLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharp'**
+  String get sharpLabel;
+
+  /// No description provided for @inTuneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'In tune'**
+  String get inTuneLabel;
+
+  /// No description provided for @noSignal.
+  ///
+  /// In en, this message translates to:
+  /// **'No signal'**
+  String get noSignal;
+
+  /// No description provided for @startTuning.
+  ///
+  /// In en, this message translates to:
+  /// **'Start tuning'**
+  String get startTuning;
+
+  /// No description provided for @stopTuning.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop tuning'**
+  String get stopTuning;
+
+  /// No description provided for @retryMicrophone.
+  ///
+  /// In en, this message translates to:
+  /// **'Try microphone again'**
+  String get retryMicrophone;
+
+  /// No description provided for @openTunerDiagnostics.
+  ///
+  /// In en, this message translates to:
+  /// **'Open tuner diagnostics'**
+  String get openTunerDiagnostics;
+
+  /// No description provided for @tuningStandard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get tuningStandard;
+
+  /// No description provided for @tuningDropD.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop D'**
+  String get tuningDropD;
+
+  /// No description provided for @tuningHalfStepDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Half Step Down'**
+  String get tuningHalfStepDown;
+
+  /// No description provided for @tuningFullStepDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Step Down'**
+  String get tuningFullStepDown;
+
+  /// No description provided for @tuningDadgad.
+  ///
+  /// In en, this message translates to:
+  /// **'DADGAD'**
+  String get tuningDadgad;
+
+  /// No description provided for @tuningOpenG.
+  ///
+  /// In en, this message translates to:
+  /// **'Open G'**
+  String get tuningOpenG;
+
+  /// No description provided for @tuningOpenD.
+  ///
+  /// In en, this message translates to:
+  /// **'Open D'**
+  String get tuningOpenD;
+
+  /// No description provided for @noDetectedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'No detected note'**
+  String get noDetectedNote;
+
+  /// No description provided for @frequencyUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency unavailable'**
+  String get frequencyUnavailable;
+
+  /// No description provided for @frequencyUnavailableSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency unavailable'**
+  String get frequencyUnavailableSemantics;
+
+  /// No description provided for @centsUnavailableSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Cents offset unavailable'**
+  String get centsUnavailableSemantics;
+
+  /// No description provided for @signedCentsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} cents'**
+  String signedCentsValue(String value);
+
+  /// No description provided for @frequencyHertzValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} Hz'**
+  String frequencyHertzValue(String value);
+
+  /// No description provided for @detectedNoteSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Detected note {note}, octave {octave}'**
+  String detectedNoteSemantics(String note, int octave);
+
+  /// No description provided for @targetStringSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Target string {position}, {note}'**
+  String targetStringSemantics(int position, String note);
+
+  /// No description provided for @tunerModeSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuner mode: {mode}'**
+  String tunerModeSemantics(String mode);
+
+  /// No description provided for @centsDirectionSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} cents {direction}'**
+  String centsDirectionSemantics(int value, String direction);
+
+  /// No description provided for @frequencySemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency {value} hertz'**
+  String frequencySemantics(String value);
+
+  /// No description provided for @tunerStoppedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Start when you are ready to tune.'**
+  String get tunerStoppedMessage;
+
+  /// No description provided for @tunerRequestingPermissionMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Requesting microphone permission.'**
+  String get tunerRequestingPermissionMessage;
+
+  /// No description provided for @tunerListeningMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone is starting.'**
+  String get tunerListeningMessage;
+
+  /// No description provided for @tunerWaitingForSignalMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening. Play one string.'**
+  String get tunerWaitingForSignalMessage;
+
+  /// No description provided for @tunerUnstableSignalMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Signal is unstable. Let one string ring clearly.'**
+  String get tunerUnstableSignalMessage;
+
+  /// No description provided for @tunerStablePitchMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Pitch detected.'**
+  String get tunerStablePitchMessage;
+
+  /// No description provided for @tunerNoSignalMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No reliable signal. Play one string.'**
+  String get tunerNoSignalMessage;
+
+  /// No description provided for @tunerPermissionDeniedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission is needed to tune.'**
+  String get tunerPermissionDeniedMessage;
+
+  /// No description provided for @tunerMicrophoneUnavailableMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The microphone is unavailable. Try again.'**
+  String get tunerMicrophoneUnavailableMessage;
+
+  /// No description provided for @tunerProcessingErrorMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Pitch processing stopped. Try again.'**
+  String get tunerProcessingErrorMessage;
 }
 
 class _AppLocalizationsDelegate

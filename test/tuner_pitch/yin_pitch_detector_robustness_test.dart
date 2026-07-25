@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tunathic/features/tuner_pitch/domain/pitch_detector_configuration.dart';
 import 'package:tunathic/features/tuner_pitch/domain/pitch_estimate.dart';
 import 'package:tunathic/features/tuner_pitch/dsp/yin_pitch_detector.dart';
 
@@ -201,6 +202,42 @@ void main() {
     );
 
     _expectFrequency(result, 41.2, maximumRelativeError: 0.007);
+  });
+
+  test('does not fold noisy guitar fundamentals down an octave', () {
+    for (final frequencyHz in [82.41, 110.0, 146.83]) {
+      final result = detector.detect(
+        SyntheticPitchSignal.harmonic(
+          sampleRate: sampleRate,
+          fundamentalHz: frequencyHz,
+          length: frameLength,
+          harmonicAmplitudes: const {1: 0.12, 2: 0.08, 3: 0.25, 4: 0.06},
+          noiseAmplitude: 0.12,
+          noiseSeed: 177,
+        ),
+        sampleRate: sampleRate,
+      );
+
+      _expectFrequency(result, frequencyHz, maximumRelativeError: 0.02);
+    }
+  });
+
+  test('requires spectral evidence before promoting a longer period', () {
+    final permissiveDifferenceDetector = YinPitchDetector(
+      configuration: PitchDetectorConfiguration(
+        subharmonicImprovementThreshold: 0,
+      ),
+    );
+    final result = permissiveDifferenceDetector.detect(
+      SyntheticPitchSignal.sine(
+        sampleRate: sampleRate,
+        frequencyHz: 110,
+        length: frameLength,
+      ),
+      sampleRate: sampleRate,
+    );
+
+    _expectFrequency(result, 110);
   });
 
   test('handles a deterministic attack and release envelope', () {

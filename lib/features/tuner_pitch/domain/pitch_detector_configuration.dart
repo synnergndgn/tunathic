@@ -8,6 +8,8 @@ final class PitchDetectorConfiguration {
     this.minimumPeriods = 3,
     this.lowerRangeGuardRatio = 0.1,
     this.harmonicImprovementThreshold = 0.01,
+    this.subharmonicImprovementThreshold = 0.11,
+    this.minimumSubharmonicSpectralSupportRatio = 0.12,
     this.maximumHarmonicMultiple = 4,
   }) {
     if (!minimumFrequencyHz.isFinite || minimumFrequencyHz <= 0) {
@@ -73,6 +75,24 @@ final class PitchDetectorConfiguration {
         'Must be finite and in [0, 1).',
       );
     }
+    if (!subharmonicImprovementThreshold.isFinite ||
+        subharmonicImprovementThreshold < 0 ||
+        subharmonicImprovementThreshold >= 1) {
+      throw ArgumentError.value(
+        subharmonicImprovementThreshold,
+        'subharmonicImprovementThreshold',
+        'Must be finite and in [0, 1).',
+      );
+    }
+    if (!minimumSubharmonicSpectralSupportRatio.isFinite ||
+        minimumSubharmonicSpectralSupportRatio < 0 ||
+        minimumSubharmonicSpectralSupportRatio > 1) {
+      throw ArgumentError.value(
+        minimumSubharmonicSpectralSupportRatio,
+        'minimumSubharmonicSpectralSupportRatio',
+        'Must be finite and in [0, 1].',
+      );
+    }
     if (maximumHarmonicMultiple < 1 || maximumHarmonicMultiple > 8) {
       throw ArgumentError.value(
         maximumHarmonicMultiple,
@@ -90,6 +110,25 @@ final class PitchDetectorConfiguration {
   final double minimumPeriods;
   final double lowerRangeGuardRatio;
   final double harmonicImprovementThreshold;
+
+  /// Minimum normalized-difference improvement required before replacing an
+  /// in-range candidate with a period two to four times longer.
+  ///
+  /// Physical guitar testing showed that the boundary-oriented 0.01 margin
+  /// could fold A2 and D3 down by one or more octaves. A conservative 0.11
+  /// preserves the deterministic dominant-harmonic and missing-fundamental
+  /// cases without promoting the small longer-period minima seen in those
+  /// frames.
+  final double subharmonicImprovementThreshold;
+
+  /// Minimum spectral magnitude at a proposed longer period relative to the
+  /// initial candidate.
+  ///
+  /// This prevents finite-window and release-envelope periodicity from
+  /// inventing an absent lower fundamental. The 0.12 ratio remains below the
+  /// deterministic weak-fundamental cases while rejecting the octave leakage
+  /// observed at the end of physical A2 and D3 notes.
+  final double minimumSubharmonicSpectralSupportRatio;
   final int maximumHarmonicMultiple;
 
   int minimumFrameLength(int sampleRate) {

@@ -234,5 +234,67 @@
   "centsValue": "{value} cent",
   "@centsValue": {"placeholders": {"value": {"type": "String"}}},
   "pitchUnavailable": "—",
-  "pitchAnalysisFailedMessage": "Dedektör başarısız olduğu için canlı perde analizi durdu. Yeniden deneyebilirsiniz."
+  "pitchAnalysisFailedMessage": "Dedektör başarısız olduğu için canlı perde analizi durdu. Yeniden deneyebilirsiniz.",
+  "tuningPresetLabel": "Akort düzeni",
+  "automaticMode": "Otomatik",
+  "manualMode": "Manuel",
+  "targetStringLabel": "Hedef tel",
+  "flatLabel": "Pes",
+  "sharpLabel": "Tiz",
+  "inTuneLabel": "Akortta",
+  "noSignal": "Sinyal yok",
+  "startTuning": "Akordu başlat",
+  "stopTuning": "Akordu durdur",
+  "retryMicrophone": "Mikrofonu yeniden dene",
+  "openTunerDiagnostics": "Akort tanılamasını aç",
+  "tuningStandard": "Standart",
+  "tuningDropD": "Drop D",
+  "tuningHalfStepDown": "Yarım Ses Pes",
+  "tuningFullStepDown": "Tam Ses Pes",
+  "tuningDadgad": "DADGAD",
+  "tuningOpenG": "Açık Sol",
+  "tuningOpenD": "Açık Re",
+  "noDetectedNote": "Algılanan nota yok",
+  "frequencyUnavailable": "Frekans kullanılamıyor",
+  "frequencyUnavailableSemantics": "Frekans kullanılamıyor",
+  "centsUnavailableSemantics": "Cent sapması kullanılamıyor",
+  "signedCentsValue": "{value} cent",
+  "@signedCentsValue": {"placeholders": {"value": {"type": "String"}}},
+  "frequencyHertzValue": "{value} Hz",
+  "@frequencyHertzValue": {"placeholders": {"value": {"type": "String"}}},
+  "detectedNoteSemantics": "Algılanan nota {note}, oktav {octave}",
+  "@detectedNoteSemantics": {
+    "placeholders": {
+      "note": {"type": "String"},
+      "octave": {"type": "int"}
+    }
+  },
+  "targetStringSemantics": "Hedef tel {position}, {note}",
+  "@targetStringSemantics": {
+    "placeholders": {
+      "position": {"type": "int"},
+      "note": {"type": "String"}
+    }
+  },
+  "tunerModeSemantics": "Akort modu: {mode}",
+  "@tunerModeSemantics": {"placeholders": {"mode": {"type": "String"}}},
+  "centsDirectionSemantics": "{value} cent {direction}",
+  "@centsDirectionSemantics": {
+    "placeholders": {
+      "value": {"type": "int"},
+      "direction": {"type": "String"}
+    }
+  },
+  "frequencySemantics": "Frekans {value} hertz",
+  "@frequencySemantics": {"placeholders": {"value": {"type": "String"}}},
+  "tunerStoppedMessage": "Akort etmeye hazır olduğunuzda Başlat'a dokunun.",
+  "tunerRequestingPermissionMessage": "Mikrofon izni isteniyor.",
+  "tunerListeningMessage": "Mikrofon başlatılıyor.",
+  "tunerWaitingForSignalMessage": "Dinleniyor. Tek bir tele vurun.",
+  "tunerUnstableSignalMessage": "Sinyal kararsız. Tek bir telin temizce çalmasına izin verin.",
+  "tunerStablePitchMessage": "Perde algılandı.",
+  "tunerNoSignalMessage": "Güvenilir sinyal yok. Tek bir tele vurun.",
+  "tunerPermissionDeniedMessage": "Akort için mikrofon izni gereklidir.",
+  "tunerMicrophoneUnavailableMessage": "Mikrofon kullanılamıyor. Yeniden deneyin.",
+  "tunerProcessingErrorMessage": "Perde işleme durdu. Yeniden deneyin."
 }

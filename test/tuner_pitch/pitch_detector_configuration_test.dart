@@ -51,6 +51,16 @@ void main() {
       throwsArgumentError,
     );
     expect(
+      () => PitchDetectorConfiguration(subharmonicImprovementThreshold: 1),
+      throwsArgumentError,
+    );
+    expect(
+      () => PitchDetectorConfiguration(
+        minimumSubharmonicSpectralSupportRatio: 1.01,
+      ),
+      throwsArgumentError,
+    );
+    expect(
       () => PitchDetectorConfiguration(lowerRangeGuardRatio: 0.6),
       throwsArgumentError,
     );

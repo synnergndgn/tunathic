@@ -601,4 +601,144 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get pitchAnalysisFailedMessage =>
       'Dedektör başarısız olduğu için canlı perde analizi durdu. Yeniden deneyebilirsiniz.';
+
+  @override
+  String get tuningPresetLabel => 'Akort düzeni';
+
+  @override
+  String get automaticMode => 'Otomatik';
+
+  @override
+  String get manualMode => 'Manuel';
+
+  @override
+  String get targetStringLabel => 'Hedef tel';
+
+  @override
+  String get flatLabel => 'Pes';
+
+  @override
+  String get sharpLabel => 'Tiz';
+
+  @override
+  String get inTuneLabel => 'Akortta';
+
+  @override
+  String get noSignal => 'Sinyal yok';
+
+  @override
+  String get startTuning => 'Akordu başlat';
+
+  @override
+  String get stopTuning => 'Akordu durdur';
+
+  @override
+  String get retryMicrophone => 'Mikrofonu yeniden dene';
+
+  @override
+  String get openTunerDiagnostics => 'Akort tanılamasını aç';
+
+  @override
+  String get tuningStandard => 'Standart';
+
+  @override
+  String get tuningDropD => 'Drop D';
+
+  @override
+  String get tuningHalfStepDown => 'Yarım Ses Pes';
+
+  @override
+  String get tuningFullStepDown => 'Tam Ses Pes';
+
+  @override
+  String get tuningDadgad => 'DADGAD';
+
+  @override
+  String get tuningOpenG => 'Açık Sol';
+
+  @override
+  String get tuningOpenD => 'Açık Re';
+
+  @override
+  String get noDetectedNote => 'Algılanan nota yok';
+
+  @override
+  String get frequencyUnavailable => 'Frekans kullanılamıyor';
+
+  @override
+  String get frequencyUnavailableSemantics => 'Frekans kullanılamıyor';
+
+  @override
+  String get centsUnavailableSemantics => 'Cent sapması kullanılamıyor';
+
+  @override
+  String signedCentsValue(String value) {
+    return '$value cent';
+  }
+
+  @override
+  String frequencyHertzValue(String value) {
+    return '$value Hz';
+  }
+
+  @override
+  String detectedNoteSemantics(String note, int octave) {
+    return 'Algılanan nota $note, oktav $octave';
+  }
+
+  @override
+  String targetStringSemantics(int position, String note) {
+    return 'Hedef tel $position, $note';
+  }
+
+  @override
+  String tunerModeSemantics(String mode) {
+    return 'Akort modu: $mode';
+  }
+
+  @override
+  String centsDirectionSemantics(int value, String direction) {
+    return '$value cent $direction';
+  }
+
+  @override
+  String frequencySemantics(String value) {
+    return 'Frekans $value hertz';
+  }
+
+  @override
+  String get tunerStoppedMessage =>
+      'Akort etmeye hazır olduğunuzda Başlat\'a dokunun.';
+
+  @override
+  String get tunerRequestingPermissionMessage => 'Mikrofon izni isteniyor.';
+
+  @override
+  String get tunerListeningMessage => 'Mikrofon başlatılıyor.';
+
+  @override
+  String get tunerWaitingForSignalMessage => 'Dinleniyor. Tek bir tele vurun.';
+
+  @override
+  String get tunerUnstableSignalMessage =>
+      'Sinyal kararsız. Tek bir telin temizce çalmasına izin verin.';
+
+  @override
+  String get tunerStablePitchMessage => 'Perde algılandı.';
+
+  @override
+  String get tunerNoSignalMessage =>
+      'Güvenilir sinyal yok. Tek bir tele vurun.';
+
+  @override
+  String get tunerPermissionDeniedMessage =>
+      'Akort için mikrofon izni gereklidir.';
+
+  @override
+  String get tunerMicrophoneUnavailableMessage =>
+      'Mikrofon kullanılamıyor. Yeniden deneyin.';
+
+  @override
+  String get tunerProcessingErrorMessage =>
+      'Perde işleme durdu. Yeniden deneyin.';
 }

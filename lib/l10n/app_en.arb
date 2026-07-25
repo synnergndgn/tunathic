@@ -234,5 +234,67 @@
   "centsValue": "{value} cents",
   "@centsValue": {"placeholders": {"value": {"type": "String"}}},
   "pitchUnavailable": "—",
-  "pitchAnalysisFailedMessage": "Live pitch analysis stopped because the detector failed. You can try again."
+  "pitchAnalysisFailedMessage": "Live pitch analysis stopped because the detector failed. You can try again.",
+  "tuningPresetLabel": "Tuning",
+  "automaticMode": "Automatic",
+  "manualMode": "Manual",
+  "targetStringLabel": "Target string",
+  "flatLabel": "Flat",
+  "sharpLabel": "Sharp",
+  "inTuneLabel": "In tune",
+  "noSignal": "No signal",
+  "startTuning": "Start tuning",
+  "stopTuning": "Stop tuning",
+  "retryMicrophone": "Try microphone again",
+  "openTunerDiagnostics": "Open tuner diagnostics",
+  "tuningStandard": "Standard",
+  "tuningDropD": "Drop D",
+  "tuningHalfStepDown": "Half Step Down",
+  "tuningFullStepDown": "Full Step Down",
+  "tuningDadgad": "DADGAD",
+  "tuningOpenG": "Open G",
+  "tuningOpenD": "Open D",
+  "noDetectedNote": "No detected note",
+  "frequencyUnavailable": "Frequency unavailable",
+  "frequencyUnavailableSemantics": "Frequency unavailable",
+  "centsUnavailableSemantics": "Cents offset unavailable",
+  "signedCentsValue": "{value} cents",
+  "@signedCentsValue": {"placeholders": {"value": {"type": "String"}}},
+  "frequencyHertzValue": "{value} Hz",
+  "@frequencyHertzValue": {"placeholders": {"value": {"type": "String"}}},
+  "detectedNoteSemantics": "Detected note {note}, octave {octave}",
+  "@detectedNoteSemantics": {
+    "placeholders": {
+      "note": {"type": "String"},
+      "octave": {"type": "int"}
+    }
+  },
+  "targetStringSemantics": "Target string {position}, {note}",
+  "@targetStringSemantics": {
+    "placeholders": {
+      "position": {"type": "int"},
+      "note": {"type": "String"}
+    }
+  },
+  "tunerModeSemantics": "Tuner mode: {mode}",
+  "@tunerModeSemantics": {"placeholders": {"mode": {"type": "String"}}},
+  "centsDirectionSemantics": "{value} cents {direction}",
+  "@centsDirectionSemantics": {
+    "placeholders": {
+      "value": {"type": "int"},
+      "direction": {"type": "String"}
+    }
+  },
+  "frequencySemantics": "Frequency {value} hertz",
+  "@frequencySemantics": {"placeholders": {"value": {"type": "String"}}},
+  "tunerStoppedMessage": "Tap Start when you are ready to tune.",
+  "tunerRequestingPermissionMessage": "Requesting microphone permission.",
+  "tunerListeningMessage": "Microphone is starting.",
+  "tunerWaitingForSignalMessage": "Listening. Play one string.",
+  "tunerUnstableSignalMessage": "Signal is unstable. Let one string ring clearly.",
+  "tunerStablePitchMessage": "Pitch detected.",
+  "tunerNoSignalMessage": "No reliable signal. Play one string.",
+  "tunerPermissionDeniedMessage": "Microphone permission is needed to tune.",
+  "tunerMicrophoneUnavailableMessage": "The microphone is unavailable. Try again.",
+  "tunerProcessingErrorMessage": "Pitch processing stopped. Try again."
 }

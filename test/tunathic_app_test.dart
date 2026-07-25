@@ -11,7 +11,7 @@ import 'support/tuner_audio_fakes.dart';
 
 void main() {
   testWidgets(
-    'dashboard groups every tool and emphasizes the two available tools',
+    'dashboard groups every tool and emphasizes the available tools',
     (tester) async {
       _useTallSurface(tester);
       await tester.pumpWidget(_testApp());
@@ -23,22 +23,32 @@ void main() {
       expect(find.text('Training'), findsOneWidget);
       expect(find.text('Guitar Tuner'), findsOneWidget);
       expect(find.text('Capo Calculator'), findsOneWidget);
-      expect(find.text('Open tool'), findsNWidgets(2));
-      expect(find.text('Coming Soon'), findsNWidgets(8));
+      expect(find.text('Open tool'), findsNWidgets(3));
+      expect(find.text('Coming Soon'), findsNWidgets(7));
     },
   );
 
-  testWidgets('tuner card opens the clearly labeled audio prototype', (
-    tester,
-  ) async {
+  testWidgets('tuner card opens the production Guitar Tuner', (tester) async {
     await tester.pumpWidget(_testApp());
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Guitar Tuner'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Real-Time Pitch Diagnostic'), findsOneWidget);
-    expect(find.textContaining('not the final Guitar Tuner'), findsOneWidget);
+    expect(find.text('Guitar Tuner'), findsOneWidget);
+    expect(find.text('Tuning'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('startGuitarTuner')),
+      300,
+      scrollable: find
+          .descendant(
+            of: find.byKey(const Key('guitarTunerScroll')),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    expect(find.byKey(const Key('startGuitarTuner')), findsOneWidget);
+    expect(find.text('Real-Time Pitch Diagnostic'), findsNothing);
   });
 
   testWidgets('Turkish is available as an application locale', (tester) async {
@@ -53,8 +63,8 @@ void main() {
     expect(find.text('Teori ve Başvuru'), findsOneWidget);
     expect(find.text('Eğitim'), findsOneWidget);
     expect(find.text('Gitar Akort Cihazı'), findsOneWidget);
-    expect(find.text('Aracı aç'), findsNWidgets(2));
-    expect(find.text('Yakında'), findsNWidgets(8));
+    expect(find.text('Aracı aç'), findsNWidgets(3));
+    expect(find.text('Yakında'), findsNWidgets(7));
   });
 }
 

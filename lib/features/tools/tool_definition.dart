@@ -21,7 +21,9 @@ enum ToolDefinition {
   final IconData icon;
 
   bool get isAvailable =>
-      this == ToolDefinition.bpmTap || this == ToolDefinition.metronome;
+      this == ToolDefinition.bpmTap ||
+      this == ToolDefinition.metronome ||
+      this == ToolDefinition.guitarTuner;
 
   ToolCategory get category => switch (this) {
     ToolDefinition.guitarTuner ||

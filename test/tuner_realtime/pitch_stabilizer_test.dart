@@ -11,6 +11,15 @@ void main() {
 
   setUp(() => stabilizer = PitchStabilizer());
 
+  test('production cadence matches the physical-device analysis budget', () {
+    const configuration = RealtimePitchConfiguration();
+
+    expect(configuration.frameSize, 4096);
+    expect(configuration.hopSize, 2048);
+    expect(configuration.noPitchClearCount, 8);
+    expect(configuration.staleTimeout, const Duration(milliseconds: 350));
+  });
+
   test('stabilizes a constant note and small cents variation', () {
     for (final cents in [0.0, 3.0, -2.0, 1.0, -1.0]) {
       stabilizer.add(_estimate(_frequency(440, cents)));
@@ -58,7 +67,7 @@ void main() {
 
   test('retains a short no-pitch gap and clears sustained no-pitch', () {
     stabilizer.add(_estimate(196));
-    for (var index = 0; index < 3; index++) {
+    for (var index = 0; index < 7; index++) {
       final result = stabilizer.add(_noPitch());
       expect(result.pitch, isNotNull);
       expect(result.acceptedCurrentEstimate, isFalse);

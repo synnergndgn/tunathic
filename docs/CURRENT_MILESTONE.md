@@ -1,86 +1,107 @@
-# Current Milestone: Phase 2C — Real-Time Pitch Pipeline
+# Current Milestone: Phase 2D — Final Guitar Tuner UI
 
-Phase 2C connects the physically validated Phase 2A normalized microphone stream to the synthetic/offline-validated Phase 2B YIN detector through a bounded foreground analysis pipeline. The routed screen is explicitly a development diagnostic, not the final Guitar Tuner. Guitar Tuner remains Coming Soon.
+Phase 2D places a production-facing monophonic Guitar Tuner on the validated Phase 2A–2C microphone, YIN, buffering, stabilization, and lifecycle stack. The feature is implemented and covered by deterministic tests. Final real-guitar validation and tuning polish remain required before declaring the tuner release-complete.
 
-## In scope
+## Product experience
 
-- Arbitrary normalized mono PCM chunks assembled into overlapping detector frames
-- One active detector operation and at most one newest pending frame
-- Log-pitch smoothing, octave rejection, note hysteresis, no-pitch clearing, and stale timeout outside `YinPitchDetector`
-- Riverpod-owned capture, analysis, lifecycle, error, and transient diagnostic state
-- English and Turkish development diagnostics without a needle, string UI, presets, or tuning modes
-- Local, in-memory processing with no raw sample, pitch-history, or diagnostic persistence
+The dashboard opens Guitar Tuner as an available tool. The production route shows:
 
-## Analysis configuration
+- Selected tuning preset and automatic/manual mode
+- Six target strings with the active target identified
+- Large stabilized note and octave
+- Animated approximately −50 to +50 cent indicator
+- Signed, unclamped cents text and current frequency
+- Flat, sharp, in-tune, and signal-state text that does not rely on color
+- One clear Start/Stop action and friendly microphone/processing errors
 
-Defaults are centralized in `RealtimePitchConfiguration`:
+The layout is scrollable, responsive on narrow portrait phones, usable with large text, and supports light/dark themes plus English/Turkish. Raw confidence, PCM counters, detector durations, and other engineering data are absent from the production screen.
 
-- Frame size: 4,096 samples
-- Hop size: 1,024 samples
-- Overlap: 75%
-- History length: 5 accepted estimates
-- Minimum confidence: 0.82
-- Median outlier threshold: 45 cents
-- Exponential smoothing factor: 0.35
-- Note-boundary margin: 8 cents
-- Note and octave switch confirmations: 2
-- Sustained no-pitch clearing: 4 analyzed results
-- Stale timeout: 350 ms
-- UI publication interval: 75 ms, at most approximately 13.3 updates/s
+In debug builds, the science action opens `/debug/tuner-diagnostics`, preserving the Phase 2C diagnostic. That route is not registered in release builds.
 
-At 48 kHz, a frame spans about 85.3 ms and a hop about 21.3 ms. At 44.1 kHz they span about 92.9 ms and 23.2 ms. The frame exceeds YIN's 3,600-sample requirement at 48 kHz and 3,308-sample requirement at 44.1 kHz while the hop provides responsive overlapping observations.
+## Tuning domain
 
-## Ring buffer and frame assembly
+`TuningPreset`, `TuningStringTarget`, `TuningPresetId`, and `TunerMode` are immutable pure Dart models. Every target stores its six-to-one string position, MIDI note, octave, and display name. Frequency is derived from MIDI with A4 = 440 Hz; it is never independently hardcoded.
 
-`SampleWindowAssembler` owns one fixed `Float32List` ring whose capacity equals the frame size. It accepts arbitrary chunk boundaries, writes each sample once, emits a chronological frame-owned 4,096-sample snapshot when full, then emits after every 1,024 new samples. It does not concatenate growing arrays or retain samples older than the current analysis window.
+Included presets:
 
-One large chunk may produce several windows. Buffer use never exceeds 4,096 samples. Diagnostics track received samples, emitted frames, discarded partial samples, resets, current buffered samples, and maximum occupancy. A sample-rate change counts and discards the partial old-rate buffer before reset; different rates are never mixed.
+- Standard: E2 A2 D3 G3 B3 E4
+- Drop D: D2 A2 D3 G3 B3 E4
+- Half Step Down: D#2 G#2 C#3 F#3 A#3 D#4
+- Full Step Down: D2 G2 C3 F3 A3 D4
+- DADGAD: D2 A2 D3 G3 A3 D4
+- Open G: D2 G2 D3 G3 B3 D4
+- Open D: D2 A2 D3 F#3 A3 D4
 
-## Backpressure and session safety
+Calibration remains fixed at A4 = 440 Hz. No calibration UI is included.
 
-`RealtimePitchPipeline` permits one active detector future. If frames arrive during analysis, it retains only one pending frame; each newer frame replaces the older pending frame and increments replacement/drop counters. Capture callbacks enqueue no unbounded work and prioritize current audio.
+## Target selection
 
-Every start and sample-rate change advances a generation. Stop, route disposal, lifecycle interruption, stream failure, analysis failure, and restart invalidate pending work. An already-running synchronous calculation cannot be cancelled, but its late result is ignored and cannot mutate a stopped or newer session.
+Automatic mode consumes only the Phase 2C stabilized pitch. It compares logarithmic/cents distance to every target:
 
-## Detector execution placement
+- A target must be within 200 cents to be considered trustworthy.
+- The current target is retained while it remains within 25 cents of the nearest candidate.
+- A different target requires two consecutive supporting observations.
+- Isolated octave/transient estimates therefore cannot immediately change strings.
+- Four selector-level no-pitch observations clear an automatic target; the pipeline's 350 ms stale clearing also removes it.
+- Capture restart and preset change reset pending evidence.
 
-Detection currently uses one asynchronously scheduled main-isolate executor. It never uses `compute()` and does not spawn a per-frame isolate. The Phase 2B Windows JIT observation was approximately 11.35 ms median for a 4,096-sample frame, below the 21.3 ms 48 kHz hop, but that is not Android evidence.
+Manual mode bypasses automatic selection. The chosen string stays locked until the user changes it, including while waiting for a signal.
 
-No Android device was connected during this implementation; `flutter devices` reported only Windows and Edge. Therefore no Android duration, UI-jank, allocation, thermal, replacement-rate, or real-guitar claim is made. Main-isolate placement remains provisional until a physical profile-mode session measures representative hardware. A single long-lived worker isolate is authorized only if those measurements show persistent responsiveness or cadence pressure and must account for typed-data transfer costs.
+## Cents and in-tune state
 
-## Stabilization and note hysteresis
+Displayed target-relative cents are:
 
-`PitchStabilizer` converts frequency to continuous MIDI/log-pitch space. Estimates below 0.82 confidence follow the no-pitch path. For the locked note, a five-item rolling history is median-centered; values farther than 45 cents from the median are excluded, and the accepted target is followed with a 0.35 exponential factor.
+`1200 × log2(detectedFrequency / targetFrequency)`
 
-The stabilizer never edits the raw detector result. An isolated octave or clearly different note is held as pending. Two consecutive estimates confirm a genuine switch. Near a semitone boundary, the current note remains locked until the other note is at least 8 cents beyond the midpoint and persists for two estimates. Smoothing history resets on a confirmed note change so clearly different notes are never averaged together.
+The signed domain result is never clamped. Only the marker position is limited to the visual ±50-cent range.
 
-A short no-pitch gap retains the previous stable value only as transient context while status becomes unstable. Four consecutive no-pitch/low-confidence results clear it. Independently, 350 ms without a reliable estimate clears the last pitch and exposes no signal. Stop, restart, sample-rate changes, and lifecycle cleanup reset smoothing, hysteresis, and stale deadlines.
+Central thresholds are:
 
-## Controller, lifecycle, and errors
+- In tune: absolute distance at most 5 cents
+- Near: more than 5 and at most 15 cents
+- Out: more than 15 cents
 
-`TunerAudioController` still owns permission and Phase 2A capture. Before Start it releases Tunathic's Metronome audio. Once capture starts it configures the pipeline from the reported rate, or the requested rate when no report exists, and passes frame-owned normalized samples without assuming chunk size.
+Negative is flat and positive is sharp. A pitch more than 200 cents from every automatic target may still show its detected note, but receives no target-relative cents or misleading in-tune state.
 
-Capture and analysis stop on user Stop, route disposal, provider disposal, all non-foreground lifecycle states, unexpected stream end, stream error, invalid reported sample rate, or detector exception. Foreground return never restarts capture. Operation versions and pipeline generations prevent duplicate starts, duplicate analysis loops, and stale callbacks. Technical errors go only to the local logger; UI uses localized permission, capture, and analysis messages.
+## Haptics
 
-## Development diagnostic screen
+The controller requests one light impact after three consecutive stable, targeted, in-tune UI observations. It uses `AppHaptics`, so the global haptics preference remains authoritative. Feedback is disarmed until the signal leaves in-tune, and resets on target change, preset change, capture restart, or lifecycle cleanup. Unstable/no-signal states never vibrate.
 
-The existing prototype route now shows capture/permission state, requested and reported rate, PCM chunk statistics, buffer occupancy, frames assembled/analyzed/replaced/dropped, average and maximum detector time, raw frequency/confidence/note/cents, stabilized note/frequency/cents, no-signal state, execution mode, and friendly errors. Publication is throttled independently of PCM arrival.
+## Persistence
 
-The screen remains scrollable for narrow and large-text layouts and contains no final tuner needle, in-tune visualization, string target, presets, calibration, waveform, spectrum, or fake precision claim.
+Only these tuner preferences are stored:
 
-## Privacy
+- Preset ID
+- Automatic/manual mode
+- Manual string position
 
-Raw PCM remains transient and local. The ring retains at most the current window and frame-owned work in flight. Replaced frames, retired samples, pitch history, and diagnostics are discarded in memory. No raw bytes, sample values, pitch history, or continuous telemetry are logged, persisted, uploaded, or transmitted.
+Unknown IDs and invalid string positions safely fall back to Standard, Automatic, and string 6. Samples, pitch history, last detected note, automatic target, cents, and diagnostics remain transient.
 
-## Validation status and known limitations
+## Lifecycle and privacy
 
-- Deterministic tests cover arbitrary chunks, exact overlap, multiple emission, bounded memory, sample-rate reset, slow-detector backpressure, late results, restart isolation, stale clearing, smoothing, octave changes, deliberate note changes, note-boundary flicker, controller lifecycle/errors, localization, and diagnostic presentation.
-- Physical Android and real-guitar validation was not performed because no Android device was connected.
-- Actual Android detector cadence, time to first pitch, settle time, note-change delay, octave errors, flicker, stale behavior, CPU, GC, thermal behavior, and five-minute stability remain unmeasured.
-- Main-isolate suitability is provisional, not a release conclusion.
-- The diagnostic is monophonic and inherits the offline detector's harmonic, transient, inharmonicity, and noise limitations.
-- The final production Guitar Tuner UI and product behavior remain out of scope.
+The production controller delegates capture to the existing `TunerAudioController`; it does not duplicate or weaken its guarantees. Stop, route exit, provider disposal, backgrounding, stream failure, and processing failure stop microphone capture and analysis. Returning to foreground does not restart. Generations still reject late results.
 
-## Remaining physical validation gate
+Raw PCM remains local and transient. Phase 2D adds no recording, upload, analytics, ads, account, backend, or background microphone behavior.
 
-On a connected Android device, run profile mode and record requested/reported rate, typical PCM chunk size, frame cadence, detector average/maximum duration, replacements/drops, responsiveness, first-pitch and settle time, note-change delay, octave errors, flicker, stale clearing, CPU/thermal behavior, microphone-indicator cleanup, and route/lifecycle cleanup. Exercise quiet/speech/noisy conditions, all open strings, fretted and repeated notes, soft/hard/muted plucks, rapid string changes, decay, five minutes of capture, repeated Start/Stop, backgrounding, route exit, and Metronome-to-tuner transition. Never save or upload raw audio.
+## Accessibility
+
+One semantic value describes each logical result: detected note plus octave, signed cents direction, target string, frequency, selected mode, and signal state. Direction arrows and text supplement color. Controls meet Material touch-target behavior, keyboard behavior follows standard Flutter controls, reduced-motion preference disables the cents-marker transition, and narrow/large-text layouts switch the mode control to a vertical arrangement.
+
+## Validation status
+
+- Pure tests cover presets, derived frequencies, signed cents, thresholds, target distance, hysteresis, confirmation, octave/transient rejection, no-pitch clearing, reset, tuning changes, and invalid preferences.
+- Controller tests cover automatic/manual operation, preset/string persistence, lifecycle target reset, stale-session rejection, and one-shot stable in-tune haptics.
+- Widget tests cover production states, flat/sharp/in-tune presentation, modes, selectors, English/Turkish, light/dark themes, narrow large text, semantics, and absence of diagnostic overload.
+- Physical Android testing on a 23021RAAEG confirmed permission, capture, Standard automatic/manual controls, and correct stabilized E2, A2, and D3 observations. It also exposed excessive short no-pitch clearing with the original 1,024-sample hop: 3,840-sample input chunks produced immediate pending-frame replacement while the main-isolate detector averaged about 32 ms. The production configuration now uses a 2,048-sample hop and retains up to eight consecutive no-pitch analyses, approximately matching the existing 350 ms stale policy.
+- The same session attributed high-confidence `A2 → 55 Hz/A1` and transient `D3 → ~73 Hz/~49 Hz` errors to the generic longer-period correction. Subharmonic promotion now requires a separate 0.11 clarity improvement instead of the boundary-specific 0.01 margin and at least 0.12 relative spectral support at the proposed lower fundamental. The complete existing pitch matrix still passes, with noisy guitar-spectrum and isolated spectral-evidence regressions covering the octave-fold path. Physical retesting showed that a real A2 release can still contain enough lower-frequency energy to pass the DSP guard.
+- The production controller therefore adds a tuning-relative Automatic-mode guard: a candidate more than 200 cents from the selected string is not displayed. It retains the last accepted pitch for up to eight new detector results, does not count retained/rejected data as fresh haptic evidence, and then hides the pitch while keeping the useful target context. This also fixes the earlier behavior that hid a correct stabilized pitch on a single unstable raw frame. A rebuilt-device repeat is required before these product changes are considered validated.
+- Physical diagnostics identified a persistent 54–55 Hz acoustic background tone at a 20–30 cm test position (silence RMS approximately 0.025–0.030). Moving the phone to 5–10 cm from the guitar and away from the noise source reduced silence RMS to approximately 0.005–0.006; four sampled D3 attacks then measured 146.39–146.50 Hz at 0.982–0.994 confidence without 73 Hz or 49 Hz octave errors. Weak decay frames were retained briefly and then cleared instead of displaying an unsupported estimate.
+- Returning from the debug diagnostic exposed a shared-controller lifecycle bug: disposing the diagnostic route permanently marked the still-observed audio controller as disposed, leaving the production Start button unable to restart capture. Route release now stops capture without disposing the reusable controller; actual input disposal occurs only when the provider itself is disposed. A regression test covers route release followed by restart.
+
+## Known limitations and remaining work
+
+- The tuner is monophonic and inherits the validated YIN/stabilizer limitations.
+- A4 is fixed at 440 Hz.
+- Automatic target selection is guitar-preset-specific; arbitrary custom tunings are not supported.
+- Android real-guitar evaluation still needs user confirmation for all six strings on the rebuilt APK, plus target accuracy, flicker, needle feel, haptics, stale clearing, route cleanup, and repeated session stability. The YIN acceptance/confidence thresholds were not relaxed because close-position D3 attacks produced high-confidence correct estimates while the earlier interruption was attributable to a measured acoustic background tone.
+- Store publishing, legal review, calibration UI, custom tunings, subscriptions, ads, analytics, accounts, and cloud behavior remain out of scope.

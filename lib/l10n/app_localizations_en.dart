@@ -608,4 +608,143 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get pitchAnalysisFailedMessage =>
       'Live pitch analysis stopped because the detector failed. You can try again.';
+
+  @override
+  String get tuningPresetLabel => 'Tuning';
+
+  @override
+  String get automaticMode => 'Automatic';
+
+  @override
+  String get manualMode => 'Manual';
+
+  @override
+  String get targetStringLabel => 'Target string';
+
+  @override
+  String get flatLabel => 'Flat';
+
+  @override
+  String get sharpLabel => 'Sharp';
+
+  @override
+  String get inTuneLabel => 'In tune';
+
+  @override
+  String get noSignal => 'No signal';
+
+  @override
+  String get startTuning => 'Start tuning';
+
+  @override
+  String get stopTuning => 'Stop tuning';
+
+  @override
+  String get retryMicrophone => 'Try microphone again';
+
+  @override
+  String get openTunerDiagnostics => 'Open tuner diagnostics';
+
+  @override
+  String get tuningStandard => 'Standard';
+
+  @override
+  String get tuningDropD => 'Drop D';
+
+  @override
+  String get tuningHalfStepDown => 'Half Step Down';
+
+  @override
+  String get tuningFullStepDown => 'Full Step Down';
+
+  @override
+  String get tuningDadgad => 'DADGAD';
+
+  @override
+  String get tuningOpenG => 'Open G';
+
+  @override
+  String get tuningOpenD => 'Open D';
+
+  @override
+  String get noDetectedNote => 'No detected note';
+
+  @override
+  String get frequencyUnavailable => 'Frequency unavailable';
+
+  @override
+  String get frequencyUnavailableSemantics => 'Frequency unavailable';
+
+  @override
+  String get centsUnavailableSemantics => 'Cents offset unavailable';
+
+  @override
+  String signedCentsValue(String value) {
+    return '$value cents';
+  }
+
+  @override
+  String frequencyHertzValue(String value) {
+    return '$value Hz';
+  }
+
+  @override
+  String detectedNoteSemantics(String note, int octave) {
+    return 'Detected note $note, octave $octave';
+  }
+
+  @override
+  String targetStringSemantics(int position, String note) {
+    return 'Target string $position, $note';
+  }
+
+  @override
+  String tunerModeSemantics(String mode) {
+    return 'Tuner mode: $mode';
+  }
+
+  @override
+  String centsDirectionSemantics(int value, String direction) {
+    return '$value cents $direction';
+  }
+
+  @override
+  String frequencySemantics(String value) {
+    return 'Frequency $value hertz';
+  }
+
+  @override
+  String get tunerStoppedMessage => 'Tap Start when you are ready to tune.';
+
+  @override
+  String get tunerRequestingPermissionMessage =>
+      'Requesting microphone permission.';
+
+  @override
+  String get tunerListeningMessage => 'Microphone is starting.';
+
+  @override
+  String get tunerWaitingForSignalMessage => 'Listening. Play one string.';
+
+  @override
+  String get tunerUnstableSignalMessage =>
+      'Signal is unstable. Let one string ring clearly.';
+
+  @override
+  String get tunerStablePitchMessage => 'Pitch detected.';
+
+  @override
+  String get tunerNoSignalMessage => 'No reliable signal. Play one string.';
+
+  @override
+  String get tunerPermissionDeniedMessage =>
+      'Microphone permission is needed to tune.';
+
+  @override
+  String get tunerMicrophoneUnavailableMessage =>
+      'The microphone is unavailable. Try again.';
+
+  @override
+  String get tunerProcessingErrorMessage =>
+      'Pitch processing stopped. Try again.';
 }
