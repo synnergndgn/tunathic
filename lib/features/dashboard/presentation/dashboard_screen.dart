@@ -186,14 +186,15 @@ final class _ToolCard extends StatelessWidget {
     final colors = Theme.of(context).colorScheme;
 
     return Semantics(
-      button: true,
+      button: prominent,
+      enabled: prominent,
       label: '$title, $availability',
       child: Card(
         elevation: prominent ? AppElevation.raised : AppElevation.flat,
         color: prominent ? colors.primaryContainer : null,
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: onTap,
+          onTap: prominent ? onTap : null,
           borderRadius: AppRadii.mediumBorder,
           child: Padding(
             padding: EdgeInsets.all(

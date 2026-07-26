@@ -109,7 +109,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get privacySummary =>
-      'Tunathic, mevcut pratik deneyimini özel ve cihazında yerel tutacak şekilde tasarlanmıştır.';
+      'Tunathic çevrimdışı bir gitar araç seti olarak tasarlanmıştır. Mevcut araçlar uygulama verilerini GUNDEV\'e veya başka üçüncü taraflara göndermez.';
 
   @override
   String get privacyBpmTitle => 'Pratik oturumları geçicidir';
@@ -123,14 +123,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get privacyLocalDescription =>
-      'Tema, dil, dokunsal geri bildirim ve Metronom ayarları bu cihazda yerel olarak saklanır.';
+      'Tema, dil, dokunsal geri bildirim, Metronom ve Gitar Akort Cihazı tercihleri bu cihazda yerel olarak saklanır. Akor, gam, klavye ve Beşliler Çemberi içeriği uygulamayla birlikte gelir.';
 
   @override
   String get privacyMicrophoneTitle => 'Mikrofon perde analizi yerel kalır';
 
   @override
   String get privacyMicrophoneDescription =>
-      'Mikrofon erişimi yalnızca Gerçek Zamanlı Perde Tanılaması etkinken kullanılır. Ham ses ve perde tahminleri geçici ve yerel kalır, kaydedilmez veya yüklenmez; ekrandan ayrıldığınızda ya da uygulama arka plana geçtiğinde durur.';
+      'Gitar Akort Cihazı, mikrofon erişimini yalnızca siz başlattıktan sonra kullanır. Ham ses ve perde tahminleri bu cihazda geçici olarak işlenir, kaydedilmez veya yüklenmez; akort cihazından ayrıldığınızda ya da uygulama arka plana geçtiğinde durur.';
 
   @override
   String get privacyNoCollectionTitle =>
@@ -142,7 +142,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get privacyFutureChanges =>
-      'Üretim akort cihazı, kayıt, reklam, analiz, hesap, bulut veya sunucu özellikleri yayınlanmadan önce bu gizlilik bilgileri gözden geçirilmelidir.';
+      'Tunathic mikrofon kaydı saklamaz, hesap oluşturmaz, reklam göstermez, analiz çalıştırmaz, veri satmaz veya uygulama verilerini paylaşmaz. Uygulamanın davranışı değişirse bu bilgiler güncellenecektir.';
 
   @override
   String get comingSoon => 'Yakında';

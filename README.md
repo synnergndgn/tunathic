@@ -2,7 +2,7 @@
 
 **Tune. Train. Create.**
 
-Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 3E — Chord Voicing Expansion & Coverage Completion**. The physically validated Guitar Tuner, BPM Tap, and native Oboe Metronome remain intact while the reusable theory core powers four offline reference tools. This is the final planned major feature milestone before release hardening and Google Play Closed Testing.
+Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently under feature freeze at **Phase 5A — Closed Test Release Hardening**. The validated Guitar Tuner, BPM Tap, native Oboe Metronome, Chord Library, Scale Library, Interactive Fretboard, and Circle of Fifths are being prepared for Google Play Internal and Closed Testing without new feature work.
 
 ## Current contents
 
@@ -52,19 +52,19 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Localized About and Privacy screens with standard open-source license access
 - Actual package-version display and persisted global haptic preference
 - Centralized elevation and motion tokens alongside the existing design system
-- Minimal GitHub Actions formatting, analysis, and test verification
+- Reproducible Flutter 3.44.0 GitHub Actions formatting, analysis, test, and debug-build verification
 - Unit and widget tests
 
 Guitar Tuner, Metronome, BPM Tap, Chord Library, Scale Library, Interactive Fretboard, and Circle of Fifths are available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. All four reference tools are fully offline and add no audio, microphone, account, analytics, network, advertising, or backend behavior.
 
-Interval Trainer and the remaining unfinished training tools are future/Coming
-Soon work; Phase 3E does not mark them implemented.
+Interval Trainer, Ear Training, Chord Finder, and Capo Calculator remain
+localized, non-interactive Coming Soon items.
 
 The Metronome's audio callback owns click timing; Flutter never schedules audible beats. Displayed BPM is quarter-note BPM, so 6/8 emits six eighth-note pulses. See the [engine decision](docs/METRONOME_ENGINE_DECISION.md) for the rejected package spike, Oboe rationale, lifecycle, diagnostics, and current physical-validation status.
 
 ## Requirements
 
-- Flutter stable with its bundled Dart stable SDK
+- Flutter 3.44.0 stable with its bundled Dart 3.12.0 SDK
 - Android SDK and accepted Android SDK licenses
 - An Android emulator or physical Android device for runtime verification
 
@@ -105,5 +105,11 @@ The Android application ID is a permanent product identifier and must not be cha
 - [Roadmap](docs/ROADMAP.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Metronome engine decision](docs/METRONOME_ENGINE_DECISION.md)
+- [Release hardening audit](docs/RELEASE_HARDENING_AUDIT.md)
+- [Closed test release checklist](docs/closed_test_release_checklist.md)
+- [Android release signing](docs/android_release_signing.md)
+- [Privacy policy draft](docs/PRIVACY_POLICY_DRAFT.md)
+- [Data Safety draft](docs/data_safety_draft.md)
+- [Store listing draft](docs/store_listing.md)
 - [Design direction](design/README.md)
 - [Repository rules](AGENTS.md)

@@ -293,7 +293,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacySummary.
   ///
   /// In en, this message translates to:
-  /// **'Tunathic is designed to keep the current practice experience private and local to your device.'**
+  /// **'Tunathic is designed as an offline guitar toolkit. Its current tools do not send your app data to GUNDEV or other third parties.'**
   String get privacySummary;
 
   /// No description provided for @privacyBpmTitle.
@@ -317,7 +317,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyLocalDescription.
   ///
   /// In en, this message translates to:
-  /// **'Theme, language, haptic, and Metronome settings are stored locally on this device.'**
+  /// **'Theme, language, haptic, Metronome, and Guitar Tuner preferences are stored locally on this device. Chord, scale, fretboard, and Circle of Fifths content is bundled with the app.'**
   String get privacyLocalDescription;
 
   /// No description provided for @privacyMicrophoneTitle.
@@ -329,7 +329,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyMicrophoneDescription.
   ///
   /// In en, this message translates to:
-  /// **'Microphone access is used only while the Real-Time Pitch Diagnostic is active. Raw audio and pitch estimates remain transient and local, are never saved or uploaded, and stop when you leave the screen or the app enters the background.'**
+  /// **'The Guitar Tuner uses microphone access only after you start it. Raw audio and pitch estimates are processed transiently on this device, are never saved or uploaded, and stop when you leave the tuner or the app enters the background.'**
   String get privacyMicrophoneDescription;
 
   /// No description provided for @privacyNoCollectionTitle.
@@ -347,7 +347,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyFutureChanges.
   ///
   /// In en, this message translates to:
-  /// **'This privacy information must be reviewed before production tuner, recording, advertising, analytics, account, cloud, or backend features are released.'**
+  /// **'Tunathic does not store microphone recordings, create accounts, show ads, run analytics, sell data, or share app data. This information will be updated if the app\'s behavior changes.'**
   String get privacyFutureChanges;
 
   /// No description provided for @comingSoon.

@@ -53,6 +53,21 @@ void main() {
     expect(find.text('Real-Time Pitch Diagnostic'), findsNothing);
   });
 
+  testWidgets('Coming Soon cards are visible but do not navigate', (
+    tester,
+  ) async {
+    _useTallSurface(tester);
+    await tester.pumpWidget(_testApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Interval Trainer'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Guitar toolkit'), findsOneWidget);
+    expect(find.text('Interval Trainer'), findsOneWidget);
+    expect(find.text('Coming Soon'), findsNWidgets(4));
+  });
+
   testWidgets('Turkish is available as an application locale', (tester) async {
     _useTallSurface(tester);
     await tester.pumpWidget(
