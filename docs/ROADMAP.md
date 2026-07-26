@@ -28,19 +28,23 @@ Calibration and custom tuning creation remain later decisions.
 - **Phase 3B — Scale Library:** structural scale degrees, formulas, aliases,
   spelling, relative/modal relationships, and an offline localized reference
   view built on the Phase 3A pitch identities and notation strategy.
-- **Recommended Phase 3C — Circle of Fifths:** an offline harmonic-relationship
+- **Phase 3C — Interactive Fretboard:** a reusable standard-tuning projection
+  model and responsive offline guitar neck for chord tones and scale degrees,
+  with prefilled links from both existing libraries.
+- **Recommended Phase 3D — Circle of Fifths:** an offline harmonic-relationship
   reference built from existing pitch spelling and relative-key helpers, with
   no audio or training behavior.
-- **Later Phase 3 scope:** broader harmonic-reference work only after Circle of
-  Fifths is validated.
+- **Later Phase 3 scope:** broader harmonic-reference work only after the
+  Interactive Fretboard and Circle of Fifths are validated.
 
 ## Phase 4: Interval trainer, ear training and progress tracking
 
 Guided listening exercises with meaningful local progress.
 
-## Phase 5: Chord finder, capo calculator and fretboard explorer
+## Phase 5: Chord finder, capo calculator and advanced fretboard tools
 
-Interactive tools for identifying and transforming playable material.
+Interactive tools for identifying and transforming playable material,
+including separately authorized CAGED and voicing overlays.
 
 ## Phase 6: Daily challenges, XP, streaks and statistics
 

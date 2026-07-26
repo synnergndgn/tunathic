@@ -1327,6 +1327,120 @@ abstract class AppLocalizations {
   /// **'seven'**
   String get degreeSevenSpoken;
 
+  /// No description provided for @interactiveFretboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Interactive Fretboard'**
+  String get interactiveFretboard;
+
+  /// No description provided for @fretboardIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore chord tones and scale notes across a standard-tuned guitar neck.'**
+  String get fretboardIntro;
+
+  /// No description provided for @fretboardModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get fretboardModeLabel;
+
+  /// No description provided for @chordMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord'**
+  String get chordMode;
+
+  /// No description provided for @scaleMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scale'**
+  String get scaleMode;
+
+  /// No description provided for @displayModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Labels'**
+  String get displayModeLabel;
+
+  /// No description provided for @noteNames.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get noteNames;
+
+  /// No description provided for @degreesIntervals.
+  ///
+  /// In en, this message translates to:
+  /// **'Degrees / intervals'**
+  String get degreesIntervals;
+
+  /// No description provided for @visibleFretRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible fret range'**
+  String get visibleFretRange;
+
+  /// No description provided for @fretRangeValue.
+  ///
+  /// In en, this message translates to:
+  /// **'0–{fret}'**
+  String fretRangeValue(int fret);
+
+  /// No description provided for @fretboardOrientationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'High E is shown at the top; low E is shown at the bottom. Scroll horizontally to see later frets.'**
+  String get fretboardOrientationHint;
+
+  /// No description provided for @fretboardSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} fretboard, frets zero through {fret}. Root notes {root} highlighted. High E is at the top and low E is at the bottom.'**
+  String fretboardSemantics(String name, int fret, String root);
+
+  /// No description provided for @selectedPositionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected position'**
+  String get selectedPositionTitle;
+
+  /// No description provided for @selectedNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get selectedNoteLabel;
+
+  /// No description provided for @degreeIntervalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Degree / interval'**
+  String get degreeIntervalLabel;
+
+  /// No description provided for @stringLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'String'**
+  String get stringLabel;
+
+  /// No description provided for @fretLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fret'**
+  String get fretLabel;
+
+  /// No description provided for @tapHighlightedNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a highlighted note for pitch, string, fret, and relationship details.'**
+  String get tapHighlightedNoteHint;
+
+  /// No description provided for @viewOnFretboard.
+  ///
+  /// In en, this message translates to:
+  /// **'View on Fretboard'**
+  String get viewOnFretboard;
+
   /// No description provided for @circleOfFifths.
   ///
   /// In en, this message translates to:

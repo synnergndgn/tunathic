@@ -694,6 +694,70 @@ class AppLocalizationsTr extends AppLocalizations {
   String get degreeSevenSpoken => 'yedi';
 
   @override
+  String get interactiveFretboard => 'Etkileşimli Klavye';
+
+  @override
+  String get fretboardIntro =>
+      'Standart akortlu gitar klavyesindeki akor seslerini ve gam notalarını inceleyin.';
+
+  @override
+  String get fretboardModeLabel => 'İçerik';
+
+  @override
+  String get chordMode => 'Akor';
+
+  @override
+  String get scaleMode => 'Gam';
+
+  @override
+  String get displayModeLabel => 'Etiketler';
+
+  @override
+  String get noteNames => 'Notalar';
+
+  @override
+  String get degreesIntervals => 'Dereceler / aralıklar';
+
+  @override
+  String get visibleFretRange => 'Görünen perde aralığı';
+
+  @override
+  String fretRangeValue(int fret) {
+    return '0–$fret';
+  }
+
+  @override
+  String get fretboardOrientationHint =>
+      'İnce Mi üstte, kalın Mi altta gösterilir. İlerideki perdeleri görmek için yatay kaydırın.';
+
+  @override
+  String fretboardSemantics(String name, int fret, String root) {
+    return '$name klavyesi, sıfırdan $fret. perdeye kadar. Kök $root notaları vurgulanmış. İnce Mi üstte, kalın Mi altta.';
+  }
+
+  @override
+  String get selectedPositionTitle => 'Seçili konum';
+
+  @override
+  String get selectedNoteLabel => 'Nota';
+
+  @override
+  String get degreeIntervalLabel => 'Derece / aralık';
+
+  @override
+  String get stringLabel => 'Tel';
+
+  @override
+  String get fretLabel => 'Perde';
+
+  @override
+  String get tapHighlightedNoteHint =>
+      'Nota, tel, perde ve ilişki ayrıntıları için vurgulanmış bir notaya dokunun.';
+
+  @override
+  String get viewOnFretboard => 'Klavyede Gör';
+
+  @override
   String get circleOfFifths => 'Beşliler Çemberi';
 
   @override

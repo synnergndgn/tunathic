@@ -1,9 +1,10 @@
 # Architecture
 
-Tunathic uses a pragmatic feature-first Flutter structure. Phase 3B extends the
-reusable pure Dart music-theory core and adds the offline Scale Library while
+Tunathic uses a pragmatic feature-first Flutter structure. Phase 3C extends the
+reusable pure Dart music-theory core with structural guitar tuning and
+fret-position projection, then adds the offline Interactive Fretboard while
 preserving the physically validated Guitar Tuner, BPM Tap, native Oboe
-Metronome, and Phase 3A Chord Library behavior.
+Metronome, Chord Library, and Scale Library behavior.
 
 ## Folder responsibilities
 
@@ -16,7 +17,10 @@ Metronome, and Phase 3A Chord Library behavior.
   shapes, validation, offline data, diagram rendering, and browsing
   presentation while importing the theory core. Scale Library owns exact
   localized search vocabulary and scale-reference presentation while formulas,
-  construction, and relationships remain in the theory core. BPM Tap separates pure
+  construction, and relationships remain in the theory core. Interactive
+  Fretboard owns route state, controls, selection details, responsive scrolling,
+  and project-owned neck painting while all pitch derivation remains in the
+  theory core. BPM Tap separates pure
   estimation logic from presentation state. Metronome separates configuration
   and beat sequencing, scheduling and orchestration, audio output, persistence,
   and presentation. Tuner Audio separates its input boundary and package
@@ -70,6 +74,19 @@ chords. `ScaleRelationships` derives relative major/minor roots and modal parent
 major roots without root-specific tables. Current coverage is Major, Natural
 Minor, Harmonic Minor, ascending Melodic Minor, all seven major modes, Major
 and Minor Pentatonic, and Blues.
+
+`GuitarTuning` represents strings structurally, ordered low to high. The current
+`standard` value stores E2/A2/D3/G3/B3/E4 and open MIDI values. A
+`GuitarStringTuning` derives every fret by adding its offset to the open MIDI
+note, then derives octave and pitch class; custom tunings can later supply
+different structural data without changing that algorithm.
+
+`FretboardProjection` delegates chord tones to `ChordConstructor` and scale
+tones to `ScaleConstructor`. Its relation map keeps the constructed spelling,
+root state, and structural interval or scale-degree symbol for each member
+pitch class. `GuitarFretboard.project` combines that map with a tuning and
+validated fret range to produce immutable `FretPosition` values. It is
+synchronous, deterministic, and Flutter-independent.
 
 The tuner retains its MIDI/octave/frequency/cents live-pitch types because those
 models solve a different, physically validated capture problem. Future safe
@@ -125,6 +142,9 @@ GoRouter provides one central route table:
 - `/tools/guitar-tuner` displays the production Guitar Tuner.
 - `/tools/chord-library` displays the offline Chord Library.
 - `/tools/scale-library` displays the offline Scale Library.
+- `/tools/interactive-fretboard` displays the offline Interactive Fretboard;
+  project-owned query state safely preconfigures chord or scale mode, root, and
+  definition while malformed or absent parameters use sensible defaults.
 - `/debug/tuner-diagnostics` displays Phase 2C engineering diagnostics only in debug builds.
 - `/tools/:toolId` resolves every other unfinished known tool to its Coming Soon placeholder.
 
@@ -133,8 +153,9 @@ Unknown paths and tool identifiers display a friendly localized not-found screen
 The Metronome opens BPM Tap with an explicit result contract. BPM Tap returns only a valid whole-number estimate when the user chooses Apply; the metronome validates the 20–300 BPM range and then updates and persists its tempo. Ordinary dashboard use of BPM Tap has no Apply action.
 
 The dashboard groups stable tool definitions into Practice, Theory and Reference,
-and Training. Metronome, BPM Tap, Guitar Tuner, Chord Library, and Scale Library are
-production-facing tools and receive stronger surface treatment. Navigation uses
+and Training. Metronome, BPM Tap, Guitar Tuner, Chord Library, Scale Library,
+and Interactive Fretboard are production-facing tools and receive stronger
+surface treatment. Navigation uses
 pushes for drill-in screens so Android back naturally returns to the previous
 context. Unknown routes continue to use the localized not-found screen.
 
@@ -281,6 +302,10 @@ spoken degree semantics are localized at the Scale Library presentation
 boundary. Exact search owns a small explicit English/Turkish vocabulary outside
 the pure core; it does not turn localized display strings into theory identity.
 
+Interactive Fretboard control, orientation, selection-detail, navigation, and
+semantic-summary text is localized in the same ARB sources. Note, chord, and
+degree notation remains standard and is never translated.
+
 ## Preferences abstraction
 
 `PreferencesStore` is the small asynchronous key-value boundary used by application settings. Its production implementation uses `SharedPreferencesAsync`, while tests use an in-memory implementation. Shared Preferences is sufficient for this small set of non-sensitive scalar settings and is smaller and easier to maintain than introducing a database. The asynchronous API avoids stale cache behavior across isolates and engine instances.
@@ -309,9 +334,9 @@ Shared maximum widths produce readable phone, large-phone, and tablet columns. C
 
 No pitch-analysis, FFT, DSP, scientific-computing, database, analytics, advertising, account, backend, or purchase package is included. Pitch detection and the real-time buffer/stabilizer use only Dart SDK math, async, and typed-data libraries.
 
-Phases 3A and 3B add no dependency. Pitch arithmetic, formulas, search parsing,
-relationships, shape validation, diagrams, and reference presentation use Dart
-and Flutter primitives.
+Phases 3A through 3C add no dependency. Pitch arithmetic, formulas, search
+parsing, relationships, shape validation, diagrams, fret derivation, and
+reference presentation use Dart and Flutter primitives.
 
 ## Testing approach
 
@@ -327,6 +352,15 @@ search acceptance and rejection. Scale Library widget tests cover dashboard
 opening, root/definition changes, notes and formulas, relative/modal
 relationships, localization, themes, combined semantics, 2× text, and 360,
 412, 600, 900, and 1280 logical-pixel widths.
+
+Fretboard pure tests cover standard tuning, all six open strings, MIDI/octave
+transposition through fret 24, valid ranges, requested chord/scale projections,
+root and non-member behavior, structural labels, and practical enharmonics.
+Route tests cover direct, chord-prefilled, scale-prefilled, and malformed
+states. Widget tests cover dashboard and both library paths, controls,
+note/degree rendering, 12/24-fret scrolling, note details, localization,
+themes, combined semantics, 2× text, and 360, 412, 600, 900, and 1280 logical
+pixels.
 
 Chord-shape tests validate the entire 162-shape dataset and deliberately malformed
 string, fret, finger, barre, formula-tone, and missing-root cases. Widget tests
@@ -359,9 +393,14 @@ Production Tuner tests cover all preset MIDI sequences and frequencies, target-r
 - Exact chord search has no fuzzy matching. Favorites remain deferred until a
   structured cross-reference-tool persistence requirement exists.
 - Scale Library uses ascending Melodic Minor and a deliberately focused scale
-  catalog. It has no fretboard positions, playback, custom formulas, or fuzzy
-  search, and its single-accidental spelling fallback is not a complete
-  academic notation engine.
+  catalog. It has no playback, custom formulas, or fuzzy search, and its
+  single-accidental spelling fallback is not a complete academic notation
+  engine.
+- Interactive Fretboard currently supports standard tuning and one
+  player-facing/right-handed orientation. It projects pitch membership rather
+  than CAGED boxes, scale positions, chord shapes, inversions, or playable
+  voicings. Custom tuning UI, left-handed mode, playback, CAGED, interval
+  practice, and ear-training behavior are not implemented.
 
 - BPM Tap, the foreground Metronome, and Guitar Tuner are functional. The tuner still requires broader real-guitar and device-matrix validation before it is release-complete.
 - Metronome click placement is owned by the native output sample clock, but end-to-end acoustic latency varies by device and route. The feature does not run in the background and supports no subdivisions, swing, custom rhythms, dotted-quarter 6/8, or custom accent patterns.

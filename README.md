@@ -2,12 +2,12 @@
 
 **Tune. Train. Create.**
 
-Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 3B — Scale Library**. The physically validated Guitar Tuner, BPM Tap, and native Oboe Metronome remain intact while the reusable theory core now powers two offline reference tools.
+Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 3C — Interactive Fretboard**. The physically validated Guitar Tuner, BPM Tap, and native Oboe Metronome remain intact while the reusable theory core now powers three offline reference tools.
 
 ## Current contents
 
 - Material 3 light, dark, and system themes
-- Responsive dashboard for ten planned guitar tools
+- Responsive dashboard for eleven planned guitar tools
 - English source localization and Turkish support
 - Persisted theme and language preferences
 - Centralized GoRouter navigation
@@ -28,6 +28,9 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Responsive theme-aware chord diagrams drawn from data, with complete English/Turkish fingering and screen-reader descriptions
 - Pure Dart structural scale degrees, formulas, aliases, construction, relative keys, and modal parent-major relationships
 - Offline Scale Library with 12-root browsing, 12 unique scale definitions, exact English/Turkish search, formula-derived notes, and accessible degree formulas
+- Pure Dart standard-tuning fret derivation from open strings through fret 24, with octave/MIDI identity and reusable chord/scale projection
+- Interactive Fretboard with Chord/Scale modes, note or structural degree labels, root distinction, 12/15/18/24-fret ranges, synchronized horizontal scrolling, position markers, and inline note details
+- Prefilled **View on Fretboard** navigation from both Chord Library and Scale Library
 - Persisted metronome settings and explicit BPM transfer from BPM Tap
 - Grouped responsive dashboard and polished Settings hierarchy
 - Localized About and Privacy screens with standard open-source license access
@@ -36,7 +39,7 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Minimal GitHub Actions formatting, analysis, and test verification
 - Unit and widget tests
 
-Guitar Tuner, Metronome, BPM Tap, Chord Library, and Scale Library are available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. Both reference libraries are fully offline and add no audio, microphone, account, analytics, network, advertising, or backend behavior.
+Guitar Tuner, Metronome, BPM Tap, Chord Library, Scale Library, and Interactive Fretboard are available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. All three reference tools are fully offline and add no audio, microphone, account, analytics, network, advertising, or backend behavior.
 
 The Metronome's audio callback owns click timing; Flutter never schedules audible beats. Displayed BPM is quarter-note BPM, so 6/8 emits six eighth-note pulses. See the [engine decision](docs/METRONOME_ENGINE_DECISION.md) for the rejected package spike, Oboe rationale, lifecycle, diagnostics, and current physical-validation status.
 

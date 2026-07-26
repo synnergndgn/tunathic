@@ -11,6 +11,86 @@ final class PitchClassChoice {
   String get displayLabel => label ?? spelling.symbol;
 }
 
+const chromaticPitchClassChoices = [
+  PitchClassChoice(
+    spelling: SpelledPitchClass(
+      letter: NoteLetter.c,
+      accidental: Accidental.natural,
+    ),
+  ),
+  PitchClassChoice(
+    spelling: SpelledPitchClass(
+      letter: NoteLetter.d,
+      accidental: Accidental.flat,
+    ),
+    label: 'Db / C#',
+  ),
+  PitchClassChoice(
+    spelling: SpelledPitchClass(
+      letter: NoteLetter.d,
+      accidental: Accidental.natural,
+    ),
+  ),
+  PitchClassChoice(
+    spelling: SpelledPitchClass(
+      letter: NoteLetter.e,
+      accidental: Accidental.flat,
+    ),
+    label: 'Eb / D#',
+  ),
+  PitchClassChoice(
+    spelling: SpelledPitchClass(
+      letter: NoteLetter.e,
+      accidental: Accidental.natural,
+    ),
+  ),
+  PitchClassChoice(
+    spelling: SpelledPitchClass(
+      letter: NoteLetter.f,
+      accidental: Accidental.natural,
+    ),
+  ),
+  PitchClassChoice(
+    spelling: SpelledPitchClass(
+      letter: NoteLetter.f,
+      accidental: Accidental.sharp,
+    ),
+    label: 'F# / Gb',
+  ),
+  PitchClassChoice(
+    spelling: SpelledPitchClass(
+      letter: NoteLetter.g,
+      accidental: Accidental.natural,
+    ),
+  ),
+  PitchClassChoice(
+    spelling: SpelledPitchClass(
+      letter: NoteLetter.a,
+      accidental: Accidental.flat,
+    ),
+    label: 'Ab / G#',
+  ),
+  PitchClassChoice(
+    spelling: SpelledPitchClass(
+      letter: NoteLetter.a,
+      accidental: Accidental.natural,
+    ),
+  ),
+  PitchClassChoice(
+    spelling: SpelledPitchClass(
+      letter: NoteLetter.b,
+      accidental: Accidental.flat,
+    ),
+    label: 'Bb / A#',
+  ),
+  PitchClassChoice(
+    spelling: SpelledPitchClass(
+      letter: NoteLetter.b,
+      accidental: Accidental.natural,
+    ),
+  ),
+];
+
 final class PitchClassSelector extends StatelessWidget {
   const PitchClassSelector({
     required this.label,

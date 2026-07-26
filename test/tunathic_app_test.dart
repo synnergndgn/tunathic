@@ -22,8 +22,9 @@ void main() {
       expect(find.text('Theory and Reference'), findsOneWidget);
       expect(find.text('Training'), findsOneWidget);
       expect(find.text('Guitar Tuner'), findsOneWidget);
+      expect(find.text('Interactive Fretboard'), findsOneWidget);
       expect(find.text('Capo Calculator'), findsOneWidget);
-      expect(find.text('Open tool'), findsNWidgets(5));
+      expect(find.text('Open tool'), findsNWidgets(6));
       expect(find.text('Coming Soon'), findsNWidgets(5));
     },
   );
@@ -63,7 +64,8 @@ void main() {
     expect(find.text('Teori ve Başvuru'), findsOneWidget);
     expect(find.text('Eğitim'), findsOneWidget);
     expect(find.text('Gitar Akort Cihazı'), findsOneWidget);
-    expect(find.text('Aracı aç'), findsNWidgets(5));
+    expect(find.text('Etkileşimli Klavye'), findsOneWidget);
+    expect(find.text('Aracı aç'), findsNWidgets(6));
     expect(find.text('Yakında'), findsNWidgets(5));
   });
 }

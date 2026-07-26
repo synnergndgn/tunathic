@@ -701,6 +701,70 @@ class AppLocalizationsEn extends AppLocalizations {
   String get degreeSevenSpoken => 'seven';
 
   @override
+  String get interactiveFretboard => 'Interactive Fretboard';
+
+  @override
+  String get fretboardIntro =>
+      'Explore chord tones and scale notes across a standard-tuned guitar neck.';
+
+  @override
+  String get fretboardModeLabel => 'Content';
+
+  @override
+  String get chordMode => 'Chord';
+
+  @override
+  String get scaleMode => 'Scale';
+
+  @override
+  String get displayModeLabel => 'Labels';
+
+  @override
+  String get noteNames => 'Notes';
+
+  @override
+  String get degreesIntervals => 'Degrees / intervals';
+
+  @override
+  String get visibleFretRange => 'Visible fret range';
+
+  @override
+  String fretRangeValue(int fret) {
+    return '0–$fret';
+  }
+
+  @override
+  String get fretboardOrientationHint =>
+      'High E is shown at the top; low E is shown at the bottom. Scroll horizontally to see later frets.';
+
+  @override
+  String fretboardSemantics(String name, int fret, String root) {
+    return '$name fretboard, frets zero through $fret. Root notes $root highlighted. High E is at the top and low E is at the bottom.';
+  }
+
+  @override
+  String get selectedPositionTitle => 'Selected position';
+
+  @override
+  String get selectedNoteLabel => 'Note';
+
+  @override
+  String get degreeIntervalLabel => 'Degree / interval';
+
+  @override
+  String get stringLabel => 'String';
+
+  @override
+  String get fretLabel => 'Fret';
+
+  @override
+  String get tapHighlightedNoteHint =>
+      'Tap a highlighted note for pitch, string, fret, and relationship details.';
+
+  @override
+  String get viewOnFretboard => 'View on Fretboard';
+
+  @override
   String get circleOfFifths => 'Circle of Fifths';
 
   @override

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tunathic/app/router/app_router.dart';
 import 'package:tunathic/app/theme/app_radii.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
 import 'package:tunathic/core/music_theory/music_theory.dart';
@@ -6,6 +8,7 @@ import 'package:tunathic/features/chord_library/data/guitar_chord_shapes.dart';
 import 'package:tunathic/features/chord_library/domain/guitar_chord_shape.dart';
 import 'package:tunathic/features/chord_library/presentation/chord_diagram.dart';
 import 'package:tunathic/features/chord_library/presentation/chord_library_localizations.dart';
+import 'package:tunathic/features/fretboard/domain/fretboard_route_state.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/pitch_class_selector.dart';
 
@@ -142,6 +145,26 @@ final class _ChordLibraryScreenState extends State<ChordLibraryScreen> {
                 _buildQualitySelector(localizations),
                 const SizedBox(height: AppSpacing.xLarge),
                 _ChordSummary(chord: chord),
+                const SizedBox(height: AppSpacing.medium),
+                Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: OutlinedButton.icon(
+                    key: const Key('chordViewOnFretboard'),
+                    onPressed: () {
+                      context.push(
+                        AppRoutes.fretboard(
+                          FretboardRouteState(
+                            mode: FretboardMode.chord,
+                            root: _root,
+                            chordQuality: _quality,
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.grid_on_outlined),
+                    label: Text(localizations.viewOnFretboard),
+                  ),
+                ),
                 const SizedBox(height: AppSpacing.xLarge),
                 Semantics(
                   header: true,
