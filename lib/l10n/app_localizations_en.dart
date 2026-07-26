@@ -552,6 +552,155 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scaleLibrary => 'Scale Library';
 
   @override
+  String get scaleLibraryIntro =>
+      'Build scales from reusable music theory and explore their notes, degree formulas, and relationships offline.';
+
+  @override
+  String get scaleSearchLabel => 'Scale search';
+
+  @override
+  String get scaleSearchHint =>
+      'Try C major, F# minor, D Dorian, or A minor pentatonic';
+
+  @override
+  String get unsupportedScaleSearch =>
+      'Enter an exact supported scale such as C major or D Dorian.';
+
+  @override
+  String get scaleTypeLabel => 'Scale';
+
+  @override
+  String get scaleNotesLabel => 'Notes';
+
+  @override
+  String get scaleFormulaLabel => 'Degree formula';
+
+  @override
+  String get scaleCategoryLabel => 'Category';
+
+  @override
+  String get scaleAliasesLabel => 'Also known as';
+
+  @override
+  String get scaleRelationshipsLabel => 'Relationships';
+
+  @override
+  String get relativeMinorLabel => 'Relative minor';
+
+  @override
+  String get relativeMajorLabel => 'Relative major';
+
+  @override
+  String get parentMajorLabel => 'Parent major';
+
+  @override
+  String modeDegreeValue(int degree) {
+    return 'Mode $degree of the parent major scale';
+  }
+
+  @override
+  String get ascendingMelodicMinorNote =>
+      'The melodic minor formula shown is the ascending form.';
+
+  @override
+  String scaleSummarySemantics(String name, String notes, String formula) {
+    return '$name. Notes: $notes. Degree formula: $formula.';
+  }
+
+  @override
+  String get scaleMajor => 'Major';
+
+  @override
+  String get scaleNaturalMinor => 'Natural Minor';
+
+  @override
+  String get scaleHarmonicMinor => 'Harmonic Minor';
+
+  @override
+  String get scaleMelodicMinor => 'Melodic Minor';
+
+  @override
+  String get scaleDorian => 'Dorian';
+
+  @override
+  String get scalePhrygian => 'Phrygian';
+
+  @override
+  String get scaleLydian => 'Lydian';
+
+  @override
+  String get scaleMixolydian => 'Mixolydian';
+
+  @override
+  String get scaleLocrian => 'Locrian';
+
+  @override
+  String get scaleMajorPentatonic => 'Major Pentatonic';
+
+  @override
+  String get scaleMinorPentatonic => 'Minor Pentatonic';
+
+  @override
+  String get scaleBlues => 'Blues';
+
+  @override
+  String get scaleCategoryMajorMinor => 'Major / Minor';
+
+  @override
+  String get scaleCategoryModes => 'Modes';
+
+  @override
+  String get scaleCategoryPentatonicBlues => 'Pentatonic / Blues';
+
+  @override
+  String get scaleCategoryOther => 'Other';
+
+  @override
+  String get scaleAliasIonian => 'Ionian';
+
+  @override
+  String get scaleAliasAeolian => 'Aeolian';
+
+  @override
+  String get degreeOneSpoken => 'one';
+
+  @override
+  String get degreeFlatTwoSpoken => 'flat two';
+
+  @override
+  String get degreeTwoSpoken => 'two';
+
+  @override
+  String get degreeFlatThreeSpoken => 'flat three';
+
+  @override
+  String get degreeThreeSpoken => 'three';
+
+  @override
+  String get degreeFourSpoken => 'four';
+
+  @override
+  String get degreeSharpFourSpoken => 'sharp four';
+
+  @override
+  String get degreeFlatFiveSpoken => 'flat five';
+
+  @override
+  String get degreeFiveSpoken => 'five';
+
+  @override
+  String get degreeFlatSixSpoken => 'flat six';
+
+  @override
+  String get degreeSixSpoken => 'six';
+
+  @override
+  String get degreeFlatSevenSpoken => 'flat seven';
+
+  @override
+  String get degreeSevenSpoken => 'seven';
+
+  @override
   String get circleOfFifths => 'Circle of Fifths';
 
   @override

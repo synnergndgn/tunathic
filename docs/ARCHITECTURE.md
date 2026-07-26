@@ -1,9 +1,9 @@
 # Architecture
 
-Tunathic uses a pragmatic feature-first Flutter structure. Phase 3A adds a
-reusable pure Dart music-theory core and the offline Chord Library while
-preserving the physically validated Guitar Tuner, BPM Tap, and native Oboe
-Metronome behavior.
+Tunathic uses a pragmatic feature-first Flutter structure. Phase 3B extends the
+reusable pure Dart music-theory core and adds the offline Scale Library while
+preserving the physically validated Guitar Tuner, BPM Tap, native Oboe
+Metronome, and Phase 3A Chord Library behavior.
 
 ## Folder responsibilities
 
@@ -14,7 +14,9 @@ Metronome behavior.
 - `lib/features/` groups user-facing areas. Dashboard, Settings, About, and
   Privacy compose the application shell. Chord Library owns guitar-specific
   shapes, validation, offline data, diagram rendering, and browsing
-  presentation while importing the theory core. BPM Tap separates pure
+  presentation while importing the theory core. Scale Library owns exact
+  localized search vocabulary and scale-reference presentation while formulas,
+  construction, and relationships remain in the theory core. BPM Tap separates pure
   estimation logic from presentation state. Metronome separates configuration
   and beat sequencing, scheduling and orchestration, audio output, persistence,
   and presentation. Tuner Audio separates its input boundary and package
@@ -54,6 +56,20 @@ thirteenth values support the current chord vocabulary.
 ordered interval formula. `ChordConstructor` derives all tones from that
 formula. `ChordSymbolParser` is an exact local parser for supported roots and
 suffixes; it does not introduce a second chord representation.
+
+`ScaleDegree` stores structural identity, notation symbol, semitone distance,
+and diatonic steps. This keeps `#4` distinct from `b5` even though both reduce
+to pitch class six. `ScaleDefinition` stores stable nonlocalized IDs, categories,
+ordered degree formulas, aliases, and optional major-mode degree metadata.
+Major/Ionian and Natural Minor/Aeolian share one formula each through aliases
+rather than duplicated scale data.
+
+`ScaleConstructor` delegates each structural degree to `NoteSpelling`, so
+scale construction reuses the same pitch arithmetic and diatonic spelling as
+chords. `ScaleRelationships` derives relative major/minor roots and modal parent
+major roots without root-specific tables. Current coverage is Major, Natural
+Minor, Harmonic Minor, ascending Melodic Minor, all seven major modes, Major
+and Minor Pentatonic, and Blues.
 
 The tuner retains its MIDI/octave/frequency/cents live-pitch types because those
 models solve a different, physically validated capture problem. Future safe
@@ -108,6 +124,7 @@ GoRouter provides one central route table:
 - `/tools/metronome` displays the functional Metronome screen.
 - `/tools/guitar-tuner` displays the production Guitar Tuner.
 - `/tools/chord-library` displays the offline Chord Library.
+- `/tools/scale-library` displays the offline Scale Library.
 - `/debug/tuner-diagnostics` displays Phase 2C engineering diagnostics only in debug builds.
 - `/tools/:toolId` resolves every other unfinished known tool to its Coming Soon placeholder.
 
@@ -116,7 +133,7 @@ Unknown paths and tool identifiers display a friendly localized not-found screen
 The Metronome opens BPM Tap with an explicit result contract. BPM Tap returns only a valid whole-number estimate when the user chooses Apply; the metronome validates the 20–300 BPM range and then updates and persists its tempo. Ordinary dashboard use of BPM Tap has no Apply action.
 
 The dashboard groups stable tool definitions into Practice, Theory and Reference,
-and Training. Metronome, BPM Tap, Guitar Tuner, and Chord Library are
+and Training. Metronome, BPM Tap, Guitar Tuner, Chord Library, and Scale Library are
 production-facing tools and receive stronger surface treatment. Navigation uses
 pushes for drill-in screens so Android back naturally returns to the previous
 context. Unknown routes continue to use the localized not-found screen.
@@ -253,10 +270,16 @@ Known algorithm limitations are intentional: the tool estimates only whole-numbe
 
 Flutter's generated localization infrastructure uses English `app_en.arb` as the source and Turkish `app_tr.arb` as the second supported language. The selected language can follow the device or be fixed to English or Turkish. Unsupported device languages fall back to English.
 
-Theory IDs and musical chord symbols are deliberately nonlocalized. Chord
+Theory IDs, musical chord symbols, note symbols, and degree formulas are
+deliberately nonlocalized. Chord
 quality names, categories, selector labels, empty states, per-string fingering,
 barre descriptions, search feedback, and diagram semantics are localized at the
 Chord Library presentation boundary.
+
+Scale names, categories, alias names, relationships, search guidance, and
+spoken degree semantics are localized at the Scale Library presentation
+boundary. Exact search owns a small explicit English/Turkish vocabulary outside
+the pure core; it does not turn localized display strings into theory identity.
 
 ## Preferences abstraction
 
@@ -286,8 +309,9 @@ Shared maximum widths produce readable phone, large-phone, and tablet columns. C
 
 No pitch-analysis, FFT, DSP, scientific-computing, database, analytics, advertising, account, backend, or purchase package is included. Pitch detection and the real-time buffer/stabilizer use only Dart SDK math, async, and typed-data libraries.
 
-Phase 3A adds no dependency. Pitch arithmetic, formulas, search parsing, shape
-validation, and diagram rendering use Dart and Flutter primitives.
+Phases 3A and 3B add no dependency. Pitch arithmetic, formulas, search parsing,
+relationships, shape validation, diagrams, and reference presentation use Dart
+and Flutter primitives.
 
 ## Testing approach
 
@@ -295,6 +319,14 @@ Music-theory tests cover all 12 pitch classes, signed modulo transposition,
 enharmonic identity and spelling, interval semitones and structural labels, all
 22 formulas, common/altered/suspended/extended chord construction, sharp/flat
 keys, boundary crossings, and exact supported search syntax.
+
+Scale-theory tests cover structural degrees, all required scale formulas and
+aliases, all 12 roots, requested sharp/flat examples, relative keys, modal
+parents and degrees, pentatonic/blues construction, and exact English/Turkish
+search acceptance and rejection. Scale Library widget tests cover dashboard
+opening, root/definition changes, notes and formulas, relative/modal
+relationships, localization, themes, combined semantics, 2× text, and 360,
+412, 600, 900, and 1280 logical-pixel widths.
 
 Chord-shape tests validate the entire 162-shape dataset and deliberately malformed
 string, fret, finger, barre, formula-tone, and missing-root cases. Widget tests
@@ -326,6 +358,10 @@ Production Tuner tests cover all preset MIDI sequences and frequencies, target-r
   arbitrary voicing generation.
 - Exact chord search has no fuzzy matching. Favorites remain deferred until a
   structured cross-reference-tool persistence requirement exists.
+- Scale Library uses ascending Melodic Minor and a deliberately focused scale
+  catalog. It has no fretboard positions, playback, custom formulas, or fuzzy
+  search, and its single-accidental spelling fallback is not a complete
+  academic notation engine.
 
 - BPM Tap, the foreground Metronome, and Guitar Tuner are functional. The tuner still requires broader real-guitar and device-matrix validation before it is release-complete.
 - Metronome click placement is owned by the native output sample clock, but end-to-end acoustic latency varies by device and route. The feature does not run in the background and supports no subdivisions, swing, custom rhythms, dotted-quarter 6/8, or custom accent patterns.

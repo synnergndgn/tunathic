@@ -1045,6 +1045,288 @@ abstract class AppLocalizations {
   /// **'Scale Library'**
   String get scaleLibrary;
 
+  /// No description provided for @scaleLibraryIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Build scales from reusable music theory and explore their notes, degree formulas, and relationships offline.'**
+  String get scaleLibraryIntro;
+
+  /// No description provided for @scaleSearchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scale search'**
+  String get scaleSearchLabel;
+
+  /// No description provided for @scaleSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try C major, F# minor, D Dorian, or A minor pentatonic'**
+  String get scaleSearchHint;
+
+  /// No description provided for @unsupportedScaleSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an exact supported scale such as C major or D Dorian.'**
+  String get unsupportedScaleSearch;
+
+  /// No description provided for @scaleTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scale'**
+  String get scaleTypeLabel;
+
+  /// No description provided for @scaleNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get scaleNotesLabel;
+
+  /// No description provided for @scaleFormulaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Degree formula'**
+  String get scaleFormulaLabel;
+
+  /// No description provided for @scaleCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get scaleCategoryLabel;
+
+  /// No description provided for @scaleAliasesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Also known as'**
+  String get scaleAliasesLabel;
+
+  /// No description provided for @scaleRelationshipsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Relationships'**
+  String get scaleRelationshipsLabel;
+
+  /// No description provided for @relativeMinorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Relative minor'**
+  String get relativeMinorLabel;
+
+  /// No description provided for @relativeMajorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Relative major'**
+  String get relativeMajorLabel;
+
+  /// No description provided for @parentMajorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent major'**
+  String get parentMajorLabel;
+
+  /// No description provided for @modeDegreeValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode {degree} of the parent major scale'**
+  String modeDegreeValue(int degree);
+
+  /// No description provided for @ascendingMelodicMinorNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The melodic minor formula shown is the ascending form.'**
+  String get ascendingMelodicMinorNote;
+
+  /// No description provided for @scaleSummarySemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}. Notes: {notes}. Degree formula: {formula}.'**
+  String scaleSummarySemantics(String name, String notes, String formula);
+
+  /// No description provided for @scaleMajor.
+  ///
+  /// In en, this message translates to:
+  /// **'Major'**
+  String get scaleMajor;
+
+  /// No description provided for @scaleNaturalMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Natural Minor'**
+  String get scaleNaturalMinor;
+
+  /// No description provided for @scaleHarmonicMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Harmonic Minor'**
+  String get scaleHarmonicMinor;
+
+  /// No description provided for @scaleMelodicMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Melodic Minor'**
+  String get scaleMelodicMinor;
+
+  /// No description provided for @scaleDorian.
+  ///
+  /// In en, this message translates to:
+  /// **'Dorian'**
+  String get scaleDorian;
+
+  /// No description provided for @scalePhrygian.
+  ///
+  /// In en, this message translates to:
+  /// **'Phrygian'**
+  String get scalePhrygian;
+
+  /// No description provided for @scaleLydian.
+  ///
+  /// In en, this message translates to:
+  /// **'Lydian'**
+  String get scaleLydian;
+
+  /// No description provided for @scaleMixolydian.
+  ///
+  /// In en, this message translates to:
+  /// **'Mixolydian'**
+  String get scaleMixolydian;
+
+  /// No description provided for @scaleLocrian.
+  ///
+  /// In en, this message translates to:
+  /// **'Locrian'**
+  String get scaleLocrian;
+
+  /// No description provided for @scaleMajorPentatonic.
+  ///
+  /// In en, this message translates to:
+  /// **'Major Pentatonic'**
+  String get scaleMajorPentatonic;
+
+  /// No description provided for @scaleMinorPentatonic.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor Pentatonic'**
+  String get scaleMinorPentatonic;
+
+  /// No description provided for @scaleBlues.
+  ///
+  /// In en, this message translates to:
+  /// **'Blues'**
+  String get scaleBlues;
+
+  /// No description provided for @scaleCategoryMajorMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Major / Minor'**
+  String get scaleCategoryMajorMinor;
+
+  /// No description provided for @scaleCategoryModes.
+  ///
+  /// In en, this message translates to:
+  /// **'Modes'**
+  String get scaleCategoryModes;
+
+  /// No description provided for @scaleCategoryPentatonicBlues.
+  ///
+  /// In en, this message translates to:
+  /// **'Pentatonic / Blues'**
+  String get scaleCategoryPentatonicBlues;
+
+  /// No description provided for @scaleCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get scaleCategoryOther;
+
+  /// No description provided for @scaleAliasIonian.
+  ///
+  /// In en, this message translates to:
+  /// **'Ionian'**
+  String get scaleAliasIonian;
+
+  /// No description provided for @scaleAliasAeolian.
+  ///
+  /// In en, this message translates to:
+  /// **'Aeolian'**
+  String get scaleAliasAeolian;
+
+  /// No description provided for @degreeOneSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'one'**
+  String get degreeOneSpoken;
+
+  /// No description provided for @degreeFlatTwoSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'flat two'**
+  String get degreeFlatTwoSpoken;
+
+  /// No description provided for @degreeTwoSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'two'**
+  String get degreeTwoSpoken;
+
+  /// No description provided for @degreeFlatThreeSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'flat three'**
+  String get degreeFlatThreeSpoken;
+
+  /// No description provided for @degreeThreeSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'three'**
+  String get degreeThreeSpoken;
+
+  /// No description provided for @degreeFourSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'four'**
+  String get degreeFourSpoken;
+
+  /// No description provided for @degreeSharpFourSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'sharp four'**
+  String get degreeSharpFourSpoken;
+
+  /// No description provided for @degreeFlatFiveSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'flat five'**
+  String get degreeFlatFiveSpoken;
+
+  /// No description provided for @degreeFiveSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'five'**
+  String get degreeFiveSpoken;
+
+  /// No description provided for @degreeFlatSixSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'flat six'**
+  String get degreeFlatSixSpoken;
+
+  /// No description provided for @degreeSixSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'six'**
+  String get degreeSixSpoken;
+
+  /// No description provided for @degreeFlatSevenSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'flat seven'**
+  String get degreeFlatSevenSpoken;
+
+  /// No description provided for @degreeSevenSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'seven'**
+  String get degreeSevenSpoken;
+
   /// No description provided for @circleOfFifths.
   ///
   /// In en, this message translates to:

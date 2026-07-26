@@ -1,201 +1,200 @@
-# Current Milestone: Phase 3A — Music Theory Core + Chord Library
+# Current Milestone: Phase 3B — Scale Library
 
-Phase 3A establishes Tunathic's reusable, offline music-theory domain layer and
-ships Chord Library as the first reference tool built on it. The production
-Guitar Tuner, BPM Tap, and native Oboe Metronome remain behaviorally unchanged.
+Phase 3B extends Tunathic's reusable pure Dart music-theory core with structural
+scale formulas and ships Scale Library as the second offline reference tool.
+The validated Guitar Tuner, BPM Tap, native Oboe Metronome, and Phase 3A Chord
+Library remain behaviorally unchanged.
 
 ## Authorized scope
 
-- Pure Dart pitch-class identity, spelling, interval, chord-formula, chord
-  construction, and exact chord-symbol parsing.
-- Structured guitar chord shapes, standard-tuning pitch derivation, and
-  deterministic dataset validation.
-- A localized, accessible, responsive Chord Library with root, quality, search,
-  chord-tone, primary-shape, and alternate-shape browsing.
-- English and Turkish strings, deterministic unit/widget coverage, architecture
-  documentation, Android debug build, and available physical UI validation.
+- Pure Dart scale degrees, formulas, construction, aliases, relative-key
+  relationships, and modal parent-major relationships.
+- A localized, accessible, responsive Scale Library with 12-root browsing,
+  categorized scale selection, exact local search, notes, degree formulas,
+  aliases, and relevant relationships.
+- A focused reusable pitch-class selector shared by Chord Library and Scale
+  Library without moving feature state or music logic into widgets.
+- English and Turkish localization, deterministic unit/widget coverage,
+  documentation, an Android debug build, and physical UI validation when a
+  device is available.
 
-Scale Library, Interactive Fretboard, Interval Trainer, Ear Training, favorites,
-accounts, networking, analytics, advertising, and backend work are outside this
-milestone.
+Interactive Fretboard, scale-position diagrams, audio playback, Interval
+Trainer, Ear Training, Circle of Fifths, favorites, accounts, networking,
+analytics, advertising, and backend work are outside this milestone.
 
-## Music-theory core
+## Scale domain
 
-`lib/core/music_theory/` is a Flutter-independent library with no UI, state,
-storage, audio, platform, or localization dependency.
+`lib/core/music_theory/scale.dart` remains Flutter-, state-, storage-, audio-,
+platform-, and localization-independent.
 
-### Pitch-class identity and spelling
+### Structural degrees
 
-`PitchClass` structurally represents the 12 chromatic identities as semitone
-offsets from C. Safe positive modulo arithmetic handles transposition in either
-direction. Enharmonic names are not separate pitches: C# and Db are distinct
-`SpelledPitchClass` values whose `pitchClass` is the same identity.
+`ScaleDegree` stores a stable structural identity, display symbol, semitone
+distance, and diatonic letter distance. Enharmonically equal degrees are not
+collapsed: `#4` and `b5` both span six semitones but retain different diatonic
+steps. Scale spelling therefore follows the formula rather than being inferred
+from semitone distance alone.
 
-`SpelledPitchClass` combines a diatonic `NoteLetter` with natural, sharp, or flat
-`Accidental`. `NoteSpelling` keeps chromatic identity arithmetic separate from
-display spelling. Chord construction advances the expected diatonic letter and
-then chooses a natural, sharp, or flat accidental. This produces Bb in F-based
-contexts, Bb-D-F for Bb major, and F#-A-C#-E for F#m7. If a result would require
-a double accidental, the Phase 3A strategy deliberately falls back to a
-readable enharmonic single-accidental spelling.
+### Formula coverage
 
-The root browser uses a pragmatic mixed chromatic spelling:
-C, C#, D, Eb, E, F, F#, G, Ab, A, Bb, B. Exact search may preserve another
-supported spelling such as Db.
+`ScaleDefinition` stores a stable ID, category, ordered structural degrees,
+aliases, and optional major-mode degree. Current unique formulas cover:
 
-### Intervals
+- Major, with Ionian as an alias.
+- Natural Minor, with Aeolian as an alias.
+- Harmonic Minor.
+- Ascending Melodic Minor.
+- Dorian, Phrygian, Lydian, Mixolydian, and Locrian.
+- Major Pentatonic, Minor Pentatonic, and Blues.
 
-`TheoryInterval` provides stable identity, semitone distance, diatonic steps,
-short label, and simple semitone reduction. It covers unison through octave,
-separate augmented-fourth and diminished-fifth identities, augmented fifth,
-diminished seventh, and the compound ninth, eleventh, and thirteenth intervals
-needed by current chord formulas. The model is designed for later Interval
-Trainer reuse without carrying localized names or exercise state.
+Ionian does not duplicate Major data, and Aeolian does not duplicate Natural
+Minor data. Their stable alias metadata resolves to the same definitions.
+Additional exotic and synthetic scales are intentionally deferred until they
+have a product use.
 
-### Chord formulas and construction
+### Construction and spelling
 
-`ChordQuality` stores a stable identifier, standard symbol, category, and an
-ordered interval formula. User-facing names live in Flutter localization.
-Coverage is intentionally focused:
+`ScaleConstructor` walks each definition's ordered degrees and delegates every
+tone to Phase 3A `NoteSpelling`. Pitch-class arithmetic remains modulo 12 while
+the degree supplies the intended diatonic letter. This produces examples such
+as:
 
-- Triads: major, minor, diminished, augmented, sus2, sus4.
-- Sevenths: major 7, dominant 7, minor 7, minor-major 7, diminished 7,
-  half-diminished/m7b5.
-- Common extensions: 6, minor 6, add9, minor add9, 9, major 9, minor 9, 11,
-  minor 11, and 13.
+- C Major: C D E F G A B
+- F Major: F G A Bb C D E
+- Bb Major: Bb C D Eb F G A
+- B Major: B C# D# E F# G# A#
+- F# Natural Minor: F# G# A B C# D E
+- E Blues: E G A Bb B D
 
-`ChordConstructor` derives every displayed chord tone from the selected root and
-formula. It contains no root-specific tone tables. `ChordSymbolParser` accepts
-only the exact roots, accidentals, and quality suffixes represented by the
-domain model; it is not fuzzy search.
+The pragmatic Phase 3A notation boundary still supports naturals, single
+sharps, and single flats. A result that would require a double accidental falls
+back to a readable single-accidental enharmonic spelling.
 
-Tuner live-pitch models remain separate because they include MIDI octave,
-frequency, cents, confidence, and transient capture state. Phase 3A does not
-change the physically validated tuner conversion or presentation behavior.
+### Relationships
 
-## Guitar chord shapes
+`ScaleRelationships` derives relative keys and modal parents from pitch and
+diatonic offsets:
 
-`GuitarChordShape` stores six string fingerings in low-E through high-E order.
-Each string is structurally muted, open, or fretted and may carry a finger
-number. Shapes also identify root, chord quality, diagram starting fret,
-category, difficulty, optional rootless status, project source, and zero or more
-barres with fret, finger, and string range.
+- a major root yields its relative natural-minor root;
+- a natural-minor root yields its relative-major root;
+- a mode with explicit `modeDegree` yields its parent-major root.
 
-The project-owned offline dataset contains 162 shapes:
+For example, A Natural Minor relates to C Major, while D Dorian is degree 2 of
+C Major. These are computed relationships, not localized prose or root-specific
+tables.
 
-- curated open major, minor, dominant 7, major 7, minor 7, sus2/sus4, add9, 6,
-  minor 6, and selected extended shapes;
-- compact diminished, augmented, half-diminished, 9, 11, and 13 examples;
-- validated movable E- and A-family major, minor, dominant 7, major 7, and
-  minor 7 shapes for all 12 pitch classes.
+## Scale Library interface
 
-The set favors dependable everyday vocabulary over exhaustive voicing coverage.
-An unavailable voicing never gets fabricated: theory tones remain visible with
-a localized empty state.
-
-### Dataset validation
-
-`GuitarShapeValidator` derives every sounding pitch from standard guitar tuning
-and its fret, reduces it to pitch class, and checks it against the selected
-formula. It also verifies:
-
-- exactly six strings;
-- fret range 0–24 plus the explicit muted sentinel;
-- string-kind/fret consistency;
-- optional finger range 1–4;
-- a valid five-fret diagram window and starting fret;
-- barre fret, finger, range, and covered-string consistency;
-- no pitch outside the chord formula;
-- root presence unless a voicing explicitly declares itself rootless.
-
-All checked-in shapes must pass the aggregate dataset test. Chord extensions may
-omit optional chord members in a practical guitar voicing, but may not add a
-foreign pitch.
-
-## Chord Library interface
-
-The dashboard exposes `/tools/chord-library` as an available offline tool. One
+The dashboard exposes `/tools/scale-library` as an available offline tool. One
 scrollable screen supports:
 
-- exact local chord-symbol search;
-- all 12 pitch classes through minimum-size root chips;
-- all 22 chord qualities through a categorized selector;
-- standard chord symbol and formula-derived chord tones;
-- selected and alternate verified guitar shapes;
-- concise localized per-string and barre fingering;
-- a clear no-shape state for valid formulas without curated voicings.
+- all 12 pitch classes through wrapping minimum-size root chips;
+- practical dual enharmonic labels such as `Db / C#`, `F# / Gb`, and
+  `Bb / A#`;
+- 12 unique scale definitions ordered into Major/Minor, Modes, and
+  Pentatonic/Blues categories;
+- formula-derived note names and visible structural degree tokens;
+- localized category names and Ionian/Aeolian alias metadata;
+- relative major/minor or parent-major/mode-degree relationships when relevant;
+- exact local English or Turkish searches such as `C major`, `F# minor`,
+  `D Dorian`, `C majör`, and `D doryen`;
+- explicit rejection of fuzzy, incomplete, and unsupported searches.
 
-The project-owned `CustomPainter` diagram draws six strings, five fret cells,
-nut or starting-fret position, muted/open glyphs, finger dots/numbers, and
-barres. It uses active theme colors but preserves meaning through glyphs,
-geometry, numbers, and text. A single image semantic describes all six strings
-and any barre as a useful reading sequence rather than exposing meaningless
-controls.
+Exact search preserves the entered root spelling. Selector roots use a pragmatic
+default spelling, while the chip label exposes the common alternative. Musical
+note symbols and degree symbols remain standard notation rather than being
+translated.
 
-Phone layouts stack diagram and fingering; wider layouts place diagram and
-details side-by-side inside the shared 1200-pixel content bound. Root and shape
-choices wrap, content scrolls, and widget coverage exercises 360, 412, 600, 900,
-and 1280 logical-pixel widths plus 2× text.
+The summary uses wrapping tokens rather than a fixed text row, so notes and
+formulas remain readable at large text. At wider widths, browsing controls and
+detail groups use parallel columns inside the shared 1200-pixel content bound;
+phone layouts stack them. One combined semantic summary announces the scale
+name, ordered notes, and spoken localized degree formula.
+
+## Shared reference UI
+
+`lib/shared/widgets/pitch_class_selector.dart` owns only the repeated labeled,
+wrapping `ChoiceChip` presentation. Each feature provides its own choices,
+labels, selected spelling, and state transition. Chord Library keeps its
+existing mixed spellings and keys; Scale Library supplies dual enharmonic
+labels. Chord construction, guitar shapes, search, and diagram behavior remain
+feature-owned.
+
+## Tests
+
+Pure tests cover structural degree identity, all required formulas, aliases,
+construction from every definition and all 12 pitch identities, sharp and flat
+keys, relative keys, modal parent roots, pentatonic and blues formulas, and the
+requested C/F/Bb/B Major, F# Minor, A Minor Pentatonic, E Blues, D Dorian,
+E Phrygian, F Lydian, G Mixolydian, and B Locrian examples.
+
+Parser tests cover English and Turkish supported vocabulary, accidentals,
+Ionian/Aeolian aliases, and rejection of fuzzy, incomplete, or unsupported
+syntax.
+
+Widget tests cover dashboard opening, root and scale selection, note/formula
+updates, modal and relative relationships, exact search and rejection,
+English/Turkish, light/dark themes, combined semantics, 2× text, and 360, 412,
+600, 900, and 1280 logical-pixel widths. The full pre-existing suite remains
+the regression gate for Tuner, Metronome, BPM Tap, Settings, About, Privacy,
+localization, preferences, and Chord Library.
 
 ## Validation gate
 
 Before completion:
 
-- run `dart format .` and verify formatting;
+- run `dart format .` and formatting verification;
 - run `flutter gen-l10n`;
 - run `flutter analyze`;
 - run the full `flutter test` suite;
 - build an Android debug APK;
-- inspect an attached Android device and perform physical Chord Library UI
-  checks when available.
+- inspect an attached Android device and perform Scale Library UI checks when
+  available.
+
+Final automated and physical validation results are recorded in the completion
+report and this document before the milestone commit.
 
 ## Current validation status
 
 - Baseline `flutter analyze`: passed with no issues.
-- Baseline full `flutter test`: passed, 263 tests.
-- Final `dart format .`: 113 files checked, no changes required.
-- Formatting verification with `--set-exit-if-changed`: passed.
+- Baseline full `flutter test`: passed, 298 tests.
+- Final `dart format .`: 121 files formatted; the immediate verification pass
+  reported zero changes.
 - `flutter gen-l10n`: passed for English and Turkish sources.
 - Final `flutter analyze`: passed with no issues.
-- Final full `flutter test`: passed, 298 tests.
-- All 162 checked-in guitar shapes passed aggregate musical and structural
-  validation.
+- Final full `flutter test`: passed, 322 tests.
+- Focused Chord Library and dashboard regressions passed after extracting the
+  shared selector.
 - Android debug APK, including the existing native Oboe component, built
   successfully at `build/app/outputs/flutter-apk/app-debug.apk`.
-- Physical Android validation passed on device `23021RAAEG` (Android 15/API
-  35): dashboard opening and back navigation; Bb root selection; Bbm7 quality
-  selection; formula-derived Bb-Db-F-Ab tones; diagram and complete semantic
-  fingering; movable E/A alternative browsing; scrolling; dark theme; and 1.5×
-  system text. The original system font scale and app theme preference were
-  restored after the checks.
-- An immediate hierarchy probe during the first post-install bootstrap briefly
-  observed the application's friendly error surface. No Flutter exception was
-  present in the process log; a clean restart and three subsequent five-second
-  fresh-start checks all reached the dashboard without the error.
+- The first APK attempt encountered read-only flags in Gradle's generated
+  `mergeDebugAssets` directory. Clearing those flags in that exact generated
+  path allowed an unchanged rebuild to pass.
+- Physical Android validation was not performed because neither Flutter nor ADB
+  detected an attached Android device or emulator. No microphone validation is
+  required for this milestone.
 
 ## Reuse plan
 
-- Scale Library can reuse pitch identity, spelling, intervals, and diatonic tone
-  construction while adding scale formulas.
-- Interactive Fretboard can reuse pitch classes, standard-tuning pitch
-  derivation, and structured string/fret concepts without importing Chord
-  Library presentation.
-- Interval Trainer can reuse `TheoryInterval` identity and metadata while
-  keeping localized exercise copy and audio orchestration in its own feature.
-- Ear Training can reuse interval and chord formula identities while keeping
-  generated audio, answer state, progress, and persistence out of the core.
+- Interactive Fretboard can consume `ConstructedScale.pitchClasses`,
+  structural degrees, and standard-tuning pitch derivation while keeping
+  fretboard interaction and layout in its own feature.
+- Interval Trainer can consume `TheoryInterval` and the semitone/diatonic
+  metadata represented by scale degrees without importing Scale Library UI.
+- Ear Training can consume pitch classes, intervals, chord formulas, and scale
+  definitions while keeping audio generation, answer state, and progress
+  outside the core.
+- Circle of Fifths can consume relative-key helpers and pitch spelling while
+  owning its own harmonic navigation model.
 
 ## Known limitations
 
-- Double sharps/flats and a complete academic notation engine are intentionally
-  out of scope.
-- Chord search is exact syntax only and has no fuzzy matching or aliases beyond
-  the explicitly supported suffix table.
-- The shape collection is curated rather than exhaustive. Inversions, slash
-  chords, altered dominants, custom tunings, left-handed diagrams, and arbitrary
-  voicing generation are not implemented.
-- Favorites are deferred until structured reference-tool persistence has a
-  concrete cross-feature requirement.
-- Extended guitar voicings may omit optional chord members, as real six-string
-  arrangements commonly do; validation rejects foreign notes and missing roots
-  rather than requiring every formula member.
+- Melodic Minor currently represents the ascending form only.
+- Double sharps/flats and a complete academic notation engine remain out of
+  scope.
+- The library intentionally excludes whole-tone, diminished, bebop, altered,
+  regional, and other synthetic scale catalogs.
+- Search is exact and offline; it does not accept localized solfège root names,
+  fuzzy descriptions, or unsupported scales.
+- No fretboard positions, fingering patterns, playback, favorites, or custom
+  scale creation are included.

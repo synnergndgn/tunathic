@@ -8,6 +8,7 @@ import 'package:tunathic/features/chord_library/presentation/chord_library_scree
 import 'package:tunathic/features/metronome/presentation/metronome_screen.dart';
 import 'package:tunathic/features/privacy/presentation/privacy_screen.dart';
 import 'package:tunathic/features/settings/presentation/settings_screen.dart';
+import 'package:tunathic/features/scale_library/presentation/scale_library_screen.dart';
 import 'package:tunathic/features/tool_placeholder/presentation/not_found_screen.dart';
 import 'package:tunathic/features/tool_placeholder/presentation/tool_placeholder_screen.dart';
 import 'package:tunathic/features/tools/tool_definition.dart';
@@ -65,6 +66,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           }
           if (tool == ToolDefinition.chordLibrary) {
             return const ChordLibraryScreen();
+          }
+          if (tool == ToolDefinition.scaleLibrary) {
+            return const ScaleLibraryScreen();
           }
           return ToolPlaceholderScreen(tool: tool);
         },

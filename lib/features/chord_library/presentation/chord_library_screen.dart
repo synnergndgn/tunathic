@@ -7,6 +7,7 @@ import 'package:tunathic/features/chord_library/domain/guitar_chord_shape.dart';
 import 'package:tunathic/features/chord_library/presentation/chord_diagram.dart';
 import 'package:tunathic/features/chord_library/presentation/chord_library_localizations.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/pitch_class_selector.dart';
 
 final class ChordLibraryScreen extends StatefulWidget {
   const ChordLibraryScreen({super.key});
@@ -17,22 +18,82 @@ final class ChordLibraryScreen extends StatefulWidget {
 
 final class _ChordLibraryScreenState extends State<ChordLibraryScreen> {
   static const _roots = [
-    SpelledPitchClass(letter: NoteLetter.c, accidental: Accidental.natural),
-    SpelledPitchClass(letter: NoteLetter.c, accidental: Accidental.sharp),
-    SpelledPitchClass(letter: NoteLetter.d, accidental: Accidental.natural),
-    SpelledPitchClass(letter: NoteLetter.e, accidental: Accidental.flat),
-    SpelledPitchClass(letter: NoteLetter.e, accidental: Accidental.natural),
-    SpelledPitchClass(letter: NoteLetter.f, accidental: Accidental.natural),
-    SpelledPitchClass(letter: NoteLetter.f, accidental: Accidental.sharp),
-    SpelledPitchClass(letter: NoteLetter.g, accidental: Accidental.natural),
-    SpelledPitchClass(letter: NoteLetter.a, accidental: Accidental.flat),
-    SpelledPitchClass(letter: NoteLetter.a, accidental: Accidental.natural),
-    SpelledPitchClass(letter: NoteLetter.b, accidental: Accidental.flat),
-    SpelledPitchClass(letter: NoteLetter.b, accidental: Accidental.natural),
+    PitchClassChoice(
+      spelling: SpelledPitchClass(
+        letter: NoteLetter.c,
+        accidental: Accidental.natural,
+      ),
+    ),
+    PitchClassChoice(
+      spelling: SpelledPitchClass(
+        letter: NoteLetter.c,
+        accidental: Accidental.sharp,
+      ),
+    ),
+    PitchClassChoice(
+      spelling: SpelledPitchClass(
+        letter: NoteLetter.d,
+        accidental: Accidental.natural,
+      ),
+    ),
+    PitchClassChoice(
+      spelling: SpelledPitchClass(
+        letter: NoteLetter.e,
+        accidental: Accidental.flat,
+      ),
+    ),
+    PitchClassChoice(
+      spelling: SpelledPitchClass(
+        letter: NoteLetter.e,
+        accidental: Accidental.natural,
+      ),
+    ),
+    PitchClassChoice(
+      spelling: SpelledPitchClass(
+        letter: NoteLetter.f,
+        accidental: Accidental.natural,
+      ),
+    ),
+    PitchClassChoice(
+      spelling: SpelledPitchClass(
+        letter: NoteLetter.f,
+        accidental: Accidental.sharp,
+      ),
+    ),
+    PitchClassChoice(
+      spelling: SpelledPitchClass(
+        letter: NoteLetter.g,
+        accidental: Accidental.natural,
+      ),
+    ),
+    PitchClassChoice(
+      spelling: SpelledPitchClass(
+        letter: NoteLetter.a,
+        accidental: Accidental.flat,
+      ),
+    ),
+    PitchClassChoice(
+      spelling: SpelledPitchClass(
+        letter: NoteLetter.a,
+        accidental: Accidental.natural,
+      ),
+    ),
+    PitchClassChoice(
+      spelling: SpelledPitchClass(
+        letter: NoteLetter.b,
+        accidental: Accidental.flat,
+      ),
+    ),
+    PitchClassChoice(
+      spelling: SpelledPitchClass(
+        letter: NoteLetter.b,
+        accidental: Accidental.natural,
+      ),
+    ),
   ];
 
   final _searchController = TextEditingController();
-  SpelledPitchClass _root = _roots.first;
+  SpelledPitchClass _root = _roots.first.spelling;
   ChordQuality _quality = ChordQuality.major;
   int _shapeIndex = 0;
   bool _searchHasError = false;
@@ -138,37 +199,18 @@ final class _ChordLibraryScreenState extends State<ChordLibraryScreen> {
   }
 
   Widget _buildRootSelector(AppLocalizations localizations) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Semantics(
-          header: true,
-          child: Text(
-            localizations.rootNoteLabel,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.small),
-        Wrap(
-          spacing: AppSpacing.small,
-          runSpacing: AppSpacing.small,
-          children: [
-            for (final root in _roots)
-              ChoiceChip(
-                key: Key('root-${root.symbol}'),
-                label: Text(root.symbol),
-                selected: _root.pitchClass == root.pitchClass,
-                onSelected: (_) {
-                  setState(() {
-                    _root = root;
-                    _shapeIndex = 0;
-                    _searchHasError = false;
-                  });
-                },
-              ),
-          ],
-        ),
-      ],
+    return PitchClassSelector(
+      label: localizations.rootNoteLabel,
+      choices: _roots,
+      selectedRoot: _root,
+      keyPrefix: 'root',
+      onSelected: (root) {
+        setState(() {
+          _root = root;
+          _shapeIndex = 0;
+          _searchHasError = false;
+        });
+      },
     );
   }
 

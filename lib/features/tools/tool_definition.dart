@@ -24,7 +24,8 @@ enum ToolDefinition {
       this == ToolDefinition.bpmTap ||
       this == ToolDefinition.metronome ||
       this == ToolDefinition.guitarTuner ||
-      this == ToolDefinition.chordLibrary;
+      this == ToolDefinition.chordLibrary ||
+      this == ToolDefinition.scaleLibrary;
 
   ToolCategory get category => switch (this) {
     ToolDefinition.guitarTuner ||

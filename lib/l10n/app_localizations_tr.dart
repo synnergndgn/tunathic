@@ -545,6 +545,155 @@ class AppLocalizationsTr extends AppLocalizations {
   String get scaleLibrary => 'Gam Kütüphanesi';
 
   @override
+  String get scaleLibraryIntro =>
+      'Gamları yeniden kullanılabilir müzik teorisinden oluşturun; notalarını, derece formüllerini ve ilişkilerini çevrimdışı inceleyin.';
+
+  @override
+  String get scaleSearchLabel => 'Gam arama';
+
+  @override
+  String get scaleSearchHint =>
+      'C majör, F# minör, D doryen veya A minör pentatonik deneyin';
+
+  @override
+  String get unsupportedScaleSearch =>
+      'C majör veya D doryen gibi desteklenen bir gamı tam adıyla girin.';
+
+  @override
+  String get scaleTypeLabel => 'Gam';
+
+  @override
+  String get scaleNotesLabel => 'Notalar';
+
+  @override
+  String get scaleFormulaLabel => 'Derece formülü';
+
+  @override
+  String get scaleCategoryLabel => 'Kategori';
+
+  @override
+  String get scaleAliasesLabel => 'Diğer adı';
+
+  @override
+  String get scaleRelationshipsLabel => 'İlişkiler';
+
+  @override
+  String get relativeMinorLabel => 'İlgili minör';
+
+  @override
+  String get relativeMajorLabel => 'İlgili majör';
+
+  @override
+  String get parentMajorLabel => 'Ana majör';
+
+  @override
+  String modeDegreeValue(int degree) {
+    return 'Ana majör gamın $degree. modu';
+  }
+
+  @override
+  String get ascendingMelodicMinorNote =>
+      'Gösterilen melodik minör formülü çıkıcı biçimdir.';
+
+  @override
+  String scaleSummarySemantics(String name, String notes, String formula) {
+    return '$name. Notalar: $notes. Derece formülü: $formula.';
+  }
+
+  @override
+  String get scaleMajor => 'Majör';
+
+  @override
+  String get scaleNaturalMinor => 'Doğal Minör';
+
+  @override
+  String get scaleHarmonicMinor => 'Armonik Minör';
+
+  @override
+  String get scaleMelodicMinor => 'Melodik Minör';
+
+  @override
+  String get scaleDorian => 'Doryen';
+
+  @override
+  String get scalePhrygian => 'Frigyen';
+
+  @override
+  String get scaleLydian => 'Lidyen';
+
+  @override
+  String get scaleMixolydian => 'Miksolidyen';
+
+  @override
+  String get scaleLocrian => 'Lokriyen';
+
+  @override
+  String get scaleMajorPentatonic => 'Majör Pentatonik';
+
+  @override
+  String get scaleMinorPentatonic => 'Minör Pentatonik';
+
+  @override
+  String get scaleBlues => 'Blues';
+
+  @override
+  String get scaleCategoryMajorMinor => 'Majör / Minör';
+
+  @override
+  String get scaleCategoryModes => 'Modlar';
+
+  @override
+  String get scaleCategoryPentatonicBlues => 'Pentatonik / Blues';
+
+  @override
+  String get scaleCategoryOther => 'Diğer';
+
+  @override
+  String get scaleAliasIonian => 'İyonyen';
+
+  @override
+  String get scaleAliasAeolian => 'Eolyen';
+
+  @override
+  String get degreeOneSpoken => 'bir';
+
+  @override
+  String get degreeFlatTwoSpoken => 'bemol iki';
+
+  @override
+  String get degreeTwoSpoken => 'iki';
+
+  @override
+  String get degreeFlatThreeSpoken => 'bemol üç';
+
+  @override
+  String get degreeThreeSpoken => 'üç';
+
+  @override
+  String get degreeFourSpoken => 'dört';
+
+  @override
+  String get degreeSharpFourSpoken => 'diyez dört';
+
+  @override
+  String get degreeFlatFiveSpoken => 'bemol beş';
+
+  @override
+  String get degreeFiveSpoken => 'beş';
+
+  @override
+  String get degreeFlatSixSpoken => 'bemol altı';
+
+  @override
+  String get degreeSixSpoken => 'altı';
+
+  @override
+  String get degreeFlatSevenSpoken => 'bemol yedi';
+
+  @override
+  String get degreeSevenSpoken => 'yedi';
+
+  @override
   String get circleOfFifths => 'Beşliler Çemberi';
 
   @override
