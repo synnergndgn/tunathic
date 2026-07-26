@@ -2,7 +2,7 @@
 
 **Tune. Train. Create.**
 
-Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 2D — Final Guitar Tuner UI**: BPM Tap, Metronome, and a production-facing monophonic Guitar Tuner are implemented, with final real-guitar validation and tuning polish still tracked explicitly.
+Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 2E — Production Metronome Engine**: BPM Tap and the production Guitar Tuner remain implemented while the Metronome is being hardened behind a native Android audio clock and mandatory physical validation gate.
 
 ## Current contents
 
@@ -15,7 +15,7 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Abstracted preferences and logging
 - Friendly application and route error presentation
 - Functional BPM Tap with a robust rolling tempo estimate
-- Functional foreground metronome with 20–300 BPM, four time signatures, first-beat accent, volume, and visual beat feedback
+- Native Oboe-timed foreground metronome with 20–300 BPM, four time signatures, first-beat accent, live volume/tempo/signature updates, and visual-only beat callbacks
 - Explicit microphone-permission flow and continuous mono PCM16 input boundary
 - Local transient signal-level and stream diagnostics with lifecycle-safe cleanup
 - Pure Dart YIN pitch detection from 40–1,200 Hz with typed confidence/no-pitch results
@@ -31,6 +31,8 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Unit and widget tests
 
 Guitar Tuner is available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. The current work adds no audio-file recording, background capture, sample or pitch-history persistence, upload, advertising, analytics, account, or backend behavior and does not claim Play Store readiness.
+
+The Metronome's audio callback owns click timing; Flutter never schedules audible beats. Displayed BPM is quarter-note BPM, so 6/8 emits six eighth-note pulses. See the [engine decision](docs/METRONOME_ENGINE_DECISION.md) for the rejected package spike, Oboe rationale, lifecycle, diagnostics, and current physical-validation status.
 
 ## Requirements
 
@@ -68,5 +70,6 @@ The Android application ID is a permanent product identifier and must not be cha
 - [Current milestone](docs/CURRENT_MILESTONE.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [Metronome engine decision](docs/METRONOME_ENGINE_DECISION.md)
 - [Design direction](design/README.md)
 - [Repository rules](AGENTS.md)

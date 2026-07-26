@@ -30,10 +30,12 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
   void initState() {
     super.initState();
     _metronomeController = ref.read(metronomeProvider.notifier);
-    _metronomeController.prepareForScreen();
     final bpm = ref.read(metronomeProvider).config.bpm;
     _tempoTextController = TextEditingController(text: bpm.toString());
     WidgetsBinding.instance.addObserver(this);
+    Future<void>.microtask(() {
+      if (mounted) _metronomeController.prepareForScreen();
+    });
   }
 
   @override

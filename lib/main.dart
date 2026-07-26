@@ -13,6 +13,7 @@ import 'package:tunathic/features/metronome/application/metronome_preferences.da
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  registerNativeLicenses();
 
   final logger = DebugAppLogger();
   final preferencesStore = SharedPreferencesStore();

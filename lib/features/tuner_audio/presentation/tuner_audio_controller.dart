@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tunathic/core/audio/tool_audio_coordinator.dart';
 import 'package:tunathic/core/logging/app_logger.dart';
-import 'package:tunathic/features/metronome/application/metronome_controller.dart';
 import 'package:tunathic/features/tuner_audio/audio/record_tuner_audio_input.dart';
 import 'package:tunathic/features/tuner_audio/audio/tuner_audio_input.dart';
 import 'package:tunathic/features/tuner_audio/domain/audio_frame.dart';
@@ -119,7 +119,7 @@ final tunerAudioInputFactoryProvider = Provider<TunerAudioInputFactory>(
 );
 
 final stopMetronomeBeforeCaptureProvider = Provider<StopMetronomeBeforeCapture>(
-  (ref) => ref.read(metronomeProvider.notifier).releaseAudio,
+  (ref) => ref.read(toolAudioCoordinatorProvider).releaseMetronome,
 );
 
 final pitchDetectionExecutorProvider = Provider<PitchDetectionExecutor>(
@@ -146,6 +146,8 @@ final class TunerAudioController extends Notifier<TunerAudioState> {
 
   late final TunerAudioInput _audioInput;
   late final StopMetronomeBeforeCapture _stopMetronome;
+  late final ToolAudioCoordinator _audioCoordinator;
+  late final ReleaseAudioTool _registeredRelease;
   late final AppLogger _logger;
   late final MonotonicTimeReader _realtimeClock;
   late final RealtimePitchConfiguration _realtimeConfiguration;
@@ -168,6 +170,9 @@ final class TunerAudioController extends Notifier<TunerAudioState> {
   TunerAudioState build() {
     _audioInput = ref.read(tunerAudioInputFactoryProvider)();
     _stopMetronome = ref.read(stopMetronomeBeforeCaptureProvider);
+    _audioCoordinator = ref.read(toolAudioCoordinatorProvider);
+    _registeredRelease = releaseAudio;
+    _audioCoordinator.registerTuner(_registeredRelease);
     _logger = ref.read(appLoggerProvider);
     _realtimeClock = ref.read(tunerRealtimeClockProvider);
     _realtimeConfiguration = ref.read(tunerRealtimeConfigurationProvider);
@@ -332,8 +337,12 @@ final class TunerAudioController extends Notifier<TunerAudioState> {
     unawaited(stop(reason: TunerCaptureStopReason.navigation));
   }
 
+  Future<void> releaseAudio() =>
+      stop(reason: TunerCaptureStopReason.navigation);
+
   void _disposeController() {
     if (_isDisposed) return;
+    _audioCoordinator.unregisterTuner(_registeredRelease);
     _isDisposed = true;
     _operationVersion++;
     _pitchPipeline.stop();

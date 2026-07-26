@@ -2,32 +2,32 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tunathic/core/audio/tool_audio_coordinator.dart';
 import 'package:tunathic/core/logging/app_logger.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
 import 'package:tunathic/features/metronome/application/metronome_controller.dart';
-import 'package:tunathic/features/metronome/application/metronome_scheduler.dart';
 import 'package:tunathic/features/metronome/domain/metronome_config.dart';
 
 import 'support/fakes.dart';
 import 'support/metronome_fakes.dart';
 
 void main() {
-  late FakeMetronomeAudioOutput audio;
-  late FakeMetronomeScheduler scheduler;
+  late FakeMetronomeEngine engine;
   late MemoryPreferencesStore store;
   late RecordingLogger logger;
   late ProviderContainer container;
   late MetronomeController controller;
 
   setUp(() {
-    audio = FakeMetronomeAudioOutput();
-    scheduler = FakeMetronomeScheduler();
+    engine = FakeMetronomeEngine();
     store = MemoryPreferencesStore();
     logger = RecordingLogger();
     container = ProviderContainer(
       overrides: [
-        metronomeAudioOutputProvider.overrideWithValue(audio),
-        metronomeSchedulerProvider.overrideWithValue(scheduler),
+        metronomeEngineProvider.overrideWith((ref) {
+          ref.onDispose(() => unawaited(engine.dispose()));
+          return engine;
+        }),
         preferencesStoreProvider.overrideWithValue(store),
         appLoggerProvider.overrideWithValue(logger),
       ],
@@ -37,139 +37,239 @@ void main() {
 
   tearDown(() => container.dispose());
 
-  test('starts, sequences accented audio, and stops', () async {
+  test('initializes once, starts on beat one, and stops', () async {
     await controller.start();
 
+    expect(engine.initializeCount, 1);
+    expect(engine.startCount, 1);
     expect(container.read(metronomeProvider).isRunning, isTrue);
-    expect(audio.initializeCount, 1);
-    expect(scheduler.startCount, 1);
 
-    scheduler.fire();
-    await _flushMicrotasks();
-    scheduler.fire();
-    await _flushMicrotasks();
+    engine.emitBeat(beatNumber: 1, accented: true);
 
-    expect(audio.plays, [
-      (accented: true, volume: MetronomeConfig.defaultVolume),
-      (accented: false, volume: MetronomeConfig.defaultVolume),
-    ]);
-    expect(container.read(metronomeProvider).currentBeat, 2);
+    expect(container.read(metronomeProvider).currentBeat, 1);
 
     await controller.stop();
 
     expect(container.read(metronomeProvider).isRunning, isFalse);
     expect(container.read(metronomeProvider).currentBeat, 0);
-    expect(scheduler.isRunning, isFalse);
+    expect(engine.stopCount, 1);
   });
 
-  test('prevents duplicate scheduler starts', () async {
-    final firstStart = controller.start();
-    final duplicateStart = controller.start();
-    await Future.wait([firstStart, duplicateStart]);
+  test('fresh first start remains running across multiple callbacks', () async {
+    await controller.start();
 
-    expect(audio.initializeCount, 1);
-    expect(scheduler.startCount, 1);
+    for (final beat in [1, 2, 3, 4, 1, 2, 3, 4]) {
+      engine.emitBeat(beatNumber: beat, accented: beat == 1);
+    }
+
+    expect(engine.initializeCount, 1);
+    expect(engine.startCount, 1);
+    expect(engine.isRunning, isTrue);
+    expect(container.read(metronomeProvider).isRunning, isTrue);
+    expect(container.read(metronomeProvider).currentBeat, 4);
   });
 
-  test('updates running interval when BPM changes', () async {
+  test('restart reuses initialized engine and gets a new run', () async {
+    await controller.start();
+    final firstRun = engine.currentRunId;
+    await controller.stop();
+    await controller.start();
+
+    expect(engine.initializeCount, 1);
+    expect(engine.startCount, 2);
+    expect(engine.currentRunId, isNot(firstRun));
+  });
+
+  test('duplicate Start is ignored while initialization is pending', () async {
+    engine.pendingInitialization = Completer<void>();
+
+    final first = controller.start();
+    final duplicate = controller.start();
+    await _flushMicrotasks();
+
+    expect(engine.initializeCount, 1);
+
+    engine.pendingInitialization!.complete();
+    await Future.wait([first, duplicate]);
+
+    expect(engine.startCount, 1);
+  });
+
+  test('rapid Stop invalidates a pending Start', () async {
+    engine.pendingInitialization = Completer<void>();
+
+    final start = controller.start();
+    await _flushMicrotasks();
+    await controller.stop();
+    engine.pendingInitialization!.complete();
+    await start;
+
+    expect(engine.startCount, 0);
+    expect(container.read(metronomeProvider).isRunning, isFalse);
+  });
+
+  test('rapid repeated Start and Stop remains restartable', () async {
+    for (var index = 0; index < 20; index++) {
+      await controller.start();
+      await controller.stop();
+    }
+
+    expect(engine.startCount, 20);
+    expect(engine.stopCount, 20);
+    expect(container.read(metronomeProvider).isRunning, isFalse);
+
+    await controller.start();
+    expect(container.read(metronomeProvider).isRunning, isTrue);
+  });
+
+  test('late callback after Stop is ignored', () async {
+    await controller.start();
+    final stoppedRun = engine.currentRunId;
+    await controller.stop();
+
+    engine.emitBeat(runId: stoppedRun, beatNumber: 2);
+
+    expect(container.read(metronomeProvider).currentBeat, 0);
+  });
+
+  test('late callback from an old run is ignored after restart', () async {
+    await controller.start();
+    final oldRun = engine.currentRunId;
+    await controller.stop();
+    await controller.start();
+
+    engine.emitBeat(runId: oldRun, beatNumber: 4);
+    expect(container.read(metronomeProvider).currentBeat, 0);
+
+    engine.emitBeat(beatNumber: 1, accented: true);
+    expect(container.read(metronomeProvider).currentBeat, 1);
+  });
+
+  test('stale error from an old stream cannot stop a replacement', () async {
+    await controller.start();
+    final oldStreamGeneration = engine.currentStreamGeneration;
+
+    await controller.releaseAudio();
+    controller.prepareForScreen();
+    await controller.start();
+
+    expect(engine.currentStreamGeneration, isNot(oldStreamGeneration));
+    engine.emitFailure(
+      runId: engine.currentRunId,
+      streamGeneration: oldStreamGeneration,
+    );
+    await _flushMicrotasks();
+
+    expect(engine.isRunning, isTrue);
+    expect(container.read(metronomeProvider).isRunning, isTrue);
+    expect(container.read(metronomeProvider).failure, isNull);
+  });
+
+  test('BPM limits and stopped update are passed at initialization', () async {
+    controller.setBpm(5);
+    expect(container.read(metronomeProvider).config.bpm, 20);
+    controller.setBpm(500);
+    expect(container.read(metronomeProvider).config.bpm, 300);
+
+    await controller.start();
+
+    expect(engine.initializedConfigs.single.bpm, 300);
+    expect(engine.bpms, isEmpty);
+  });
+
+  test('BPM changes while running without restarting', () async {
     await controller.start();
 
     controller.setBpm(150);
+    await _flushMicrotasks();
 
     expect(container.read(metronomeProvider).config.bpm, 150);
-    expect(scheduler.intervals.last, const Duration(milliseconds: 400));
+    expect(engine.bpms, [150]);
+    expect(engine.startCount, 1);
+    expect(container.read(metronomeProvider).isRunning, isTrue);
   });
 
-  test('re-anchors from 4/4 to denominator-aware 6/8 while running', () async {
+  test('repeated rapid BPM updates reach the engine in order', () async {
     await controller.start();
-    scheduler.fire();
 
-    controller.setTimeSignature(MetronomeTimeSignature.sixEight);
-
-    expect(container.read(metronomeProvider).currentBeat, 0);
-    expect(scheduler.intervals.last, const Duration(milliseconds: 250));
-
-    scheduler.fire();
+    for (final bpm in [40, 60, 90, 120, 160, 200, 300]) {
+      controller.previewBpm(bpm);
+    }
     await _flushMicrotasks();
-    expect(container.read(metronomeProvider).currentBeat, 1);
-    expect(audio.plays.last.accented, isTrue);
+
+    expect(engine.bpms, [40, 60, 90, 120, 160, 200, 300]);
+    expect(container.read(metronomeProvider).config.bpm, 300);
   });
 
+  test('persisted BPM is saved', () async {
+    controller.setBpm(132);
+    await _flushMicrotasks();
+
+    expect(store.values['metronome.bpm'], '132');
+  });
+
+  for (final signature in MetronomeTimeSignature.values) {
+    test(
+      '${signature.id} visual beat callbacks preserve engine order',
+      () async {
+        controller.setTimeSignature(signature);
+        await controller.start();
+
+        for (var beat = 1; beat <= signature.beatsPerMeasure; beat++) {
+          engine.emitBeat(beatNumber: beat, accented: beat == 1);
+          expect(container.read(metronomeProvider).currentBeat, beat);
+        }
+        engine.emitBeat(beatNumber: 1, accented: true);
+        expect(container.read(metronomeProvider).currentBeat, 1);
+      },
+    );
+  }
+
   test(
-    'logs deterministic timing and audio request status in debug mode',
+    'signature change while running resets visual bar predictably',
     () async {
       await controller.start();
-      scheduler.nextTick = const MetronomeTick(
-        intendedDeadline: Duration(milliseconds: 500),
-        callbackTime: Duration(milliseconds: 512),
-        lateness: Duration(milliseconds: 12),
-        skippedDeadlines: 1,
-      );
+      engine.emitBeat(beatNumber: 3);
 
-      scheduler.fire();
+      controller.setTimeSignature(MetronomeTimeSignature.sixEight);
       await _flushMicrotasks();
 
-      expect(
-        logger.debugMessages,
-        contains(
-          contains(
-            'beat=1 bpm=120 deadlineMs=500.000 callbackMs=512.000 '
-            'latenessMs=12.000 skipped=1 audioPending=0',
-          ),
-        ),
-      );
-      expect(logger.debugMessages, contains(contains('status=pending')));
-      expect(logger.debugMessages, contains(contains('status=completed')));
+      expect(container.read(metronomeProvider).currentBeat, 0);
+      expect(engine.timeSignatures, [MetronomeTimeSignature.sixEight]);
+      expect(engine.startCount, 1);
+
+      engine.emitBeat(beatNumber: 1, accented: true);
+      expect(container.read(metronomeProvider).currentBeat, 1);
     },
   );
 
-  test(
-    'audio playback futures never block later scheduler callbacks',
-    () async {
-      audio.pendingPlayback = Completer<void>();
-      await controller.start();
+  test('6/8 retains denominator-aware quarter-note BPM semantics', () {
+    const config = MetronomeConfig(
+      bpm: 120,
+      timeSignature: MetronomeTimeSignature.sixEight,
+    );
 
-      scheduler.fire();
-      scheduler.fire();
-
-      expect(container.read(metronomeProvider).currentBeat, 2);
-      expect(audio.plays, hasLength(2));
-      expect(logger.debugMessages, contains(contains('audioPending=1')));
-
-      audio.pendingPlayback!.complete();
-      await _flushMicrotasks();
-    },
-  );
-
-  test('stops on background lifecycle and remains stopped on return', () async {
-    await controller.start();
-
-    await controller.handleLifecycle(isForeground: false);
-    await controller.handleLifecycle(isForeground: true);
-
-    expect(container.read(metronomeProvider).isRunning, isFalse);
-    expect(scheduler.startCount, 1);
+    expect(config.beatDuration, const Duration(milliseconds: 250));
+    expect(config.timeSignature.beatsPerMeasure, 6);
+    expect(config.timeSignature.beatUnit, 8);
   });
 
-  test('releases screen resources and normalizes state on re-entry', () async {
+  test('volume and accent update live and persist', () async {
     await controller.start();
 
-    await controller.releaseAudio();
+    controller.previewVolume(0.3);
+    controller.commitVolume();
+    controller.setAccentEnabled(false);
+    await _flushMicrotasks();
 
-    expect(scheduler.isRunning, isFalse);
-    expect(audio.disposeCount, 1);
-    await controller.start();
-    expect(scheduler.startCount, 1);
-
-    controller.prepareForScreen();
-
-    expect(container.read(metronomeProvider).isRunning, isFalse);
-    await controller.start();
-    expect(scheduler.startCount, 2);
+    expect(engine.volumes, [0.3]);
+    expect(engine.accents, [false]);
+    expect(store.values['metronome.volume'], '0.3');
+    expect(store.values['metronome.accentEnabled'], 'false');
   });
 
-  test('reports initialization failure and permits retry', () async {
-    audio.failInitialization = true;
+  test('initialization failure reports an error and permits retry', () async {
+    engine.failInitialization = true;
 
     await controller.start();
 
@@ -180,18 +280,30 @@ void main() {
     );
     expect(logger.errorMessages, isNotEmpty);
 
-    audio.failInitialization = false;
+    engine.failInitialization = false;
     await controller.start();
 
     expect(container.read(metronomeProvider).isRunning, isTrue);
-    expect(audio.initializeCount, 2);
+    expect(engine.initializeCount, 2);
   });
 
-  test('stops safely when beat playback fails', () async {
-    audio.failPlayback = true;
+  test('start failure reports an error and permits retry', () async {
+    engine.failStart = true;
     await controller.start();
 
-    scheduler.fire();
+    expect(
+      container.read(metronomeProvider).failure,
+      MetronomeFailure.audioUnavailable,
+    );
+
+    engine.failStart = false;
+    await controller.start();
+    expect(container.read(metronomeProvider).isRunning, isTrue);
+  });
+
+  test('runtime engine failure stops safely and permits recovery', () async {
+    await controller.start();
+    engine.emitFailure();
     await _flushMicrotasks();
 
     expect(container.read(metronomeProvider).isRunning, isFalse);
@@ -199,30 +311,131 @@ void main() {
       container.read(metronomeProvider).failure,
       MetronomeFailure.audioUnavailable,
     );
-    expect(scheduler.isRunning, isFalse);
+
+    await controller.start();
+    expect(container.read(metronomeProvider).isRunning, isTrue);
   });
 
-  test('persists configuration changes and reset defaults', () async {
-    controller.setBpm(132);
-    controller.setTimeSignature(MetronomeTimeSignature.sixEight);
-    controller.setAccentEnabled(false);
-    controller.previewVolume(0.3);
-    controller.commitVolume();
+  test('failed live update transitions to a recoverable error', () async {
+    await controller.start();
+    engine.failUpdates = true;
+
+    controller.setBpm(140);
     await _flushMicrotasks();
 
-    expect(store.values['metronome.bpm'], '132');
-    expect(store.values['metronome.timeSignature'], '6/8');
-    expect(store.values['metronome.accentEnabled'], 'false');
-    expect(store.values['metronome.volume'], '0.3');
+    expect(container.read(metronomeProvider).isRunning, isFalse);
+    expect(
+      container.read(metronomeProvider).failure,
+      MetronomeFailure.audioUnavailable,
+    );
+  });
+
+  test('backgrounding stops and foregrounding never auto-starts', () async {
+    await controller.start();
+
+    await controller.handleLifecycle(isForeground: false);
+    await controller.handleLifecycle(isForeground: true);
+
+    expect(container.read(metronomeProvider).isRunning, isFalse);
+    expect(engine.startCount, 1);
+  });
+
+  test('route release disposes resources and re-entry can restart', () async {
+    await controller.start();
+
+    await controller.releaseAudio();
+    expect(engine.disposeCount, 1);
+    expect(engine.isRunning, isFalse);
+
+    controller.prepareForScreen();
+    await controller.start();
+
+    expect(engine.initializeCount, 2);
+    expect(container.read(metronomeProvider).isRunning, isTrue);
+  });
+
+  test(
+    're-entry waits for delayed cleanup before opening a new stream',
+    () async {
+      await controller.start();
+      engine.pendingDispose = Completer<void>();
+
+      final oldRelease = controller.releaseAudio();
+      await _flushMicrotasks();
+      expect(engine.disposeCount, 1);
+
+      controller.prepareForScreen();
+      final newStart = controller.start();
+      await _flushMicrotasks();
+
+      expect(engine.initializeCount, 1);
+      expect(engine.startCount, 1);
+
+      engine.pendingDispose!.complete();
+      await oldRelease;
+      await newStart;
+
+      expect(engine.initializeCount, 2);
+      expect(engine.startCount, 2);
+      expect(engine.isRunning, isTrue);
+      expect(container.read(metronomeProvider).isRunning, isTrue);
+    },
+  );
+
+  test('provider disposal releases engine resources', () async {
+    await controller.start();
+
+    container.dispose();
+    await _flushMicrotasks();
+
+    expect(engine.disposeCount, 1);
+  });
+
+  test('starting metronome releases an active tuner first', () async {
+    var tunerReleaseCount = 0;
+    final coordinator = container.read(toolAudioCoordinatorProvider);
+    Future<void> releaseTuner() async {
+      tunerReleaseCount++;
+    }
+
+    coordinator.registerTuner(releaseTuner);
+    await controller.start();
+
+    expect(tunerReleaseCount, 1);
+    expect(engine.startCount, 1);
+  });
+
+  test('debug diagnostics distinguish Flutter callback timing', () async {
+    await controller.start();
+    engine.emitBeat(beatNumber: 1, accented: true);
+
+    expect(
+      logger.debugMessages,
+      contains(contains('note=callback-timing-not-acoustic-timing')),
+    );
+    expect(
+      logger.debugMessages,
+      contains(contains('implementation=Fake metronome engine')),
+    );
+  });
+
+  test('reset stops and restores persisted defaults', () async {
+    await controller.start();
+    controller.setBpm(144);
+    controller.setTimeSignature(MetronomeTimeSignature.sixEight);
+    controller.setAccentEnabled(false);
+    controller.previewVolume(0.2);
 
     await controller.reset();
 
     expect(container.read(metronomeProvider).config, const MetronomeConfig());
     expect(store.values['metronome.bpm'], '120');
     expect(store.values['metronome.timeSignature'], '4/4');
+    expect(store.values['metronome.accentEnabled'], 'true');
+    expect(store.values['metronome.volume'], '0.65');
   });
 
-  test('applies only supported BPM Tap values', () {
+  test('BPM Tap applies only supported values', () {
     expect(controller.applyBpmTap(184), isTrue);
     expect(container.read(metronomeProvider).config.bpm, 184);
 
@@ -232,7 +445,7 @@ void main() {
 }
 
 Future<void> _flushMicrotasks() async {
-  await Future<void>.value();
-  await Future<void>.value();
-  await Future<void>.value();
+  for (var index = 0; index < 8; index++) {
+    await Future<void>.value();
+  }
 }

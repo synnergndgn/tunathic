@@ -1,6 +1,6 @@
 # Architecture
 
-Tunathic uses a pragmatic feature-first Flutter structure. Phase 2D adds a production Guitar Tuner product layer over the validated Phase 2A–2C capture, detector, and real-time pipeline while keeping capture, buffering, detection, stabilization, target selection, persistence, lifecycle, and presentation responsibilities separate.
+Tunathic uses a pragmatic feature-first Flutter structure. Phase 2E replaces the Metronome's timing-critical Dart playback path with an Android native audio engine while preserving the Phase 2A–2D Guitar Tuner stack and keeping audio clocks, capture, DSP, persistence, lifecycle, and presentation responsibilities separate.
 
 ## Folder responsibilities
 
@@ -10,7 +10,7 @@ Tunathic uses a pragmatic feature-first Flutter structure. Phase 2D adds a produ
 - `lib/shared/` contains reusable interface elements that are not specific to one feature. Foundation contains the friendly error view.
 - `lib/l10n/` contains source ARB files and generated Flutter localization classes.
 
-No UI component imports `shared_preferences`, calls the microphone package, or contains audio conversion or DSP. Platform-facing playback is isolated behind `MetronomeAudioOutput`; microphone input is isolated behind `TunerAudioInput`; offline pitch analysis is isolated behind `PitchDetector`. Current tools operate offline, and neither BPM Tap sessions nor microphone samples are persisted.
+No UI component imports `shared_preferences`, calls the microphone package, invokes native audio channels, or contains audio conversion or DSP. Platform-facing playback is isolated behind `MetronomeEngine`; microphone input is isolated behind `TunerAudioInput`; offline pitch analysis is isolated behind `PitchDetector`. Current tools operate offline, and neither BPM Tap sessions nor microphone samples are persisted.
 
 ## State management
 
@@ -20,7 +20,7 @@ Riverpod provides scoped dependency injection and reactive application settings.
 
 `BpmTapController` owns the in-memory tap session, monotonic elapsed-time reads, manual reset, and inactivity timer. The BPM Tap widget only observes immutable state and forwards tap or reset actions. Its elapsed-time provider can be replaced in tests, keeping controller behavior deterministic without a platform clock dependency.
 
-`MetronomeController` owns immutable runtime state and coordinates the scheduler, audio boundary, and preferences. Widgets forward user actions and render state. Playback stops when the app loses foreground focus and does not resume automatically. Leaving the screen synchronously invalidates pending start work, stops the scheduler, and releases audio without mutating Riverpod during widget teardown; a later screen entry normalizes the retained runtime state before rendering.
+`MetronomeController` owns immutable runtime state and coordinates `MetronomeEngine`, diagnostics, Tuner exclusion, and preferences. Widgets forward user actions and render state. Native run IDs reject callbacks after Stop or restart. Playback stops when the app loses foreground focus and does not resume automatically. Leaving the screen invalidates pending start work and releases the native stream; a later screen entry normalizes retained presentation state before rendering.
 
 `TunerAudioController` owns the capture state machine and creates its audio input through an injectable factory. It requests permission only in response to Start, releases Metronome audio before capture, rejects duplicate operations, subscribes to frames and configuration changes, and owns all cleanup. It feeds normalized frame-owned samples into `RealtimePitchPipeline`; the UI observes only immutable scalar snapshots and never receives PCM bytes. Controller operation versions and pipeline generations invalidate delayed permission, detector, stop, and restart work. Backgrounding stops capture and analysis, and foregrounding never restarts them automatically.
 
@@ -56,13 +56,15 @@ Open-source notices use Flutter’s standard `showLicensePage`, which reads Flut
 
 ## Metronome timing and beat model
 
-`BeatSequence` is pure Dart. It advances and wraps a one-based beat number for 2/4, 3/4, 4/4, and 6/8, marking only beat one as accented when the preference is enabled. Displayed BPM uses a quarter-note reference, and click duration is `quarter-note duration × 4 ÷ denominator`. In 6/8 this produces six eighth-note clicks per measure: at 120 BPM each click is 250 milliseconds apart. Dotted-quarter interpretation is out of scope.
+`MetronomeTimeSignature` models 2/4, 3/4, 4/4, and 6/8 with explicit numerator and denominator. Displayed BPM uses a quarter-note reference, and pulse duration is `quarter-note duration × 4 ÷ denominator`. In 6/8 this produces six eighth-note clicks per measure: at 120 BPM each click is 250 milliseconds apart. Dotted-quarter interpretation is out of scope.
 
-`AnchoredMetronomeScheduler` uses a monotonic clock and one-shot timers. Its clock and timer factory are replaceable in deterministic tests. Each deadline is calculated from the original anchor instead of chaining the previous timer completion, limiting cumulative drift. The next timer is armed before controller state or audio work begins. A callback delayed by less than one interval retains the original next deadline; deadlines already reached during a longer stall are skipped rather than played in a catch-up burst. BPM or denominator changes cancel the previous timer and re-anchor the single scheduler.
+`MetronomeEngine` separates initialize/start/stop/dispose, live configuration, running state, beat events, engine information, and native stop diagnostics from the controller. `NativeMetronomeEngine` is the only production implementation. It loads the two bundled WAV assets once and delegates to a Kotlin channel plus C++ Oboe engine.
 
-The scheduler callback carries its intended deadline, actual callback time, lateness, and skipped count to `MetronomeController`. In debug builds, the controller records those values with beat number, BPM, and audio-request pending/completed/failed state through `AppLogger`. Per-beat logging is compiled out of release builds. Audio playback futures are deliberately not awaited by the scheduler, so platform-channel completion cannot postpone arming the next deadline. Visual state and the audio request use the same beat number, although visual rendering may follow the request by a few milliseconds.
+The Oboe low-latency data callback owns the output sample clock, fractional frames-per-pulse accumulation, beat progression, accent selection, gain, and click rendering. It uses the device's natural output rate, resamples the project assets during initialization, applies a 3 ms terminal fade, and writes no file/network/Flutter work in the callback. Oboe uses AAudio on supported devices and OpenSL ES on older supported Android releases. Shared output with media/sonification attributes preserves normal system mixing; Tunathic does not request global audio focus.
 
-This foreground design is maintainable and testable but not sample-accurate: Dart scheduling, platform-channel transit, Android audio buffering, and device hardware all contribute latency. A native scheduled-audio engine would be required for stronger real-time guarantees.
+BPM updates preserve the fraction remaining to the next pulse. Signature updates preserve pulse phase and make the next pulse beat 1. Neither update restarts the stream. Configuration revisions discard queued visual callbacks from a previous configuration, and run IDs discard callbacks after Stop or restart.
+
+Native beat events contain rendered output-frame position and a monotonic callback timestamp. They update current beat and animation only; they never trigger sound. Debug builds log engine implementation/API, sample rate and buffer properties, requested changes, first Flutter callback latency, callback interval/deviation, detectable callback gaps, native x-runs, and engine errors. Callback cadence is explicitly not claimed as acoustic timing.
 
 ## Tuner audio capture boundary
 
@@ -162,9 +164,9 @@ Target-relative cents use `1200 × log2(detectedFrequency / targetFrequency)`. T
 
 ## Audio playback and assets
 
-`audioplayers` 6.8.1 is used because its maintained, multiplatform API includes `AudioPool` preloading and Android low-latency playback for short, repetitive effects. The discontinued `soundpool` package was rejected. Separate regular and accented pools are created once before the first beat, reused throughout the screen session, and released when the screen is disposed or audio fails. Each pool prewarms three players and can grow to four. This small amount of extra capacity provides headroom when 6/8 at 300 BPM requests a click every 100 milliseconds and a previous platform request is still being reclaimed. Android audio context is configured for sonification.
+Oboe 1.10.0 provides the Android low-latency callback and device-version abstraction. It is integrated as an Android Prefab/CMake dependency, isolated below `MetronomeEngine`, and carries no Flutter-facing API. The Apache-2.0 license is bundled and registered with Flutter's license page.
 
-The click WAV files are original project assets generated deterministically by `tool/generate_metronome_clicks.dart`; they are short decaying synthesized tones and contain no third-party recording. The script records the exact generation parameters and can reproduce the checked-in assets.
+The click WAV files are original project assets generated deterministically by `tool/generate_metronome_clicks.dart`; they are 40/55 ms decaying mono PCM16 tones, remain below full scale, and contain no third-party recording. The script records the exact generation parameters and can reproduce the checked-in assets. Native playback never schedules a manual stop.
 
 ## BPM estimation
 
@@ -200,7 +202,7 @@ Shared maximum widths produce readable phone, large-phone, and tablet columns. C
 - `go_router` supplies centralized declarative navigation, path parsing, and route-level error handling.
 - `flutter_localizations` and the SDK-compatible `intl` version generate and support English and Turkish localization.
 - `shared_preferences` persists scalar application, metronome, and tuner settings behind application-owned abstractions.
-- `audioplayers` preloads and plays the two bundled metronome clicks through low-latency Android audio pools.
+- Oboe 1.10.0 supplies the Android low-latency output callback and AAudio/OpenSL ES compatibility layer behind `MetronomeEngine`.
 - `record` 7.1.1 supplies continuous PCM16 microphone streaming and the Android `AudioRecord` bridge behind `TunerAudioInput`; it is used for transient capture, never file recording.
 - `package_info_plus` supplies the installed version and build number behind `ApplicationInfoLoader`; platform metadata cannot be read reliably from `pubspec.yaml` at runtime.
 
@@ -208,9 +210,9 @@ No pitch-analysis, FFT, DSP, scientific-computing, database, analytics, advertis
 
 ## Testing approach
 
-Unit tests cover preference parsing and persistence, BPM estimation, metronome beat progression, wrapping, accents, time signatures, tempo interval calculation, lifecycle stopping, failure recovery, reset, and duplicate-start prevention. Controller tests replace clocks, audio, and scheduling with deterministic fakes. Widget tests verify both functional dashboard tools, English and Turkish content, scaled compact layouts, metronome controls, and BPM Tap result transfer. Fakes implement the same application-owned boundaries used by production code.
+Unit tests cover preference parsing and persistence, BPM estimation, metronome denominator semantics, tempo interval calculation, lifecycle stopping, failure recovery, reset, and duplicate-start prevention. Controller tests replace `MetronomeEngine` with a deterministic fake, so unit/widget tests never load Oboe or require Android.
 
-Scheduler tests use fake monotonic time and fake one-shot timers; they do not wait on wall-clock time. They cover exact callbacks, mild and multi-interval lateness, original-deadline retention, skipped deadlines, no catch-up bursts, re-anchoring, and rapid stop/start. Controller tests additionally cover 4/4-to-6/8 reconfiguration, debug timing records, duplicate-start prevention, audio failure, and pending audio futures that do not block later beat callbacks.
+Metronome controller tests cover initialize-once, start/stop/restart, duplicate and rapid operations, 20 repeated Start/Stop cycles, stale callbacks after Stop/restart, BPM limits and rapid live changes, 2/4, 3/4, 4/4, and 6/8 callback order, deterministic signature transition, volume/accent persistence, initialization/start/runtime/update failures, recovery, backgrounding, route release, provider disposal, Tuner transition, and callback diagnostics. Widget tests cover start/stop, BPM, signature, current beat, accent, error/retry, English/Turkish, narrow/large-text layout, BPM Tap transfer, and navigation cleanup.
 
 Application-shell tests cover haptic persistence and enabled/disabled behavior, dashboard grouping and availability, injected package versions, About and Privacy navigation, standard license entry, theme and language regression, large text, narrow layout, BPM Tap and Metronome regressions, corrected 6/8 timing, and Metronome cleanup on back navigation. GitHub Actions repeats dependency resolution, formatting verification, analysis, and tests for pushes and pull requests to `main` without secrets or deployment steps.
 
@@ -225,8 +227,8 @@ Production Tuner tests cover all preset MIDI sequences and frequencies, target-r
 ## Known limitations
 
 - BPM Tap, the foreground Metronome, and Guitar Tuner are functional. The tuner still requires broader real-guitar and device-matrix validation before it is release-complete.
-- Metronome playback is not sample-accurate, does not run in the background, and supports no subdivisions, swing, custom rhythms, or custom accent patterns.
-- Rare audible stuttering was observed on a physical Android device in the original Phase 1B build. Debug instrumentation can now distinguish Dart scheduler lateness, skipped deadlines, and overlapping platform audio requests, but repeat physical-device validation is required before declaring the symptom resolved. No physical Android target was connected during automated validation of this hotfix.
+- Metronome click placement is owned by the native output sample clock, but end-to-end acoustic latency varies by device and route. The feature does not run in the background and supports no subdivisions, swing, custom rhythms, dotted-quarter 6/8, or custom accent patterns.
+- The original Dart-timed build exhibited audible stuttering on a physical Android device. The old scheduler/audio-pool path is removed, but the replacement cannot be declared physically reliable until profile/release listening, 20 Start/Stop cycles, a 10-minute endurance run, and the required BPM/signature matrix pass on hardware.
 - Haptic response varies with Android hardware and system settings.
 - The privacy policy is a product draft and the application is not Play Store ready.
 - Microphone capture is foreground-only, transient, local, and was physically validated separately in Phase 2A. There is no file recording or content database.
