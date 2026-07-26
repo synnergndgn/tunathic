@@ -165,6 +165,12 @@
   "compactShape": "Kompakt çevrim",
   "beginnerDifficulty": "Başlangıç",
   "intermediateDifficulty": "Orta",
+  "advancedDifficulty": "İleri",
+  "omittedTonesDescription": "Bilinçli olarak atlanan sesler: {tones}.",
+  "@omittedTonesDescription": {
+    "placeholders": {"tones": {"type": "String"}}
+  },
+  "rootlessVoicingDescription": "Köksüz çevrim.",
   "triadCategory": "Üç sesli akorlar",
   "seventhChordCategory": "Yedili akorlar",
   "extendedChordCategory": "Genişletilmiş akorlar",

@@ -165,6 +165,12 @@
   "compactShape": "Compact voicing",
   "beginnerDifficulty": "Beginner",
   "intermediateDifficulty": "Intermediate",
+  "advancedDifficulty": "Advanced",
+  "omittedTonesDescription": "Intentionally omitted: {tones}.",
+  "@omittedTonesDescription": {
+    "placeholders": {"tones": {"type": "String"}}
+  },
+  "rootlessVoicingDescription": "Rootless voicing.",
   "triadCategory": "Triads",
   "seventhChordCategory": "Seventh chords",
   "extendedChordCategory": "Extended chords",

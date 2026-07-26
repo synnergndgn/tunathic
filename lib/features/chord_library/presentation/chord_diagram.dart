@@ -75,6 +75,18 @@ final class ChordDiagram extends StatelessWidget {
         ),
       );
     }
+    if (shape.omittedIntervals.isNotEmpty) {
+      parts.add(
+        localizations.omittedTonesDescription(
+          shape.omittedIntervals
+              .map((interval) => interval.shortLabel)
+              .join(', '),
+        ),
+      );
+    }
+    if (shape.isRootless) {
+      parts.add(localizations.rootlessVoicingDescription);
+    }
     return parts.join(' ');
   }
 }

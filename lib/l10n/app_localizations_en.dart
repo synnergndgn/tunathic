@@ -401,6 +401,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get intermediateDifficulty => 'Intermediate';
 
   @override
+  String get advancedDifficulty => 'Advanced';
+
+  @override
+  String omittedTonesDescription(String tones) {
+    return 'Intentionally omitted: $tones.';
+  }
+
+  @override
+  String get rootlessVoicingDescription => 'Rootless voicing.';
+
+  @override
   String get triadCategory => 'Triads';
 
   @override

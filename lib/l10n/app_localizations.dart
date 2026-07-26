@@ -788,6 +788,24 @@ abstract class AppLocalizations {
   /// **'Intermediate'**
   String get intermediateDifficulty;
 
+  /// No description provided for @advancedDifficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get advancedDifficulty;
+
+  /// No description provided for @omittedTonesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Intentionally omitted: {tones}.'**
+  String omittedTonesDescription(String tones);
+
+  /// No description provided for @rootlessVoicingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Rootless voicing.'**
+  String get rootlessVoicingDescription;
+
   /// No description provided for @triadCategory.
   ///
   /// In en, this message translates to:

@@ -34,12 +34,18 @@ Calibration and custom tuning creation remain later decisions.
 - **Phase 3D — Circle of Fifths:** reusable key/signature, circle-ordering,
   diatonic-harmony, and Roman-numeral models plus an offline interactive
   major/minor harmonic reference with prefilled links to existing libraries.
+- **Phase 3E — Chord Voicing Expansion & Coverage Completion:** deterministic
+  12-root × 22-quality auditing, 402 validated project-owned guitar shapes,
+  complete 264/264 practical coverage, explicit omission/rootless policy,
+  stronger playability and duplicate validation, and expanded Chord Library
+  search, accessibility, localization, and responsive regressions.
 - **Later Phase 3 scope:** broader progression or songwriting reference work
-  remains separately authorized and is not implied by the Phase 3D primitives.
+  remains separately authorized and is not implied by the Phase 3 primitives.
 
 ## Phase 4: Interval trainer, ear training and progress tracking
 
-Guided listening exercises with meaningful local progress.
+Future/Coming Soon guided listening exercises with meaningful local progress;
+these tools are not implemented by Phase 3E.
 
 ## Phase 5: Chord finder, capo calculator and advanced fretboard tools
 

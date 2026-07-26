@@ -1,4 +1,5 @@
 import 'package:tunathic/core/music_theory/chord.dart';
+import 'package:tunathic/core/music_theory/interval.dart';
 import 'package:tunathic/core/music_theory/pitch_class.dart';
 
 enum GuitarStringKind { muted, open, fretted }
@@ -46,7 +47,9 @@ final class GuitarBarre {
 
 enum GuitarShapeCategory { open, movableEShape, movableAShape, compact }
 
-enum GuitarShapeDifficulty { beginner, intermediate }
+enum GuitarShapeDifficulty { beginner, intermediate, advanced }
+
+enum GuitarShapeProvenance { curated, generated }
 
 final class GuitarChordShape {
   const GuitarChordShape({
@@ -58,7 +61,9 @@ final class GuitarChordShape {
     required this.category,
     required this.difficulty,
     this.barres = const [],
+    this.omittedIntervals = const [],
     this.isRootless = false,
+    this.provenance = GuitarShapeProvenance.curated,
     this.source = 'Tunathic project-owned shape library',
   });
 
@@ -73,6 +78,8 @@ final class GuitarChordShape {
   final int startingFret;
   final GuitarShapeCategory category;
   final GuitarShapeDifficulty difficulty;
+  final List<TheoryInterval> omittedIntervals;
   final bool isRootless;
+  final GuitarShapeProvenance provenance;
   final String source;
 }

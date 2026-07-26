@@ -45,6 +45,7 @@ extension ChordLibraryLocalizations on AppLocalizations {
       switch (difficulty) {
         GuitarShapeDifficulty.beginner => beginnerDifficulty,
         GuitarShapeDifficulty.intermediate => intermediateDifficulty,
+        GuitarShapeDifficulty.advanced => advancedDifficulty,
       };
 
   List<String> get guitarStringNames => [

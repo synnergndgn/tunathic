@@ -524,6 +524,22 @@ final class _FingeringDetails extends StatelessWidget {
               ),
             ),
           ),
+        if (shape.omittedIntervals.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.small),
+            child: Text(
+              localizations.omittedTonesDescription(
+                shape.omittedIntervals
+                    .map((interval) => interval.shortLabel)
+                    .join(', '),
+              ),
+            ),
+          ),
+        if (shape.isRootless)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.small),
+            child: Text(localizations.rootlessVoicingDescription),
+          ),
       ],
     );
   }

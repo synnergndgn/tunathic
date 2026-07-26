@@ -1,183 +1,197 @@
-# Current Milestone: Phase 3D — Circle of Fifths
+# Current Milestone: Phase 3E — Chord Voicing Expansion & Coverage Completion
 
-Phase 3D adds an offline harmonic-reference tool built on Tunathic's
-project-owned pitch, interval, chord, scale, and spelling identities. The
-validated Guitar Tuner, BPM Tap, native Oboe Metronome, Chord Library, Scale
-Library, and Interactive Fretboard remain behaviorally unchanged except for
-safe prefilled navigation from the new tool.
+Phase 3E completes the major feature-development work planned before release
+hardening and Google Play Closed Testing. It expands the existing offline Chord
+Library without adding a new product tool. The validated Guitar Tuner, native
+Oboe Metronome, BPM Tap, Scale Library, Interactive Fretboard, Circle of Fifths,
+Settings, About, Privacy, navigation, and audio coordination remain
+behaviorally unchanged.
 
 ## Authorized scope
 
-- Pure Dart major-key and natural-minor-key identities, key signatures,
-  Circle-of-Fifths positions and relationships, parallel/relative keys,
-  scale-derived diatonic triads and seventh chords, and structural Roman
-  numerals.
-- A project-owned interactive outer-major/inner-minor circle with twelve
-  positions, conventional orientation, selected/relative/neighbor cues, and a
-  concise key detail panel.
-- Prefilled navigation to Scale Library, Chord Library, and Interactive
-  Fretboard without changing their direct-opening defaults.
-- English and Turkish localization, accessible semantics and large-text
-  fallback, responsive layouts, deterministic tests, documentation, and an
-  Android debug build.
+- Deterministic development-time coverage auditing for every one of the 12
+  pitch-class roots and every quality in the existing `ChordQuality` registry.
+- Project-owned, structured guitar voicings that substantially complete
+  practical fingering coverage.
+- Explicit intentional-omission metadata, rooted-first policy, stronger musical
+  and playability validation, duplicate detection, useful ordering, localized
+  descriptors, accessibility details, regression tests, and documentation.
+- No new chord taxonomy, audio, microphone, network, backend, analytics,
+  advertising, fuzzy search, arbitrary runtime voicing generation, or new major
+  product feature.
 
-Progression recommendations, songwriting workflows, interval or ear-training
-exercises, audio, playback, staff notation, persistence, favorites, accounts,
-networking, analytics, advertising, and backend work are outside this
-milestone.
+Interval Trainer, Ear Training, Chord Finder, Capo Calculator, practice
+statistics, daily challenges, and other unfinished training tools remain future
+work and display Coming Soon where already represented in the application.
 
-## Key and signature domain
+## Final coverage
 
-`lib/core/music_theory/key.dart` is pure Dart. `MusicalKey` owns a
-`SpelledPitchClass` tonic, `KeyTonality` (major or natural minor), and spelling
-preference. It exposes its scale definition, canonical key signature, relative
-key, and representable parallel key without storing a localized display name.
+The source of truth remains the 22-value `ChordQuality` enum. Combined with all
+12 pitch-class roots, it defines 264 supported root/quality combinations.
 
-`KeySignature` stores a signed circle-of-fifths count from -7 flats through +7
-sharps and derives accidental type, count, structural identity, and ordered
-altered notes. The standard sharp order is F-C-G-D-A-E-B; the flat order is
-B-E-A-D-G-C-F. Natural-minor signatures are resolved through the existing
-Phase 3B relative-major helper, so relatives share one signature rule rather
-than a duplicated minor table. Keys outside the supported single-accidental
--7…+7 range report no parallel relationship.
+- Previous dataset: 162 validated shapes.
+- Previous coverage: 80 of 264 combinations (30.30%).
+- Final dataset: 402 validated shapes.
+- Final coverage: 264 of 264 combinations (100.00%).
+- Missing combinations: none.
 
-The compact canonical major-signature lookup is intentionally keyed by spelled
-tonic. Pitch identity remains modulo 12: F# and Gb are the same
-`PitchClass`, while their `SpelledPitchClass` values retain the musically
-meaningful six-sharp and six-flat signatures.
+`tool/chord_shape_coverage.dart` runs the deterministic audit and reports total
+valid shapes, supported/covered/missing combinations, coverage percentage,
+shape totals by quality, shape totals by family, and any missing combinations.
+`GuitarShapeCoverageAudit` exposes the same information to automated tests,
+including family availability, lowest diagram position, and whether alternatives
+exist.
 
-## Circle ordering and relationships
+### Shapes by quality
 
-`CircleOfFifths.positions` owns twelve structural positions, beginning with C
-at index zero and moving clockwise through G, D, A, E, B, F#/Gb, Db/C#, Ab,
-Eb, Bb, and F. Clockwise movement transposes pitch identity by seven semitones;
-counter-clockwise movement transposes by five. Both directions wrap
-deterministically.
+| Quality | Shapes |
+| --- | ---: |
+| Major | 29 |
+| Minor | 27 |
+| Diminished | 13 |
+| Augmented | 13 |
+| Sus2 | 26 |
+| Sus4 | 27 |
+| Major 7 | 29 |
+| Dominant 7 | 30 |
+| Minor 7 | 27 |
+| Minor major 7 | 12 |
+| Diminished 7 | 12 |
+| Half-diminished / m7b5 | 13 |
+| 6 | 14 |
+| Minor 6 | 14 |
+| Add9 | 27 |
+| Minor add9 | 12 |
+| 9 | 14 |
+| Major 9 | 12 |
+| Minor 9 | 13 |
+| 11 | 13 |
+| Minor 11 | 12 |
+| 13 | 13 |
 
-Each position aligns a major key with its natural-minor relative. F#/Gb and
-Db/C# positions also retain alternate major and relative-minor spellings.
-`KeyRelationships` derives perfect fifth, perfect fourth, relative, and
-parallel relationships from existing spelling/scale primitives.
-`CircleOfFifths` supplies deterministic clockwise-fifth and
-counter-clockwise-fourth neighbors for both tonalities.
+### Shapes by family
 
-## Diatonic harmony and Roman numerals
+| Family | Shapes |
+| --- | ---: |
+| Open position | 36 |
+| Movable E family | 228 |
+| Movable A family | 132 |
+| Curated compact | 6 |
 
-`lib/core/music_theory/harmony.dart` constructs the selected major or natural
-minor scale through `ScaleConstructor`. For each scale degree it stacks every
-other scale tone to form a triad or seventh chord, classifies the resulting
-structural semitone pattern, and delegates final chord construction and symbol
-spelling to `ChordConstructor`. No per-key chord-name table exists.
+Open and compact shapes remain individually curated. Existing common E- and
+A-family barres and the new extension templates are generated as structured
+transpositions. Open strings are never blindly transposed. Every generated
+shape retains project-owned source metadata, is marked as generated, and passes
+the same validator as curated data. The final provenance split is 42 curated
+shapes and 360 generated shapes.
 
-The resulting major triads follow I/ii/iii/IV/V/vi/vii° and natural-minor
-triads follow i/ii°/III/iv/v/VI/VII because those qualities emerge from the
-actual scales. Seventh qualities likewise emerge from four stacked thirds,
-including major seventh, dominant seventh, minor seventh, diminished seventh,
-minor-major seventh, and half-diminished seventh when structurally present.
+## Voicing policy
 
-`RomanNumeral` retains degree, chord quality, and seventh state. Case,
-diminished or half-diminished marker, and seventh suffix are generated
-properties, making the model suitable for a later separately authorized
-progression tool without reducing identity to display text.
+Shapes prioritize correct pitch content, practical fretting, recognizable chord
+identity, and useful positions. Major, Minor, Dominant 7, Major 7, Minor 7,
+Sus2, Sus4, and Add9 have at least two alternatives for every root. Curated
+open shapes sort first, followed by common E-family and A-family movable
+voicings, then compact alternatives. Difficulty remains descriptive rather than
+gamified.
 
-## Interface and interaction
+The first public library remains rooted-first. Every shipped Phase 3E shape
+contains its root; no rootless shape is needed to achieve coverage. The model
+and validator retain explicit rootless support, and tests prove that a rootless
+shape must declare the omitted root and contain every other required tone.
 
-The dashboard exposes `/tools/circle-of-fifths`. Direct opening starts on C
-Major. A `CustomPainter` draws the two rings, twelve sectors, selected sector,
-neighbor sectors, boundaries, and center field. Flutter controls positioned
-over that decoration provide the actual interaction and semantics.
+Intentional omissions are structural rather than implied. A normal four-or-more
+tone chord may omit its perfect fifth. Eleventh and thirteenth voicings may also
+omit the ninth where declared. The root may be omitted only by an explicitly
+rootless shape. Thirds, sevenths, altered fifths, elevenths, and thirteenths
+remain defining tones and cannot be silently discarded. The UI and diagram
+semantics communicate declared omissions.
 
-The conventional orientation places C Major at 12 o'clock, G clockwise, and F
-counter-clockwise. Rounded-square outer positions represent major keys and
-circular inner positions represent relative minors. Selection adds a strong
-outline and check marker; the relative key uses a distinct outline/link marker;
-the fifth and fourth neighbors use directional markers. These states therefore
-do not depend only on color.
+## Validation strategy
 
-Tapping either ring selects that key and immediately updates the center and
-detail panel. F#/Gb and Db/C# use concise dual labels. An enharmonic action
-switches the selected spelling while retaining one pitch-class position, so
-the corresponding signature and scale spelling remain meaningful.
+`GuitarShapeValidator` now checks:
 
-The detail panel shows the localized key name, optional enharmonic equivalent,
-key-signature count and altered notes, relative and parallel keys, fifth and
-fourth neighbors, scale notes, seven triads, and seven seventh chords. Relative
-and neighboring key controls also select their destination. Each chord entry
-shows Roman numeral and standard symbol and opens Chord Library when tapped.
+- exactly six low-E-to-high-E string entries;
+- fret bounds and agreement between muted/open/fretted state and fret value;
+- finger range and consistent same-fret reuse;
+- starting fret, five-fret diagram window, and maximum four-fret span;
+- sounding pitch-class derivation from standard tuning;
+- formula membership for every sounding note;
+- every required chord tone;
+- root presence unless explicitly rootless;
+- omission membership, policy, uniqueness, and absence from the sounding set;
+- barre fret, finger, range, and compatibility with covered strings;
+- duplicate IDs and effectively duplicate root/quality fingerings.
 
-**View Scale** opens Scale Library with the selected tonic and Major or Natural
-Minor. **View on Fretboard** opens Interactive Fretboard in Scale mode with the
-same state. Project-owned route-state parsers preserve the existing direct C
-Major defaults and safely reject malformed query values.
+Malformed data fails deterministic tests. The validator deliberately avoids a
+biomechanical hand simulator; uncommon but valid four-fret stretches use
+advanced difficulty metadata.
 
-## Accessibility, localization, and responsiveness
+## Chord Library interface
 
-The visual circle exposes a combined summary naming selected, relative, fifth,
-and fourth keys. Every interactive position has its own localized tap semantics.
-Decorative painter lines are excluded. Key-signature semantics read count and
-altered notes naturally; chord semantics include both Roman numeral and chord
-symbol plus their navigation action.
+The workflow remains root → quality → shapes. Shape chips use localized Open,
+Movable E shape, Movable A shape, or Compact voicing descriptors plus position
+where useful. The detail view subtly includes difficulty, starting fret,
+per-string instructions, barres, intentional omissions, and rootless status.
+The existing project-owned diagram continues to render open and mute markers,
+finger dots, barres, and high positions in light and dark themes.
 
-All descriptive copy is generated from English and Turkish ARB sources.
-Standard note, accidental, chord, and Roman-numeral notation is unchanged.
+Exact search remains deliberately non-fuzzy and now has regressions for
+`Ebmaj9`, `C#m7b5`, `Bb13`, `F#mMaj7`, `Ab9`, and `Dm11`. Standard chord
+notation is not localized. English and Turkish localize new advanced-difficulty,
+omission, and rootless descriptions.
 
-At 360, 412, and 600 logical pixels, the circle and details form a vertically
-scrolling column. At 900 and 1280 pixels, they use a bounded two-column layout.
-The normal circle is capped at 520 pixels so it does not stretch across wide
-screens. At large text scaling where radial labels would become unreadable,
-the same clockwise order becomes a vertically scrollable, fully labeled
-major/minor control list instead of shrinking notation.
+Per-string semantics continue to describe muted, open, and fretted strings with
+finger numbers. Barre ranges, declared omissions, and rootless status are
+included in nonvisual descriptions.
 
 ## Tests
 
-Pure tests cover all twelve positions, both directions and wraparound,
-relative/parallel/neighbor relationships, enharmonic identity, the standard
-sharp/flat orders, required major and minor signatures, F#/Gb and C# boundary
-signatures, required major and natural-minor triads, C/F major and A minor
-seventh chords, half-diminished behavior, and Roman-numeral structure.
+Coverage tests exercise all 264 combinations, aggregate calculation, shape
+totals by quality and family, position/family reporting, complete final
+coverage, alternatives for common qualities, and representative everyday and
+extended chords.
 
-Route tests cover direct, malformed, scale-prefilled, and chord-prefilled
-states. Widget tests cover dashboard opening, C Major defaults, major/minor and
-relationship selection, signature/harmony updates, enharmonic switching, all
-three deep links, English/Turkish, light/dark themes, 360/412/600/900/1280
-widths, 2× text, combined circle semantics, key controls, signatures, and
-chords. The full existing suite remains the regression gate.
+Validator tests cover rooted shapes, declared omissions, explicit rootless
+voicings, foreign notes, missing defining tones, malformed barres, invalid
+fingers, excessive spans, invalid string count, invalid omission metadata,
+duplicate IDs, and effectively duplicate fingerings.
+
+Widget and parser tests cover opening and browsing, multiple shapes, extended
+exact searches, high-position and barre rendering, omission visibility and
+semantics, English/Turkish, light/dark themes, 2× text, and phone/tablet widths.
+The full existing suite remains the regression gate for every other feature.
 
 ## Validation status
 
 - Baseline `flutter analyze`: passed with no issues.
-- Baseline full `flutter test`: passed, 359 tests.
-- Focused Phase 3D suite: passed, 54 tests.
-- Final `dart format .`: 139 files checked with zero changes; the separate
-  `--set-exit-if-changed` verification also reported zero changes.
+- Baseline full `flutter test`: passed, 413 tests.
+- Deterministic coverage audit: 402 valid shapes, 264/264 combinations,
+  100.00%, no missing combinations.
+- Focused Phase 3E chord tests: passed.
+- Final `dart format .`: 142 files checked; the separate
+  `--set-exit-if-changed` verification reported zero changes.
 - Final `flutter gen-l10n`: passed for English and Turkish.
 - Final `flutter analyze`: passed with no issues.
-- Final full `flutter test`: passed, 413 tests.
+- Final full `flutter test`: passed, 431 tests.
 - Android debug APK built at
-  `build/app/outputs/flutter-apk/app-debug.apk`. The first attempts encountered
-  the repository's known read-only attributes in Gradle's generated
-  `mergeDebugAssets` tree; clearing those attributes in that exact generated
+  `build/app/outputs/flutter-apk/app-debug.apk`. The first attempt encountered
+  the repository's known stale read-only attributes in Gradle's generated
+  `mergeDebugAssets` tree; clearing attributes only in that exact generated
   path allowed the unchanged retry to pass.
 - Physical Android validation was not performed because `flutter devices`
   detected only Windows and Edge, with no attached Android device or emulator.
 
 ## Known limitations
 
-- Major and natural-minor keys only; harmonic/melodic minor key behavior and
-  modal key signatures are not modeled.
-- Signatures are bounded to standard -7…+7 single-accidental keys. The existing
-  spelling engine does not render double sharps or double flats.
-- The circle uses practical enharmonic labels at two boundary positions rather
-  than displaying every theoretical spelling.
-- Diatonic harmony describes root-position pitch content, not voicings,
-  inversions, substitutions, functional analysis, or recommended progressions.
-- No staff notation, audio, interval exercise, ear training, persistence,
-  favorites, history, custom keys, or progression authoring is included.
-
-## Future reuse
-
-The structural key, signature, circle, diatonic-chord, and Roman-numeral types
-can support future progression, songwriting/reference, interval-training,
-ear-training, and key-aware fretboard features. Those tools must add their own
-feature state and behavior only when separately authorized; Phase 3D does not
-mark them implemented.
+- Shapes target standard six-string tuning and a right-handed/player-facing
+  diagram. No left-handed transform, custom tuning, inversions, slash chords,
+  altered dominants, favorites, playback, or arbitrary voicing generator is
+  included.
+- Movable voicings prioritize dependable pitch content and bounded diagram
+  spans; difficulty metadata is deterministic guidance, not a promise that
+  every hand will find a shape equally comfortable.
+- Exact search has no fuzzy matching.
+- Music spelling supports naturals, single sharps, and single flats rather than
+  a complete double-accidental notation engine.
+- Physical Android interaction validation depends on an attached device or
+  emulator; automated widget coverage does not replace real-device inspection.

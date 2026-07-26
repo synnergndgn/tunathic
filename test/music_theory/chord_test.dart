@@ -145,6 +145,22 @@ void main() {
       expect(ChordSymbolParser.tryParse('C7alt'), isNull);
       expect(ChordSymbolParser.tryParse('H'), isNull);
     });
+
+    test('parses representative Phase 3E extended chord searches', () {
+      const examples = {
+        'Ebmaj9': ChordQuality.majorNinth,
+        'C#m7b5': ChordQuality.halfDiminishedSeventh,
+        'Bb13': ChordQuality.thirteenth,
+        'F#mMaj7': ChordQuality.minorMajorSeventh,
+        'Ab9': ChordQuality.dominantNinth,
+        'Dm11': ChordQuality.minorEleventh,
+      };
+      for (final entry in examples.entries) {
+        final parsed = ChordSymbolParser.tryParse(entry.key);
+        expect(parsed, isNotNull, reason: entry.key);
+        expect(parsed!.quality, entry.value, reason: entry.key);
+      }
+    });
   });
 }
 

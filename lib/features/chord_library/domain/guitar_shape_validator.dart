@@ -1,3 +1,5 @@
+import 'package:tunathic/core/music_theory/chord.dart';
+import 'package:tunathic/core/music_theory/interval.dart';
 import 'package:tunathic/core/music_theory/pitch_class.dart';
 import 'package:tunathic/features/chord_library/domain/guitar_chord_shape.dart';
 
@@ -10,10 +12,17 @@ enum GuitarShapeIssueCode {
   outsideDiagramWindow,
   foreignChordTone,
   missingRoot,
+  undeclaredMissingTone,
+  invalidOmission,
+  presentOmittedTone,
   invalidBarreFret,
   invalidBarreRange,
   invalidBarreFinger,
   invalidBarreCoverage,
+  inconsistentFingerAssignment,
+  excessiveFretSpan,
+  duplicateId,
+  duplicateFingering,
 }
 
 final class GuitarShapeIssue {
@@ -58,6 +67,7 @@ abstract final class GuitarShapePitch {
 abstract final class GuitarShapeValidator {
   static const maximumFret = 24;
   static const diagramFretCount = 5;
+  static const maximumFrettedSpan = 4;
 
   static GuitarShapeValidation validate(GuitarChordShape shape) {
     final issues = <GuitarShapeIssue>[];
@@ -129,6 +139,45 @@ abstract final class GuitarShapeValidator {
       }
     }
 
+    final frettedValues = [
+      for (final string in shape.strings)
+        if (string.kind == GuitarStringKind.fretted) string.fret,
+    ];
+    if (frettedValues.isNotEmpty) {
+      final minimum = frettedValues.reduce((a, b) => a < b ? a : b);
+      final maximum = frettedValues.reduce((a, b) => a > b ? a : b);
+      if (maximum - minimum > maximumFrettedSpan) {
+        issues.add(
+          GuitarShapeIssue(
+            GuitarShapeIssueCode.excessiveFretSpan,
+            '${shape.id}: fretted span ${maximum - minimum} exceeds '
+            '$maximumFrettedSpan frets.',
+          ),
+        );
+      }
+    }
+
+    final stringsByFinger = <int, List<int>>{};
+    for (var index = 0; index < shape.strings.length; index++) {
+      final finger = shape.strings[index].finger;
+      if (finger != null) {
+        stringsByFinger.putIfAbsent(finger, () => []).add(index);
+      }
+    }
+    for (final entry in stringsByFinger.entries) {
+      final frets = {
+        for (final stringIndex in entry.value) shape.strings[stringIndex].fret,
+      };
+      if (frets.length > 1) {
+        issues.add(
+          GuitarShapeIssue(
+            GuitarShapeIssueCode.inconsistentFingerAssignment,
+            '${shape.id}: finger ${entry.key} is assigned to multiple frets.',
+          ),
+        );
+      }
+    }
+
     for (final barre in shape.barres) {
       if (barre.fret < 1 || barre.fret > maximumFret) {
         issues.add(
@@ -165,9 +214,18 @@ abstract final class GuitarShapeValidator {
           stringIndex <= barre.toStringIndex;
           stringIndex++
         ) {
-          final fret = shape.strings[stringIndex].fret;
+          final string = shape.strings[stringIndex];
+          final fret = string.fret;
           if (fret < barre.fret) coverageIsValid = false;
           if (fret == barre.fret) notesAtBarreFret++;
+          if (fret == barre.fret &&
+              string.finger != null &&
+              string.finger != barre.finger) {
+            coverageIsValid = false;
+          }
+          if (fret > barre.fret && string.finger == barre.finger) {
+            coverageIsValid = false;
+          }
         }
         if (!coverageIsValid || notesAtBarreFret < 2) {
           issues.add(
@@ -205,6 +263,67 @@ abstract final class GuitarShapeValidator {
           ),
         );
       }
+
+      final formulaIntervals = shape.quality.formula.toSet();
+      final omittedIntervals = shape.omittedIntervals.toSet();
+      if (shape.isRootless &&
+          !omittedIntervals.contains(TheoryInterval.perfectUnison)) {
+        issues.add(
+          GuitarShapeIssue(
+            GuitarShapeIssueCode.invalidOmission,
+            '${shape.id}: a rootless shape must declare the root omitted.',
+          ),
+        );
+      }
+      if (omittedIntervals.length != shape.omittedIntervals.length) {
+        issues.add(
+          GuitarShapeIssue(
+            GuitarShapeIssueCode.invalidOmission,
+            '${shape.id}: omitted intervals must not contain duplicates.',
+          ),
+        );
+      }
+      final allowedOmissions = _allowedOmissions(shape);
+      for (final interval in omittedIntervals) {
+        if (!formulaIntervals.contains(interval)) {
+          issues.add(
+            GuitarShapeIssue(
+              GuitarShapeIssueCode.invalidOmission,
+              '${shape.id}: ${interval.id} is not part of the chord formula.',
+            ),
+          );
+          continue;
+        }
+        if (!allowedOmissions.contains(interval)) {
+          issues.add(
+            GuitarShapeIssue(
+              GuitarShapeIssueCode.invalidOmission,
+              '${shape.id}: ${interval.id} is not an allowed omission.',
+            ),
+          );
+        }
+        final pitchClass = shape.root.transpose(interval.semitones);
+        if (sounding.contains(pitchClass)) {
+          issues.add(
+            GuitarShapeIssue(
+              GuitarShapeIssueCode.presentOmittedTone,
+              '${shape.id}: declared omitted tone ${interval.id} is present.',
+            ),
+          );
+        }
+      }
+
+      for (final interval in formulaIntervals.difference(omittedIntervals)) {
+        final pitchClass = shape.root.transpose(interval.semitones);
+        if (!sounding.contains(pitchClass)) {
+          issues.add(
+            GuitarShapeIssue(
+              GuitarShapeIssueCode.undeclaredMissingTone,
+              '${shape.id}: required tone ${interval.id} is missing.',
+            ),
+          );
+        }
+      }
     }
 
     return GuitarShapeValidation(List.unmodifiable(issues));
@@ -213,4 +332,59 @@ abstract final class GuitarShapeValidator {
   static Map<String, GuitarShapeValidation> validateAll(
     Iterable<GuitarChordShape> shapes,
   ) => {for (final shape in shapes) shape.id: validate(shape)};
+
+  static GuitarShapeValidation validateCollection(
+    Iterable<GuitarChordShape> shapes,
+  ) {
+    final issues = <GuitarShapeIssue>[];
+    final ids = <String>{};
+    final fingerings = <String, String>{};
+    for (final shape in shapes) {
+      if (!ids.add(shape.id)) {
+        issues.add(
+          GuitarShapeIssue(
+            GuitarShapeIssueCode.duplicateId,
+            '${shape.id}: duplicate shape ID.',
+          ),
+        );
+      }
+      final signature = _fingeringSignature(shape);
+      final existingId = fingerings[signature];
+      if (existingId != null) {
+        issues.add(
+          GuitarShapeIssue(
+            GuitarShapeIssueCode.duplicateFingering,
+            '${shape.id}: duplicates the fingering of $existingId.',
+          ),
+        );
+      } else {
+        fingerings[signature] = shape.id;
+      }
+    }
+    return GuitarShapeValidation(List.unmodifiable(issues));
+  }
+
+  static Set<TheoryInterval> _allowedOmissions(GuitarChordShape shape) {
+    final allowed = <TheoryInterval>{};
+    if (shape.isRootless) {
+      allowed.add(TheoryInterval.perfectUnison);
+    }
+    if (shape.quality.formula.length >= 4 &&
+        shape.quality.formula.contains(TheoryInterval.perfectFifth)) {
+      allowed.add(TheoryInterval.perfectFifth);
+    }
+    if (shape.quality == ChordQuality.eleventh ||
+        shape.quality == ChordQuality.minorEleventh ||
+        shape.quality == ChordQuality.thirteenth) {
+      allowed.add(TheoryInterval.majorNinth);
+    }
+    return allowed;
+  }
+
+  static String _fingeringSignature(GuitarChordShape shape) => [
+    shape.root.name,
+    shape.quality.id,
+    shape.isRootless,
+    for (final string in shape.strings) '${string.kind.name}:${string.fret}',
+  ].join('|');
 }

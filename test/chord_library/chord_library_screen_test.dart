@@ -96,7 +96,7 @@ void main() {
   );
 
   testWidgets(
-    'valid theory chord without a curated shape shows an honest state',
+    'previously uncovered minor-major seventh now has a validated shape',
     (tester) async {
       _setSurface(tester, 600, 1200);
       await tester.pumpWidget(_screenApp());
@@ -114,10 +114,78 @@ void main() {
         'Cm(maj7)',
       );
       expect(find.text('C  ·  Eb  ·  G  ·  B'), findsOneWidget);
-      expect(find.byKey(const Key('noChordShapeTitle')), findsOneWidget);
-      expect(find.byKey(const Key('chordDiagramCanvas')), findsNothing);
+      expect(find.byKey(const Key('noChordShapeTitle')), findsNothing);
+      expect(find.byKey(const Key('chordDiagramCanvas')), findsOneWidget);
     },
   );
+
+  testWidgets('exact search covers representative extended chord symbols', (
+    tester,
+  ) async {
+    _setSurface(tester, 600, 1200);
+    await tester.pumpWidget(_screenApp());
+    await tester.pumpAndSettle();
+
+    const examples = {
+      'Ebmaj9': 'Ebmaj9',
+      'C#m7b5': 'C#m7b5',
+      'Bb13': 'Bb13',
+      'F#mMaj7': 'F#m(maj7)',
+      'Ab9': 'Ab9',
+      'Dm11': 'Dm11',
+    };
+    for (final entry in examples.entries) {
+      await tester.enterText(
+        find.byKey(const Key('chordSearchField')),
+        entry.key,
+      );
+      await tester.tap(find.byKey(const Key('submitChordSearch')));
+      await tester.pump();
+      expect(
+        tester.widget<Text>(find.byKey(const Key('chordSymbol'))).data,
+        entry.value,
+      );
+      expect(find.byKey(const Key('chordDiagramCanvas')), findsOneWidget);
+      expect(find.byKey(const Key('noChordShapeTitle')), findsNothing);
+    }
+  });
+
+  testWidgets('high-position extension and barre metadata render', (
+    tester,
+  ) async {
+    _setSurface(tester, 600, 1200);
+    await tester.pumpWidget(_screenApp());
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const Key('chordSearchField')), 'Ebmaj9');
+    await tester.tap(find.byKey(const Key('submitChordSearch')));
+    await tester.pump();
+
+    expect(find.text('Starting fret 11'), findsWidgets);
+    expect(find.textContaining('Barre at fret 11'), findsOneWidget);
+    expect(find.textContaining('Intermediate'), findsWidgets);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('intentional omissions are visible and included in semantics', (
+    tester,
+  ) async {
+    _setSurface(tester, 600, 1200);
+    final semantics = tester.ensureSemantics();
+    await tester.pumpWidget(_screenApp());
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const Key('chordSearchField')), 'C7');
+    await tester.tap(find.byKey(const Key('submitChordSearch')));
+    await tester.pump();
+
+    expect(find.text('Intentionally omitted: P5.'), findsOneWidget);
+    expect(
+      find.bySemanticsLabel(RegExp('C7 guitar chord diagram.*omitted: P5')),
+      findsOneWidget,
+    );
+    semantics.dispose();
+  });
 
   testWidgets('Turkish localizes controls, quality names, and fingering', (
     tester,
@@ -132,6 +200,11 @@ void main() {
     expect(find.text('Akor sesleri'), findsOneWidget);
     expect(find.textContaining('Açık pozisyon'), findsWidgets);
     expect(find.textContaining('Kalın Mi teli:'), findsOneWidget);
+
+    await tester.enterText(find.byKey(const Key('chordSearchField')), 'C7');
+    await tester.tap(find.byKey(const Key('submitChordSearch')));
+    await tester.pump();
+    expect(find.text('Bilinçli olarak atlanan sesler: P5.'), findsOneWidget);
   });
 
   testWidgets('diagram exposes one useful screen-reader description', (

@@ -15,8 +15,12 @@ void main() {
             '${entry.key}: ${entry.value.issues.map((issue) => issue.message).join(', ')}',
       ];
 
-      expect(GuitarChordShapes.all.length, greaterThanOrEqualTo(150));
+      expect(GuitarChordShapes.all.length, 402);
       expect(failures, isEmpty, reason: failures.join('\n'));
+      expect(
+        GuitarShapeValidator.validateCollection(GuitarChordShapes.all).isValid,
+        isTrue,
+      );
     },
   );
 
@@ -137,4 +141,157 @@ void main() {
       expect(codes, contains(GuitarShapeIssueCode.missingRoot));
     },
   );
+
+  test('accepts a structurally declared optional fifth omission', () {
+    final c7 = GuitarChordShapes.all.firstWhere(
+      (shape) => shape.id == 'c7-open',
+    );
+    expect(c7.omittedIntervals, [TheoryInterval.perfectFifth]);
+    expect(GuitarShapeValidator.validate(c7).isValid, isTrue);
+  });
+
+  test('accepts a complete explicitly rootless dominant ninth voicing', () {
+    const rootless = GuitarChordShape(
+      id: 'c9-rootless-test',
+      root: PitchClass.c,
+      quality: ChordQuality.dominantNinth,
+      strings: [
+        GuitarStringFingering.muted(),
+        GuitarStringFingering.muted(),
+        GuitarStringFingering.fretted(2, finger: 1),
+        GuitarStringFingering.fretted(3, finger: 2),
+        GuitarStringFingering.fretted(3, finger: 3),
+        GuitarStringFingering.fretted(3, finger: 4),
+      ],
+      startingFret: 1,
+      category: GuitarShapeCategory.compact,
+      difficulty: GuitarShapeDifficulty.intermediate,
+      omittedIntervals: [TheoryInterval.perfectUnison],
+      isRootless: true,
+    );
+
+    expect(GuitarShapeValidator.validate(rootless).isValid, isTrue);
+  });
+
+  test('rejects rootless metadata without a declared root omission', () {
+    const contradictory = GuitarChordShape(
+      id: 'contradictory-rootless-test',
+      root: PitchClass.c,
+      quality: ChordQuality.major,
+      strings: [
+        GuitarStringFingering.muted(),
+        GuitarStringFingering.fretted(3),
+        GuitarStringFingering.fretted(2),
+        GuitarStringFingering.open(),
+        GuitarStringFingering.fretted(1),
+        GuitarStringFingering.open(),
+      ],
+      startingFret: 1,
+      category: GuitarShapeCategory.open,
+      difficulty: GuitarShapeDifficulty.beginner,
+      isRootless: true,
+    );
+
+    expect(
+      GuitarShapeValidator.validate(
+        contradictory,
+      ).issues.map((issue) => issue.code),
+      contains(GuitarShapeIssueCode.invalidOmission),
+    );
+  });
+
+  test('rejects missing defining tones without an allowed declaration', () {
+    const missingThirdAndSeventh = GuitarChordShape(
+      id: 'c7-missing-defining-tones',
+      root: PitchClass.c,
+      quality: ChordQuality.dominantSeventh,
+      strings: [
+        GuitarStringFingering.muted(),
+        GuitarStringFingering.fretted(3, finger: 1),
+        GuitarStringFingering.fretted(5, finger: 3),
+        GuitarStringFingering.fretted(5, finger: 4),
+        GuitarStringFingering.muted(),
+        GuitarStringFingering.muted(),
+      ],
+      startingFret: 3,
+      category: GuitarShapeCategory.compact,
+      difficulty: GuitarShapeDifficulty.intermediate,
+    );
+
+    final codes = GuitarShapeValidator.validate(
+      missingThirdAndSeventh,
+    ).issues.map((issue) => issue.code);
+    expect(codes, contains(GuitarShapeIssueCode.undeclaredMissingTone));
+  });
+
+  test('rejects invalid, duplicated, or contradicted omission metadata', () {
+    const invalidOmissions = GuitarChordShape(
+      id: 'invalid-omissions',
+      root: PitchClass.c,
+      quality: ChordQuality.major,
+      strings: [
+        GuitarStringFingering.muted(),
+        GuitarStringFingering.fretted(3),
+        GuitarStringFingering.fretted(2),
+        GuitarStringFingering.open(),
+        GuitarStringFingering.fretted(1),
+        GuitarStringFingering.open(),
+      ],
+      startingFret: 1,
+      category: GuitarShapeCategory.open,
+      difficulty: GuitarShapeDifficulty.beginner,
+      omittedIntervals: [TheoryInterval.majorThird, TheoryInterval.majorThird],
+    );
+
+    final codes = GuitarShapeValidator.validate(
+      invalidOmissions,
+    ).issues.map((issue) => issue.code);
+    expect(codes, contains(GuitarShapeIssueCode.invalidOmission));
+    expect(codes, contains(GuitarShapeIssueCode.presentOmittedTone));
+  });
+
+  test('rejects inconsistent finger reuse and excessive fret spans', () {
+    const invalid = GuitarChordShape(
+      id: 'invalid-playability',
+      root: PitchClass.c,
+      quality: ChordQuality.major,
+      strings: [
+        GuitarStringFingering.muted(),
+        GuitarStringFingering.fretted(3, finger: 1),
+        GuitarStringFingering.fretted(8, finger: 1),
+        GuitarStringFingering.fretted(5, finger: 3),
+        GuitarStringFingering.muted(),
+        GuitarStringFingering.muted(),
+      ],
+      startingFret: 3,
+      category: GuitarShapeCategory.compact,
+      difficulty: GuitarShapeDifficulty.advanced,
+    );
+
+    final codes = GuitarShapeValidator.validate(
+      invalid,
+    ).issues.map((issue) => issue.code);
+    expect(codes, contains(GuitarShapeIssueCode.inconsistentFingerAssignment));
+    expect(codes, contains(GuitarShapeIssueCode.excessiveFretSpan));
+  });
+
+  test('detects duplicate IDs and effectively duplicate fingerings', () {
+    final original = GuitarChordShapes.all.first;
+    final duplicate = GuitarChordShape(
+      id: original.id,
+      root: original.root,
+      quality: original.quality,
+      strings: original.strings,
+      startingFret: original.startingFret,
+      category: GuitarShapeCategory.compact,
+      difficulty: GuitarShapeDifficulty.advanced,
+    );
+
+    final codes = GuitarShapeValidator.validateCollection([
+      original,
+      duplicate,
+    ]).issues.map((issue) => issue.code);
+    expect(codes, contains(GuitarShapeIssueCode.duplicateId));
+    expect(codes, contains(GuitarShapeIssueCode.duplicateFingering));
+  });
 }

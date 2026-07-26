@@ -1,10 +1,11 @@
 # Architecture
 
-Tunathic uses a pragmatic feature-first Flutter structure. Phase 3D extends the
-reusable pure Dart music-theory core with keys, signatures, circle ordering,
-diatonic harmony, and Roman numerals, then adds the offline Circle of Fifths while
-preserving the physically validated Guitar Tuner, BPM Tap, native Oboe
-Metronome, Chord Library, and Scale Library behavior.
+Tunathic uses a pragmatic feature-first Flutter structure. Phase 3E completes
+the existing Chord Library's practical guitar-voicing coverage through
+project-owned generated and curated data, deterministic auditing, and stronger
+validation while preserving the physically validated Guitar Tuner, BPM Tap,
+native Oboe Metronome, Scale Library, Interactive Fretboard, and Circle of
+Fifths behavior.
 
 ## Folder responsibilities
 
@@ -119,17 +120,39 @@ transient tuner state into music theory.
 ## Guitar chord shapes
 
 `GuitarChordShape` stores six low-E-to-high-E string states, optional finger
-numbers, diagram start, category, difficulty, rootless status, project source,
-and barre ranges. Muted, open, and fretted strings are structural states, not
-magic display text or images.
+numbers, diagram start, category, difficulty, rootless status, declared
+interval omissions, curated/generated provenance, project source, and barre
+ranges. Muted, open, and fretted strings are structural states, not magic
+display text or images.
 
-The project-owned data combines curated open/compact shapes with transposed
-movable E- and A-family patterns. `GuitarShapeValidator` derives each sounding
-pitch from standard tuning, checks it against the chord formula, requires a
-root unless explicitly rootless, and validates string count, fret limits,
-finger limits, diagram window, and barre coverage. Practical extensions may
-omit chord members, but no shape may add a pitch outside its formula. The
-aggregate dataset test currently covers 162 shapes.
+The 402-shape project-owned dataset combines 36 curated open shapes, six curated
+compact shapes, 228 movable E-family shapes, and 132 movable A-family shapes.
+Common E/A barres and extension voicings are generated from reviewed structured
+templates; curated open strings are never blindly transposed. Generated and
+curated shapes pass identical validation. Provenance is explicit: 42 shapes are
+curated and 360 are generated.
+
+`GuitarShapeCoverageAudit` deterministically evaluates all 12 pitch classes
+against all 22 `ChordQuality` values. It reports shape count, families, lowest
+position, and alternative availability for each of the 264 combinations plus
+aggregate percentage and quality/family totals. The development tool at
+`tool/chord_shape_coverage.dart` prints the same report. Final validated
+coverage is 264/264 (100.00%); the previous 162-shape dataset covered 80/264
+(30.30%).
+
+`GuitarShapeValidator` derives every sounding pitch from standard tuning,
+rejects formula-foreign tones, and requires all non-omitted formula tones.
+Four-or-more-note formulas may explicitly omit a perfect fifth; eleventh and
+thirteenth formulas may also declare the ninth omitted. The root may be omitted
+only on an explicitly rootless shape. Thirds, sevenths, altered fifths, and
+highest extensions remain defining tones. Declared omissions must belong to
+the formula, be policy-allowed, be unique, and actually be absent.
+
+Structural validation also covers string count, fret/state consistency, fret
+bounds, finger range and same-fret reuse, a four-fret maximum span, diagram
+window, barre fret/range/finger/coverage, duplicate IDs, and effectively
+duplicate root/quality fingerings. The first public dataset remains entirely
+rooted, although a deterministic test retains explicit rootless support.
 
 The diagram is a project-owned `CustomPainter`. Theme colors support contrast,
 while muted/open glyphs, geometry, finger numbers, starting-fret text, visible
@@ -320,10 +343,10 @@ Known algorithm limitations are intentional: the tool estimates only whole-numbe
 Flutter's generated localization infrastructure uses English `app_en.arb` as the source and Turkish `app_tr.arb` as the second supported language. The selected language can follow the device or be fixed to English or Turkish. Unsupported device languages fall back to English.
 
 Theory IDs, musical chord symbols, note symbols, and degree formulas are
-deliberately nonlocalized. Chord
-quality names, categories, selector labels, empty states, per-string fingering,
-barre descriptions, search feedback, and diagram semantics are localized at the
-Chord Library presentation boundary.
+deliberately nonlocalized. Chord quality names, categories, selector labels,
+empty states, difficulty, per-string fingering, barre descriptions, intentional
+omissions, rootless status, search feedback, and diagram semantics are
+localized at the Chord Library presentation boundary.
 
 Scale names, categories, alias names, relationships, search guidance, and
 spoken degree semantics are localized at the Scale Library presentation
@@ -367,7 +390,7 @@ Shared maximum widths produce readable phone, large-phone, and tablet columns. C
 
 No pitch-analysis, FFT, DSP, scientific-computing, database, analytics, advertising, account, backend, or purchase package is included. Pitch detection and the real-time buffer/stabilizer use only Dart SDK math, async, and typed-data libraries.
 
-Phases 3A through 3D add no dependency. Pitch arithmetic, formulas, search
+Phases 3A through 3E add no dependency. Pitch arithmetic, formulas, search
 parsing, relationships, shape validation, diagrams, fret derivation, and
 reference presentation use Dart and Flutter primitives. The circle uses
 `CustomPainter` and Material controls rather than chart, notation, or
@@ -406,12 +429,16 @@ relationship selection, signature and harmony updates, enharmonic context, all
 three library handoffs, localization, themes, combined and per-control
 semantics, 2× text, and 360, 412, 600, 900, and 1280 logical-pixel widths.
 
-Chord-shape tests validate the entire 162-shape dataset and deliberately malformed
-string, fret, finger, barre, formula-tone, and missing-root cases. Widget tests
-cover dashboard opening, root/quality changes, formula-derived tones, diagram
-rendering, alternate selection, exact search and rejection, no-shape state,
-English/Turkish, light/dark themes, combined semantics, 2× text, and 360, 412,
-600, 900, and 1280 logical-pixel widths.
+Chord coverage tests audit all 264 root/quality combinations, exact quality and
+family totals, complete coverage, lowest position, family availability,
+alternatives for common qualities, and representative everyday and extended
+chords. Chord-shape tests validate all 402 shapes plus rooted and rootless
+voicings, intentional omissions, defining tones, malformed strings, frets,
+fingers, spans, barres, and duplicate detection. Widget tests cover dashboard
+opening, root/quality changes, formula-derived tones, diagram rendering,
+multiple alternatives, representative extended exact searches, high positions,
+barres, omission semantics, English/Turkish, light/dark themes, combined
+semantics, 2× text, and 360, 412, 600, 900, and 1280 logical-pixel widths.
 
 Unit tests cover preference parsing and persistence, BPM estimation, metronome denominator semantics, tempo interval calculation, lifecycle stopping, failure recovery, reset, and duplicate-start prevention. Controller tests replace `MetronomeEngine` with a deterministic fake, so unit/widget tests never load Oboe or require Android.
 
@@ -431,9 +458,10 @@ Production Tuner tests cover all preset MIDI sequences and frequencies, target-r
 
 - Music spelling supports naturals, single sharps, and single flats. A complete
   double-accidental notation engine is intentionally out of scope.
-- Chord Library is curated rather than exhaustive. It has no inversions, slash
-  chords, altered dominants, custom tunings, left-handed diagram transform, or
-  arbitrary voicing generation.
+- Chord Library has complete practical root/quality coverage for its current
+  registry, but no inversions, slash chords, altered dominants, custom tunings,
+  left-handed diagram transform, favorites, playback, or arbitrary runtime
+  voicing generation.
 - Exact chord search has no fuzzy matching. Favorites remain deferred until a
   structured cross-reference-tool persistence requirement exists.
 - Scale Library uses ascending Melodic Minor and a deliberately focused scale

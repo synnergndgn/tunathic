@@ -394,6 +394,17 @@ class AppLocalizationsTr extends AppLocalizations {
   String get intermediateDifficulty => 'Orta';
 
   @override
+  String get advancedDifficulty => 'İleri';
+
+  @override
+  String omittedTonesDescription(String tones) {
+    return 'Bilinçli olarak atlanan sesler: $tones.';
+  }
+
+  @override
+  String get rootlessVoicingDescription => 'Köksüz çevrim.';
+
+  @override
   String get triadCategory => 'Üç sesli akorlar';
 
   @override
