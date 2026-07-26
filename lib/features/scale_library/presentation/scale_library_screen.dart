@@ -5,13 +5,19 @@ import 'package:tunathic/app/theme/app_radii.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
 import 'package:tunathic/core/music_theory/music_theory.dart';
 import 'package:tunathic/features/scale_library/domain/scale_search_parser.dart';
+import 'package:tunathic/features/scale_library/domain/scale_library_route_state.dart';
 import 'package:tunathic/features/fretboard/domain/fretboard_route_state.dart';
 import 'package:tunathic/features/scale_library/presentation/scale_library_localizations.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/pitch_class_selector.dart';
 
 final class ScaleLibraryScreen extends StatefulWidget {
-  const ScaleLibraryScreen({super.key});
+  const ScaleLibraryScreen({
+    this.initialState = const ScaleLibraryRouteState(),
+    super.key,
+  });
+
+  final ScaleLibraryRouteState initialState;
 
   @override
   State<ScaleLibraryScreen> createState() => _ScaleLibraryScreenState();
@@ -99,9 +105,16 @@ final class _ScaleLibraryScreenState extends State<ScaleLibraryScreen> {
   ];
 
   final _searchController = TextEditingController();
-  SpelledPitchClass _root = _roots.first.spelling;
-  ScaleDefinition _definition = ScaleDefinition.major;
+  late SpelledPitchClass _root;
+  late ScaleDefinition _definition;
   bool _searchHasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _root = widget.initialState.root;
+    _definition = widget.initialState.definition;
+  }
 
   @override
   void dispose() {

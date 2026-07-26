@@ -1,8 +1,8 @@
 # Architecture
 
-Tunathic uses a pragmatic feature-first Flutter structure. Phase 3C extends the
-reusable pure Dart music-theory core with structural guitar tuning and
-fret-position projection, then adds the offline Interactive Fretboard while
+Tunathic uses a pragmatic feature-first Flutter structure. Phase 3D extends the
+reusable pure Dart music-theory core with keys, signatures, circle ordering,
+diatonic harmony, and Roman numerals, then adds the offline Circle of Fifths while
 preserving the physically validated Guitar Tuner, BPM Tap, native Oboe
 Metronome, Chord Library, and Scale Library behavior.
 
@@ -20,7 +20,9 @@ Metronome, Chord Library, and Scale Library behavior.
   construction, and relationships remain in the theory core. Interactive
   Fretboard owns route state, controls, selection details, responsive scrolling,
   and project-owned neck painting while all pitch derivation remains in the
-  theory core. BPM Tap separates pure
+  theory core. Circle of Fifths owns responsive interaction, detail
+  presentation, accessibility, and project-owned circular painting while key
+  and harmony relationships remain in the theory core. BPM Tap separates pure
   estimation logic from presentation state. Metronome separates configuration
   and beat sequencing, scheduling and orchestration, audio output, persistence,
   and presentation. Tuner Audio separates its input boundary and package
@@ -74,6 +76,27 @@ chords. `ScaleRelationships` derives relative major/minor roots and modal parent
 major roots without root-specific tables. Current coverage is Major, Natural
 Minor, Harmonic Minor, ascending Melodic Minor, all seven major modes, Major
 and Minor Pentatonic, and Blues.
+
+`MusicalKey` combines a spelled tonic with major or natural-minor tonality and
+a spelling preference. `KeySignature` stores a signed fifths count from -7
+through +7 and derives accidental type, count, stable identity, and ordered
+altered notes. A compact canonical major-key lookup owns the standard
+signature boundary; natural-minor signatures resolve through the existing
+relative-major helper. F# and Gb therefore retain distinct signatures without
+creating distinct modulo-12 pitch identities.
+
+`CircleOfFifths` owns twelve structural positions in clockwise-fifth order,
+including practical alternate spellings at F#/Gb and Db/C#. Each position
+aligns one major key with its relative natural minor. Circle and key helpers
+derive fifth, fourth, relative, parallel, clockwise-neighbor, and
+counter-clockwise-neighbor relationships deterministically.
+
+`DiatonicHarmonyConstructor` constructs the selected key's scale, stacks thirds
+from each degree, classifies the resulting triad or seventh pattern, and
+delegates chord spelling to `ChordConstructor`. `RomanNumeral` retains scale
+degree, quality, and seventh state while deriving case, diminished or
+half-diminished marker, and suffix. These types contain no localized display
+strings or progression recommendations.
 
 `GuitarTuning` represents strings structurally, ordered low to high. The current
 `standard` value stores E2/A2/D3/G3/B3/E4 and open MIDI values. A
@@ -145,6 +168,11 @@ GoRouter provides one central route table:
 - `/tools/interactive-fretboard` displays the offline Interactive Fretboard;
   project-owned query state safely preconfigures chord or scale mode, root, and
   definition while malformed or absent parameters use sensible defaults.
+- `/tools/circle-of-fifths` displays the offline interactive major/minor
+  circle, key signatures, relationships, scale notes, and diatonic harmony.
+  Its actions use project-owned query state to preconfigure Scale Library,
+  Chord Library, and Scale-mode Interactive Fretboard; direct and malformed
+  library routes retain their existing C Major defaults.
 - `/debug/tuner-diagnostics` displays Phase 2C engineering diagnostics only in debug builds.
 - `/tools/:toolId` resolves every other unfinished known tool to its Coming Soon placeholder.
 
@@ -154,7 +182,7 @@ The Metronome opens BPM Tap with an explicit result contract. BPM Tap returns on
 
 The dashboard groups stable tool definitions into Practice, Theory and Reference,
 and Training. Metronome, BPM Tap, Guitar Tuner, Chord Library, Scale Library,
-and Interactive Fretboard are production-facing tools and receive stronger
+Interactive Fretboard, and Circle of Fifths are production-facing tools and receive stronger
 surface treatment. Navigation uses
 pushes for drill-in screens so Android back naturally returns to the previous
 context. Unknown routes continue to use the localized not-found screen.
@@ -306,6 +334,11 @@ Interactive Fretboard control, orientation, selection-detail, navigation, and
 semantic-summary text is localized in the same ARB sources. Note, chord, and
 degree notation remains standard and is never translated.
 
+Circle of Fifths key descriptions, relationship labels, signature counts,
+navigation actions, orientation guidance, and accessibility summaries are
+localized at the presentation boundary. Note names, accidentals, chord
+symbols, and Roman numerals remain standard notation.
+
 ## Preferences abstraction
 
 `PreferencesStore` is the small asynchronous key-value boundary used by application settings. Its production implementation uses `SharedPreferencesAsync`, while tests use an in-memory implementation. Shared Preferences is sufficient for this small set of non-sensitive scalar settings and is smaller and easier to maintain than introducing a database. The asynchronous API avoids stale cache behavior across isolates and engine instances.
@@ -334,9 +367,11 @@ Shared maximum widths produce readable phone, large-phone, and tablet columns. C
 
 No pitch-analysis, FFT, DSP, scientific-computing, database, analytics, advertising, account, backend, or purchase package is included. Pitch detection and the real-time buffer/stabilizer use only Dart SDK math, async, and typed-data libraries.
 
-Phases 3A through 3C add no dependency. Pitch arithmetic, formulas, search
+Phases 3A through 3D add no dependency. Pitch arithmetic, formulas, search
 parsing, relationships, shape validation, diagrams, fret derivation, and
-reference presentation use Dart and Flutter primitives.
+reference presentation use Dart and Flutter primitives. The circle uses
+`CustomPainter` and Material controls rather than chart, notation, or
+third-party music-theory packages.
 
 ## Testing approach
 
@@ -361,6 +396,15 @@ states. Widget tests cover dashboard and both library paths, controls,
 note/degree rendering, 12/24-fret scrolling, note details, localization,
 themes, combined semantics, 2× text, and 360, 412, 600, 900, and 1280 logical
 pixels.
+
+Key/harmony pure tests cover all twelve circle positions, fifth/fourth
+direction and wraparound, relative and representable parallel keys, practical
+enharmonics, canonical signatures and accidental order, required major/minor
+triads and seventh chords, half-diminished behavior, and structural Roman
+numerals. Circle widget tests cover dashboard access, major/minor and
+relationship selection, signature and harmony updates, enharmonic context, all
+three library handoffs, localization, themes, combined and per-control
+semantics, 2× text, and 360, 412, 600, 900, and 1280 logical-pixel widths.
 
 Chord-shape tests validate the entire 162-shape dataset and deliberately malformed
 string, fret, finger, barre, formula-tone, and missing-root cases. Widget tests
@@ -401,6 +445,12 @@ Production Tuner tests cover all preset MIDI sequences and frequencies, target-r
   than CAGED boxes, scale positions, chord shapes, inversions, or playable
   voicings. Custom tuning UI, left-handed mode, playback, CAGED, interval
   practice, and ear-training behavior are not implemented.
+- Circle of Fifths covers major and natural-minor keys with standard -7…+7
+  signatures. It does not implement staff notation, double-accidental keys,
+  harmonic/melodic-minor key behavior, modes as keys, progressions,
+  substitutions, playback, songwriting workflows, interval training, or ear
+  training. Large text uses an ordered control list so notation is not
+  compressed into an unreadable radial layout.
 
 - BPM Tap, the foreground Metronome, and Guitar Tuner are functional. The tuner still requires broader real-guitar and device-matrix validation before it is release-complete.
 - Metronome click placement is owned by the native output sample clock, but end-to-end acoustic latency varies by device and route. The feature does not run in the background and supports no subdivisions, swing, custom rhythms, dotted-quarter 6/8, or custom accent patterns.

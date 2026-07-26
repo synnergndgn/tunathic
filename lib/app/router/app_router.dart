@@ -4,13 +4,16 @@ import 'package:go_router/go_router.dart';
 import 'package:tunathic/features/bpm_tap/presentation/bpm_tap_screen.dart';
 import 'package:tunathic/features/about/presentation/about_screen.dart';
 import 'package:tunathic/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:tunathic/features/chord_library/domain/chord_library_route_state.dart';
 import 'package:tunathic/features/chord_library/presentation/chord_library_screen.dart';
+import 'package:tunathic/features/circle_of_fifths/presentation/circle_of_fifths_screen.dart';
 import 'package:tunathic/features/fretboard/domain/fretboard_route_state.dart';
 import 'package:tunathic/features/fretboard/presentation/interactive_fretboard_screen.dart';
 import 'package:tunathic/features/metronome/presentation/metronome_screen.dart';
 import 'package:tunathic/features/privacy/presentation/privacy_screen.dart';
 import 'package:tunathic/features/settings/presentation/settings_screen.dart';
 import 'package:tunathic/features/scale_library/presentation/scale_library_screen.dart';
+import 'package:tunathic/features/scale_library/domain/scale_library_route_state.dart';
 import 'package:tunathic/features/tool_placeholder/presentation/not_found_screen.dart';
 import 'package:tunathic/features/tool_placeholder/presentation/tool_placeholder_screen.dart';
 import 'package:tunathic/features/tools/tool_definition.dart';
@@ -28,6 +31,16 @@ abstract final class AppRoutes {
 
   static String fretboard(FretboardRouteState state) => Uri(
     path: tool(ToolDefinition.interactiveFretboard),
+    queryParameters: state.toQuery(),
+  ).toString();
+
+  static String scaleLibrary(ScaleLibraryRouteState state) => Uri(
+    path: tool(ToolDefinition.scaleLibrary),
+    queryParameters: state.toQuery(),
+  ).toString();
+
+  static String chordLibrary(ChordLibraryRouteState state) => Uri(
+    path: tool(ToolDefinition.chordLibrary),
     queryParameters: state.toQuery(),
   ).toString();
 }
@@ -72,10 +85,18 @@ final routerProvider = Provider<GoRouter>((ref) {
             return const GuitarTunerScreen();
           }
           if (tool == ToolDefinition.chordLibrary) {
-            return const ChordLibraryScreen();
+            return ChordLibraryScreen(
+              initialState: ChordLibraryRouteState.fromQuery(
+                state.uri.queryParameters,
+              ),
+            );
           }
           if (tool == ToolDefinition.scaleLibrary) {
-            return const ScaleLibraryScreen();
+            return ScaleLibraryScreen(
+              initialState: ScaleLibraryRouteState.fromQuery(
+                state.uri.queryParameters,
+              ),
+            );
           }
           if (tool == ToolDefinition.interactiveFretboard) {
             return InteractiveFretboardScreen(
@@ -83,6 +104,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                 state.uri.queryParameters,
               ),
             );
+          }
+          if (tool == ToolDefinition.circleOfFifths) {
+            return const CircleOfFifthsScreen();
           }
           return ToolPlaceholderScreen(tool: tool);
         },

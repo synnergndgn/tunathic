@@ -5,6 +5,7 @@ import 'package:tunathic/app/theme/app_radii.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
 import 'package:tunathic/core/music_theory/music_theory.dart';
 import 'package:tunathic/features/chord_library/data/guitar_chord_shapes.dart';
+import 'package:tunathic/features/chord_library/domain/chord_library_route_state.dart';
 import 'package:tunathic/features/chord_library/domain/guitar_chord_shape.dart';
 import 'package:tunathic/features/chord_library/presentation/chord_diagram.dart';
 import 'package:tunathic/features/chord_library/presentation/chord_library_localizations.dart';
@@ -13,7 +14,12 @@ import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/pitch_class_selector.dart';
 
 final class ChordLibraryScreen extends StatefulWidget {
-  const ChordLibraryScreen({super.key});
+  const ChordLibraryScreen({
+    this.initialState = const ChordLibraryRouteState(),
+    super.key,
+  });
+
+  final ChordLibraryRouteState initialState;
 
   @override
   State<ChordLibraryScreen> createState() => _ChordLibraryScreenState();
@@ -96,10 +102,17 @@ final class _ChordLibraryScreenState extends State<ChordLibraryScreen> {
   ];
 
   final _searchController = TextEditingController();
-  SpelledPitchClass _root = _roots.first.spelling;
-  ChordQuality _quality = ChordQuality.major;
+  late SpelledPitchClass _root;
+  late ChordQuality _quality;
   int _shapeIndex = 0;
   bool _searchHasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _root = widget.initialState.root;
+    _quality = widget.initialState.quality;
+  }
 
   @override
   void dispose() {

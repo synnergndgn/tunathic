@@ -31,11 +31,11 @@ Calibration and custom tuning creation remain later decisions.
 - **Phase 3C — Interactive Fretboard:** a reusable standard-tuning projection
   model and responsive offline guitar neck for chord tones and scale degrees,
   with prefilled links from both existing libraries.
-- **Recommended Phase 3D — Circle of Fifths:** an offline harmonic-relationship
-  reference built from existing pitch spelling and relative-key helpers, with
-  no audio or training behavior.
-- **Later Phase 3 scope:** broader harmonic-reference work only after the
-  Interactive Fretboard and Circle of Fifths are validated.
+- **Phase 3D — Circle of Fifths:** reusable key/signature, circle-ordering,
+  diatonic-harmony, and Roman-numeral models plus an offline interactive
+  major/minor harmonic reference with prefilled links to existing libraries.
+- **Later Phase 3 scope:** broader progression or songwriting reference work
+  remains separately authorized and is not implied by the Phase 3D primitives.
 
 ## Phase 4: Interval trainer, ear training and progress tracking
 

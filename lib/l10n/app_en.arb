@@ -334,6 +334,63 @@
   "tapHighlightedNoteHint": "Tap a highlighted note for pitch, string, fret, and relationship details.",
   "viewOnFretboard": "View on Fretboard",
   "circleOfFifths": "Circle of Fifths",
+  "circleOfFifthsIntro": "Explore key signatures, relative keys, neighboring fifths and fourths, and diatonic harmony offline.",
+  "keyMajor": "Major",
+  "keyMinor": "Minor",
+  "parallelMajorLabel": "Parallel major",
+  "parallelMinorLabel": "Parallel minor",
+  "keySignatureLabel": "Key signature",
+  "alteredNotesLabel": "Altered notes",
+  "enharmonicEquivalentLabel": "Enharmonic equivalent",
+  "sharpCount": "{count, plural, =1{1 sharp} other{{count} sharps}}",
+  "@sharpCount": {"placeholders": {"count": {"type": "int"}}},
+  "flatCount": "{count, plural, =1{1 flat} other{{count} flats}}",
+  "@flatCount": {"placeholders": {"count": {"type": "int"}}},
+  "noSharpsOrFlats": "No sharps or flats",
+  "fifthNeighborLabel": "Fifth",
+  "fourthNeighborLabel": "Fourth",
+  "diatonicChordsLabel": "Diatonic chords",
+  "triadsLabel": "Triads",
+  "seventhChordsLabel": "Seventh chords",
+  "viewScale": "View Scale",
+  "circleOrientationHint": "C major is at 12 o'clock. Move clockwise by fifths and counter-clockwise by fourths.",
+  "circleLargeTextOrder": "Circle order",
+  "selectedKeyIndicator": "Selected key",
+  "relativeKeyIndicator": "Relative key",
+  "fifthNeighborIndicator": "Clockwise fifth neighbor",
+  "fourthNeighborIndicator": "Counter-clockwise fourth neighbor",
+  "tapChordHint": "Tap a chord to open it in Chord Library.",
+  "relationshipUnavailable": "Not available in the supported key-signature range",
+  "circleSemantics": "Circle of Fifths. {selected} selected. Relative key {relative}. Clockwise neighbor {fifth}. Counter-clockwise neighbor {fourth}.",
+  "@circleSemantics": {
+    "placeholders": {
+      "selected": {"type": "String"},
+      "relative": {"type": "String"},
+      "fifth": {"type": "String"},
+      "fourth": {"type": "String"}
+    }
+  },
+  "circleKeySemantics": "{name}. {relationship}.",
+  "@circleKeySemantics": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "relationship": {"type": "String"}
+    }
+  },
+  "keySignatureSemantics": "{description}. Altered notes: {notes}.",
+  "@keySignatureSemantics": {
+    "placeholders": {
+      "description": {"type": "String"},
+      "notes": {"type": "String"}
+    }
+  },
+  "diatonicChordSemantics": "{roman}, {chord}. Opens Chord Library.",
+  "@diatonicChordSemantics": {
+    "placeholders": {
+      "roman": {"type": "String"},
+      "chord": {"type": "String"}
+    }
+  },
   "intervalTrainer": "Interval Trainer",
   "earTraining": "Ear Training",
   "chordFinder": "Chord Finder",

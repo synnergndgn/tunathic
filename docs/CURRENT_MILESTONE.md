@@ -1,158 +1,183 @@
-# Current Milestone: Phase 3C — Interactive Fretboard
+# Current Milestone: Phase 3D — Circle of Fifths
 
-Phase 3C adds a reusable, interactive standard-tuning guitar fretboard powered
-by Tunathic's existing project-owned chord, scale, interval, pitch-class, and
-spelling identities. The validated Guitar Tuner, BPM Tap, native Oboe
-Metronome, Chord Library, and Scale Library remain behaviorally unchanged
-except for safe navigation into the new reference tool.
+Phase 3D adds an offline harmonic-reference tool built on Tunathic's
+project-owned pitch, interval, chord, scale, and spelling identities. The
+validated Guitar Tuner, BPM Tap, native Oboe Metronome, Chord Library, Scale
+Library, and Interactive Fretboard remain behaviorally unchanged except for
+safe prefilled navigation from the new tool.
 
 ## Authorized scope
 
-- A pure Dart structural standard-tuning model covering open strings through
-  fret 24, octave-aware notes, MIDI progression, chord/scale membership, root
-  state, and structural interval/degree relationships.
-- A project-owned Material 3 fretboard visualization with six strings, nut,
-  fret numbers, common markers, root distinction, note/degree labels, and
-  lightweight selected-position details.
-- Chord and Scale modes, the shared pitch-class selector, existing localized
-  definition names, 12/15/18/24-fret ranges, responsive horizontal scrolling,
-  and offline deterministic updates.
-- Dashboard access plus safe prefilled navigation from Chord Library and Scale
-  Library.
-- English and Turkish localization, accessibility summaries, deterministic
-  unit/widget coverage, documentation, an Android debug build, and physical UI
-  validation when a device is available.
+- Pure Dart major-key and natural-minor-key identities, key signatures,
+  Circle-of-Fifths positions and relationships, parallel/relative keys,
+  scale-derived diatonic triads and seventh chords, and structural Roman
+  numerals.
+- A project-owned interactive outer-major/inner-minor circle with twelve
+  positions, conventional orientation, selected/relative/neighbor cues, and a
+  concise key detail panel.
+- Prefilled navigation to Scale Library, Chord Library, and Interactive
+  Fretboard without changing their direct-opening defaults.
+- English and Turkish localization, accessible semantics and large-text
+  fallback, responsive layouts, deterministic tests, documentation, and an
+  Android debug build.
 
-CAGED overlays, interval-practice workflows, ear training, custom tuning UI,
-left-handed orientation, chord-shape projection, audio, persistence, favorites,
-accounts, networking, analytics, advertising, and backend work are outside this
+Progression recommendations, songwriting workflows, interval or ear-training
+exercises, audio, playback, staff notation, persistence, favorites, accounts,
+networking, analytics, advertising, and backend work are outside this
 milestone.
 
-## Domain model
+## Key and signature domain
 
-`lib/core/music_theory/fretboard.dart` is pure Dart. `GuitarTuning` owns a
-structural list of six `GuitarStringTuning` values, ordered low to high.
-Standard tuning is E2, A2, D3, G3, B3, E4 with MIDI notes 40, 45, 50, 55, 59,
-and 64. Each fret is derived from the open MIDI note plus its fret offset; pitch
-class and scientific-pitch octave are computed from that result. No visible
-fret note table exists.
+`lib/core/music_theory/key.dart` is pure Dart. `MusicalKey` owns a
+`SpelledPitchClass` tonic, `KeyTonality` (major or natural minor), and spelling
+preference. It exposes its scale definition, canonical key signature, relative
+key, and representable parallel key without storing a localized display name.
 
-`FretboardProjection.chord` delegates construction to `ChordConstructor` and
-maps every structural `TheoryInterval` to its chord-tone symbol. Compound and
-altered identities remain explicit: examples include `b3`, `b5`, `b7`, `9`,
-`11`, and `13`.
+`KeySignature` stores a signed circle-of-fifths count from -7 flats through +7
+sharps and derives accidental type, count, structural identity, and ordered
+altered notes. The standard sharp order is F-C-G-D-A-E-B; the flat order is
+B-E-A-D-G-C-F. Natural-minor signatures are resolved through the existing
+Phase 3B relative-major helper, so relatives share one signature rule rather
+than a duplicated minor table. Keys outside the supported single-accidental
+-7…+7 range report no parallel relationship.
 
-`FretboardProjection.scale` delegates construction to `ScaleConstructor` and
-retains every `ScaleDegree.symbol`. Enharmonically equal relationships such as
-`#4` and `b5` therefore stay distinct. `GuitarFretboard.project` synchronously
-derives immutable positions with string, fret, octave, MIDI, pitch identity,
-membership, root state, spelling, and relationship symbol.
+The compact canonical major-signature lookup is intentionally keyed by spelled
+tonic. Pitch identity remains modulo 12: F# and Gb are the same
+`PitchClass`, while their `SpelledPitchClass` values retain the musically
+meaningful six-sharp and six-flat signatures.
 
-## Interface
+## Circle ordering and relationships
 
-The dashboard exposes `/tools/interactive-fretboard`. Direct opening defaults
-to C Major chord mode and 15 visible frets. Query parameters are parsed through
-the project-owned `FretboardRouteState`; unknown mode, root, quality, or scale
-values fall back safely.
+`CircleOfFifths.positions` owns twelve structural positions, beginning with C
+at index zero and moving clockwise through G, D, A, E, B, F#/Gb, Db/C#, Ab,
+Eb, Bb, and F. Clockwise movement transposes pitch identity by seven semitones;
+counter-clockwise movement transposes by five. Both directions wrap
+deterministically.
 
-The screen supports:
+Each position aligns a major key with its natural-minor relative. F#/Gb and
+Db/C# positions also retain alternate major and relative-minor spellings.
+`KeyRelationships` derives perfect fifth, perfect fourth, relative, and
+parallel relationships from existing spelling/scale primitives.
+`CircleOfFifths` supplies deterministic clockwise-fifth and
+counter-clockwise-fourth neighbors for both tonalities.
 
-- switching between Chord and Scale without navigation;
-- the shared 12-pitch-class selector with practical dual enharmonic labels;
-- all currently supported chord qualities and scale definitions through their
-  existing localized naming helpers;
-- Note and Degrees / intervals display modes;
-- 12, 15, 18, and 24 visible frets, always including the open strings;
-- inline details after tapping a highlighted position; and
-- immediate offline updates with no persistence, audio, or network work.
+## Diatonic harmony and Roman numerals
 
-The project-owned `CustomPainter` renders six weighted strings, the nut, frets,
-fret numbers, single markers at 3/5/7/9/15/17/19/21, and double markers at
-12/24. It uses the common player-facing orientation: high E at the top and low E
-at the bottom. Non-member notes are hidden. Roots use a square marker, strong
-fill, double outline, and bold label while other members use circular markers,
-so root identification does not depend on color.
+`lib/core/music_theory/harmony.dart` constructs the selected major or natural
+minor scale through `ScaleConstructor`. For each scale degree it stacks every
+other scale tone to form a triad or seventh chord, classifies the resulting
+structural semitone pattern, and delegates final chord construction and symbol
+spelling to `ChordConstructor`. No per-key chord-name table exists.
 
-Fret cells retain a readable fixed width. Narrow screens scroll the complete
-neck horizontally; the fret numbers and neck share the same canvas and remain
-synchronized. Wider screens lay the mode, label, and range controls in parallel
-and keep content inside the existing 1200-pixel page bound.
+The resulting major triads follow I/ii/iii/IV/V/vi/vii° and natural-minor
+triads follow i/ii°/III/iv/v/VI/VII because those qualities emerge from the
+actual scales. Seventh qualities likewise emerge from four stacked thirds,
+including major seventh, dominant seventh, minor seventh, diminished seventh,
+minor-major seventh, and half-diminished seventh when structurally present.
 
-## Library integration
+`RomanNumeral` retains degree, chord quality, and seventh state. Case,
+diminished or half-diminished marker, and seventh suffix are generated
+properties, making the model suitable for a later separately authorized
+progression tool without reducing identity to display text.
 
-Chord Library retains its curated fingering diagrams and adds **View on
-Fretboard**, passing the current root and chord quality. The destination
-projects pitch membership across the neck and does not imply one fingering.
+## Interface and interaction
 
-Scale Library adds the equivalent action, passing the current root and
-project-owned `ScaleDefinition`. Neither integration duplicates chord, scale,
-shape, or search data.
+The dashboard exposes `/tools/circle-of-fifths`. Direct opening starts on C
+Major. A `CustomPainter` draws the two rings, twelve sectors, selected sector,
+neighbor sectors, boundaries, and center field. Flutter controls positioned
+over that decoration provide the actual interaction and semantics.
 
-## Accessibility and localization
+The conventional orientation places C Major at 12 o'clock, G clockwise, and F
+counter-clockwise. Rounded-square outer positions represent major keys and
+circular inner positions represent relative minors. Selection adds a strong
+outline and check marker; the relative key uses a distinct outline/link marker;
+the fifth and fourth neighbors use directional markers. These states therefore
+do not depend only on color.
 
-All new text is sourced from English and Turkish ARB files; notation symbols
-remain unchanged. The visual neck exposes one combined semantic summary such
-as “A Minor Pentatonic fretboard, frets zero through 12. Root notes A
-highlighted,” rather than hundreds of passive nodes. Tapping the canvas is a
-real interaction and updates a live inline detail region with note and octave,
-relationship, localized string name, and fret.
+Tapping either ring selects that key and immediately updates the center and
+detail panel. F#/Gb and Db/C# use concise dual labels. An enharmonic action
+switches the selected spelling while retaining one pitch-class position, so
+the corresponding signature and scale spelling remain meaningful.
 
-Controls use Material touch targets and wrapping/scrolling layouts. Tests cover
-2× text, light/dark themes, and 360, 412, 600, 900, and 1280 logical pixels.
+The detail panel shows the localized key name, optional enharmonic equivalent,
+key-signature count and altered notes, relative and parallel keys, fifth and
+fourth neighbors, scale notes, seven triads, and seven seventh chords. Relative
+and neighboring key controls also select their destination. Each chord entry
+shows Roman numeral and standard symbol and opens Chord Library when tapped.
+
+**View Scale** opens Scale Library with the selected tonic and Major or Natural
+Minor. **View on Fretboard** opens Interactive Fretboard in Scale mode with the
+same state. Project-owned route-state parsers preserve the existing direct C
+Major defaults and safely reject malformed query values.
+
+## Accessibility, localization, and responsiveness
+
+The visual circle exposes a combined summary naming selected, relative, fifth,
+and fourth keys. Every interactive position has its own localized tap semantics.
+Decorative painter lines are excluded. Key-signature semantics read count and
+altered notes naturally; chord semantics include both Roman numeral and chord
+symbol plus their navigation action.
+
+All descriptive copy is generated from English and Turkish ARB sources.
+Standard note, accidental, chord, and Roman-numeral notation is unchanged.
+
+At 360, 412, and 600 logical pixels, the circle and details form a vertically
+scrolling column. At 900 and 1280 pixels, they use a bounded two-column layout.
+The normal circle is capped at 520 pixels so it does not stretch across wide
+screens. At large text scaling where radial labels would become unreadable,
+the same clockwise order becomes a vertically scrollable, fully labeled
+major/minor control list instead of shrinking notation.
 
 ## Tests
 
-Pure tests cover:
+Pure tests cover all twelve positions, both directions and wraparound,
+relative/parallel/neighbor relationships, enharmonic identity, the standard
+sharp/flat orders, required major and minor signatures, F#/Gb and C# boundary
+signatures, required major and natural-minor triads, C/F major and A minor
+seventh chords, half-diminished behavior, and Roman-numeral structure.
 
-- all six open strings, tuning labels, MIDI values, semitone and octave
-  progression, fret 12/24 equivalence, and range validation;
-- C Major, A Minor, G7, F#m7, Bb Major, and diminished chord projection;
-- C Major, A Natural Minor, A Minor Pentatonic, E Blues, D Dorian, and F
-  Lydian scale projection;
-- member/non-member behavior, root marking, structural labels, and F#, Gb, Bb,
-  Eb, and C# contextual spelling; and
-- direct, chord-prefilled, scale-prefilled, and malformed route state.
-
-Widget tests cover dashboard opening, both modes, root and definition changes,
-note/degree labels, 12/24 frets, horizontal scrolling, note details, both
-library handoffs, EN/TR, light/dark themes, large text, requested widths, and
-the combined semantics summary. The full existing suite remains the regression
-gate for every validated feature.
+Route tests cover direct, malformed, scale-prefilled, and chord-prefilled
+states. Widget tests cover dashboard opening, C Major defaults, major/minor and
+relationship selection, signature/harmony updates, enharmonic switching, all
+three deep links, English/Turkish, light/dark themes, 360/412/600/900/1280
+widths, 2× text, combined circle semantics, key controls, signatures, and
+chords. The full existing suite remains the regression gate.
 
 ## Validation status
 
 - Baseline `flutter analyze`: passed with no issues.
-- Baseline full `flutter test`: passed, 322 tests.
-- Focused Phase 3C suite: passed, 37 tests.
-- Final `dart format .`: 128 files checked with zero changes; the separate
+- Baseline full `flutter test`: passed, 359 tests.
+- Focused Phase 3D suite: passed, 54 tests.
+- Final `dart format .`: 139 files checked with zero changes; the separate
   `--set-exit-if-changed` verification also reported zero changes.
 - Final `flutter gen-l10n`: passed for English and Turkish.
 - Final `flutter analyze`: passed with no issues.
-- Final full `flutter test`: passed, 359 tests.
+- Final full `flutter test`: passed, 413 tests.
 - Android debug APK built at
-  `build/app/outputs/flutter-apk/app-debug.apk`. The first attempt encountered
-  the repository's known read-only flags in Gradle's generated
-  `mergeDebugAssets` directory; clearing those flags in that exact generated
+  `build/app/outputs/flutter-apk/app-debug.apk`. The first attempts encountered
+  the repository's known read-only attributes in Gradle's generated
+  `mergeDebugAssets` tree; clearing those attributes in that exact generated
   path allowed the unchanged retry to pass.
 - Physical Android validation was not performed because `flutter devices`
   detected only Windows and Edge, with no attached Android device or emulator.
-  The standalone `adb` executable was not available on PATH.
 
 ## Known limitations
 
-- Standard EADGBE tuning only; the model accepts structural tunings but no
-  custom-tuning UI is implemented.
-- Right-handed/player-facing orientation only.
-- Chord projection shows pitch membership, not shapes, inversions, omissions,
-  duplicated-tone priorities, or playable voicings.
-- Scale projection shows all member pitches, not boxes or position patterns.
-- Non-members are intentionally hidden and no visibility toggle is included.
-- No CAGED, interval-practice, ear-training, playback, persistence, favorites,
-  custom scale/chord creation, or advanced voicing tools are implemented.
+- Major and natural-minor keys only; harmonic/melodic minor key behavior and
+  modal key signatures are not modeled.
+- Signatures are bounded to standard -7…+7 single-accidental keys. The existing
+  spelling engine does not render double sharps or double flats.
+- The circle uses practical enharmonic labels at two boundary positions rather
+  than displaying every theoretical spelling.
+- Diatonic harmony describes root-position pitch content, not voicings,
+  inversions, substitutions, functional analysis, or recommended progressions.
+- No staff notation, audio, interval exercise, ear training, persistence,
+  favorites, history, custom keys, or progression authoring is included.
 
 ## Future reuse
 
-The structural tuning and projected position types can support future CAGED
-overlays, interval practice, ear-training references, and advanced voicing
-tools without moving theory calculations into widgets. Those systems should
-add their own feature state and datasets only when separately authorized.
+The structural key, signature, circle, diatonic-chord, and Roman-numeral types
+can support future progression, songwriting/reference, interval-training,
+ear-training, and key-aware fretboard features. Those tools must add their own
+feature state and behavior only when separately authorized; Phase 3D does not
+mark them implemented.

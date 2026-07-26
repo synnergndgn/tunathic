@@ -1447,6 +1447,185 @@ abstract class AppLocalizations {
   /// **'Circle of Fifths'**
   String get circleOfFifths;
 
+  /// No description provided for @circleOfFifthsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore key signatures, relative keys, neighboring fifths and fourths, and diatonic harmony offline.'**
+  String get circleOfFifthsIntro;
+
+  /// No description provided for @keyMajor.
+  ///
+  /// In en, this message translates to:
+  /// **'Major'**
+  String get keyMajor;
+
+  /// No description provided for @keyMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor'**
+  String get keyMinor;
+
+  /// No description provided for @parallelMajorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Parallel major'**
+  String get parallelMajorLabel;
+
+  /// No description provided for @parallelMinorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Parallel minor'**
+  String get parallelMinorLabel;
+
+  /// No description provided for @keySignatureLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Key signature'**
+  String get keySignatureLabel;
+
+  /// No description provided for @alteredNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Altered notes'**
+  String get alteredNotesLabel;
+
+  /// No description provided for @enharmonicEquivalentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enharmonic equivalent'**
+  String get enharmonicEquivalentLabel;
+
+  /// No description provided for @sharpCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 sharp} other{{count} sharps}}'**
+  String sharpCount(int count);
+
+  /// No description provided for @flatCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 flat} other{{count} flats}}'**
+  String flatCount(int count);
+
+  /// No description provided for @noSharpsOrFlats.
+  ///
+  /// In en, this message translates to:
+  /// **'No sharps or flats'**
+  String get noSharpsOrFlats;
+
+  /// No description provided for @fifthNeighborLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fifth'**
+  String get fifthNeighborLabel;
+
+  /// No description provided for @fourthNeighborLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fourth'**
+  String get fourthNeighborLabel;
+
+  /// No description provided for @diatonicChordsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Diatonic chords'**
+  String get diatonicChordsLabel;
+
+  /// No description provided for @triadsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Triads'**
+  String get triadsLabel;
+
+  /// No description provided for @seventhChordsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Seventh chords'**
+  String get seventhChordsLabel;
+
+  /// No description provided for @viewScale.
+  ///
+  /// In en, this message translates to:
+  /// **'View Scale'**
+  String get viewScale;
+
+  /// No description provided for @circleOrientationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'C major is at 12 o\'clock. Move clockwise by fifths and counter-clockwise by fourths.'**
+  String get circleOrientationHint;
+
+  /// No description provided for @circleLargeTextOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Circle order'**
+  String get circleLargeTextOrder;
+
+  /// No description provided for @selectedKeyIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected key'**
+  String get selectedKeyIndicator;
+
+  /// No description provided for @relativeKeyIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Relative key'**
+  String get relativeKeyIndicator;
+
+  /// No description provided for @fifthNeighborIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Clockwise fifth neighbor'**
+  String get fifthNeighborIndicator;
+
+  /// No description provided for @fourthNeighborIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Counter-clockwise fourth neighbor'**
+  String get fourthNeighborIndicator;
+
+  /// No description provided for @tapChordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a chord to open it in Chord Library.'**
+  String get tapChordHint;
+
+  /// No description provided for @relationshipUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available in the supported key-signature range'**
+  String get relationshipUnavailable;
+
+  /// No description provided for @circleSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Circle of Fifths. {selected} selected. Relative key {relative}. Clockwise neighbor {fifth}. Counter-clockwise neighbor {fourth}.'**
+  String circleSemantics(
+    String selected,
+    String relative,
+    String fifth,
+    String fourth,
+  );
+
+  /// No description provided for @circleKeySemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}. {relationship}.'**
+  String circleKeySemantics(String name, String relationship);
+
+  /// No description provided for @keySignatureSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{description}. Altered notes: {notes}.'**
+  String keySignatureSemantics(String description, String notes);
+
+  /// No description provided for @diatonicChordSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{roman}, {chord}. Opens Chord Library.'**
+  String diatonicChordSemantics(String roman, String chord);
+
   /// No description provided for @intervalTrainer.
   ///
   /// In en, this message translates to:

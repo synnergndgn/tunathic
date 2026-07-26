@@ -768,6 +768,125 @@ class AppLocalizationsEn extends AppLocalizations {
   String get circleOfFifths => 'Circle of Fifths';
 
   @override
+  String get circleOfFifthsIntro =>
+      'Explore key signatures, relative keys, neighboring fifths and fourths, and diatonic harmony offline.';
+
+  @override
+  String get keyMajor => 'Major';
+
+  @override
+  String get keyMinor => 'Minor';
+
+  @override
+  String get parallelMajorLabel => 'Parallel major';
+
+  @override
+  String get parallelMinorLabel => 'Parallel minor';
+
+  @override
+  String get keySignatureLabel => 'Key signature';
+
+  @override
+  String get alteredNotesLabel => 'Altered notes';
+
+  @override
+  String get enharmonicEquivalentLabel => 'Enharmonic equivalent';
+
+  @override
+  String sharpCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sharps',
+      one: '1 sharp',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String flatCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count flats',
+      one: '1 flat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noSharpsOrFlats => 'No sharps or flats';
+
+  @override
+  String get fifthNeighborLabel => 'Fifth';
+
+  @override
+  String get fourthNeighborLabel => 'Fourth';
+
+  @override
+  String get diatonicChordsLabel => 'Diatonic chords';
+
+  @override
+  String get triadsLabel => 'Triads';
+
+  @override
+  String get seventhChordsLabel => 'Seventh chords';
+
+  @override
+  String get viewScale => 'View Scale';
+
+  @override
+  String get circleOrientationHint =>
+      'C major is at 12 o\'clock. Move clockwise by fifths and counter-clockwise by fourths.';
+
+  @override
+  String get circleLargeTextOrder => 'Circle order';
+
+  @override
+  String get selectedKeyIndicator => 'Selected key';
+
+  @override
+  String get relativeKeyIndicator => 'Relative key';
+
+  @override
+  String get fifthNeighborIndicator => 'Clockwise fifth neighbor';
+
+  @override
+  String get fourthNeighborIndicator => 'Counter-clockwise fourth neighbor';
+
+  @override
+  String get tapChordHint => 'Tap a chord to open it in Chord Library.';
+
+  @override
+  String get relationshipUnavailable =>
+      'Not available in the supported key-signature range';
+
+  @override
+  String circleSemantics(
+    String selected,
+    String relative,
+    String fifth,
+    String fourth,
+  ) {
+    return 'Circle of Fifths. $selected selected. Relative key $relative. Clockwise neighbor $fifth. Counter-clockwise neighbor $fourth.';
+  }
+
+  @override
+  String circleKeySemantics(String name, String relationship) {
+    return '$name. $relationship.';
+  }
+
+  @override
+  String keySignatureSemantics(String description, String notes) {
+    return '$description. Altered notes: $notes.';
+  }
+
+  @override
+  String diatonicChordSemantics(String roman, String chord) {
+    return '$roman, $chord. Opens Chord Library.';
+  }
+
+  @override
   String get intervalTrainer => 'Interval Trainer';
 
   @override

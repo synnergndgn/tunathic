@@ -334,6 +334,63 @@
   "tapHighlightedNoteHint": "Nota, tel, perde ve ilişki ayrıntıları için vurgulanmış bir notaya dokunun.",
   "viewOnFretboard": "Klavyede Gör",
   "circleOfFifths": "Beşliler Çemberi",
+  "circleOfFifthsIntro": "Ton işaretlerini, ilgili tonları, komşu beşli ve dörtlüleri ve diyatonik armoniyi çevrimdışı inceleyin.",
+  "keyMajor": "Majör",
+  "keyMinor": "Minör",
+  "parallelMajorLabel": "Paralel majör",
+  "parallelMinorLabel": "Paralel minör",
+  "keySignatureLabel": "Ton işaretleri",
+  "alteredNotesLabel": "Değiştirilmiş notalar",
+  "enharmonicEquivalentLabel": "Anarmonik karşılık",
+  "sharpCount": "{count} diyez",
+  "@sharpCount": {"placeholders": {"count": {"type": "int"}}},
+  "flatCount": "{count} bemol",
+  "@flatCount": {"placeholders": {"count": {"type": "int"}}},
+  "noSharpsOrFlats": "Diyez veya bemol yok",
+  "fifthNeighborLabel": "Beşli",
+  "fourthNeighborLabel": "Dörtlü",
+  "diatonicChordsLabel": "Diyatonik akorlar",
+  "triadsLabel": "Üç sesli akorlar",
+  "seventhChordsLabel": "Yedili akorlar",
+  "viewScale": "Gamı Gör",
+  "circleOrientationHint": "C majör saat 12 yönündedir. Saat yönünde beşlilerle, ters yönde dörtlülerle ilerleyin.",
+  "circleLargeTextOrder": "Çember sırası",
+  "selectedKeyIndicator": "Seçili ton",
+  "relativeKeyIndicator": "İlgili ton",
+  "fifthNeighborIndicator": "Saat yönündeki beşli komşu",
+  "fourthNeighborIndicator": "Saat yönünün tersindeki dörtlü komşu",
+  "tapChordHint": "Akor Kütüphanesi'nde açmak için bir akora dokunun.",
+  "relationshipUnavailable": "Desteklenen ton işareti aralığında kullanılamıyor",
+  "circleSemantics": "Beşliler Çemberi. {selected} seçili. İlgili ton {relative}. Saat yönündeki komşu {fifth}. Saat yönünün tersindeki komşu {fourth}.",
+  "@circleSemantics": {
+    "placeholders": {
+      "selected": {"type": "String"},
+      "relative": {"type": "String"},
+      "fifth": {"type": "String"},
+      "fourth": {"type": "String"}
+    }
+  },
+  "circleKeySemantics": "{name}. {relationship}.",
+  "@circleKeySemantics": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "relationship": {"type": "String"}
+    }
+  },
+  "keySignatureSemantics": "{description}. Değiştirilmiş notalar: {notes}.",
+  "@keySignatureSemantics": {
+    "placeholders": {
+      "description": {"type": "String"},
+      "notes": {"type": "String"}
+    }
+  },
+  "diatonicChordSemantics": "{roman}, {chord}. Akor Kütüphanesi'ni açar.",
+  "@diatonicChordSemantics": {
+    "placeholders": {
+      "roman": {"type": "String"},
+      "chord": {"type": "String"}
+    }
+  },
   "intervalTrainer": "Aralık Eğitimi",
   "earTraining": "Kulak Eğitimi",
   "chordFinder": "Akor Bulucu",

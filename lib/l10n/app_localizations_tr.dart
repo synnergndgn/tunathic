@@ -761,6 +761,114 @@ class AppLocalizationsTr extends AppLocalizations {
   String get circleOfFifths => 'Beşliler Çemberi';
 
   @override
+  String get circleOfFifthsIntro =>
+      'Ton işaretlerini, ilgili tonları, komşu beşli ve dörtlüleri ve diyatonik armoniyi çevrimdışı inceleyin.';
+
+  @override
+  String get keyMajor => 'Majör';
+
+  @override
+  String get keyMinor => 'Minör';
+
+  @override
+  String get parallelMajorLabel => 'Paralel majör';
+
+  @override
+  String get parallelMinorLabel => 'Paralel minör';
+
+  @override
+  String get keySignatureLabel => 'Ton işaretleri';
+
+  @override
+  String get alteredNotesLabel => 'Değiştirilmiş notalar';
+
+  @override
+  String get enharmonicEquivalentLabel => 'Anarmonik karşılık';
+
+  @override
+  String sharpCount(int count) {
+    return '$count diyez';
+  }
+
+  @override
+  String flatCount(int count) {
+    return '$count bemol';
+  }
+
+  @override
+  String get noSharpsOrFlats => 'Diyez veya bemol yok';
+
+  @override
+  String get fifthNeighborLabel => 'Beşli';
+
+  @override
+  String get fourthNeighborLabel => 'Dörtlü';
+
+  @override
+  String get diatonicChordsLabel => 'Diyatonik akorlar';
+
+  @override
+  String get triadsLabel => 'Üç sesli akorlar';
+
+  @override
+  String get seventhChordsLabel => 'Yedili akorlar';
+
+  @override
+  String get viewScale => 'Gamı Gör';
+
+  @override
+  String get circleOrientationHint =>
+      'C majör saat 12 yönündedir. Saat yönünde beşlilerle, ters yönde dörtlülerle ilerleyin.';
+
+  @override
+  String get circleLargeTextOrder => 'Çember sırası';
+
+  @override
+  String get selectedKeyIndicator => 'Seçili ton';
+
+  @override
+  String get relativeKeyIndicator => 'İlgili ton';
+
+  @override
+  String get fifthNeighborIndicator => 'Saat yönündeki beşli komşu';
+
+  @override
+  String get fourthNeighborIndicator => 'Saat yönünün tersindeki dörtlü komşu';
+
+  @override
+  String get tapChordHint =>
+      'Akor Kütüphanesi\'nde açmak için bir akora dokunun.';
+
+  @override
+  String get relationshipUnavailable =>
+      'Desteklenen ton işareti aralığında kullanılamıyor';
+
+  @override
+  String circleSemantics(
+    String selected,
+    String relative,
+    String fifth,
+    String fourth,
+  ) {
+    return 'Beşliler Çemberi. $selected seçili. İlgili ton $relative. Saat yönündeki komşu $fifth. Saat yönünün tersindeki komşu $fourth.';
+  }
+
+  @override
+  String circleKeySemantics(String name, String relationship) {
+    return '$name. $relationship.';
+  }
+
+  @override
+  String keySignatureSemantics(String description, String notes) {
+    return '$description. Değiştirilmiş notalar: $notes.';
+  }
+
+  @override
+  String diatonicChordSemantics(String roman, String chord) {
+    return '$roman, $chord. Akor Kütüphanesi\'ni açar.';
+  }
+
+  @override
   String get intervalTrainer => 'Aralık Eğitimi';
 
   @override
