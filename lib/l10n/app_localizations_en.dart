@@ -330,6 +330,225 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chordLibrary => 'Chord Library';
 
   @override
+  String get chordLibraryIntro =>
+      'Build chords from music theory and explore validated guitar shapes offline.';
+
+  @override
+  String get chordSearchLabel => 'Chord search';
+
+  @override
+  String get chordSearchHint => 'Try C, Cm, Cmaj7, F#m, or Bb7';
+
+  @override
+  String get searchAction => 'Search';
+
+  @override
+  String get unsupportedChordSearch =>
+      'Enter a supported chord symbol such as Cmaj7 or F#m.';
+
+  @override
+  String get rootNoteLabel => 'Root note';
+
+  @override
+  String get chordQualityLabel => 'Chord quality';
+
+  @override
+  String get chordSymbolLabel => 'Chord symbol';
+
+  @override
+  String get chordTonesLabel => 'Chord tones';
+
+  @override
+  String get guitarShapesLabel => 'Guitar shapes';
+
+  @override
+  String get primaryShapeLabel => 'Selected shape';
+
+  @override
+  String get alternateShapesLabel => 'Available shapes';
+
+  @override
+  String get fingeringLabel => 'Fingering';
+
+  @override
+  String get noChordShapeTitle => 'No curated guitar shape';
+
+  @override
+  String get noChordShapeDescription =>
+      'The chord is theoretically valid, but this offline library does not currently include a verified shape for it.';
+
+  @override
+  String startingFretValue(int fret) {
+    return 'Starting fret $fret';
+  }
+
+  @override
+  String get openPositionShape => 'Open position';
+
+  @override
+  String get movableEShape => 'Movable E shape';
+
+  @override
+  String get movableAShape => 'Movable A shape';
+
+  @override
+  String get compactShape => 'Compact voicing';
+
+  @override
+  String get beginnerDifficulty => 'Beginner';
+
+  @override
+  String get intermediateDifficulty => 'Intermediate';
+
+  @override
+  String get triadCategory => 'Triads';
+
+  @override
+  String get seventhChordCategory => 'Seventh chords';
+
+  @override
+  String get extendedChordCategory => 'Extended chords';
+
+  @override
+  String get qualityMajor => 'Major';
+
+  @override
+  String get qualityMinor => 'Minor';
+
+  @override
+  String get qualityDiminished => 'Diminished';
+
+  @override
+  String get qualityAugmented => 'Augmented';
+
+  @override
+  String get qualitySus2 => 'Suspended 2';
+
+  @override
+  String get qualitySus4 => 'Suspended 4';
+
+  @override
+  String get qualityMajor7 => 'Major 7';
+
+  @override
+  String get qualityDominant7 => 'Dominant 7';
+
+  @override
+  String get qualityMinor7 => 'Minor 7';
+
+  @override
+  String get qualityMinorMajor7 => 'Minor major 7';
+
+  @override
+  String get qualityDiminished7 => 'Diminished 7';
+
+  @override
+  String get qualityHalfDiminished7 => 'Half-diminished (m7b5)';
+
+  @override
+  String get quality6 => 'Major 6';
+
+  @override
+  String get qualityMinor6 => 'Minor 6';
+
+  @override
+  String get qualityAdd9 => 'Add 9';
+
+  @override
+  String get qualityMinorAdd9 => 'Minor add 9';
+
+  @override
+  String get quality9 => 'Dominant 9';
+
+  @override
+  String get qualityMajor9 => 'Major 9';
+
+  @override
+  String get qualityMinor9 => 'Minor 9';
+
+  @override
+  String get quality11 => 'Dominant 11';
+
+  @override
+  String get qualityMinor11 => 'Minor 11';
+
+  @override
+  String get quality13 => 'Dominant 13';
+
+  @override
+  String get lowEString => 'Low E string';
+
+  @override
+  String get aString => 'A string';
+
+  @override
+  String get dString => 'D string';
+
+  @override
+  String get gString => 'G string';
+
+  @override
+  String get bString => 'B string';
+
+  @override
+  String get highEString => 'High E string';
+
+  @override
+  String get mutedMarker => 'Muted';
+
+  @override
+  String get openMarker => 'Open';
+
+  @override
+  String fretOnlyValue(int fret) {
+    return 'Fret $fret';
+  }
+
+  @override
+  String fretAndFingerValue(int fret, int finger) {
+    return 'Fret $fret, finger $finger';
+  }
+
+  @override
+  String guitarStringMutedDescription(String stringName) {
+    return '$stringName muted.';
+  }
+
+  @override
+  String guitarStringOpenDescription(String stringName) {
+    return '$stringName open.';
+  }
+
+  @override
+  String guitarStringFrettedDescription(String stringName, int fret) {
+    return '$stringName fret $fret.';
+  }
+
+  @override
+  String guitarStringFingerDescription(
+    String stringName,
+    int fret,
+    int finger,
+  ) {
+    return '$stringName fret $fret, finger $finger.';
+  }
+
+  @override
+  String barreDescription(
+    int fret,
+    String fromString,
+    String toString,
+    int finger,
+  ) {
+    return 'Barre at fret $fret, from $fromString through $toString, finger $finger.';
+  }
+
+  @override
+  String chordDiagramSemantics(String chordSymbol, String details) {
+    return '$chordSymbol guitar chord diagram. $details';
+  }
+
+  @override
   String get scaleLibrary => 'Scale Library';
 
   @override

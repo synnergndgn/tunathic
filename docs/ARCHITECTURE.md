@@ -1,16 +1,84 @@
 # Architecture
 
-Tunathic uses a pragmatic feature-first Flutter structure. Phase 2E replaces the Metronome's timing-critical Dart playback path with an Android native audio engine while preserving the Phase 2A–2D Guitar Tuner stack and keeping audio clocks, capture, DSP, persistence, lifecycle, and presentation responsibilities separate.
+Tunathic uses a pragmatic feature-first Flutter structure. Phase 3A adds a
+reusable pure Dart music-theory core and the offline Chord Library while
+preserving the physically validated Guitar Tuner, BPM Tap, and native Oboe
+Metronome behavior.
 
 ## Folder responsibilities
 
 - `lib/app/` owns application composition: bootstrap, router, persisted application settings, and Material themes.
-- `lib/core/` owns app-wide technical boundaries for logging, preferences, package information, and haptic output.
-- `lib/features/` groups user-facing areas. Dashboard, Settings, About, and Privacy compose the application shell. BPM Tap separates pure estimation logic from presentation state. Metronome separates configuration and beat sequencing, scheduling and orchestration, audio output, persistence, and presentation. Tuner Audio separates its input boundary and package adapter, immutable PCM/frame domain types, pure statistics, capture orchestration, and diagnostic UI. Tuner Pitch contains only Flutter-independent configuration, results, musical-note conversion, the detector boundary, and DSP. Tuner Realtime owns bounded window assembly, backpressure, stabilization, hysteresis, stale timing, and transient diagnostics. Tuner owns immutable tuning definitions, target selection, tuner preferences, product orchestration, and production presentation. Other unfinished tools share one placeholder presentation.
+- `lib/core/` owns app-wide technical boundaries for logging, preferences,
+  package information, haptic output, and pure reusable music-theory identity
+  and construction.
+- `lib/features/` groups user-facing areas. Dashboard, Settings, About, and
+  Privacy compose the application shell. Chord Library owns guitar-specific
+  shapes, validation, offline data, diagram rendering, and browsing
+  presentation while importing the theory core. BPM Tap separates pure
+  estimation logic from presentation state. Metronome separates configuration
+  and beat sequencing, scheduling and orchestration, audio output, persistence,
+  and presentation. Tuner Audio separates its input boundary and package
+  adapter, immutable PCM/frame domain types, pure statistics, capture
+  orchestration, and diagnostic UI. Tuner Pitch contains only
+  Flutter-independent configuration, results, musical-note conversion, the
+  detector boundary, and DSP. Tuner Realtime owns bounded window assembly,
+  backpressure, stabilization, hysteresis, stale timing, and transient
+  diagnostics. Tuner owns immutable tuning definitions, target selection,
+  tuner preferences, product orchestration, and production presentation. Other
+  unfinished tools share one placeholder presentation.
 - `lib/shared/` contains reusable interface elements that are not specific to one feature. Foundation contains the friendly error view.
 - `lib/l10n/` contains source ARB files and generated Flutter localization classes.
 
 No UI component imports `shared_preferences`, calls the microphone package, invokes native audio channels, or contains audio conversion or DSP. Platform-facing playback is isolated behind `MetronomeEngine`; microphone input is isolated behind `TunerAudioInput`; offline pitch analysis is isolated behind `PitchDetector`. Current tools operate offline, and neither BPM Tap sessions nor microphone samples are persisted.
+
+## Music-theory domain
+
+`lib/core/music_theory/` has no Flutter, Riverpod, localization, storage, audio,
+or platform import. `PitchClass` is the modulo-12 identity; `SpelledPitchClass`
+is a diatonic letter plus natural, sharp, or flat accidental. C# and Db
+therefore share pitch identity without losing their different display
+spellings.
+
+`NoteSpelling` advances the expected diatonic letter for an interval and selects
+a single accidental that reaches the target pitch class. This separates pitch
+arithmetic from naming and produces spellings such as F-A-C, Bb-D-F, and
+F#-A-C#-E. Phase 3A falls back to a readable enharmonic spelling when double
+accidentals would otherwise be required.
+
+`TheoryInterval` stores stable identity, semitones, diatonic steps, and a short
+label. Separate augmented-fourth and diminished-fifth values share six
+semitones but retain structural meaning. Compound ninth, eleventh, and
+thirteenth values support the current chord vocabulary.
+
+`ChordQuality` stores a stable nonlocalized ID, notation symbol, category, and
+ordered interval formula. `ChordConstructor` derives all tones from that
+formula. `ChordSymbolParser` is an exact local parser for supported roots and
+suffixes; it does not introduce a second chord representation.
+
+The tuner retains its MIDI/octave/frequency/cents live-pitch types because those
+models solve a different, physically validated capture problem. Future safe
+consolidation requires explicit tuner regression evidence rather than moving
+transient tuner state into music theory.
+
+## Guitar chord shapes
+
+`GuitarChordShape` stores six low-E-to-high-E string states, optional finger
+numbers, diagram start, category, difficulty, rootless status, project source,
+and barre ranges. Muted, open, and fretted strings are structural states, not
+magic display text or images.
+
+The project-owned data combines curated open/compact shapes with transposed
+movable E- and A-family patterns. `GuitarShapeValidator` derives each sounding
+pitch from standard tuning, checks it against the chord formula, requires a
+root unless explicitly rootless, and validates string count, fret limits,
+finger limits, diagram window, and barre coverage. Practical extensions may
+omit chord members, but no shape may add a pitch outside its formula. The
+aggregate dataset test currently covers 162 shapes.
+
+The diagram is a project-owned `CustomPainter`. Theme colors support contrast,
+while muted/open glyphs, geometry, finger numbers, starting-fret text, visible
+fingering instructions, and one combined semantic image keep meaning
+independent of color.
 
 ## State management
 
@@ -39,6 +107,7 @@ GoRouter provides one central route table:
 - `/tools/bpm-tap` displays the functional BPM Tap screen.
 - `/tools/metronome` displays the functional Metronome screen.
 - `/tools/guitar-tuner` displays the production Guitar Tuner.
+- `/tools/chord-library` displays the offline Chord Library.
 - `/debug/tuner-diagnostics` displays Phase 2C engineering diagnostics only in debug builds.
 - `/tools/:toolId` resolves every other unfinished known tool to its Coming Soon placeholder.
 
@@ -46,7 +115,11 @@ Unknown paths and tool identifiers display a friendly localized not-found screen
 
 The Metronome opens BPM Tap with an explicit result contract. BPM Tap returns only a valid whole-number estimate when the user chooses Apply; the metronome validates the 20–300 BPM range and then updates and persists its tempo. Ordinary dashboard use of BPM Tap has no Apply action.
 
-The dashboard groups stable tool definitions into Practice, Theory and Reference, and Training. Metronome, BPM Tap, and Guitar Tuner are production-facing tools and receive stronger surface treatment. Navigation uses pushes for drill-in screens so Android back naturally returns to the previous context. Unknown routes continue to use the localized not-found screen.
+The dashboard groups stable tool definitions into Practice, Theory and Reference,
+and Training. Metronome, BPM Tap, Guitar Tuner, and Chord Library are
+production-facing tools and receive stronger surface treatment. Navigation uses
+pushes for drill-in screens so Android back naturally returns to the previous
+context. Unknown routes continue to use the localized not-found screen.
 
 ## Application information and licenses
 
@@ -180,6 +253,11 @@ Known algorithm limitations are intentional: the tool estimates only whole-numbe
 
 Flutter's generated localization infrastructure uses English `app_en.arb` as the source and Turkish `app_tr.arb` as the second supported language. The selected language can follow the device or be fixed to English or Turkish. Unsupported device languages fall back to English.
 
+Theory IDs and musical chord symbols are deliberately nonlocalized. Chord
+quality names, categories, selector labels, empty states, per-string fingering,
+barre descriptions, search feedback, and diagram semantics are localized at the
+Chord Library presentation boundary.
+
 ## Preferences abstraction
 
 `PreferencesStore` is the small asynchronous key-value boundary used by application settings. Its production implementation uses `SharedPreferencesAsync`, while tests use an in-memory implementation. Shared Preferences is sufficient for this small set of non-sensitive scalar settings and is smaller and easier to maintain than introducing a database. The asynchronous API avoids stale cache behavior across isolates and engine instances.
@@ -208,7 +286,22 @@ Shared maximum widths produce readable phone, large-phone, and tablet columns. C
 
 No pitch-analysis, FFT, DSP, scientific-computing, database, analytics, advertising, account, backend, or purchase package is included. Pitch detection and the real-time buffer/stabilizer use only Dart SDK math, async, and typed-data libraries.
 
+Phase 3A adds no dependency. Pitch arithmetic, formulas, search parsing, shape
+validation, and diagram rendering use Dart and Flutter primitives.
+
 ## Testing approach
+
+Music-theory tests cover all 12 pitch classes, signed modulo transposition,
+enharmonic identity and spelling, interval semitones and structural labels, all
+22 formulas, common/altered/suspended/extended chord construction, sharp/flat
+keys, boundary crossings, and exact supported search syntax.
+
+Chord-shape tests validate the entire 162-shape dataset and deliberately malformed
+string, fret, finger, barre, formula-tone, and missing-root cases. Widget tests
+cover dashboard opening, root/quality changes, formula-derived tones, diagram
+rendering, alternate selection, exact search and rejection, no-shape state,
+English/Turkish, light/dark themes, combined semantics, 2× text, and 360, 412,
+600, 900, and 1280 logical-pixel widths.
 
 Unit tests cover preference parsing and persistence, BPM estimation, metronome denominator semantics, tempo interval calculation, lifecycle stopping, failure recovery, reset, and duplicate-start prevention. Controller tests replace `MetronomeEngine` with a deterministic fake, so unit/widget tests never load Oboe or require Android.
 
@@ -225,6 +318,14 @@ Tuner Realtime pure tests verify exact overlap assembly, including the original 
 Production Tuner tests cover all preset MIDI sequences and frequencies, target-relative cents, boundary thresholds, automatic hysteresis, confirmation, no-pitch clearing, octave/transient isolation, manual lock, preference fallback and persistence, lifecycle delegation, late-result cleanup, and one-shot haptics. Widget tests cover stopped, waiting, no-signal, flat, sharp, in-tune, automatic/manual, preset and string selection, English/Turkish, light/dark themes, narrow two-times text scaling, semantics, and the absence of diagnostics on the production surface.
 
 ## Known limitations
+
+- Music spelling supports naturals, single sharps, and single flats. A complete
+  double-accidental notation engine is intentionally out of scope.
+- Chord Library is curated rather than exhaustive. It has no inversions, slash
+  chords, altered dominants, custom tunings, left-handed diagram transform, or
+  arbitrary voicing generation.
+- Exact chord search has no fuzzy matching. Favorites remain deferred until a
+  structured cross-reference-tool persistence requirement exists.
 
 - BPM Tap, the foreground Metronome, and Guitar Tuner are functional. The tuner still requires broader real-guitar and device-matrix validation before it is release-complete.
 - Metronome click placement is owned by the native output sample clock, but end-to-end acoustic latency varies by device and route. The feature does not run in the background and supports no subdivisions, swing, custom rhythms, dotted-quarter 6/8, or custom accent patterns.

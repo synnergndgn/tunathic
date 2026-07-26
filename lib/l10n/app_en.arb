@@ -142,6 +142,110 @@
     }
   },
   "chordLibrary": "Chord Library",
+  "chordLibraryIntro": "Build chords from music theory and explore validated guitar shapes offline.",
+  "chordSearchLabel": "Chord search",
+  "chordSearchHint": "Try C, Cm, Cmaj7, F#m, or Bb7",
+  "searchAction": "Search",
+  "unsupportedChordSearch": "Enter a supported chord symbol such as Cmaj7 or F#m.",
+  "rootNoteLabel": "Root note",
+  "chordQualityLabel": "Chord quality",
+  "chordSymbolLabel": "Chord symbol",
+  "chordTonesLabel": "Chord tones",
+  "guitarShapesLabel": "Guitar shapes",
+  "primaryShapeLabel": "Selected shape",
+  "alternateShapesLabel": "Available shapes",
+  "fingeringLabel": "Fingering",
+  "noChordShapeTitle": "No curated guitar shape",
+  "noChordShapeDescription": "The chord is theoretically valid, but this offline library does not currently include a verified shape for it.",
+  "startingFretValue": "Starting fret {fret}",
+  "@startingFretValue": {"placeholders": {"fret": {"type": "int"}}},
+  "openPositionShape": "Open position",
+  "movableEShape": "Movable E shape",
+  "movableAShape": "Movable A shape",
+  "compactShape": "Compact voicing",
+  "beginnerDifficulty": "Beginner",
+  "intermediateDifficulty": "Intermediate",
+  "triadCategory": "Triads",
+  "seventhChordCategory": "Seventh chords",
+  "extendedChordCategory": "Extended chords",
+  "qualityMajor": "Major",
+  "qualityMinor": "Minor",
+  "qualityDiminished": "Diminished",
+  "qualityAugmented": "Augmented",
+  "qualitySus2": "Suspended 2",
+  "qualitySus4": "Suspended 4",
+  "qualityMajor7": "Major 7",
+  "qualityDominant7": "Dominant 7",
+  "qualityMinor7": "Minor 7",
+  "qualityMinorMajor7": "Minor major 7",
+  "qualityDiminished7": "Diminished 7",
+  "qualityHalfDiminished7": "Half-diminished (m7b5)",
+  "quality6": "Major 6",
+  "qualityMinor6": "Minor 6",
+  "qualityAdd9": "Add 9",
+  "qualityMinorAdd9": "Minor add 9",
+  "quality9": "Dominant 9",
+  "qualityMajor9": "Major 9",
+  "qualityMinor9": "Minor 9",
+  "quality11": "Dominant 11",
+  "qualityMinor11": "Minor 11",
+  "quality13": "Dominant 13",
+  "lowEString": "Low E string",
+  "aString": "A string",
+  "dString": "D string",
+  "gString": "G string",
+  "bString": "B string",
+  "highEString": "High E string",
+  "mutedMarker": "Muted",
+  "openMarker": "Open",
+  "fretOnlyValue": "Fret {fret}",
+  "@fretOnlyValue": {"placeholders": {"fret": {"type": "int"}}},
+  "fretAndFingerValue": "Fret {fret}, finger {finger}",
+  "@fretAndFingerValue": {
+    "placeholders": {
+      "fret": {"type": "int"},
+      "finger": {"type": "int"}
+    }
+  },
+  "guitarStringMutedDescription": "{stringName} muted.",
+  "@guitarStringMutedDescription": {
+    "placeholders": {"stringName": {"type": "String"}}
+  },
+  "guitarStringOpenDescription": "{stringName} open.",
+  "@guitarStringOpenDescription": {
+    "placeholders": {"stringName": {"type": "String"}}
+  },
+  "guitarStringFrettedDescription": "{stringName} fret {fret}.",
+  "@guitarStringFrettedDescription": {
+    "placeholders": {
+      "stringName": {"type": "String"},
+      "fret": {"type": "int"}
+    }
+  },
+  "guitarStringFingerDescription": "{stringName} fret {fret}, finger {finger}.",
+  "@guitarStringFingerDescription": {
+    "placeholders": {
+      "stringName": {"type": "String"},
+      "fret": {"type": "int"},
+      "finger": {"type": "int"}
+    }
+  },
+  "barreDescription": "Barre at fret {fret}, from {fromString} through {toString}, finger {finger}.",
+  "@barreDescription": {
+    "placeholders": {
+      "fret": {"type": "int"},
+      "fromString": {"type": "String"},
+      "toString": {"type": "String"},
+      "finger": {"type": "int"}
+    }
+  },
+  "chordDiagramSemantics": "{chordSymbol} guitar chord diagram. {details}",
+  "@chordDiagramSemantics": {
+    "placeholders": {
+      "chordSymbol": {"type": "String"},
+      "details": {"type": "String"}
+    }
+  },
   "scaleLibrary": "Scale Library",
   "circleOfFifths": "Circle of Fifths",
   "intervalTrainer": "Interval Trainer",

@@ -656,6 +656,389 @@ abstract class AppLocalizations {
   /// **'Chord Library'**
   String get chordLibrary;
 
+  /// No description provided for @chordLibraryIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Build chords from music theory and explore validated guitar shapes offline.'**
+  String get chordLibraryIntro;
+
+  /// No description provided for @chordSearchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord search'**
+  String get chordSearchLabel;
+
+  /// No description provided for @chordSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try C, Cm, Cmaj7, F#m, or Bb7'**
+  String get chordSearchHint;
+
+  /// No description provided for @searchAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchAction;
+
+  /// No description provided for @unsupportedChordSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a supported chord symbol such as Cmaj7 or F#m.'**
+  String get unsupportedChordSearch;
+
+  /// No description provided for @rootNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Root note'**
+  String get rootNoteLabel;
+
+  /// No description provided for @chordQualityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord quality'**
+  String get chordQualityLabel;
+
+  /// No description provided for @chordSymbolLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord symbol'**
+  String get chordSymbolLabel;
+
+  /// No description provided for @chordTonesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord tones'**
+  String get chordTonesLabel;
+
+  /// No description provided for @guitarShapesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Guitar shapes'**
+  String get guitarShapesLabel;
+
+  /// No description provided for @primaryShapeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected shape'**
+  String get primaryShapeLabel;
+
+  /// No description provided for @alternateShapesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Available shapes'**
+  String get alternateShapesLabel;
+
+  /// No description provided for @fingeringLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fingering'**
+  String get fingeringLabel;
+
+  /// No description provided for @noChordShapeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No curated guitar shape'**
+  String get noChordShapeTitle;
+
+  /// No description provided for @noChordShapeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The chord is theoretically valid, but this offline library does not currently include a verified shape for it.'**
+  String get noChordShapeDescription;
+
+  /// No description provided for @startingFretValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting fret {fret}'**
+  String startingFretValue(int fret);
+
+  /// No description provided for @openPositionShape.
+  ///
+  /// In en, this message translates to:
+  /// **'Open position'**
+  String get openPositionShape;
+
+  /// No description provided for @movableEShape.
+  ///
+  /// In en, this message translates to:
+  /// **'Movable E shape'**
+  String get movableEShape;
+
+  /// No description provided for @movableAShape.
+  ///
+  /// In en, this message translates to:
+  /// **'Movable A shape'**
+  String get movableAShape;
+
+  /// No description provided for @compactShape.
+  ///
+  /// In en, this message translates to:
+  /// **'Compact voicing'**
+  String get compactShape;
+
+  /// No description provided for @beginnerDifficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get beginnerDifficulty;
+
+  /// No description provided for @intermediateDifficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get intermediateDifficulty;
+
+  /// No description provided for @triadCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Triads'**
+  String get triadCategory;
+
+  /// No description provided for @seventhChordCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Seventh chords'**
+  String get seventhChordCategory;
+
+  /// No description provided for @extendedChordCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Extended chords'**
+  String get extendedChordCategory;
+
+  /// No description provided for @qualityMajor.
+  ///
+  /// In en, this message translates to:
+  /// **'Major'**
+  String get qualityMajor;
+
+  /// No description provided for @qualityMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor'**
+  String get qualityMinor;
+
+  /// No description provided for @qualityDiminished.
+  ///
+  /// In en, this message translates to:
+  /// **'Diminished'**
+  String get qualityDiminished;
+
+  /// No description provided for @qualityAugmented.
+  ///
+  /// In en, this message translates to:
+  /// **'Augmented'**
+  String get qualityAugmented;
+
+  /// No description provided for @qualitySus2.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspended 2'**
+  String get qualitySus2;
+
+  /// No description provided for @qualitySus4.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspended 4'**
+  String get qualitySus4;
+
+  /// No description provided for @qualityMajor7.
+  ///
+  /// In en, this message translates to:
+  /// **'Major 7'**
+  String get qualityMajor7;
+
+  /// No description provided for @qualityDominant7.
+  ///
+  /// In en, this message translates to:
+  /// **'Dominant 7'**
+  String get qualityDominant7;
+
+  /// No description provided for @qualityMinor7.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor 7'**
+  String get qualityMinor7;
+
+  /// No description provided for @qualityMinorMajor7.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor major 7'**
+  String get qualityMinorMajor7;
+
+  /// No description provided for @qualityDiminished7.
+  ///
+  /// In en, this message translates to:
+  /// **'Diminished 7'**
+  String get qualityDiminished7;
+
+  /// No description provided for @qualityHalfDiminished7.
+  ///
+  /// In en, this message translates to:
+  /// **'Half-diminished (m7b5)'**
+  String get qualityHalfDiminished7;
+
+  /// No description provided for @quality6.
+  ///
+  /// In en, this message translates to:
+  /// **'Major 6'**
+  String get quality6;
+
+  /// No description provided for @qualityMinor6.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor 6'**
+  String get qualityMinor6;
+
+  /// No description provided for @qualityAdd9.
+  ///
+  /// In en, this message translates to:
+  /// **'Add 9'**
+  String get qualityAdd9;
+
+  /// No description provided for @qualityMinorAdd9.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor add 9'**
+  String get qualityMinorAdd9;
+
+  /// No description provided for @quality9.
+  ///
+  /// In en, this message translates to:
+  /// **'Dominant 9'**
+  String get quality9;
+
+  /// No description provided for @qualityMajor9.
+  ///
+  /// In en, this message translates to:
+  /// **'Major 9'**
+  String get qualityMajor9;
+
+  /// No description provided for @qualityMinor9.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor 9'**
+  String get qualityMinor9;
+
+  /// No description provided for @quality11.
+  ///
+  /// In en, this message translates to:
+  /// **'Dominant 11'**
+  String get quality11;
+
+  /// No description provided for @qualityMinor11.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor 11'**
+  String get qualityMinor11;
+
+  /// No description provided for @quality13.
+  ///
+  /// In en, this message translates to:
+  /// **'Dominant 13'**
+  String get quality13;
+
+  /// No description provided for @lowEString.
+  ///
+  /// In en, this message translates to:
+  /// **'Low E string'**
+  String get lowEString;
+
+  /// No description provided for @aString.
+  ///
+  /// In en, this message translates to:
+  /// **'A string'**
+  String get aString;
+
+  /// No description provided for @dString.
+  ///
+  /// In en, this message translates to:
+  /// **'D string'**
+  String get dString;
+
+  /// No description provided for @gString.
+  ///
+  /// In en, this message translates to:
+  /// **'G string'**
+  String get gString;
+
+  /// No description provided for @bString.
+  ///
+  /// In en, this message translates to:
+  /// **'B string'**
+  String get bString;
+
+  /// No description provided for @highEString.
+  ///
+  /// In en, this message translates to:
+  /// **'High E string'**
+  String get highEString;
+
+  /// No description provided for @mutedMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Muted'**
+  String get mutedMarker;
+
+  /// No description provided for @openMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get openMarker;
+
+  /// No description provided for @fretOnlyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Fret {fret}'**
+  String fretOnlyValue(int fret);
+
+  /// No description provided for @fretAndFingerValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Fret {fret}, finger {finger}'**
+  String fretAndFingerValue(int fret, int finger);
+
+  /// No description provided for @guitarStringMutedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'{stringName} muted.'**
+  String guitarStringMutedDescription(String stringName);
+
+  /// No description provided for @guitarStringOpenDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'{stringName} open.'**
+  String guitarStringOpenDescription(String stringName);
+
+  /// No description provided for @guitarStringFrettedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'{stringName} fret {fret}.'**
+  String guitarStringFrettedDescription(String stringName, int fret);
+
+  /// No description provided for @guitarStringFingerDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'{stringName} fret {fret}, finger {finger}.'**
+  String guitarStringFingerDescription(String stringName, int fret, int finger);
+
+  /// No description provided for @barreDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Barre at fret {fret}, from {fromString} through {toString}, finger {finger}.'**
+  String barreDescription(
+    int fret,
+    String fromString,
+    String toString,
+    int finger,
+  );
+
+  /// No description provided for @chordDiagramSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{chordSymbol} guitar chord diagram. {details}'**
+  String chordDiagramSemantics(String chordSymbol, String details);
+
   /// No description provided for @scaleLibrary.
   ///
   /// In en, this message translates to:

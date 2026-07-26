@@ -2,7 +2,7 @@
 
 **Tune. Train. Create.**
 
-Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 2E — Production Metronome Engine**: BPM Tap and the production Guitar Tuner remain implemented while the Metronome is being hardened behind a native Android audio clock and mandatory physical validation gate.
+Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 3A — Music Theory Core + Chord Library**. The physically validated Guitar Tuner, BPM Tap, and native Oboe Metronome remain intact while the first offline theory/reference tool is added.
 
 ## Current contents
 
@@ -22,6 +22,10 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Bounded 4,096/2,048-sample real-time analysis with newest-frame backpressure, pitch stabilization, and stale clearing
 - A4 = 440 Hz MIDI, sharp note-name, octave, and signed-cents conversion tested offline
 - Automatic and manual Guitar Tuner modes with seven common tunings, target-string hysteresis, a cents indicator, persisted tuner preferences, and one-shot in-tune haptics
+- Pure Dart pitch-class, enharmonic spelling, interval, chord-formula, chord-construction, and exact chord-symbol parsing
+- Offline Chord Library with all 12 roots, 22 useful qualities, formula-derived tones, and honest no-shape states
+- 162 project-owned structured guitar shapes with automated pitch, root, fret, finger, diagram-window, and barre validation
+- Responsive theme-aware chord diagrams drawn from data, with complete English/Turkish fingering and screen-reader descriptions
 - Persisted metronome settings and explicit BPM transfer from BPM Tap
 - Grouped responsive dashboard and polished Settings hierarchy
 - Localized About and Privacy screens with standard open-source license access
@@ -30,7 +34,7 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Minimal GitHub Actions formatting, analysis, and test verification
 - Unit and widget tests
 
-Guitar Tuner is available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. The current work adds no audio-file recording, background capture, sample or pitch-history persistence, upload, advertising, analytics, account, or backend behavior and does not claim Play Store readiness.
+Guitar Tuner, Metronome, BPM Tap, and Chord Library are available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. Chord Library is fully offline and adds no audio, microphone, account, analytics, network, advertising, or backend behavior.
 
 The Metronome's audio callback owns click timing; Flutter never schedules audible beats. Displayed BPM is quarter-note BPM, so 6/8 emits six eighth-note pulses. See the [engine decision](docs/METRONOME_ENGINE_DECISION.md) for the rejected package spike, Oboe rationale, lifecycle, diagnostics, and current physical-validation status.
 

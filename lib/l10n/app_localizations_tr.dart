@@ -323,6 +323,225 @@ class AppLocalizationsTr extends AppLocalizations {
   String get chordLibrary => 'Akor Kütüphanesi';
 
   @override
+  String get chordLibraryIntro =>
+      'Akorları müzik teorisinden oluşturun ve doğrulanmış gitar şekillerini çevrimdışı inceleyin.';
+
+  @override
+  String get chordSearchLabel => 'Akor arama';
+
+  @override
+  String get chordSearchHint => 'C, Cm, Cmaj7, F#m veya Bb7 deneyin';
+
+  @override
+  String get searchAction => 'Ara';
+
+  @override
+  String get unsupportedChordSearch =>
+      'Cmaj7 veya F#m gibi desteklenen bir akor sembolü girin.';
+
+  @override
+  String get rootNoteLabel => 'Kök nota';
+
+  @override
+  String get chordQualityLabel => 'Akor niteliği';
+
+  @override
+  String get chordSymbolLabel => 'Akor sembolü';
+
+  @override
+  String get chordTonesLabel => 'Akor sesleri';
+
+  @override
+  String get guitarShapesLabel => 'Gitar şekilleri';
+
+  @override
+  String get primaryShapeLabel => 'Seçili şekil';
+
+  @override
+  String get alternateShapesLabel => 'Kullanılabilir şekiller';
+
+  @override
+  String get fingeringLabel => 'Parmak yerleşimi';
+
+  @override
+  String get noChordShapeTitle => 'Doğrulanmış gitar şekli yok';
+
+  @override
+  String get noChordShapeDescription =>
+      'Akor kuramsal olarak geçerli, ancak bu çevrimdışı kütüphanede henüz doğrulanmış bir şekli bulunmuyor.';
+
+  @override
+  String startingFretValue(int fret) {
+    return 'Başlangıç perdesi $fret';
+  }
+
+  @override
+  String get openPositionShape => 'Açık pozisyon';
+
+  @override
+  String get movableEShape => 'Hareketli Mi şekli';
+
+  @override
+  String get movableAShape => 'Hareketli La şekli';
+
+  @override
+  String get compactShape => 'Kompakt çevrim';
+
+  @override
+  String get beginnerDifficulty => 'Başlangıç';
+
+  @override
+  String get intermediateDifficulty => 'Orta';
+
+  @override
+  String get triadCategory => 'Üç sesli akorlar';
+
+  @override
+  String get seventhChordCategory => 'Yedili akorlar';
+
+  @override
+  String get extendedChordCategory => 'Genişletilmiş akorlar';
+
+  @override
+  String get qualityMajor => 'Majör';
+
+  @override
+  String get qualityMinor => 'Minör';
+
+  @override
+  String get qualityDiminished => 'Eksiltilmiş';
+
+  @override
+  String get qualityAugmented => 'Artırılmış';
+
+  @override
+  String get qualitySus2 => 'Asılı 2';
+
+  @override
+  String get qualitySus4 => 'Asılı 4';
+
+  @override
+  String get qualityMajor7 => 'Majör 7';
+
+  @override
+  String get qualityDominant7 => 'Dominant 7';
+
+  @override
+  String get qualityMinor7 => 'Minör 7';
+
+  @override
+  String get qualityMinorMajor7 => 'Minör majör 7';
+
+  @override
+  String get qualityDiminished7 => 'Eksiltilmiş 7';
+
+  @override
+  String get qualityHalfDiminished7 => 'Yarı eksiltilmiş (m7b5)';
+
+  @override
+  String get quality6 => 'Majör 6';
+
+  @override
+  String get qualityMinor6 => 'Minör 6';
+
+  @override
+  String get qualityAdd9 => 'Ek 9';
+
+  @override
+  String get qualityMinorAdd9 => 'Minör ek 9';
+
+  @override
+  String get quality9 => 'Dominant 9';
+
+  @override
+  String get qualityMajor9 => 'Majör 9';
+
+  @override
+  String get qualityMinor9 => 'Minör 9';
+
+  @override
+  String get quality11 => 'Dominant 11';
+
+  @override
+  String get qualityMinor11 => 'Minör 11';
+
+  @override
+  String get quality13 => 'Dominant 13';
+
+  @override
+  String get lowEString => 'Kalın Mi teli';
+
+  @override
+  String get aString => 'La teli';
+
+  @override
+  String get dString => 'Re teli';
+
+  @override
+  String get gString => 'Sol teli';
+
+  @override
+  String get bString => 'Si teli';
+
+  @override
+  String get highEString => 'İnce Mi teli';
+
+  @override
+  String get mutedMarker => 'Susturulmuş';
+
+  @override
+  String get openMarker => 'Açık';
+
+  @override
+  String fretOnlyValue(int fret) {
+    return '$fret. perde';
+  }
+
+  @override
+  String fretAndFingerValue(int fret, int finger) {
+    return '$fret. perde, $finger. parmak';
+  }
+
+  @override
+  String guitarStringMutedDescription(String stringName) {
+    return '$stringName susturulmuş.';
+  }
+
+  @override
+  String guitarStringOpenDescription(String stringName) {
+    return '$stringName açık.';
+  }
+
+  @override
+  String guitarStringFrettedDescription(String stringName, int fret) {
+    return '$stringName $fret. perde.';
+  }
+
+  @override
+  String guitarStringFingerDescription(
+    String stringName,
+    int fret,
+    int finger,
+  ) {
+    return '$stringName $fret. perde, $finger. parmak.';
+  }
+
+  @override
+  String barreDescription(
+    int fret,
+    String fromString,
+    String toString,
+    int finger,
+  ) {
+    return '$fret. perdede $fromString ile $toString arasında $finger. parmakla bare.';
+  }
+
+  @override
+  String chordDiagramSemantics(String chordSymbol, String details) {
+    return '$chordSymbol gitar akor diyagramı. $details';
+  }
+
+  @override
   String get scaleLibrary => 'Gam Kütüphanesi';
 
   @override

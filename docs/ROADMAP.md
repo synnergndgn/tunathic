@@ -20,9 +20,17 @@ The first functional timing-sensitive practice tools, followed by application-sh
 
 Calibration and custom tuning creation remain later decisions.
 
-## Phase 3: Chord library, scale library and circle of fifths
+## Phase 3: Offline theory and reference tools
 
-Offline reference tools for chords, scales, and harmonic relationships.
+- **Phase 3A — Music Theory Core + Chord Library:** reusable pure Dart pitch
+  classes, enharmonic spelling, intervals, chord formulas and construction,
+  validated structured guitar shapes, and the offline Chord Library.
+- **Phase 3B — Scale Library:** scale formulas and spelling built on the Phase
+  3A theory core, with guitar-oriented scale reference views. It must reuse the
+  existing pitch and interval identities rather than create a parallel theory
+  model.
+- **Later Phase 3 scope:** Circle of Fifths and harmonic-relationship reference
+  work after the Scale Library is validated.
 
 ## Phase 4: Interval trainer, ear training and progress tracking
 

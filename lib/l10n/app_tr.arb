@@ -142,6 +142,110 @@
     }
   },
   "chordLibrary": "Akor Kütüphanesi",
+  "chordLibraryIntro": "Akorları müzik teorisinden oluşturun ve doğrulanmış gitar şekillerini çevrimdışı inceleyin.",
+  "chordSearchLabel": "Akor arama",
+  "chordSearchHint": "C, Cm, Cmaj7, F#m veya Bb7 deneyin",
+  "searchAction": "Ara",
+  "unsupportedChordSearch": "Cmaj7 veya F#m gibi desteklenen bir akor sembolü girin.",
+  "rootNoteLabel": "Kök nota",
+  "chordQualityLabel": "Akor niteliği",
+  "chordSymbolLabel": "Akor sembolü",
+  "chordTonesLabel": "Akor sesleri",
+  "guitarShapesLabel": "Gitar şekilleri",
+  "primaryShapeLabel": "Seçili şekil",
+  "alternateShapesLabel": "Kullanılabilir şekiller",
+  "fingeringLabel": "Parmak yerleşimi",
+  "noChordShapeTitle": "Doğrulanmış gitar şekli yok",
+  "noChordShapeDescription": "Akor kuramsal olarak geçerli, ancak bu çevrimdışı kütüphanede henüz doğrulanmış bir şekli bulunmuyor.",
+  "startingFretValue": "Başlangıç perdesi {fret}",
+  "@startingFretValue": {"placeholders": {"fret": {"type": "int"}}},
+  "openPositionShape": "Açık pozisyon",
+  "movableEShape": "Hareketli Mi şekli",
+  "movableAShape": "Hareketli La şekli",
+  "compactShape": "Kompakt çevrim",
+  "beginnerDifficulty": "Başlangıç",
+  "intermediateDifficulty": "Orta",
+  "triadCategory": "Üç sesli akorlar",
+  "seventhChordCategory": "Yedili akorlar",
+  "extendedChordCategory": "Genişletilmiş akorlar",
+  "qualityMajor": "Majör",
+  "qualityMinor": "Minör",
+  "qualityDiminished": "Eksiltilmiş",
+  "qualityAugmented": "Artırılmış",
+  "qualitySus2": "Asılı 2",
+  "qualitySus4": "Asılı 4",
+  "qualityMajor7": "Majör 7",
+  "qualityDominant7": "Dominant 7",
+  "qualityMinor7": "Minör 7",
+  "qualityMinorMajor7": "Minör majör 7",
+  "qualityDiminished7": "Eksiltilmiş 7",
+  "qualityHalfDiminished7": "Yarı eksiltilmiş (m7b5)",
+  "quality6": "Majör 6",
+  "qualityMinor6": "Minör 6",
+  "qualityAdd9": "Ek 9",
+  "qualityMinorAdd9": "Minör ek 9",
+  "quality9": "Dominant 9",
+  "qualityMajor9": "Majör 9",
+  "qualityMinor9": "Minör 9",
+  "quality11": "Dominant 11",
+  "qualityMinor11": "Minör 11",
+  "quality13": "Dominant 13",
+  "lowEString": "Kalın Mi teli",
+  "aString": "La teli",
+  "dString": "Re teli",
+  "gString": "Sol teli",
+  "bString": "Si teli",
+  "highEString": "İnce Mi teli",
+  "mutedMarker": "Susturulmuş",
+  "openMarker": "Açık",
+  "fretOnlyValue": "{fret}. perde",
+  "@fretOnlyValue": {"placeholders": {"fret": {"type": "int"}}},
+  "fretAndFingerValue": "{fret}. perde, {finger}. parmak",
+  "@fretAndFingerValue": {
+    "placeholders": {
+      "fret": {"type": "int"},
+      "finger": {"type": "int"}
+    }
+  },
+  "guitarStringMutedDescription": "{stringName} susturulmuş.",
+  "@guitarStringMutedDescription": {
+    "placeholders": {"stringName": {"type": "String"}}
+  },
+  "guitarStringOpenDescription": "{stringName} açık.",
+  "@guitarStringOpenDescription": {
+    "placeholders": {"stringName": {"type": "String"}}
+  },
+  "guitarStringFrettedDescription": "{stringName} {fret}. perde.",
+  "@guitarStringFrettedDescription": {
+    "placeholders": {
+      "stringName": {"type": "String"},
+      "fret": {"type": "int"}
+    }
+  },
+  "guitarStringFingerDescription": "{stringName} {fret}. perde, {finger}. parmak.",
+  "@guitarStringFingerDescription": {
+    "placeholders": {
+      "stringName": {"type": "String"},
+      "fret": {"type": "int"},
+      "finger": {"type": "int"}
+    }
+  },
+  "barreDescription": "{fret}. perdede {fromString} ile {toString} arasında {finger}. parmakla bare.",
+  "@barreDescription": {
+    "placeholders": {
+      "fret": {"type": "int"},
+      "fromString": {"type": "String"},
+      "toString": {"type": "String"},
+      "finger": {"type": "int"}
+    }
+  },
+  "chordDiagramSemantics": "{chordSymbol} gitar akor diyagramı. {details}",
+  "@chordDiagramSemantics": {
+    "placeholders": {
+      "chordSymbol": {"type": "String"},
+      "details": {"type": "String"}
+    }
+  },
   "scaleLibrary": "Gam Kütüphanesi",
   "circleOfFifths": "Beşliler Çemberi",
   "intervalTrainer": "Aralık Eğitimi",
