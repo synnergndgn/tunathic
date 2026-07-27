@@ -1,3 +1,8 @@
+---
+layout: default
+title: Tunathic Privacy Policy
+permalink: /privacy/
+---
 # Tunathic Privacy Policy Draft
 
 **Status:** Product draft for the application through Phase 2D. Live pitch analysis remains local and transient. This is not a final store-publishing policy and contains no invented legal contact details.
