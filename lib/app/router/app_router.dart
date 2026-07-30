@@ -9,6 +9,7 @@ import 'package:tunathic/features/chord_library/presentation/chord_library_scree
 import 'package:tunathic/features/circle_of_fifths/presentation/circle_of_fifths_screen.dart';
 import 'package:tunathic/features/fretboard/domain/fretboard_route_state.dart';
 import 'package:tunathic/features/fretboard/presentation/interactive_fretboard_screen.dart';
+import 'package:tunathic/features/interval_trainer/presentation/interval_trainer_screen.dart';
 import 'package:tunathic/features/metronome/presentation/metronome_screen.dart';
 import 'package:tunathic/features/privacy/presentation/privacy_screen.dart';
 import 'package:tunathic/features/settings/presentation/settings_screen.dart';
@@ -107,6 +108,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           }
           if (tool == ToolDefinition.circleOfFifths) {
             return const CircleOfFifthsScreen();
+          }
+          if (tool == ToolDefinition.intervalTrainer) {
+            return const IntervalTrainerScreen();
           }
           return ToolPlaceholderScreen(tool: tool);
         },

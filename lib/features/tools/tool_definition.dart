@@ -28,7 +28,8 @@ enum ToolDefinition {
       this == ToolDefinition.chordLibrary ||
       this == ToolDefinition.scaleLibrary ||
       this == ToolDefinition.interactiveFretboard ||
-      this == ToolDefinition.circleOfFifths;
+      this == ToolDefinition.circleOfFifths ||
+      this == ToolDefinition.intervalTrainer;
 
   ToolCategory get category => switch (this) {
     ToolDefinition.guitarTuner ||

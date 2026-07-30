@@ -17,11 +17,11 @@ Ready:
 - Scale Library
 - Interactive Fretboard
 - Circle of Fifths
+- Interval Trainer (offline visual theory practice)
 - Settings, About, Privacy, and open-source licenses
 
 Coming Soon and non-interactive:
 
-- Interval Trainer
 - Ear Training
 - Chord Finder
 - Capo Calculator

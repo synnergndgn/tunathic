@@ -44,8 +44,11 @@ Calibration and custom tuning creation remain later decisions.
 
 ## Phase 4: Interval trainer, ear training and progress tracking
 
-Future/Coming Soon guided listening exercises with meaningful local progress;
-these tools are not implemented by Phase 3E.
+- **Phase 4A — Interval Trainer:** offline visual interval identification and
+  target-note construction with spelling-aware generation and transient session
+  scoring. It is available in the closed-test product state.
+- **Later Phase 4 scope:** audio-based Ear Training and progress tracking remain
+  Coming Soon and require separate authorization.
 
 ## Phase 5: Chord finder, capo calculator and advanced fretboard tools
 

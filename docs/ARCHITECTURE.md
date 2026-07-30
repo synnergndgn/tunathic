@@ -196,6 +196,8 @@ GoRouter provides one central route table:
   Its actions use project-owned query state to preconfigure Scale Library,
   Chord Library, and Scale-mode Interactive Fretboard; direct and malformed
   library routes retain their existing C Major defaults.
+- `/tools/interval-trainer` displays offline visual interval identification and
+  target-note construction.
 - `/debug/tuner-diagnostics` displays Phase 2C engineering diagnostics only in debug builds.
 - `/tools/:toolId` resolves every other unfinished known tool to its Coming Soon placeholder.
 
@@ -205,10 +207,21 @@ The Metronome opens BPM Tap with an explicit result contract. BPM Tap returns on
 
 The dashboard groups stable tool definitions into Practice, Theory and Reference,
 and Training. Metronome, BPM Tap, Guitar Tuner, Chord Library, Scale Library,
-Interactive Fretboard, and Circle of Fifths are production-facing tools and receive stronger
+Interactive Fretboard, Circle of Fifths, and Interval Trainer are production-facing tools and receive stronger
 surface treatment. Navigation uses
 pushes for drill-in screens so Android back naturally returns to the previous
 context. Unknown routes continue to use the localized not-found screen.
+
+## Interval Trainer
+
+The Interval Trainer keeps visual-theory practice self-contained. Its pure
+domain layer constructs intervals from diatonic letter movement and semitone
+distance, preserves augmented-fourth and diminished-fifth identities, rejects
+spellings that need double accidentals, and uses seeded random generation with
+a shuffled interval bag for deterministic tests. The presentation controller
+owns only a transient session with one-answer protection, accuracy, and streak
+state; it has no storage, audio, microphone, network, analytics, or account
+dependency.
 
 ## Application information and licenses
 

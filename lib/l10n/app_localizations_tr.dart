@@ -1292,4 +1292,169 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get tunerProcessingErrorMessage =>
       'Perde işleme durdu. Yeniden deneyin.';
+
+  @override
+  String get intervalMode => 'Mod';
+
+  @override
+  String get identifyInterval => 'Aralığı Tanı';
+
+  @override
+  String get findTargetNote => 'Hedef Notayı Bul';
+
+  @override
+  String get difficulty => 'Zorluk';
+
+  @override
+  String get direction => 'Yön';
+
+  @override
+  String get ascending => 'Çıkıcı';
+
+  @override
+  String get descending => 'İnici';
+
+  @override
+  String get mixed => 'Karışık';
+
+  @override
+  String get beginner => 'Başlangıç';
+
+  @override
+  String get intermediate => 'Orta';
+
+  @override
+  String get advanced => 'İleri';
+
+  @override
+  String get intervalIdentifyPrompt => 'Gösterilen aralık hangisi?';
+
+  @override
+  String get intervalFindTargetPrompt => 'Hedef notayı seçin.';
+
+  @override
+  String get correct => 'Doğru';
+
+  @override
+  String get incorrect => 'Yanlış';
+
+  @override
+  String get next => 'Sonraki';
+
+  @override
+  String get accuracy => 'Doğruluk';
+
+  @override
+  String get streak => 'Seri';
+
+  @override
+  String get bestStreak => 'En İyi Seri';
+
+  @override
+  String questionsAnswered(int count) {
+    return '$count cevaplandı';
+  }
+
+  @override
+  String accuracyValue(int percent) {
+    return 'Doğruluk %$percent';
+  }
+
+  @override
+  String streakValue(int count) {
+    return 'Seri $count';
+  }
+
+  @override
+  String bestStreakValue(int count) {
+    return 'En iyi seri $count';
+  }
+
+  @override
+  String intervalQuestionSemantics(
+    String root,
+    String target,
+    String direction,
+  ) {
+    return 'Notalar $root ile $target, $direction';
+  }
+
+  @override
+  String intervalAnswerSemantics(String answer) {
+    return 'Yanıt $answer';
+  }
+
+  @override
+  String intervalCorrectFeedback(
+    String root,
+    String target,
+    String interval,
+    int semitones,
+  ) {
+    return '$root ile $target arası $interval: $semitones yarım ses.';
+  }
+
+  @override
+  String intervalIncorrectFeedback(
+    String answer,
+    String root,
+    String target,
+    String interval,
+    int semitones,
+  ) {
+    return 'Doğru yanıt $answer. $root ile $target arası $interval: $semitones yarım ses.';
+  }
+
+  @override
+  String intervalSessionSemantics(
+    int answered,
+    int correct,
+    int accuracy,
+    int streak,
+    int bestStreak,
+  ) {
+    return 'Oturum: $answered cevaplandı, $correct doğru, %$accuracy doğruluk, geçerli seri $streak, en iyi seri $bestStreak';
+  }
+
+  @override
+  String get intervalPerfectUnison => 'Tam Birli';
+
+  @override
+  String get intervalMinorSecond => 'Küçük 2\'li';
+
+  @override
+  String get intervalMajorSecond => 'Büyük 2\'li';
+
+  @override
+  String get intervalMinorThird => 'Küçük 3\'lü';
+
+  @override
+  String get intervalMajorThird => 'Büyük 3\'lü';
+
+  @override
+  String get intervalPerfectFourth => 'Tam 4\'lü';
+
+  @override
+  String get intervalAugmentedFourth => 'Triton (Artık 4\'lü)';
+
+  @override
+  String get intervalDiminishedFifth => 'Triton (Eksik 5\'li)';
+
+  @override
+  String get intervalPerfectFifth => 'Tam 5\'li';
+
+  @override
+  String get intervalMinorSixth => 'Küçük 6\'lı';
+
+  @override
+  String get intervalMajorSixth => 'Büyük 6\'lı';
+
+  @override
+  String get intervalMinorSeventh => 'Küçük 7\'li';
+
+  @override
+  String get intervalMajorSeventh => 'Büyük 7\'li';
+
+  @override
+  String get intervalPerfectOctave => 'Tam Sekizli';
 }

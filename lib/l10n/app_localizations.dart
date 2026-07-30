@@ -2375,6 +2375,279 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pitch processing stopped. Try again.'**
   String get tunerProcessingErrorMessage;
+
+  /// No description provided for @intervalMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode'**
+  String get intervalMode;
+
+  /// No description provided for @identifyInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'Identify Interval'**
+  String get identifyInterval;
+
+  /// No description provided for @findTargetNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Find Target Note'**
+  String get findTargetNote;
+
+  /// No description provided for @difficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'Difficulty'**
+  String get difficulty;
+
+  /// No description provided for @direction.
+  ///
+  /// In en, this message translates to:
+  /// **'Direction'**
+  String get direction;
+
+  /// No description provided for @ascending.
+  ///
+  /// In en, this message translates to:
+  /// **'Ascending'**
+  String get ascending;
+
+  /// No description provided for @descending.
+  ///
+  /// In en, this message translates to:
+  /// **'Descending'**
+  String get descending;
+
+  /// No description provided for @mixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Mixed'**
+  String get mixed;
+
+  /// No description provided for @beginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get beginner;
+
+  /// No description provided for @intermediate.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get intermediate;
+
+  /// No description provided for @advanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get advanced;
+
+  /// No description provided for @intervalIdentifyPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Which interval is shown?'**
+  String get intervalIdentifyPrompt;
+
+  /// No description provided for @intervalFindTargetPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the target note.'**
+  String get intervalFindTargetPrompt;
+
+  /// No description provided for @correct.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct'**
+  String get correct;
+
+  /// No description provided for @incorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect'**
+  String get incorrect;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @accuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy'**
+  String get accuracy;
+
+  /// No description provided for @streak.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get streak;
+
+  /// No description provided for @bestStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Best Streak'**
+  String get bestStreak;
+
+  /// No description provided for @questionsAnswered.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} answered'**
+  String questionsAnswered(int count);
+
+  /// No description provided for @accuracyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy {percent}%'**
+  String accuracyValue(int percent);
+
+  /// No description provided for @streakValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak {count}'**
+  String streakValue(int count);
+
+  /// No description provided for @bestStreakValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Best streak {count}'**
+  String bestStreakValue(int count);
+
+  /// No description provided for @intervalQuestionSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes {root} to {target}, {direction}'**
+  String intervalQuestionSemantics(
+    String root,
+    String target,
+    String direction,
+  );
+
+  /// No description provided for @intervalAnswerSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer {answer}'**
+  String intervalAnswerSemantics(String answer);
+
+  /// No description provided for @intervalCorrectFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'{root} to {target} is {interval}: {semitones} semitones.'**
+  String intervalCorrectFeedback(
+    String root,
+    String target,
+    String interval,
+    int semitones,
+  );
+
+  /// No description provided for @intervalIncorrectFeedback.
+  ///
+  /// In en, this message translates to:
+  /// **'The correct answer is {answer}. {root} to {target} is {interval}: {semitones} semitones.'**
+  String intervalIncorrectFeedback(
+    String answer,
+    String root,
+    String target,
+    String interval,
+    int semitones,
+  );
+
+  /// No description provided for @intervalSessionSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Session: {answered} answered, {correct} correct, {accuracy}% accuracy, current streak {streak}, best streak {bestStreak}'**
+  String intervalSessionSemantics(
+    int answered,
+    int correct,
+    int accuracy,
+    int streak,
+    int bestStreak,
+  );
+
+  /// No description provided for @intervalPerfectUnison.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect Unison'**
+  String get intervalPerfectUnison;
+
+  /// No description provided for @intervalMinorSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor 2nd'**
+  String get intervalMinorSecond;
+
+  /// No description provided for @intervalMajorSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'Major 2nd'**
+  String get intervalMajorSecond;
+
+  /// No description provided for @intervalMinorThird.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor 3rd'**
+  String get intervalMinorThird;
+
+  /// No description provided for @intervalMajorThird.
+  ///
+  /// In en, this message translates to:
+  /// **'Major 3rd'**
+  String get intervalMajorThird;
+
+  /// No description provided for @intervalPerfectFourth.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect 4th'**
+  String get intervalPerfectFourth;
+
+  /// No description provided for @intervalAugmentedFourth.
+  ///
+  /// In en, this message translates to:
+  /// **'Tritone (Augmented 4th)'**
+  String get intervalAugmentedFourth;
+
+  /// No description provided for @intervalDiminishedFifth.
+  ///
+  /// In en, this message translates to:
+  /// **'Tritone (Diminished 5th)'**
+  String get intervalDiminishedFifth;
+
+  /// No description provided for @intervalPerfectFifth.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect 5th'**
+  String get intervalPerfectFifth;
+
+  /// No description provided for @intervalMinorSixth.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor 6th'**
+  String get intervalMinorSixth;
+
+  /// No description provided for @intervalMajorSixth.
+  ///
+  /// In en, this message translates to:
+  /// **'Major 6th'**
+  String get intervalMajorSixth;
+
+  /// No description provided for @intervalMinorSeventh.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor 7th'**
+  String get intervalMinorSeventh;
+
+  /// No description provided for @intervalMajorSeventh.
+  ///
+  /// In en, this message translates to:
+  /// **'Major 7th'**
+  String get intervalMajorSeventh;
+
+  /// No description provided for @intervalPerfectOctave.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect Octave'**
+  String get intervalPerfectOctave;
 }
 
 class _AppLocalizationsDelegate

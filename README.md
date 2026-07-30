@@ -2,7 +2,7 @@
 
 **Tune. Train. Create.**
 
-Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently under feature freeze at **Phase 5A — Closed Test Release Hardening**. The validated Guitar Tuner, BPM Tap, native Oboe Metronome, Chord Library, Scale Library, Interactive Fretboard, and Circle of Fifths are being prepared for Google Play Internal and Closed Testing without new feature work.
+Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently under feature freeze at **Phase 5A — Closed Test Release Hardening**. The validated Guitar Tuner, BPM Tap, native Oboe Metronome, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and Interval Trainer are being prepared for Google Play Internal and Closed Testing.
 
 ## Current contents
 
@@ -47,6 +47,9 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
   signature and chord details, and an accessible large-text ordered fallback
 - Prefilled **View Scale**, **View on Fretboard**, and diatonic-chord navigation
   from Circle of Fifths
+- Offline Interval Trainer with identify-interval and target-note modes,
+  spelling-aware tritone identities, deterministic questions, and transient
+  accuracy/streak feedback
 - Persisted metronome settings and explicit BPM transfer from BPM Tap
 - Grouped responsive dashboard and polished Settings hierarchy
 - Localized About and Privacy screens with standard open-source license access
@@ -55,10 +58,10 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Reproducible Flutter 3.44.0 GitHub Actions formatting, analysis, test, and debug-build verification
 - Unit and widget tests
 
-Guitar Tuner, Metronome, BPM Tap, Chord Library, Scale Library, Interactive Fretboard, and Circle of Fifths are available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. All four reference tools are fully offline and add no audio, microphone, account, analytics, network, advertising, or backend behavior.
+Guitar Tuner, Metronome, BPM Tap, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and Interval Trainer are available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. All reference and Interval Trainer tools are fully offline and add no audio, microphone, account, analytics, network, advertising, or backend behavior.
 
-Interval Trainer, Ear Training, Chord Finder, and Capo Calculator remain
-localized, non-interactive Coming Soon items.
+Ear Training, Chord Finder, and Capo Calculator remain localized,
+non-interactive Coming Soon items.
 
 The Metronome's audio callback owns click timing; Flutter never schedules audible beats. Displayed BPM is quarter-note BPM, so 6/8 emits six eighth-note pulses. See the [engine decision](docs/METRONOME_ENGINE_DECISION.md) for the rejected package spike, Oboe rationale, lifecycle, diagnostics, and current physical-validation status.
 

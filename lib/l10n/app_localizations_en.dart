@@ -1309,4 +1309,169 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tunerProcessingErrorMessage =>
       'Pitch processing stopped. Try again.';
+
+  @override
+  String get intervalMode => 'Mode';
+
+  @override
+  String get identifyInterval => 'Identify Interval';
+
+  @override
+  String get findTargetNote => 'Find Target Note';
+
+  @override
+  String get difficulty => 'Difficulty';
+
+  @override
+  String get direction => 'Direction';
+
+  @override
+  String get ascending => 'Ascending';
+
+  @override
+  String get descending => 'Descending';
+
+  @override
+  String get mixed => 'Mixed';
+
+  @override
+  String get beginner => 'Beginner';
+
+  @override
+  String get intermediate => 'Intermediate';
+
+  @override
+  String get advanced => 'Advanced';
+
+  @override
+  String get intervalIdentifyPrompt => 'Which interval is shown?';
+
+  @override
+  String get intervalFindTargetPrompt => 'Select the target note.';
+
+  @override
+  String get correct => 'Correct';
+
+  @override
+  String get incorrect => 'Incorrect';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get accuracy => 'Accuracy';
+
+  @override
+  String get streak => 'Streak';
+
+  @override
+  String get bestStreak => 'Best Streak';
+
+  @override
+  String questionsAnswered(int count) {
+    return '$count answered';
+  }
+
+  @override
+  String accuracyValue(int percent) {
+    return 'Accuracy $percent%';
+  }
+
+  @override
+  String streakValue(int count) {
+    return 'Streak $count';
+  }
+
+  @override
+  String bestStreakValue(int count) {
+    return 'Best streak $count';
+  }
+
+  @override
+  String intervalQuestionSemantics(
+    String root,
+    String target,
+    String direction,
+  ) {
+    return 'Notes $root to $target, $direction';
+  }
+
+  @override
+  String intervalAnswerSemantics(String answer) {
+    return 'Answer $answer';
+  }
+
+  @override
+  String intervalCorrectFeedback(
+    String root,
+    String target,
+    String interval,
+    int semitones,
+  ) {
+    return '$root to $target is $interval: $semitones semitones.';
+  }
+
+  @override
+  String intervalIncorrectFeedback(
+    String answer,
+    String root,
+    String target,
+    String interval,
+    int semitones,
+  ) {
+    return 'The correct answer is $answer. $root to $target is $interval: $semitones semitones.';
+  }
+
+  @override
+  String intervalSessionSemantics(
+    int answered,
+    int correct,
+    int accuracy,
+    int streak,
+    int bestStreak,
+  ) {
+    return 'Session: $answered answered, $correct correct, $accuracy% accuracy, current streak $streak, best streak $bestStreak';
+  }
+
+  @override
+  String get intervalPerfectUnison => 'Perfect Unison';
+
+  @override
+  String get intervalMinorSecond => 'Minor 2nd';
+
+  @override
+  String get intervalMajorSecond => 'Major 2nd';
+
+  @override
+  String get intervalMinorThird => 'Minor 3rd';
+
+  @override
+  String get intervalMajorThird => 'Major 3rd';
+
+  @override
+  String get intervalPerfectFourth => 'Perfect 4th';
+
+  @override
+  String get intervalAugmentedFourth => 'Tritone (Augmented 4th)';
+
+  @override
+  String get intervalDiminishedFifth => 'Tritone (Diminished 5th)';
+
+  @override
+  String get intervalPerfectFifth => 'Perfect 5th';
+
+  @override
+  String get intervalMinorSixth => 'Minor 6th';
+
+  @override
+  String get intervalMajorSixth => 'Major 6th';
+
+  @override
+  String get intervalMinorSeventh => 'Minor 7th';
+
+  @override
+  String get intervalMajorSeventh => 'Major 7th';
+
+  @override
+  String get intervalPerfectOctave => 'Perfect Octave';
 }

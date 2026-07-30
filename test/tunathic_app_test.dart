@@ -24,9 +24,10 @@ void main() {
       expect(find.text('Guitar Tuner'), findsOneWidget);
       expect(find.text('Interactive Fretboard'), findsOneWidget);
       expect(find.text('Circle of Fifths'), findsOneWidget);
+      expect(find.text('Interval Trainer'), findsOneWidget);
       expect(find.text('Capo Calculator'), findsOneWidget);
-      expect(find.text('Open tool'), findsNWidgets(7));
-      expect(find.text('Coming Soon'), findsNWidgets(4));
+      expect(find.text('Open tool'), findsNWidgets(8));
+      expect(find.text('Coming Soon'), findsNWidgets(3));
     },
   );
 
@@ -53,19 +54,19 @@ void main() {
     expect(find.text('Real-Time Pitch Diagnostic'), findsNothing);
   });
 
-  testWidgets('Coming Soon cards are visible but do not navigate', (
+  testWidgets('Ear Training remains Coming Soon and does not navigate', (
     tester,
   ) async {
     _useTallSurface(tester);
     await tester.pumpWidget(_testApp());
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Interval Trainer'));
+    await tester.tap(find.text('Ear Training'));
     await tester.pumpAndSettle();
 
     expect(find.text('Guitar toolkit'), findsOneWidget);
-    expect(find.text('Interval Trainer'), findsOneWidget);
-    expect(find.text('Coming Soon'), findsNWidgets(4));
+    expect(find.text('Ear Training'), findsOneWidget);
+    expect(find.text('Coming Soon'), findsNWidgets(3));
   });
 
   testWidgets('Turkish is available as an application locale', (tester) async {
@@ -82,8 +83,9 @@ void main() {
     expect(find.text('Gitar Akort Cihazı'), findsOneWidget);
     expect(find.text('Etkileşimli Klavye'), findsOneWidget);
     expect(find.text('Beşliler Çemberi'), findsOneWidget);
-    expect(find.text('Aracı aç'), findsNWidgets(7));
-    expect(find.text('Yakında'), findsNWidgets(4));
+    expect(find.text('Aralık Eğitimi'), findsOneWidget);
+    expect(find.text('Aracı aç'), findsNWidgets(8));
+    expect(find.text('Yakında'), findsNWidgets(3));
   });
 }
 
