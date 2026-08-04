@@ -1,12 +1,12 @@
 # Tunathic Privacy Policy
 
-**Effective date: July 27, 2026**
+**Effective date: August 4, 2026**
 
 Tunathic respects your privacy. This Privacy Policy explains how information is handled when you use the Tunathic mobile application.
 
 ## 1. Overview
 
-Tunathic is a guitar and music utility application providing tools such as a guitar tuner, metronome, BPM tap tool, chord library, scale library, interactive fretboard, and music theory references.
+Tunathic is a guitar and music utility application providing tools such as a guitar tuner, metronome, BPM tap tool, chord library, scale library, interactive fretboard, music theory references, and a repertoire of song sheets you write yourself.
 
 The current version of Tunathic does not require an account and does not operate a developer-controlled backend service.
 
@@ -98,10 +98,14 @@ The effective date at the top of this page will be updated when material changes
 For privacy questions, requests, or concerns regarding Tunathic, contact:
 
 **Developer:** GUNDEV  
-**Email:** [PUBLIC SUPPORT EMAIL]
+**Email:** ali.gundogan.ie@gmail.com
 
 ## 12. Application Information
 
 **Application:** Tunathic  
 **Android package:** dev.gundev.tunathic  
-**Developer:** GUNDEV
+**Developer:** GUNDEV  
+**Published policy URL:** https://gundev.dev/gizlilik/tunathic
+
+This file is the source text. The published page at the URL above must be kept
+in step with it; Play Console references the published page, not this file.

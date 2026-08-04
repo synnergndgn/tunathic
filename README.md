@@ -127,7 +127,7 @@ The Android application ID is a permanent product identifier and must not be cha
 - [Release hardening audit](docs/RELEASE_HARDENING_AUDIT.md)
 - [Closed test release checklist](docs/closed_test_release_checklist.md)
 - [Android release signing](docs/android_release_signing.md)
-- [Privacy policy draft](docs/PRIVACY_POLICY_DRAFT.md)
+- [Privacy policy](docs/PRIVACY_POLICY.md), published at <https://gundev.dev/gizlilik/tunathic>
 - [Data Safety draft](docs/data_safety_draft.md)
 - [Store listing draft](docs/store_listing.md)
 - [Design direction](design/README.md)
