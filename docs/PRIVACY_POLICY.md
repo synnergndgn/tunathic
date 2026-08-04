@@ -32,7 +32,9 @@ You may revoke microphone permission at any time through your device settings. T
 
 Tunathic may store application preferences locally on your device, such as interface or tool settings.
 
-This information is used to preserve your preferences between sessions and is not transmitted to Tunathic servers.
+Tunathic also stores the songs you add to the Repertoire, including their lyrics, chords, and transposition settings, locally on your device. This content is created or entered by you. Tunathic provides no song catalog and no import, export, or sharing feature.
+
+This information is used to preserve your preferences and your songs between sessions and is not transmitted to Tunathic servers. You can remove a song at any time in the app, and clearing the application's storage or uninstalling the application removes all of it.
 
 ## 4. Data Collection and Sharing
 

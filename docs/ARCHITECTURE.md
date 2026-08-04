@@ -38,7 +38,7 @@ Fifths behavior.
 - `lib/shared/` contains reusable interface elements that are not specific to one feature. Foundation contains the friendly error view.
 - `lib/l10n/` contains source ARB files and generated Flutter localization classes.
 
-No UI component imports `shared_preferences`, calls the microphone package, invokes native audio channels, or contains audio conversion or DSP. Platform-facing playback is isolated behind `MetronomeEngine`; microphone input is isolated behind `TunerAudioInput`; offline pitch analysis is isolated behind `PitchDetector`. Current tools operate offline, and neither BPM Tap sessions nor microphone samples are persisted.
+No UI component imports `shared_preferences`, calls the microphone package, calls the wakelock package, invokes native audio channels, or contains audio conversion or DSP. Platform-facing playback is isolated behind `MetronomeEngine`; microphone input is isolated behind `TunerAudioInput`; offline pitch analysis is isolated behind `PitchDetector`. Current tools operate offline, and neither BPM Tap sessions nor microphone samples are persisted.
 
 ## Music-theory domain
 
@@ -198,6 +198,11 @@ GoRouter provides one central route table:
   library routes retain their existing C Major defaults.
 - `/tools/interval-trainer` displays offline visual interval identification and
   target-note construction.
+- `/tools/repertoire` lists the songs stored on this device,
+  `/tools/repertoire/new` and `/tools/repertoire/:songId/edit` open the editor,
+  and `/tools/repertoire/:songId` opens the performance view. A song identifier
+  that no longer exists resolves to the localized not-found message rather than
+  an empty sheet.
 - `/debug/tuner-diagnostics` displays Phase 2C engineering diagnostics only in debug builds.
 - `/tools/:toolId` resolves every other unfinished known tool to its Coming Soon placeholder.
 
@@ -206,11 +211,37 @@ Unknown paths and tool identifiers display a friendly localized not-found screen
 The Metronome opens BPM Tap with an explicit result contract. BPM Tap returns only a valid whole-number estimate when the user chooses Apply; the metronome validates the 20–300 BPM range and then updates and persists its tempo. Ordinary dashboard use of BPM Tap has no Apply action.
 
 The dashboard groups stable tool definitions into Practice, Theory and Reference,
-and Training. Metronome, BPM Tap, Guitar Tuner, Chord Library, Scale Library,
+and Training. Metronome, BPM Tap, Guitar Tuner, Repertoire, Chord Library, Scale Library,
 Interactive Fretboard, Circle of Fifths, and Interval Trainer are production-facing tools and receive stronger
 surface treatment. Navigation uses
 pushes for drill-in screens so Android back naturally returns to the previous
 context. Unknown routes continue to use the localized not-found screen.
+
+## Repertoire
+
+The Repertoire is the only feature that stores user-authored content. Its
+domain layer is pure Dart: `ChordProParser` turns bracket text into a
+renderable sheet of lyric fragments with attached chords, `ChordSheetImporter`
+converts a pasted chords-above-lyrics chart into that same bracket form once,
+at save time, and `SongSheet` transposes a whole chart while keeping one
+accidental style. Attaching chords to syllables rather than columns is what
+makes transposition safe: a chord printed as `Bb` and transposed to `B` can no
+longer drag the alignment of the line with it.
+
+Chord symbols in charts are far more varied than the modeled chord qualities,
+so `ChordSymbolParser.tryParseWritten` keeps the suffix verbatim and interprets
+only the root and optional slash bass. Its suffix alphabet is deliberately
+narrow so ordinary words that begin with a note letter are not mistaken for
+chords when a pasted chart is scanned for chord lines.
+
+`RepertoireRepository` owns the only storage access, encoding the song list as
+JSON through `PreferencesStore`; unreadable storage is logged and reported as an
+empty repertoire rather than failing. `RepertoireController` owns the list and
+every mutation, including per-song transposition and scroll speed. The
+performance view drives auto-scroll from a `Ticker` through the pure
+`AutoScrollSpeed` rate model, stops at the end of the sheet, and yields as soon
+as the performer drags. The feature adds no audio, microphone, network,
+account, analytics, or backend dependency.
 
 ## Interval Trainer
 
@@ -225,7 +256,7 @@ dependency.
 
 ## Application information and licenses
 
-`ApplicationInfoLoader` isolates `package_info_plus` from widgets. Bootstrap reads the installed package version once and overrides `initialApplicationInfoProvider`; Settings, About, and the license page consume the application-owned immutable value. Tests inject arbitrary versions without a platform channel. The product version is `0.2.0+1`, representing a pre-1.0 application with Foundation plus three working tools.
+`ApplicationInfoLoader` isolates `package_info_plus` from widgets. Bootstrap reads the installed package version once and overrides `initialApplicationInfoProvider`; Settings, About, and the license page consume the application-owned immutable value. Tests inject arbitrary versions without a platform channel. The product version is `0.3.0+2`, representing a pre-1.0 application with Foundation plus the shipped tool set.
 
 Open-source notices use Flutter’s standard `showLicensePage`, which reads Flutter’s license registry and presents package licenses with the app name, actual version, and legalese. No custom license database or duplicate route is maintained.
 
@@ -400,6 +431,7 @@ Shared maximum widths produce readable phone, large-phone, and tablet columns. C
 - Oboe 1.10.0 supplies the Android low-latency output callback and AAudio/OpenSL ES compatibility layer behind `MetronomeEngine`.
 - `record` 7.1.1 supplies continuous PCM16 microphone streaming and the Android `AudioRecord` bridge behind `TunerAudioInput`; it is used for transient capture, never file recording.
 - `package_info_plus` supplies the installed version and build number behind `ApplicationInfoLoader`; platform metadata cannot be read reliably from `pubspec.yaml` at runtime.
+- `wakelock_plus` 1.7.0 keeps the display on behind `ScreenWakeLock` while a Repertoire sheet is open. A performer reading chords does not touch the device, so the display timeout would otherwise blank the sheet mid-song. On Android the package sets the standard `FLAG_KEEP_SCREEN_ON` window flag, which needs no permission, contributes no manifest permission, and applies only while Tunathic is in the foreground. The evaluated alternative was a small platform channel around the same flag; it would duplicate the package's per-platform lifecycle handling with no product gain.
 
 No pitch-analysis, FFT, DSP, scientific-computing, database, analytics, advertising, account, backend, or purchase package is included. Pitch detection and the real-time buffer/stabilizer use only Dart SDK math, async, and typed-data libraries.
 

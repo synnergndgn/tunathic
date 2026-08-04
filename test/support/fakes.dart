@@ -1,6 +1,7 @@
 import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/core/logging/app_logger.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
+import 'package:tunathic/core/screen/screen_wake_lock.dart';
 
 final class MemoryPreferencesStore implements PreferencesStore {
   MemoryPreferencesStore([Map<String, String>? values]) : values = {...?values};
@@ -33,6 +34,24 @@ final class FakeHapticFeedbackOutput implements HapticFeedbackOutput {
   @override
   Future<void> lightImpact() async {
     lightImpactCount++;
+  }
+}
+
+final class FakeScreenWakeLock implements ScreenWakeLock {
+  bool isEnabled = false;
+  int enableCount = 0;
+  int disableCount = 0;
+
+  @override
+  Future<void> enable() async {
+    isEnabled = true;
+    enableCount++;
+  }
+
+  @override
+  Future<void> disable() async {
+    isEnabled = false;
+    disableCount++;
   }
 }
 

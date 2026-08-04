@@ -600,5 +600,59 @@
   "intervalMajorSixth": "Major 6th",
   "intervalMinorSeventh": "Minor 7th",
   "intervalMajorSeventh": "Major 7th",
-  "intervalPerfectOctave": "Perfect Octave"
+  "intervalPerfectOctave": "Perfect Octave",
+  "repertoire": "Repertoire",
+  "repertoireEmptyTitle": "No songs yet",
+  "repertoireEmptyDescription": "Add lyrics with their chords, then transpose them and let the sheet scroll while both hands stay on the guitar.",
+  "addSong": "Add song",
+  "newSongTitle": "New song",
+  "editSongTitle": "Edit song",
+  "editSong": "Edit",
+  "songTitleLabel": "Title",
+  "songArtistLabel": "Artist",
+  "songContentLabel": "Lyrics and chords",
+  "songContentHint": "Write each chord in square brackets before the syllable it lands on: [Am]lyric. Charts with chords above the lyrics are converted when you save.",
+  "songTitleRequired": "Enter a title.",
+  "saveSong": "Save",
+  "deleteSong": "Delete song",
+  "deleteSongPrompt": "Delete {songTitle}? Songs are stored only on this device and cannot be recovered.",
+  "@deleteSongPrompt": {
+    "placeholders": {
+      "songTitle": {"type": "String"}
+    }
+  },
+  "deleteAction": "Delete",
+  "cancelAction": "Cancel",
+  "chartConverted": "Chords above the lyrics were converted automatically.",
+  "searchSongs": "Search songs",
+  "noMatchingSongs": "No songs match your search.",
+  "emptySongContent": "This song has no lyrics yet. Use Edit to add them.",
+  "transposeLabel": "Transpose",
+  "transposeDown": "Transpose down one semitone",
+  "transposeUp": "Transpose up one semitone",
+  "transposeReset": "Reset to the written key",
+  "transposeSemitones": "Transposed {value} semitones",
+  "@transposeSemitones": {
+    "placeholders": {
+      "value": {"type": "int"}
+    }
+  },
+  "accidentalStyle": "Accidentals",
+  "accidentalAuto": "Auto",
+  "accidentalSharps": "Sharps",
+  "accidentalFlats": "Flats",
+  "autoScroll": "Auto-scroll",
+  "startAutoScroll": "Start auto-scroll",
+  "stopAutoScroll": "Stop auto-scroll",
+  "scrollSpeed": "Scroll speed",
+  "scrollSpeedValue": "Speed {level} of {max}",
+  "@scrollSpeedValue": {
+    "placeholders": {
+      "level": {"type": "int"},
+      "max": {"type": "int"}
+    }
+  },
+  "songChordsLabel": "Chords",
+  "privacyRepertoireTitle": "Your songs stay on this device",
+  "privacyRepertoireDescription": "Songs you add to the Repertoire, including their lyrics, chords, and transposition settings, are stored locally on this device. They are not uploaded, sent to GUNDEV, or shared."
 }

@@ -50,6 +50,13 @@ Calibration and custom tuning creation remain later decisions.
 - **Later Phase 4 scope:** audio-based Ear Training and progress tracking remain
   Coming Soon and require separate authorization.
 
+## Phase 5B: Repertoire
+
+Offline user-authored song sheets: ChordPro storage, one-time conversion of
+pasted chords-above-lyrics charts, semitone transposition with key-aware
+accidental spelling, and hands-free auto-scroll. Songs stay on the device. No
+song catalog, import, export, or sharing is implied by this phase.
+
 ## Phase 5: Chord finder, capo calculator and advanced fretboard tools
 
 Interactive tools for identifying and transforming playable material,

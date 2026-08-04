@@ -2648,6 +2648,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Perfect Octave'**
   String get intervalPerfectOctave;
+
+  /// No description provided for @repertoire.
+  ///
+  /// In en, this message translates to:
+  /// **'Repertoire'**
+  String get repertoire;
+
+  /// No description provided for @repertoireEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No songs yet'**
+  String get repertoireEmptyTitle;
+
+  /// No description provided for @repertoireEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add lyrics with their chords, then transpose them and let the sheet scroll while both hands stay on the guitar.'**
+  String get repertoireEmptyDescription;
+
+  /// No description provided for @addSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Add song'**
+  String get addSong;
+
+  /// No description provided for @newSongTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New song'**
+  String get newSongTitle;
+
+  /// No description provided for @editSongTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit song'**
+  String get editSongTitle;
+
+  /// No description provided for @editSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editSong;
+
+  /// No description provided for @songTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get songTitleLabel;
+
+  /// No description provided for @songArtistLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Artist'**
+  String get songArtistLabel;
+
+  /// No description provided for @songContentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Lyrics and chords'**
+  String get songContentLabel;
+
+  /// No description provided for @songContentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write each chord in square brackets before the syllable it lands on: [Am]lyric. Charts with chords above the lyrics are converted when you save.'**
+  String get songContentHint;
+
+  /// No description provided for @songTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a title.'**
+  String get songTitleRequired;
+
+  /// No description provided for @saveSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveSong;
+
+  /// No description provided for @deleteSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete song'**
+  String get deleteSong;
+
+  /// No description provided for @deleteSongPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {songTitle}? Songs are stored only on this device and cannot be recovered.'**
+  String deleteSongPrompt(String songTitle);
+
+  /// No description provided for @deleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteAction;
+
+  /// No description provided for @cancelAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelAction;
+
+  /// No description provided for @chartConverted.
+  ///
+  /// In en, this message translates to:
+  /// **'Chords above the lyrics were converted automatically.'**
+  String get chartConverted;
+
+  /// No description provided for @searchSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'Search songs'**
+  String get searchSongs;
+
+  /// No description provided for @noMatchingSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'No songs match your search.'**
+  String get noMatchingSongs;
+
+  /// No description provided for @emptySongContent.
+  ///
+  /// In en, this message translates to:
+  /// **'This song has no lyrics yet. Use Edit to add them.'**
+  String get emptySongContent;
+
+  /// No description provided for @transposeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Transpose'**
+  String get transposeLabel;
+
+  /// No description provided for @transposeDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Transpose down one semitone'**
+  String get transposeDown;
+
+  /// No description provided for @transposeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Transpose up one semitone'**
+  String get transposeUp;
+
+  /// No description provided for @transposeReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to the written key'**
+  String get transposeReset;
+
+  /// No description provided for @transposeSemitones.
+  ///
+  /// In en, this message translates to:
+  /// **'Transposed {value} semitones'**
+  String transposeSemitones(int value);
+
+  /// No description provided for @accidentalStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accidentals'**
+  String get accidentalStyle;
+
+  /// No description provided for @accidentalAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get accidentalAuto;
+
+  /// No description provided for @accidentalSharps.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharps'**
+  String get accidentalSharps;
+
+  /// No description provided for @accidentalFlats.
+  ///
+  /// In en, this message translates to:
+  /// **'Flats'**
+  String get accidentalFlats;
+
+  /// No description provided for @autoScroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-scroll'**
+  String get autoScroll;
+
+  /// No description provided for @startAutoScroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Start auto-scroll'**
+  String get startAutoScroll;
+
+  /// No description provided for @stopAutoScroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop auto-scroll'**
+  String get stopAutoScroll;
+
+  /// No description provided for @scrollSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll speed'**
+  String get scrollSpeed;
+
+  /// No description provided for @scrollSpeedValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed {level} of {max}'**
+  String scrollSpeedValue(int level, int max);
+
+  /// No description provided for @songChordsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chords'**
+  String get songChordsLabel;
+
+  /// No description provided for @privacyRepertoireTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your songs stay on this device'**
+  String get privacyRepertoireTitle;
+
+  /// No description provided for @privacyRepertoireDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs you add to the Repertoire, including their lyrics, chords, and transposition settings, are stored locally on this device. They are not uploaded, sent to GUNDEV, or shared.'**
+  String get privacyRepertoireDescription;
 }
 
 class _AppLocalizationsDelegate

@@ -1457,4 +1457,129 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get intervalPerfectOctave => 'Tam Sekizli';
+
+  @override
+  String get repertoire => 'Repertuar';
+
+  @override
+  String get repertoireEmptyTitle => 'Henüz şarkı yok';
+
+  @override
+  String get repertoireEmptyDescription =>
+      'Sözleri akorlarıyla birlikte ekle, sonra transpoze et ve iki elin de gitarda kalırken sayfa kendi kaysın.';
+
+  @override
+  String get addSong => 'Şarkı ekle';
+
+  @override
+  String get newSongTitle => 'Yeni şarkı';
+
+  @override
+  String get editSongTitle => 'Şarkıyı düzenle';
+
+  @override
+  String get editSong => 'Düzenle';
+
+  @override
+  String get songTitleLabel => 'Başlık';
+
+  @override
+  String get songArtistLabel => 'Sanatçı';
+
+  @override
+  String get songContentLabel => 'Sözler ve akorlar';
+
+  @override
+  String get songContentHint =>
+      'Her akoru düştüğü hecenin önüne köşeli parantezle yaz: [Am]söz. Sözlerin üstünde akor bulunan metinler kaydettiğinde dönüştürülür.';
+
+  @override
+  String get songTitleRequired => 'Bir başlık gir.';
+
+  @override
+  String get saveSong => 'Kaydet';
+
+  @override
+  String get deleteSong => 'Şarkıyı sil';
+
+  @override
+  String deleteSongPrompt(String songTitle) {
+    return '$songTitle silinsin mi? Şarkılar yalnızca bu cihazda saklanır ve geri getirilemez.';
+  }
+
+  @override
+  String get deleteAction => 'Sil';
+
+  @override
+  String get cancelAction => 'Vazgeç';
+
+  @override
+  String get chartConverted =>
+      'Sözlerin üstündeki akorlar otomatik dönüştürüldü.';
+
+  @override
+  String get searchSongs => 'Şarkı ara';
+
+  @override
+  String get noMatchingSongs => 'Aramanla eşleşen şarkı yok.';
+
+  @override
+  String get emptySongContent =>
+      'Bu şarkının sözleri henüz yok. Eklemek için Düzenle\'yi kullan.';
+
+  @override
+  String get transposeLabel => 'Transpoze';
+
+  @override
+  String get transposeDown => 'Bir yarım ses aşağı transpoze et';
+
+  @override
+  String get transposeUp => 'Bir yarım ses yukarı transpoze et';
+
+  @override
+  String get transposeReset => 'Yazılı tona dön';
+
+  @override
+  String transposeSemitones(int value) {
+    return '$value yarım ses transpoze edildi';
+  }
+
+  @override
+  String get accidentalStyle => 'Arızalar';
+
+  @override
+  String get accidentalAuto => 'Otomatik';
+
+  @override
+  String get accidentalSharps => 'Diyez';
+
+  @override
+  String get accidentalFlats => 'Bemol';
+
+  @override
+  String get autoScroll => 'Otomatik kaydırma';
+
+  @override
+  String get startAutoScroll => 'Otomatik kaydırmayı başlat';
+
+  @override
+  String get stopAutoScroll => 'Otomatik kaydırmayı durdur';
+
+  @override
+  String get scrollSpeed => 'Kaydırma hızı';
+
+  @override
+  String scrollSpeedValue(int level, int max) {
+    return 'Hız $level / $max';
+  }
+
+  @override
+  String get songChordsLabel => 'Akorlar';
+
+  @override
+  String get privacyRepertoireTitle => 'Şarkıların bu cihazda kalır';
+
+  @override
+  String get privacyRepertoireDescription =>
+      'Repertuar\'a eklediğin şarkılar — sözleri, akorları ve transpoze ayarlarıyla birlikte — yalnızca bu cihazda saklanır. Yüklenmez, GUNDEV\'e gönderilmez ve paylaşılmaz.';
 }

@@ -18,6 +18,7 @@ final class DashboardScreen extends ConsumerWidget {
     ToolDefinition.metronome,
     ToolDefinition.bpmTap,
     ToolDefinition.guitarTuner,
+    ToolDefinition.repertoire,
   ];
 
   @override

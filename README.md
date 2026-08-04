@@ -2,12 +2,12 @@
 
 **Tune. Train. Create.**
 
-Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently under feature freeze at **Phase 5A — Closed Test Release Hardening**. The validated Guitar Tuner, BPM Tap, native Oboe Metronome, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and Interval Trainer are being prepared for Google Play Internal and Closed Testing.
+Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is at **Phase 5B — Repertoire and Internal Test Release**. The validated Guitar Tuner, BPM Tap, native Oboe Metronome, Repertoire, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and Interval Trainer are being prepared for Google Play Internal Testing.
 
 ## Current contents
 
 - Material 3 light, dark, and system themes
-- Responsive dashboard for eleven planned guitar tools
+- Responsive dashboard for twelve planned guitar tools
 - English source localization and Turkish support
 - Persisted theme and language preferences
 - Centralized GoRouter navigation
@@ -50,6 +50,18 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Offline Interval Trainer with identify-interval and target-note modes,
   spelling-aware tritone identities, deterministic questions, and transient
   accuracy/streak feedback
+- Offline Repertoire for songs you write or paste yourself, stored on the device
+  as ChordPro text, with title/artist search, editing, and deletion
+- One-time conversion of pasted chords-above-lyrics charts into chords attached
+  to their syllables, so transposition can never break the alignment
+- -11…+11 semitone transposition with key-aware automatic accidentals and
+  explicit sharp/flat overrides, applied to slash chords and to suffixes the
+  chord-quality model does not cover
+- Hands-free auto-scroll at ten steady speed levels that stops at the end of the
+  sheet, yields to a manual drag, and remembers its speed per song
+- The display stays on while a song sheet is open, using the standard
+  keep-screen-on window flag: no extra permission, foreground only, released as
+  soon as you leave the sheet
 - Persisted metronome settings and explicit BPM transfer from BPM Tap
 - Grouped responsive dashboard and polished Settings hierarchy
 - Localized About and Privacy screens with standard open-source license access
@@ -58,7 +70,11 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Reproducible Flutter 3.44.0 GitHub Actions formatting, analysis, test, and debug-build verification
 - Unit and widget tests
 
-Guitar Tuner, Metronome, BPM Tap, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and Interval Trainer are available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. All reference and Interval Trainer tools are fully offline and add no audio, microphone, account, analytics, network, advertising, or backend behavior.
+Guitar Tuner, Metronome, BPM Tap, Repertoire, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and Interval Trainer are available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. All reference, Interval Trainer, and Repertoire tools are fully offline and add no audio, microphone, account, analytics, network, advertising, or backend behavior.
+
+Tunathic ships no song content. The Repertoire stores only the lyrics and chords
+you enter yourself, on your own device, and offers no import, export, sharing,
+or catalog.
 
 Ear Training, Chord Finder, and Capo Calculator remain localized,
 non-interactive Coming Soon items.

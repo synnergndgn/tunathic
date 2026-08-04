@@ -12,6 +12,9 @@ import 'package:tunathic/features/fretboard/presentation/interactive_fretboard_s
 import 'package:tunathic/features/interval_trainer/presentation/interval_trainer_screen.dart';
 import 'package:tunathic/features/metronome/presentation/metronome_screen.dart';
 import 'package:tunathic/features/privacy/presentation/privacy_screen.dart';
+import 'package:tunathic/features/repertoire/presentation/repertoire_screen.dart';
+import 'package:tunathic/features/repertoire/presentation/song_editor_screen.dart';
+import 'package:tunathic/features/repertoire/presentation/song_view_screen.dart';
 import 'package:tunathic/features/settings/presentation/settings_screen.dart';
 import 'package:tunathic/features/scale_library/presentation/scale_library_screen.dart';
 import 'package:tunathic/features/scale_library/domain/scale_library_route_state.dart';
@@ -28,7 +31,15 @@ abstract final class AppRoutes {
   static const privacy = '/privacy';
   static const tunerDiagnostics = '/debug/tuner-diagnostics';
 
+  static const repertoire = '/tools/repertoire';
+  static const repertoireNewSong = '/tools/repertoire/new';
+
   static String tool(ToolDefinition tool) => '/tools/${tool.id}';
+
+  static String repertoireSong(String songId) => '$repertoire/$songId';
+
+  static String repertoireSongEditor(String songId) =>
+      '$repertoire/$songId/edit';
 
   static String fretboard(FretboardRouteState state) => Uri(
     path: tool(ToolDefinition.interactiveFretboard),
@@ -72,6 +83,20 @@ final routerProvider = Provider<GoRouter>((ref) {
           builder: (context, state) => const TunerAudioPrototypeScreen(),
         ),
       GoRoute(
+        path: AppRoutes.repertoireNewSong,
+        builder: (context, state) => const SongEditorScreen(),
+      ),
+      GoRoute(
+        path: '/tools/repertoire/:songId',
+        builder: (context, state) =>
+            SongViewScreen(songId: state.pathParameters['songId']!),
+      ),
+      GoRoute(
+        path: '/tools/repertoire/:songId/edit',
+        builder: (context, state) =>
+            SongEditorScreen(songId: state.pathParameters['songId']),
+      ),
+      GoRoute(
         path: '/tools/:toolId',
         builder: (context, state) {
           final tool = ToolDefinition.fromId(state.pathParameters['toolId']);
@@ -111,6 +136,9 @@ final routerProvider = Provider<GoRouter>((ref) {
           }
           if (tool == ToolDefinition.intervalTrainer) {
             return const IntervalTrainerScreen();
+          }
+          if (tool == ToolDefinition.repertoire) {
+            return const RepertoireScreen();
           }
           return ToolPlaceholderScreen(tool: tool);
         },

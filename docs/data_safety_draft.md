@@ -32,6 +32,7 @@ developer "collection" under the current form.
 | Tuner preset, mode, manual string | Stored only locally | No | No | Same as above |
 | BPM Tap timestamps and estimate | In-memory session state | No | No | Cleared with session/process |
 | Chord, scale, fretboard, and circle selections | Runtime UI state; content is bundled | No | No | Not persisted as history |
+| Repertoire songs entered by the user (title, artist, lyrics, chords, transposition, scroll speed) | Stored only in local app preferences; no catalog, import, export, or sharing | No | No | Until the user deletes the song, app data is cleared, or app is uninstalled |
 | Location | Not accessed | No | No | Not applicable |
 | Contacts | Not accessed | No | No | Not applicable |
 | Photos, videos, files, storage, media | Not accessed | No | No | Not applicable |
@@ -49,7 +50,11 @@ developer "collection" under the current form.
   they are not the Play release manifest.
 - `record` supplies foreground PCM streaming. The app requests a byte stream,
   not file recording.
-- `shared_preferences` stores the local scalar settings listed above.
+- `shared_preferences` stores the local scalar settings listed above and the
+  user's Repertoire songs as a local JSON list.
+- `wakelock_plus` only sets the Android keep-screen-on window flag while a
+  Repertoire sheet is open. It declares no permission, reads no data, and the
+  flag applies only while the app is in the foreground.
 - There is no analytics, ads, crash reporting, account, backend, HTTP client,
   or cloud dependency.
 - Google Play and Android platform processing is outside the app's own data

@@ -38,6 +38,12 @@ final class PrivacyScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.small),
                 _PrivacyItem(
+                  icon: Icons.library_books_outlined,
+                  title: localizations.privacyRepertoireTitle,
+                  description: localizations.privacyRepertoireDescription,
+                ),
+                const SizedBox(height: AppSpacing.small),
+                _PrivacyItem(
                   icon: Icons.mic_none_outlined,
                   title: localizations.privacyMicrophoneTitle,
                   description: localizations.privacyMicrophoneDescription,

@@ -15,8 +15,8 @@ Remote: `origin` at `https://github.com/synnergndgn/tunathic.git`
 | Android namespace | `dev.gundev.tunathic` | Consistent |
 | Display name | `Tunathic` | Consistent |
 | Flutter package | `tunathic` | Consistent |
-| Version name | `0.2.0` | Suitable first closed-test version |
-| Version code | `1` | Suitable first upload; every later upload must increase |
+| Version name | `0.3.0` | Repertoire release for internal testing |
+| Version code | `2` | Greater than the reserved first upload; every later upload must increase |
 | Minimum SDK | 24 | Flutter 3.44 stable default; compatible with current dependencies |
 | Target SDK | 36 | Meets the 31 August 2026 new-app requirement |
 | Compile SDK | 36 | Matches installed stable Android platform |
@@ -80,6 +80,7 @@ dependency change.
 | `shared_preferences` | Local scalar preferences | Local storage only; not developer collection | Include plugin/transitive licenses |
 | `record` | Foreground PCM16 tuner input | Contributes microphone implementation/permission behavior; no app file recording | Include plugin/native licenses |
 | `package_info_plus` | Installed version/build display | Reads package metadata; no developer collection | Include plugin/transitive licenses |
+| `wakelock_plus` | Keeps the display on while a Repertoire sheet is open | Sets the standard keep-screen-on window flag; contributes no permission and no collection | Include plugin/transitive licenses |
 | Oboe 1.10.0 | Native low-latency Metronome output | No network or data collection; native audio output only | Apache-2.0 text bundled in `assets/licenses/oboe.txt` and registered in-app |
 
 No dependency was removed or upgraded speculatively. Transitive packages must

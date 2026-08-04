@@ -67,6 +67,12 @@ void main() {
       await tester.tap(find.byKey(const Key('aboutPrivacy')));
       await tester.pumpAndSettle();
       expect(find.text('Privacy'), findsOneWidget);
+      expect(find.text('Your songs stay on this device'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Microphone pitch analysis stays local'),
+        220,
+        scrollable: _scrollableInside('privacyScroll'),
+      );
       expect(
         find.text('Microphone pitch analysis stays local'),
         findsOneWidget,

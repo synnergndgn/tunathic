@@ -7,6 +7,7 @@ enum ToolDefinition {
   guitarTuner('guitar-tuner', Icons.graphic_eq),
   metronome('metronome', Icons.timer_outlined),
   bpmTap('bpm-tap', Icons.touch_app_outlined),
+  repertoire('repertoire', Icons.library_books_outlined),
   chordLibrary('chord-library', Icons.library_music_outlined),
   scaleLibrary('scale-library', Icons.stacked_line_chart),
   interactiveFretboard('interactive-fretboard', Icons.grid_on_outlined),
@@ -29,12 +30,14 @@ enum ToolDefinition {
       this == ToolDefinition.scaleLibrary ||
       this == ToolDefinition.interactiveFretboard ||
       this == ToolDefinition.circleOfFifths ||
-      this == ToolDefinition.intervalTrainer;
+      this == ToolDefinition.intervalTrainer ||
+      this == ToolDefinition.repertoire;
 
   ToolCategory get category => switch (this) {
     ToolDefinition.guitarTuner ||
     ToolDefinition.metronome ||
-    ToolDefinition.bpmTap => ToolCategory.practice,
+    ToolDefinition.bpmTap ||
+    ToolDefinition.repertoire => ToolCategory.practice,
     ToolDefinition.chordLibrary ||
     ToolDefinition.scaleLibrary ||
     ToolDefinition.interactiveFretboard ||
@@ -56,6 +59,7 @@ enum ToolDefinition {
     ToolDefinition.guitarTuner => localizations.guitarTuner,
     ToolDefinition.metronome => localizations.metronome,
     ToolDefinition.bpmTap => localizations.bpmTap,
+    ToolDefinition.repertoire => localizations.repertoire,
     ToolDefinition.chordLibrary => localizations.chordLibrary,
     ToolDefinition.scaleLibrary => localizations.scaleLibrary,
     ToolDefinition.interactiveFretboard => localizations.interactiveFretboard,

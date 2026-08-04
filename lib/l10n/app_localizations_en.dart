@@ -1474,4 +1474,129 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get intervalPerfectOctave => 'Perfect Octave';
+
+  @override
+  String get repertoire => 'Repertoire';
+
+  @override
+  String get repertoireEmptyTitle => 'No songs yet';
+
+  @override
+  String get repertoireEmptyDescription =>
+      'Add lyrics with their chords, then transpose them and let the sheet scroll while both hands stay on the guitar.';
+
+  @override
+  String get addSong => 'Add song';
+
+  @override
+  String get newSongTitle => 'New song';
+
+  @override
+  String get editSongTitle => 'Edit song';
+
+  @override
+  String get editSong => 'Edit';
+
+  @override
+  String get songTitleLabel => 'Title';
+
+  @override
+  String get songArtistLabel => 'Artist';
+
+  @override
+  String get songContentLabel => 'Lyrics and chords';
+
+  @override
+  String get songContentHint =>
+      'Write each chord in square brackets before the syllable it lands on: [Am]lyric. Charts with chords above the lyrics are converted when you save.';
+
+  @override
+  String get songTitleRequired => 'Enter a title.';
+
+  @override
+  String get saveSong => 'Save';
+
+  @override
+  String get deleteSong => 'Delete song';
+
+  @override
+  String deleteSongPrompt(String songTitle) {
+    return 'Delete $songTitle? Songs are stored only on this device and cannot be recovered.';
+  }
+
+  @override
+  String get deleteAction => 'Delete';
+
+  @override
+  String get cancelAction => 'Cancel';
+
+  @override
+  String get chartConverted =>
+      'Chords above the lyrics were converted automatically.';
+
+  @override
+  String get searchSongs => 'Search songs';
+
+  @override
+  String get noMatchingSongs => 'No songs match your search.';
+
+  @override
+  String get emptySongContent =>
+      'This song has no lyrics yet. Use Edit to add them.';
+
+  @override
+  String get transposeLabel => 'Transpose';
+
+  @override
+  String get transposeDown => 'Transpose down one semitone';
+
+  @override
+  String get transposeUp => 'Transpose up one semitone';
+
+  @override
+  String get transposeReset => 'Reset to the written key';
+
+  @override
+  String transposeSemitones(int value) {
+    return 'Transposed $value semitones';
+  }
+
+  @override
+  String get accidentalStyle => 'Accidentals';
+
+  @override
+  String get accidentalAuto => 'Auto';
+
+  @override
+  String get accidentalSharps => 'Sharps';
+
+  @override
+  String get accidentalFlats => 'Flats';
+
+  @override
+  String get autoScroll => 'Auto-scroll';
+
+  @override
+  String get startAutoScroll => 'Start auto-scroll';
+
+  @override
+  String get stopAutoScroll => 'Stop auto-scroll';
+
+  @override
+  String get scrollSpeed => 'Scroll speed';
+
+  @override
+  String scrollSpeedValue(int level, int max) {
+    return 'Speed $level of $max';
+  }
+
+  @override
+  String get songChordsLabel => 'Chords';
+
+  @override
+  String get privacyRepertoireTitle => 'Your songs stay on this device';
+
+  @override
+  String get privacyRepertoireDescription =>
+      'Songs you add to the Repertoire, including their lyrics, chords, and transposition settings, are stored locally on this device. They are not uploaded, sent to GUNDEV, or shared.';
 }
