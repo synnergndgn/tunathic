@@ -2706,13 +2706,13 @@ abstract class AppLocalizations {
   /// No description provided for @songContentLabel.
   ///
   /// In en, this message translates to:
-  /// **'Lyrics and chords'**
+  /// **'Lyrics'**
   String get songContentLabel;
 
   /// No description provided for @songContentHint.
   ///
   /// In en, this message translates to:
-  /// **'Write each chord in square brackets before the syllable it lands on: [Am]lyric. Charts with chords above the lyrics are converted when you save.'**
+  /// **'Just the lyrics is enough. After saving you can tap any word to put a chord on it. Pasted charts with chords above the lyrics, and [Am] brackets, also work.'**
   String get songContentHint;
 
   /// No description provided for @songTitleRequired.

@@ -1487,11 +1487,11 @@ class AppLocalizationsTr extends AppLocalizations {
   String get songArtistLabel => 'Sanatçı';
 
   @override
-  String get songContentLabel => 'Sözler ve akorlar';
+  String get songContentLabel => 'Sözler';
 
   @override
   String get songContentHint =>
-      'Her akoru düştüğü hecenin önüne köşeli parantezle yaz: [Am]söz. Sözlerin üstünde akor bulunan metinler kaydettiğinde dönüştürülür.';
+      'Yalnızca sözleri yazman yeterli. Kaydettikten sonra istediğin kelimeye dokunarak akor koyabilirsin. Sözlerin üstünde akor bulunan yapıştırılmış metinler ve [Am] biçimi de çalışır.';
 
   @override
   String get songTitleRequired => 'Bir başlık gir.';

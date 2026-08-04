@@ -1504,11 +1504,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get songArtistLabel => 'Artist';
 
   @override
-  String get songContentLabel => 'Lyrics and chords';
+  String get songContentLabel => 'Lyrics';
 
   @override
   String get songContentHint =>
-      'Write each chord in square brackets before the syllable it lands on: [Am]lyric. Charts with chords above the lyrics are converted when you save.';
+      'Just the lyrics is enough. After saving you can tap any word to put a chord on it. Pasted charts with chords above the lyrics, and [Am] brackets, also work.';
 
   @override
   String get songTitleRequired => 'Enter a title.';

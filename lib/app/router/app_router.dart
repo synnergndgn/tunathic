@@ -36,7 +36,10 @@ abstract final class AppRoutes {
 
   static String tool(ToolDefinition tool) => '/tools/${tool.id}';
 
-  static String repertoireSong(String songId) => '$repertoire/$songId';
+  /// The performance view. [editChords] opens it ready to place chords, which
+  /// is where a newly written set of lyrics goes next.
+  static String repertoireSong(String songId, {bool editChords = false}) =>
+      editChords ? '$repertoire/$songId?chords=edit' : '$repertoire/$songId';
 
   static String repertoireSongEditor(String songId) =>
       '$repertoire/$songId/edit';
@@ -88,8 +91,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/tools/repertoire/:songId',
-        builder: (context, state) =>
-            SongViewScreen(songId: state.pathParameters['songId']!),
+        builder: (context, state) => SongViewScreen(
+          songId: state.pathParameters['songId']!,
+          startInChordEditing: state.uri.queryParameters['chords'] == 'edit',
+        ),
       ),
       GoRoute(
         path: '/tools/repertoire/:songId/edit',

@@ -41,9 +41,9 @@ No internal/development-only surface is intentionally exposed in release UI.
 - ChordPro bracket text is the stored format. A pasted chart with chords above
   the lyrics is converted once, on save, so a chord stays attached to its
   syllable and printed chord width can never break alignment.
-- Chords can be placed by tapping a word instead of typing brackets. Lyrics can
-  therefore be entered on their own first, which is the order performers
-  actually work in. A chord chosen while the chart is transposed is converted
+- Chords can be placed by tapping a word instead of typing brackets. The editor
+  therefore asks for lyrics alone, and saving a new song opens chord placement
+  directly, which is the order performers actually work in. A chord chosen while the chart is transposed is converted
   back to the written key before it is stored.
 - Transposition covers -11…+11 semitones. Automatic spelling follows the
   transposed reference key, with explicit sharp and flat overrides.
@@ -63,7 +63,7 @@ song catalog and provides no way to obtain one.
 - Android application ID and namespace: `dev.gundev.tunathic`
 - app display name: `Tunathic`
 - Flutter package: `tunathic`
-- version: `0.3.0+3`
+- version: `0.3.0+4`
 - minimum SDK: API 24
 - target SDK: API 36
 - compile SDK: API 36

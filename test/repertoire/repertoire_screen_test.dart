@@ -11,6 +11,7 @@ import 'package:tunathic/features/repertoire/application/repertoire_controller.d
 import 'package:tunathic/features/repertoire/application/repertoire_repository.dart';
 import 'package:tunathic/features/repertoire/domain/song.dart';
 import 'package:tunathic/features/repertoire/presentation/repertoire_screen.dart';
+import 'package:tunathic/features/repertoire/presentation/song_view_screen.dart';
 
 import '../support/fakes.dart';
 
@@ -56,16 +57,47 @@ void main() {
       find.text('Chords above the lyrics were converted automatically.'),
       findsOneWidget,
     );
-    expect(find.text('Placeholder title'), findsOneWidget);
-    expect(find.text('Placeholder artist'), findsOneWidget);
     expect(
       store.values[RepertoireRepository.songsKey],
       contains('[C]this line [G]has words below'),
     );
 
+    // Saving a new song hands straight over to chord placement.
+    expect(find.byType(SongViewScreen), findsOneWidget);
+    expect(find.byKey(const Key('doneEditingChords')), findsOneWidget);
+
     // Let the snackbar time out so no timer outlives the test.
     await tester.pump(const Duration(seconds: 5));
     await tester.pumpAndSettle();
+
+    // The editor is out of the stack, so back reaches the list.
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RepertoireScreen), findsOneWidget);
+    expect(find.text('Placeholder title'), findsOneWidget);
+    expect(find.text('Placeholder artist'), findsOneWidget);
+  });
+
+  testWidgets('a song saved without lyrics returns to the list', (
+    tester,
+  ) async {
+    _useTallSurface(tester);
+    await tester.pumpWidget(_testApp(MemoryPreferencesStore()));
+    await tester.pumpAndSettle();
+    await _openRepertoire(tester, 'Repertoire');
+
+    await tester.tap(find.byKey(const Key('addFirstSong')));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const Key('songTitleField')),
+      'Placeholder title',
+    );
+    await tester.tap(find.byKey(const Key('saveSong')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(RepertoireScreen), findsOneWidget);
+    expect(find.text('Placeholder title'), findsOneWidget);
   });
 
   testWidgets('refuses to save a song without a title', (tester) async {

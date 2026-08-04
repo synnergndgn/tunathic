@@ -159,8 +159,9 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
 
     unawaited(ref.read(appHapticsProvider).selection());
     final songId = widget.songId;
+    Song? created;
     if (songId == null) {
-      await controller.create(
+      created = await controller.create(
         title: title,
         artist: _artistController.text,
         content: content,
@@ -179,6 +180,16 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
       messenger.showSnackBar(
         SnackBar(content: Text(localizations.chartConverted)),
       );
+    }
+
+    // Writing the words first only pays off if the chords come next, so a new
+    // song with lyrics opens straight into chord placement. Replacing the
+    // editor keeps Android back going to the song list.
+    if (created != null && created.content.trim().isNotEmpty) {
+      router.pushReplacement(
+        AppRoutes.repertoireSong(created.id, editChords: true),
+      );
+      return;
     }
     if (router.canPop()) router.pop();
   }

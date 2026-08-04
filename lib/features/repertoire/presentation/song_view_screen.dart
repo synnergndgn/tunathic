@@ -21,9 +21,16 @@ import 'package:tunathic/l10n/app_localizations.dart';
 
 /// The performance view: transpose by semitone and scroll hands-free.
 final class SongViewScreen extends ConsumerStatefulWidget {
-  const SongViewScreen({super.key, required this.songId});
+  const SongViewScreen({
+    super.key,
+    required this.songId,
+    this.startInChordEditing = false,
+  });
 
   final String songId;
+
+  /// Opens straight into chord placement, used right after lyrics are written.
+  final bool startInChordEditing;
 
   @override
   ConsumerState<SongViewScreen> createState() => _SongViewScreenState();
@@ -38,7 +45,7 @@ class _SongViewScreenState extends ConsumerState<SongViewScreen>
   Duration _lastTick = Duration.zero;
   bool _scrolling = false;
   bool _restored = false;
-  bool _editingChords = false;
+  late bool _editingChords = widget.startInChordEditing;
   int _transpose = 0;
   int _speedLevel = Song.defaultScrollSpeedLevel;
   SheetSpelling _spelling = SheetSpelling.auto;
