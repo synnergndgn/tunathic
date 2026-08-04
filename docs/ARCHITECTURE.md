@@ -234,6 +234,15 @@ only the root and optional slash bass. Its suffix alphabet is deliberately
 narrow so ordinary words that begin with a note letter are not mistaken for
 chords when a pasted chart is scanned for chord lines.
 
+Chords can also be placed without typing brackets. The parser records where
+every chord and lyric fragment sits in the stored text, so the performance view
+can turn each word into a target and `SongChordEditor` can insert, replace, or
+remove a bracket as a plain string edit at that position. Tapping a word and
+typing a bracket by hand therefore produce identical content. Because the view
+may be transposed while editing, a chord chosen from the picker is converted
+back to the song's written key before it is stored; transposition itself never
+rewrites the text, so recorded positions stay valid.
+
 `RepertoireRepository` owns the only storage access, encoding the song list as
 JSON through `PreferencesStore`; unreadable storage is logged and reported as an
 empty repertoire rather than failing. `RepertoireController` owns the list and

@@ -653,6 +653,32 @@
     }
   },
   "songChordsLabel": "Chords",
+  "editChords": "Edit chords",
+  "doneEditingChords": "Done",
+  "editChordsHint": "Tap a word to put a chord on it, or tap a chord to change or remove it.",
+  "chordPickerTitle": "Chord on \"{word}\"",
+  "@chordPickerTitle": {
+    "placeholders": {
+      "word": {"type": "String"}
+    }
+  },
+  "chordPickerRoot": "Root",
+  "chordPickerQuality": "Quality",
+  "chordsUsedInSong": "Used in this song",
+  "removeChord": "Remove chord",
+  "placeChordOn": "Put a chord on {word}",
+  "@placeChordOn": {
+    "placeholders": {
+      "word": {"type": "String"}
+    }
+  },
+  "changeChordOn": "Change the {chord} chord on {word}",
+  "@changeChordOn": {
+    "placeholders": {
+      "chord": {"type": "String"},
+      "word": {"type": "String"}
+    }
+  },
   "privacyRepertoireTitle": "Your songs stay on this device",
   "privacyRepertoireDescription": "Songs you add to the Repertoire, including their lyrics, chords, and transposition settings, are stored locally on this device. They are not uploaded, sent to GUNDEV, or shared."
 }

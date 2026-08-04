@@ -54,6 +54,10 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
   as ChordPro text, with title/artist search, editing, and deletion
 - One-time conversion of pasted chords-above-lyrics charts into chords attached
   to their syllables, so transposition can never break the alignment
+- Chord editing without typing brackets: write the lyrics alone, then tap a word
+  to place a chord, tap a chord to change or remove it, and reuse the song's own
+  chords in a single tap. A chord picked while the chart is transposed is stored
+  in the song's written key
 - -11…+11 semitone transposition with key-aware automatic accidentals and
   explicit sharp/flat overrides, applied to slash chords and to suffixes the
   chord-quality model does not cover

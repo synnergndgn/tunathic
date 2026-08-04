@@ -654,6 +654,32 @@
     }
   },
   "songChordsLabel": "Akorlar",
+  "editChords": "Akorları düzenle",
+  "doneEditingChords": "Bitti",
+  "editChordsHint": "Akor koymak için bir kelimeye, akoru değiştirmek veya kaldırmak için akora dokun.",
+  "chordPickerTitle": "\"{word}\" üzerindeki akor",
+  "@chordPickerTitle": {
+    "placeholders": {
+      "word": {"type": "String"}
+    }
+  },
+  "chordPickerRoot": "Kök",
+  "chordPickerQuality": "Tür",
+  "chordsUsedInSong": "Bu şarkıda kullanılan",
+  "removeChord": "Akoru kaldır",
+  "placeChordOn": "{word} kelimesine akor koy",
+  "@placeChordOn": {
+    "placeholders": {
+      "word": {"type": "String"}
+    }
+  },
+  "changeChordOn": "{word} kelimesindeki {chord} akorunu değiştir",
+  "@changeChordOn": {
+    "placeholders": {
+      "chord": {"type": "String"},
+      "word": {"type": "String"}
+    }
+  },
   "privacyRepertoireTitle": "Şarkıların bu cihazda kalır",
   "privacyRepertoireDescription": "Repertuar'a eklediğin şarkılar — sözleri, akorları ve transpoze ayarlarıyla birlikte — yalnızca bu cihazda saklanır. Yüklenmez, GUNDEV'e gönderilmez ve paylaşılmaz."
 }

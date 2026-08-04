@@ -8,7 +8,12 @@ enum SongLineKind { lyrics, section, blank }
 
 /// A chord as printed above a lyric fragment.
 final class ChordAnnotation {
-  const ChordAnnotation({required this.text, this.symbol});
+  const ChordAnnotation({
+    required this.text,
+    this.symbol,
+    this.sourceStart = 0,
+    this.sourceEnd = 0,
+  });
 
   /// The chord exactly as it should be displayed.
   final String text;
@@ -16,19 +21,36 @@ final class ChordAnnotation {
   /// The interpreted symbol, or null when the bracket text is not a chord.
   final WrittenChordSymbol? symbol;
 
+  /// Index of `[` for this chord in the source text.
+  final int sourceStart;
+
+  /// Index just past `]` for this chord in the source text.
+  final int sourceEnd;
+
   ChordAnnotation transpose(int semitones, SpellingPreference preference) {
     final source = symbol;
     if (source == null || semitones == 0) return this;
     final transposed = source.transpose(semitones, preference: preference);
-    return ChordAnnotation(text: transposed.symbol, symbol: transposed);
+    // Transposition never rewrites the stored text, so the source span of the
+    // bracket this chord came from still applies.
+    return ChordAnnotation(
+      text: transposed.symbol,
+      symbol: transposed,
+      sourceStart: sourceStart,
+      sourceEnd: sourceEnd,
+    );
   }
 
   @override
   bool operator ==(Object other) =>
-      other is ChordAnnotation && text == other.text && symbol == other.symbol;
+      other is ChordAnnotation &&
+      text == other.text &&
+      symbol == other.symbol &&
+      sourceStart == other.sourceStart &&
+      sourceEnd == other.sourceEnd;
 
   @override
-  int get hashCode => Object.hash(text, symbol);
+  int get hashCode => Object.hash(text, symbol, sourceStart, sourceEnd);
 
   @override
   String toString() => text;
@@ -36,25 +58,31 @@ final class ChordAnnotation {
 
 /// A lyric fragment with the chord that starts it, if any.
 final class SongSheetSegment {
-  const SongSheetSegment({this.chord, this.lyrics = ''});
+  const SongSheetSegment({this.chord, this.lyrics = '', this.lyricsOffset = 0});
 
   final ChordAnnotation? chord;
   final String lyrics;
+
+  /// Index in the source text where [lyrics] begins, so the presentation layer
+  /// can place a new chord bracket on any word.
+  final int lyricsOffset;
 
   SongSheetSegment transpose(int semitones, SpellingPreference preference) =>
       SongSheetSegment(
         chord: chord?.transpose(semitones, preference),
         lyrics: lyrics,
+        lyricsOffset: lyricsOffset,
       );
 
   @override
   bool operator ==(Object other) =>
       other is SongSheetSegment &&
       chord == other.chord &&
-      lyrics == other.lyrics;
+      lyrics == other.lyrics &&
+      lyricsOffset == other.lyricsOffset;
 
   @override
-  int get hashCode => Object.hash(chord, lyrics);
+  int get hashCode => Object.hash(chord, lyrics, lyricsOffset);
 }
 
 final class SongSheetLine {

@@ -7,12 +7,15 @@ import 'package:go_router/go_router.dart';
 import 'package:tunathic/app/router/app_router.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
 import 'package:tunathic/core/haptics/app_haptics.dart';
+import 'package:tunathic/core/music_theory/chord_symbol_parser.dart';
 import 'package:tunathic/core/screen/screen_wake_lock.dart';
 import 'package:tunathic/features/repertoire/application/repertoire_controller.dart';
 import 'package:tunathic/features/repertoire/domain/auto_scroll_speed.dart';
 import 'package:tunathic/features/repertoire/domain/chord_pro_parser.dart';
 import 'package:tunathic/features/repertoire/domain/song.dart';
+import 'package:tunathic/features/repertoire/domain/song_chord_editor.dart';
 import 'package:tunathic/features/repertoire/domain/song_sheet.dart';
+import 'package:tunathic/features/repertoire/presentation/chord_picker_sheet.dart';
 import 'package:tunathic/features/repertoire/presentation/song_sheet_view.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 
@@ -35,6 +38,7 @@ class _SongViewScreenState extends ConsumerState<SongViewScreen>
   Duration _lastTick = Duration.zero;
   bool _scrolling = false;
   bool _restored = false;
+  bool _editingChords = false;
   int _transpose = 0;
   int _speedLevel = Song.defaultScrollSpeedLevel;
   SheetSpelling _spelling = SheetSpelling.auto;
@@ -98,6 +102,14 @@ class _SongViewScreenState extends ConsumerState<SongViewScreen>
         title: Text(song.title),
         actions: [
           IconButton(
+            key: const Key('toggleChordEditing'),
+            tooltip: _editingChords
+                ? localizations.doneEditingChords
+                : localizations.editChords,
+            onPressed: sheet.isEmpty ? null : _toggleChordEditing,
+            icon: Icon(_editingChords ? Icons.done : Icons.edit_note),
+          ),
+          IconButton(
             key: const Key('editSong'),
             tooltip: localizations.editSong,
             onPressed: () {
@@ -117,19 +129,25 @@ class _SongViewScreenState extends ConsumerState<SongViewScreen>
             ),
             child: Column(
               children: [
-                _PerformanceControls(
-                  localizations: localizations,
-                  transpose: _transpose,
-                  speedLevel: _speedLevel,
-                  spelling: _spelling,
-                  scrolling: _scrolling,
-                  onTransposeBy: (delta) =>
-                      _setTranspose(song, _transpose + delta),
-                  onTransposeReset: () => _setTranspose(song, 0),
-                  onSpelling: (value) => setState(() => _spelling = value),
-                  onSpeed: (value) => _setSpeed(song, value),
-                  onToggleScroll: _toggleScrolling,
-                ),
+                if (_editingChords)
+                  _ChordEditingBanner(
+                    localizations: localizations,
+                    onDone: _toggleChordEditing,
+                  )
+                else
+                  _PerformanceControls(
+                    localizations: localizations,
+                    transpose: _transpose,
+                    speedLevel: _speedLevel,
+                    spelling: _spelling,
+                    scrolling: _scrolling,
+                    onTransposeBy: (delta) =>
+                        _setTranspose(song, _transpose + delta),
+                    onTransposeReset: () => _setTranspose(song, 0),
+                    onSpelling: (value) => setState(() => _spelling = value),
+                    onSpeed: (value) => _setSpeed(song, value),
+                    onToggleScroll: _toggleScrolling,
+                  ),
                 Expanded(
                   child: NotificationListener<ScrollStartNotification>(
                     // A performer taking over by hand stops the auto-scroll.
@@ -176,7 +194,12 @@ class _SongViewScreenState extends ConsumerState<SongViewScreen>
                               style: Theme.of(context).textTheme.bodyLarge,
                             )
                           else
-                            SongSheetView(sheet: sheet),
+                            SongSheetView(
+                              sheet: sheet,
+                              onSelectWord: _editingChords
+                                  ? (target) => _placeChord(song, sheet, target)
+                                  : null,
+                            ),
                         ],
                       ),
                     ),
@@ -218,6 +241,68 @@ class _SongViewScreenState extends ConsumerState<SongViewScreen>
     );
   }
 
+  void _toggleChordEditing() {
+    unawaited(ref.read(appHapticsProvider).selection());
+    _stopScrolling();
+    setState(() => _editingChords = !_editingChords);
+  }
+
+  /// Places, replaces, or removes the chord on the tapped word.
+  ///
+  /// The picker offers what the performer currently sees, so a chart being read
+  /// transposed has the chosen chord converted back to the written key before
+  /// it is stored.
+  Future<void> _placeChord(
+    Song song,
+    SongSheet sheet,
+    SheetChordTarget target,
+  ) async {
+    final existing = target.chord;
+    final result = await ChordPickerSheet.show(
+      context,
+      word: target.word,
+      currentChord: existing?.text,
+      songChords: sheet.chordSymbols,
+    );
+    if (result == null || !mounted) return;
+
+    var content = song.content;
+    switch (result) {
+      case ChordChosen(:final symbol):
+        final written = _writtenSymbol(symbol);
+        content = existing == null
+            ? SongChordEditor.insert(
+                song.content,
+                offset: target.offset,
+                chord: written,
+              )
+            : SongChordEditor.replace(
+                song.content,
+                start: existing.sourceStart,
+                end: existing.sourceEnd,
+                chord: written,
+              );
+      case ChordCleared():
+        if (existing == null) return;
+        content = SongChordEditor.remove(
+          song.content,
+          start: existing.sourceStart,
+          end: existing.sourceEnd,
+        );
+    }
+    if (content == song.content) return;
+
+    unawaited(ref.read(appHapticsProvider).lightImpact());
+    await ref.read(repertoireProvider.notifier).setContent(song.id, content);
+  }
+
+  /// Converts a chord the performer sees back into the song's written key.
+  String _writtenSymbol(String displayed) {
+    if (_transpose == 0) return displayed;
+    final parsed = ChordSymbolParser.tryParseWritten(displayed);
+    return parsed == null ? displayed : parsed.transpose(-_transpose).symbol;
+  }
+
   void _toggleScrolling() {
     unawaited(ref.read(appHapticsProvider).selection());
     if (_scrolling) {
@@ -249,6 +334,58 @@ class _SongViewScreenState extends ConsumerState<SongViewScreen>
     );
     _scrollController.jumpTo(next);
     if (next >= position.maxScrollExtent) _stopScrolling();
+  }
+}
+
+final class _ChordEditingBanner extends StatelessWidget {
+  const _ChordEditingBanner({
+    required this.localizations,
+    required this.onDone,
+  });
+
+  final AppLocalizations localizations;
+  final VoidCallback onDone;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      color: theme.colorScheme.secondaryContainer,
+      margin: const EdgeInsets.fromLTRB(
+        AppSpacing.medium,
+        AppSpacing.small,
+        AppSpacing.medium,
+        AppSpacing.small,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.small),
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: AppSpacing.small,
+          runSpacing: AppSpacing.xSmall,
+          children: [
+            Icon(
+              Icons.touch_app_outlined,
+              color: theme.colorScheme.onSecondaryContainer,
+            ),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 420),
+              child: Text(
+                localizations.editChordsHint,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSecondaryContainer,
+                ),
+              ),
+            ),
+            FilledButton.tonal(
+              key: const Key('doneEditingChords'),
+              onPressed: onDone,
+              child: Text(localizations.doneEditingChords),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

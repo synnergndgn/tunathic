@@ -1594,6 +1594,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get songChordsLabel => 'Chords';
 
   @override
+  String get editChords => 'Edit chords';
+
+  @override
+  String get doneEditingChords => 'Done';
+
+  @override
+  String get editChordsHint =>
+      'Tap a word to put a chord on it, or tap a chord to change or remove it.';
+
+  @override
+  String chordPickerTitle(String word) {
+    return 'Chord on \"$word\"';
+  }
+
+  @override
+  String get chordPickerRoot => 'Root';
+
+  @override
+  String get chordPickerQuality => 'Quality';
+
+  @override
+  String get chordsUsedInSong => 'Used in this song';
+
+  @override
+  String get removeChord => 'Remove chord';
+
+  @override
+  String placeChordOn(String word) {
+    return 'Put a chord on $word';
+  }
+
+  @override
+  String changeChordOn(String chord, String word) {
+    return 'Change the $chord chord on $word';
+  }
+
+  @override
   String get privacyRepertoireTitle => 'Your songs stay on this device';
 
   @override

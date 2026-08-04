@@ -2865,6 +2865,66 @@ abstract class AppLocalizations {
   /// **'Chords'**
   String get songChordsLabel;
 
+  /// No description provided for @editChords.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit chords'**
+  String get editChords;
+
+  /// No description provided for @doneEditingChords.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get doneEditingChords;
+
+  /// No description provided for @editChordsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a word to put a chord on it, or tap a chord to change or remove it.'**
+  String get editChordsHint;
+
+  /// No description provided for @chordPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord on \"{word}\"'**
+  String chordPickerTitle(String word);
+
+  /// No description provided for @chordPickerRoot.
+  ///
+  /// In en, this message translates to:
+  /// **'Root'**
+  String get chordPickerRoot;
+
+  /// No description provided for @chordPickerQuality.
+  ///
+  /// In en, this message translates to:
+  /// **'Quality'**
+  String get chordPickerQuality;
+
+  /// No description provided for @chordsUsedInSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Used in this song'**
+  String get chordsUsedInSong;
+
+  /// No description provided for @removeChord.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove chord'**
+  String get removeChord;
+
+  /// No description provided for @placeChordOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Put a chord on {word}'**
+  String placeChordOn(String word);
+
+  /// No description provided for @changeChordOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the {chord} chord on {word}'**
+  String changeChordOn(String chord, String word);
+
   /// No description provided for @privacyRepertoireTitle.
   ///
   /// In en, this message translates to:

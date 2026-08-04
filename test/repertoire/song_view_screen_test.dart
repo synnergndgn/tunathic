@@ -142,6 +142,103 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  testWidgets('places a chord on a tapped word', (tester) async {
+    _useTallSurface(tester);
+    final store = _storeWith([
+      const Song(
+        id: 'song-1',
+        title: 'Placeholder title',
+        content: 'first placeholder line\nsecond placeholder line',
+      ),
+    ]);
+    await tester.pumpWidget(_testApp(store));
+    await _openSong(tester);
+
+    await tester.tap(find.byKey(const Key('toggleChordEditing')));
+    await tester.pumpAndSettle();
+    expect(
+      find.text(
+        'Tap a word to put a chord on it, or tap a chord to change or '
+        'remove it.',
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(_word('second'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('chordPickerScroll')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('chordPickerRoot-G')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('chordPickerQuality-m')));
+    await tester.pumpAndSettle();
+
+    expect(
+      store.values[RepertoireRepository.songsKey],
+      contains(r'first placeholder line\n[Gm]second placeholder line'),
+    );
+    expect(_chordSummary(tester), 'Chords: Gm');
+  });
+
+  testWidgets('removes a chord from a tapped word', (tester) async {
+    _useTallSurface(tester);
+    final store = _storeWith([
+      const Song(
+        id: 'song-1',
+        title: 'Placeholder title',
+        content: '[Am]first placeholder line',
+      ),
+    ]);
+    await tester.pumpWidget(_testApp(store));
+    await _openSong(tester);
+
+    await tester.tap(find.byKey(const Key('toggleChordEditing')));
+    await tester.pumpAndSettle();
+    await tester.tap(_word('first'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('chordPickerRemove')));
+    await tester.pumpAndSettle();
+
+    expect(
+      store.values[RepertoireRepository.songsKey],
+      contains('"content":"first placeholder line"'),
+    );
+  });
+
+  testWidgets('writes a picked chord back in the written key', (tester) async {
+    _useTallSurface(tester);
+    final store = _storeWith([
+      const Song(
+        id: 'song-1',
+        title: 'Placeholder title',
+        content: '[C]first placeholder line',
+      ),
+    ]);
+    await tester.pumpWidget(_testApp(store));
+    await _openSong(tester);
+
+    await tester.tap(find.byKey(const Key('transposeUp')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('transposeUp')));
+    await tester.pumpAndSettle();
+    expect(_chordSummary(tester), 'Chords: D');
+
+    await tester.tap(find.byKey(const Key('toggleChordEditing')));
+    await tester.pumpAndSettle();
+    await tester.tap(_word('line'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('chordPickerRoot-A')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('chordPickerQuality-')));
+    await tester.pumpAndSettle();
+
+    // The performer picked the A they can see at +2, so G is stored.
+    expect(
+      store.values[RepertoireRepository.songsKey],
+      contains(r'[C]first placeholder [G]line'),
+    );
+    expect(_chordSummary(tester), 'Chords: D  A');
+  });
+
   testWidgets('keeps the screen awake only while the sheet is open', (
     tester,
   ) async {
@@ -179,6 +276,10 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 }
+
+Finder _word(String word) => find.byWidgetPredicate(
+  (widget) => widget is Text && widget.data?.trim() == word,
+);
 
 String _chordSummary(WidgetTester tester) =>
     tester.widget<Text>(find.byKey(const Key('songChordSummary'))).data!;

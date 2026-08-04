@@ -51,6 +51,13 @@ final class RepertoireController extends AsyncNotifier<List<Song>> {
     ),
   );
 
+  /// Stores edited chord text. The content is already ChordPro, so unlike
+  /// [updateDetails] it is not run through the plain-chart importer.
+  Future<void> setContent(String id, String content) => _replace(
+    id,
+    (song) => song.copyWith(content: content, updatedAt: DateTime.now()),
+  );
+
   Future<void> setTranspose(String id, int semitones) =>
       _replace(id, (song) => song.copyWith(transpose: semitones));
 

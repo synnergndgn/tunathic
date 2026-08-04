@@ -5,6 +5,7 @@ import 'package:tunathic/features/repertoire/domain/auto_scroll_speed.dart';
 import 'package:tunathic/features/repertoire/domain/chord_pro_parser.dart';
 import 'package:tunathic/features/repertoire/domain/chord_sheet_importer.dart';
 import 'package:tunathic/features/repertoire/domain/song.dart';
+import 'package:tunathic/features/repertoire/domain/song_chord_editor.dart';
 import 'package:tunathic/features/repertoire/domain/song_sheet.dart';
 
 void main() {
@@ -147,6 +148,101 @@ void main() {
       expect(sheet.lines.last.lyrics, 'a placeholder lyric line');
       // C up three semitones reads as Eb major, so the chart uses flats.
       expect(sheet.chordSymbols, ['Eb']);
+    });
+  });
+
+  group('source positions', () {
+    test('records where each chord and lyric fragment sits', () {
+      const content = '[C]first placeholder line\nsecond placeholder line';
+      final sheet = ChordProParser.parse(content);
+
+      final chord = sheet.lines.first.segments.first.chord!;
+      expect(content.substring(chord.sourceStart, chord.sourceEnd), '[C]');
+      expect(sheet.lines.first.segments.first.lyricsOffset, 3);
+      expect(
+        sheet.lines.last.segments.first.lyricsOffset,
+        content.indexOf('second'),
+      );
+    });
+
+    test('stays correct across carriage returns', () {
+      const content = '[C]one placeholder\r\n[G]two placeholder';
+      final sheet = ChordProParser.parse(content);
+
+      final second = sheet.lines.last.segments.first.chord!;
+      expect(content.substring(second.sourceStart, second.sourceEnd), '[G]');
+      expect(sheet.lines.last.segments.first.lyrics, 'two placeholder');
+    });
+
+    test('survives transposition, which never rewrites the text', () {
+      const content = '[C]one placeholder line';
+      final original = ChordProParser.parse(content);
+      final moved = original.transpose(2);
+
+      final chord = moved.lines.single.segments.single.chord!;
+      expect(chord.text, 'D');
+      expect(content.substring(chord.sourceStart, chord.sourceEnd), '[C]');
+    });
+  });
+
+  group('chord editing', () {
+    test('inserts a bracket at the requested offset', () {
+      expect(
+        SongChordEditor.insert('placeholder line', offset: 12, chord: 'Am'),
+        'placeholder [Am]line',
+      );
+    });
+
+    test('replaces and removes an existing bracket', () {
+      const content = '[C]placeholder line';
+      final chord = ChordProParser.parse(
+        content,
+      ).lines.single.segments.single.chord!;
+
+      expect(
+        SongChordEditor.replace(
+          content,
+          start: chord.sourceStart,
+          end: chord.sourceEnd,
+          chord: 'Am',
+        ),
+        '[Am]placeholder line',
+      );
+      expect(
+        SongChordEditor.remove(
+          content,
+          start: chord.sourceStart,
+          end: chord.sourceEnd,
+        ),
+        'placeholder line',
+      );
+    });
+
+    test('ignores empty chords and impossible spans', () {
+      const content = 'placeholder line';
+
+      expect(SongChordEditor.insert(content, offset: 0, chord: '  '), content);
+      expect(
+        SongChordEditor.replace(content, start: 5, end: 2, chord: 'C'),
+        content,
+      );
+      expect(SongChordEditor.remove(content, start: 0, end: 999), content);
+    });
+
+    test('clamps an offset past the end of the text', () {
+      expect(
+        SongChordEditor.insert('short', offset: 999, chord: 'C'),
+        'short[C]',
+      );
+    });
+
+    test('produces text the parser reads back as a chord', () {
+      const content = 'first placeholder line';
+      final edited = SongChordEditor.insert(content, offset: 6, chord: 'Gm');
+
+      final sheet = ChordProParser.parse(edited);
+      expect(sheet.chordSymbols, ['Gm']);
+      expect(sheet.lines.single.lyrics, content);
     });
   });
 

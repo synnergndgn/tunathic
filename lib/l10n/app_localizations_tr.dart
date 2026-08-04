@@ -1577,6 +1577,43 @@ class AppLocalizationsTr extends AppLocalizations {
   String get songChordsLabel => 'Akorlar';
 
   @override
+  String get editChords => 'Akorları düzenle';
+
+  @override
+  String get doneEditingChords => 'Bitti';
+
+  @override
+  String get editChordsHint =>
+      'Akor koymak için bir kelimeye, akoru değiştirmek veya kaldırmak için akora dokun.';
+
+  @override
+  String chordPickerTitle(String word) {
+    return '\"$word\" üzerindeki akor';
+  }
+
+  @override
+  String get chordPickerRoot => 'Kök';
+
+  @override
+  String get chordPickerQuality => 'Tür';
+
+  @override
+  String get chordsUsedInSong => 'Bu şarkıda kullanılan';
+
+  @override
+  String get removeChord => 'Akoru kaldır';
+
+  @override
+  String placeChordOn(String word) {
+    return '$word kelimesine akor koy';
+  }
+
+  @override
+  String changeChordOn(String chord, String word) {
+    return '$word kelimesindeki $chord akorunu değiştir';
+  }
+
+  @override
   String get privacyRepertoireTitle => 'Şarkıların bu cihazda kalır';
 
   @override

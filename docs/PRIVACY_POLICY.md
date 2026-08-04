@@ -98,7 +98,7 @@ The effective date at the top of this page will be updated when material changes
 For privacy questions, requests, or concerns regarding Tunathic, contact:
 
 **Developer:** GUNDEV  
-**Email:** ali.gundogan.ie@gmail.com
+**Email:** aligundogan2@gmail.com
 
 ## 12. Application Information
 
