@@ -4,21 +4,36 @@ import 'package:tunathic/app/theme/app_spacing.dart';
 import 'package:tunathic/features/repertoire/domain/song_sheet.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 
-/// A word the performer can put a chord on, with the chord already there.
+/// Where a chord can be placed.
+enum SheetChordTargetKind {
+  /// On a lyric fragment.
+  word,
+
+  /// Past the last word of a line, for a chord that lands with no syllable.
+  lineEnd,
+
+  /// On an empty line, which is where an intro or instrumental break goes.
+  emptyLine,
+}
+
+/// A spot the performer can put a chord on, with the chord already there.
 final class SheetChordTarget {
   const SheetChordTarget({
     required this.offset,
-    required this.word,
+    this.kind = SheetChordTargetKind.word,
+    this.word = '',
     this.chord,
   });
 
   /// Index in the song text where a new chord bracket belongs.
   final int offset;
 
-  /// The lyric fragment under the chord, used for screen-reader labels.
+  final SheetChordTargetKind kind;
+
+  /// The lyric fragment under the chord, empty when there is no word.
   final String word;
 
-  /// The chord already on this fragment, when there is one.
+  /// The chord already on this spot, when there is one.
   final ChordAnnotation? chord;
 }
 
@@ -51,7 +66,17 @@ final class SongSheetView extends StatelessWidget {
       children: [
         for (final line in sheet.lines)
           switch (line.kind) {
-            SongLineKind.blank => const SizedBox(height: AppSpacing.medium),
+            SongLineKind.blank =>
+              onSelectWord == null
+                  ? const SizedBox(height: AppSpacing.medium)
+                  : _AddChordSlot(
+                      onTap: () => onSelectWord!(
+                        SheetChordTarget(
+                          offset: line.sourceStart,
+                          kind: SheetChordTargetKind.emptyLine,
+                        ),
+                      ),
+                    ),
             SongLineKind.section => Padding(
               padding: const EdgeInsets.only(
                 top: AppSpacing.small,
@@ -90,9 +115,24 @@ final class _LyricLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final units = _units;
+    final select = onSelectWord;
     final wrap = Wrap(
       crossAxisAlignment: WrapCrossAlignment.end,
-      children: [for (final unit in units) _buildUnit(context, unit)],
+      children: [
+        for (final unit in units) _buildUnit(context, unit),
+        // A chord can land after the last syllable of a line, so editing needs
+        // a target past the words as well as on them.
+        if (select != null)
+          _AddChordSlot(
+            compact: true,
+            onTap: () => select(
+              SheetChordTarget(
+                offset: line.sourceEnd,
+                kind: SheetChordTargetKind.lineEnd,
+              ),
+            ),
+          ),
+      ],
     );
 
     return Padding(
@@ -120,22 +160,27 @@ final class _LyricLine extends StatelessWidget {
     );
 
     final select = onSelectWord;
-    if (select == null || unit.text.trim().isEmpty) return content;
+    final word = unit.text.trim();
+    // A chord standing on its own, as on an instrumental line, has no word but
+    // still has to be reachable so it can be changed or removed.
+    if (select == null || (word.isEmpty && unit.chord == null)) return content;
 
     final localizations = AppLocalizations.of(context);
     final theme = Theme.of(context);
     return Semantics(
       button: true,
-      label: unit.chord == null
-          ? localizations.placeChordOn(unit.text.trim())
-          : localizations.changeChordOn(unit.chord!.text, unit.text.trim()),
+      label: switch ((unit.chord, word.isEmpty)) {
+        (final chord?, true) => localizations.changeChord(chord.text),
+        (final chord?, false) => localizations.changeChordOn(chord.text, word),
+        (null, _) => localizations.placeChordOn(word),
+      },
       child: ExcludeSemantics(
         child: InkWell(
           borderRadius: AppRadii.smallBorder,
           onTap: () => select(
             SheetChordTarget(
               offset: unit.offset,
-              word: unit.text.trim(),
+              word: word,
               chord: unit.chord,
             ),
           ),
@@ -199,6 +244,41 @@ final class _LyricLine extends StatelessWidget {
   }
 
   static final _piecePattern = RegExp(r'\S+\s*|\s+');
+}
+
+/// A `+` target for a chord that has no word under it.
+final class _AddChordSlot extends StatelessWidget {
+  const _AddChordSlot({required this.onTap, this.compact = false});
+
+  final VoidCallback onTap;
+
+  /// Inline at the end of a lyric line, rather than alone on a blank line.
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    final label = compact
+        ? localizations.addChordAtLineEnd
+        : localizations.addChordOnEmptyLine;
+
+    return Semantics(
+      button: true,
+      label: label,
+      child: ExcludeSemantics(
+        child: Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: IconButton.outlined(
+            key: Key(compact ? 'addChordAtLineEnd' : 'addChordOnEmptyLine'),
+            tooltip: label,
+            visualDensity: VisualDensity.compact,
+            onPressed: onTap,
+            icon: const Icon(Icons.add, size: 18),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 final class _SheetUnit {

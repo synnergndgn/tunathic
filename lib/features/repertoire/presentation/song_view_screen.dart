@@ -277,18 +277,27 @@ class _SongViewScreenState extends ConsumerState<SongViewScreen>
     switch (result) {
       case ChordChosen(:final symbol):
         final written = _writtenSymbol(symbol);
-        content = existing == null
-            ? SongChordEditor.insert(
-                song.content,
-                offset: target.offset,
-                chord: written,
-              )
-            : SongChordEditor.replace(
-                song.content,
-                start: existing.sourceStart,
-                end: existing.sourceEnd,
-                chord: written,
-              );
+        content = switch (existing) {
+          final chord? => SongChordEditor.replace(
+            song.content,
+            start: chord.sourceStart,
+            end: chord.sourceEnd,
+            chord: written,
+          ),
+          null when target.kind == SheetChordTargetKind.word =>
+            SongChordEditor.insert(
+              song.content,
+              offset: target.offset,
+              chord: written,
+            ),
+          // Past the words or on an empty line, where an adjacent chord has to
+          // stay readable in the stored text.
+          null => SongChordEditor.append(
+            song.content,
+            offset: target.offset,
+            chord: written,
+          ),
+        };
       case ChordCleared():
         if (existing == null) return;
         content = SongChordEditor.remove(

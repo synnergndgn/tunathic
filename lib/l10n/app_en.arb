@@ -655,7 +655,16 @@
   "songChordsLabel": "Chords",
   "editChords": "Edit chords",
   "doneEditingChords": "Done",
-  "editChordsHint": "Tap a word to put a chord on it, or tap a chord to change or remove it.",
+  "editChordsHint": "Tap a word to put a chord on it, or tap a chord to change or remove it. Use + for a chord with no word under it, such as an intro or an instrumental break.",
+  "addChordAtLineEnd": "Add a chord after the last word of this line",
+  "addChordOnEmptyLine": "Add a chord on this empty line",
+  "changeChord": "Change the {chord} chord",
+  "@changeChord": {
+    "placeholders": {
+      "chord": {"type": "String"}
+    }
+  },
+  "chordPickerTitleNoWord": "Chord",
   "chordPickerTitle": "Chord on \"{word}\"",
   "@chordPickerTitle": {
     "placeholders": {

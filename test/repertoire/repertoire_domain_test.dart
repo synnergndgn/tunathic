@@ -229,6 +229,43 @@ void main() {
       expect(SongChordEditor.remove(content, start: 0, end: 999), content);
     });
 
+    test('records where each line starts and ends', () {
+      const content = 'first line\n\nthird line';
+      final sheet = ChordProParser.parse(content);
+
+      expect(sheet.lines[0].sourceStart, 0);
+      expect(sheet.lines[0].sourceEnd, 10);
+      expect(sheet.lines[1].kind, SongLineKind.blank);
+      expect(sheet.lines[1].sourceStart, 11);
+    });
+
+    test('appends a chord past the last word of a line', () {
+      const content = 'first line\nsecond line';
+
+      expect(
+        SongChordEditor.append(content, offset: 10, chord: 'A'),
+        'first line[A]\nsecond line',
+      );
+    });
+
+    test('separates a chord appended after another chord', () {
+      expect(SongChordEditor.append('[Am]', offset: 4, chord: 'F'), '[Am] [F]');
+      expect(SongChordEditor.append('word', offset: 4, chord: 'F'), 'word[F]');
+      expect(SongChordEditor.append('[Am]', offset: 4, chord: ' '), '[Am]');
+    });
+
+    test('turns an empty line into an instrumental chord line', () {
+      const content = 'first line\n\nthird line';
+
+      final edited = SongChordEditor.append(content, offset: 11, chord: 'Am');
+      expect(edited, 'first line\n[Am]\nthird line');
+
+      final sheet = ChordProParser.parse(edited);
+      expect(sheet.lines[1].kind, SongLineKind.lyrics);
+      expect(sheet.lines[1].segments.single.chord?.text, 'Am');
+      expect(sheet.lines[1].lyrics.trim(), isEmpty);
+    });
+
     test('clamps an offset past the end of the text', () {
       expect(
         SongChordEditor.insert('short', offset: 999, chord: 'C'),

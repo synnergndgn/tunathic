@@ -27,18 +27,19 @@ final class ChordCleared extends ChordPickerResult {
 final class ChordPickerSheet extends StatefulWidget {
   const ChordPickerSheet({
     super.key,
-    required this.word,
+    this.word = '',
     this.currentChord,
     this.songChords = const [],
   });
 
+  /// The lyric fragment the chord lands on, empty when there is no word.
   final String word;
   final String? currentChord;
   final List<String> songChords;
 
   static Future<ChordPickerResult?> show(
     BuildContext context, {
-    required String word,
+    String word = '',
     String? currentChord,
     List<String> songChords = const [],
   }) => showModalBottomSheet<ChordPickerResult>(
@@ -109,7 +110,9 @@ class _ChordPickerSheetState extends State<ChordPickerSheet> {
             Semantics(
               header: true,
               child: Text(
-                localizations.chordPickerTitle(widget.word),
+                widget.word.isEmpty
+                    ? localizations.chordPickerTitleNoWord
+                    : localizations.chordPickerTitle(widget.word),
                 style: theme.textTheme.titleMedium,
               ),
             ),

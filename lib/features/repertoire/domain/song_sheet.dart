@@ -90,9 +90,16 @@ final class SongSheetLine {
     required this.kind,
     this.segments = const [],
     this.label = '',
+    this.sourceStart = 0,
+    this.sourceEnd = 0,
   });
 
-  const SongSheetLine.blank() : this(kind: SongLineKind.blank);
+  const SongSheetLine.blank({int sourceStart = 0})
+    : this(
+        kind: SongLineKind.blank,
+        sourceStart: sourceStart,
+        sourceEnd: sourceStart,
+      );
 
   const SongSheetLine.section(String label)
     : this(kind: SongLineKind.section, label: label);
@@ -103,6 +110,13 @@ final class SongSheetLine {
   /// The section heading text, for [SongLineKind.section] lines.
   final String label;
 
+  /// Index in the source text where this line begins.
+  final int sourceStart;
+
+  /// Index in the source text just past the end of this line, where a chord
+  /// can be appended after the last word or onto an empty line.
+  final int sourceEnd;
+
   bool get hasChords => segments.any((segment) => segment.chord != null);
 
   String get lyrics => segments.map((segment) => segment.lyrics).join();
@@ -112,6 +126,8 @@ final class SongSheetLine {
       ? SongSheetLine(
           kind: kind,
           label: label,
+          sourceStart: sourceStart,
+          sourceEnd: sourceEnd,
           segments: [
             for (final segment in segments)
               segment.transpose(semitones, preference),

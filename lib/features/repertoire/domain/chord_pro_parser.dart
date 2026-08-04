@@ -38,14 +38,14 @@ abstract final class ChordProParser {
 
   static SongSheetLine? _parseLine(String raw, int lineOffset) {
     final trimmed = raw.trim();
-    if (trimmed.isEmpty) return const SongSheetLine.blank();
+    if (trimmed.isEmpty) return SongSheetLine.blank(sourceStart: lineOffset);
 
     if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
       return _parseDirective(trimmed.substring(1, trimmed.length - 1));
     }
 
     final segments = _parseSegments(raw, lineOffset);
-    if (segments.isEmpty) return const SongSheetLine.blank();
+    if (segments.isEmpty) return SongSheetLine.blank(sourceStart: lineOffset);
 
     final onlyChord = segments.length == 1 ? segments.single.chord : null;
     if (onlyChord != null &&
@@ -54,7 +54,12 @@ abstract final class ChordProParser {
       return SongSheetLine.section(onlyChord.text);
     }
 
-    return SongSheetLine(kind: SongLineKind.lyrics, segments: segments);
+    return SongSheetLine(
+      kind: SongLineKind.lyrics,
+      segments: segments,
+      sourceStart: lineOffset,
+      sourceEnd: lineOffset + raw.length,
+    );
   }
 
   static SongSheetLine? _parseDirective(String body) {

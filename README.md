@@ -58,6 +58,9 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
   to place a chord, tap a chord to change or remove it, and reuse the song's own
   chords in a single tap. A chord picked while the chart is transposed is stored
   in the song's written key
+- Chords that land with nothing to sing are placed with a `+` past the end of a
+  line or on an empty line, which is how intros and instrumental breaks are
+  written; those chords stay tappable for changes and removal
 - -11…+11 semitone transposition with key-aware automatic accidentals and
   explicit sharp/flat overrides, applied to slash chords and to suffixes the
   chord-quality model does not cover

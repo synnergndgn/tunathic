@@ -16,7 +16,7 @@ Remote: `origin` at `https://github.com/synnergndgn/tunathic.git`
 | Display name | `Tunathic` | Consistent |
 | Flutter package | `tunathic` | Consistent |
 | Version name | `0.3.0` | Repertoire release for internal testing |
-| Version code | `4` | Codes 2 and 3 were already uploaded and tested; every later upload must increase again |
+| Version code | `5` | Codes 2 through 4 were already uploaded and tested; every later upload must increase again |
 | Minimum SDK | 24 | Flutter 3.44 stable default; compatible with current dependencies |
 | Target SDK | 36 | Meets the 31 August 2026 new-app requirement |
 | Compile SDK | 36 | Matches installed stable Android platform |

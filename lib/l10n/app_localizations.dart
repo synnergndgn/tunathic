@@ -2880,8 +2880,32 @@ abstract class AppLocalizations {
   /// No description provided for @editChordsHint.
   ///
   /// In en, this message translates to:
-  /// **'Tap a word to put a chord on it, or tap a chord to change or remove it.'**
+  /// **'Tap a word to put a chord on it, or tap a chord to change or remove it. Use + for a chord with no word under it, such as an intro or an instrumental break.'**
   String get editChordsHint;
+
+  /// No description provided for @addChordAtLineEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a chord after the last word of this line'**
+  String get addChordAtLineEnd;
+
+  /// No description provided for @addChordOnEmptyLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a chord on this empty line'**
+  String get addChordOnEmptyLine;
+
+  /// No description provided for @changeChord.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the {chord} chord'**
+  String changeChord(String chord);
+
+  /// No description provided for @chordPickerTitleNoWord.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord'**
+  String get chordPickerTitleNoWord;
 
   /// No description provided for @chordPickerTitle.
   ///

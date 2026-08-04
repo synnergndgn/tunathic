@@ -235,9 +235,12 @@ narrow so ordinary words that begin with a note letter are not mistaken for
 chords when a pasted chart is scanned for chord lines.
 
 Chords can also be placed without typing brackets. The parser records where
-every chord and lyric fragment sits in the stored text, so the performance view
-can turn each word into a target and `SongChordEditor` can insert, replace, or
-remove a bracket as a plain string edit at that position. Tapping a word and
+every chord, lyric fragment, and line sits in the stored text, so the
+performance view can turn each word, the end of each line, and each empty line
+into a target, and `SongChordEditor` can insert, append, replace, or remove a
+bracket as a plain string edit at that position. Line ends and empty lines are
+what make intros and instrumental breaks expressible; appending separates
+adjacent chords so a chord-only line stays readable as text. Tapping a word and
 typing a bracket by hand therefore produce identical content. Because the view
 may be transposed while editing, a chord chosen from the picker is converted
 back to the song's written key before it is stored; transposition itself never
@@ -265,7 +268,7 @@ dependency.
 
 ## Application information and licenses
 
-`ApplicationInfoLoader` isolates `package_info_plus` from widgets. Bootstrap reads the installed package version once and overrides `initialApplicationInfoProvider`; Settings, About, and the license page consume the application-owned immutable value. Tests inject arbitrary versions without a platform channel. The product version is `0.3.0+4`, representing a pre-1.0 application with Foundation plus the shipped tool set.
+`ApplicationInfoLoader` isolates `package_info_plus` from widgets. Bootstrap reads the installed package version once and overrides `initialApplicationInfoProvider`; Settings, About, and the license page consume the application-owned immutable value. Tests inject arbitrary versions without a platform channel. The product version is `0.3.0+5`, representing a pre-1.0 application with Foundation plus the shipped tool set.
 
 Open-source notices use Flutter’s standard `showLicensePage`, which reads Flutter’s license registry and presents package licenses with the app name, actual version, and legalese. No custom license database or duplicate route is maintained.
 

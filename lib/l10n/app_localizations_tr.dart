@@ -1584,7 +1584,21 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get editChordsHint =>
-      'Akor koymak için bir kelimeye, akoru değiştirmek veya kaldırmak için akora dokun.';
+      'Akor koymak için bir kelimeye, akoru değiştirmek veya kaldırmak için akora dokun. Altında söz olmayan akorlar için + kullan; giriş veya ara bölümler böyle eklenir.';
+
+  @override
+  String get addChordAtLineEnd => 'Bu satırın son kelimesinden sonra akor ekle';
+
+  @override
+  String get addChordOnEmptyLine => 'Bu boş satıra akor ekle';
+
+  @override
+  String changeChord(String chord) {
+    return '$chord akorunu değiştir';
+  }
+
+  @override
+  String get chordPickerTitleNoWord => 'Akor';
 
   @override
   String chordPickerTitle(String word) {

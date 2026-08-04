@@ -656,7 +656,16 @@
   "songChordsLabel": "Akorlar",
   "editChords": "Akorları düzenle",
   "doneEditingChords": "Bitti",
-  "editChordsHint": "Akor koymak için bir kelimeye, akoru değiştirmek veya kaldırmak için akora dokun.",
+  "editChordsHint": "Akor koymak için bir kelimeye, akoru değiştirmek veya kaldırmak için akora dokun. Altında söz olmayan akorlar için + kullan; giriş veya ara bölümler böyle eklenir.",
+  "addChordAtLineEnd": "Bu satırın son kelimesinden sonra akor ekle",
+  "addChordOnEmptyLine": "Bu boş satıra akor ekle",
+  "changeChord": "{chord} akorunu değiştir",
+  "@changeChord": {
+    "placeholders": {
+      "chord": {"type": "String"}
+    }
+  },
+  "chordPickerTitleNoWord": "Akor",
   "chordPickerTitle": "\"{word}\" üzerindeki akor",
   "@chordPickerTitle": {
     "placeholders": {

@@ -1601,7 +1601,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editChordsHint =>
-      'Tap a word to put a chord on it, or tap a chord to change or remove it.';
+      'Tap a word to put a chord on it, or tap a chord to change or remove it. Use + for a chord with no word under it, such as an intro or an instrumental break.';
+
+  @override
+  String get addChordAtLineEnd =>
+      'Add a chord after the last word of this line';
+
+  @override
+  String get addChordOnEmptyLine => 'Add a chord on this empty line';
+
+  @override
+  String changeChord(String chord) {
+    return 'Change the $chord chord';
+  }
+
+  @override
+  String get chordPickerTitleNoWord => 'Chord';
 
   @override
   String chordPickerTitle(String word) {

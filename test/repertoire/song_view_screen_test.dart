@@ -157,10 +157,7 @@ void main() {
     await tester.tap(find.byKey(const Key('toggleChordEditing')));
     await tester.pumpAndSettle();
     expect(
-      find.text(
-        'Tap a word to put a chord on it, or tap a chord to change or '
-        'remove it.',
-      ),
+      find.textContaining('Tap a word to put a chord on it'),
       findsOneWidget,
     );
 
@@ -177,6 +174,71 @@ void main() {
       contains(r'first placeholder line\n[Gm]second placeholder line'),
     );
     expect(_chordSummary(tester), 'Chords: Gm');
+  });
+
+  testWidgets('places chords where there are no lyrics', (tester) async {
+    _useTallSurface(tester);
+    final store = _storeWith([
+      const Song(
+        id: 'song-1',
+        title: 'Placeholder title',
+        content: 'first placeholder line\n\nsecond placeholder line',
+      ),
+    ]);
+    await tester.pumpWidget(_testApp(store));
+    await _openSong(tester);
+
+    await tester.tap(find.byKey(const Key('toggleChordEditing')));
+    await tester.pumpAndSettle();
+
+    // An empty line is where an intro or instrumental break belongs.
+    await tester.tap(find.byKey(const Key('addChordOnEmptyLine')));
+    await tester.pumpAndSettle();
+    await _pickChord(tester, root: 'G', quality: 'm');
+
+    expect(
+      store.values[RepertoireRepository.songsKey],
+      contains(r'first placeholder line\n[Gm]\nsecond placeholder line'),
+    );
+
+    // The instrumental line takes further chords, separated in the text.
+    await tester.tap(find.byKey(const Key('addChordAtLineEnd')).at(1));
+    await tester.pumpAndSettle();
+    await _pickChord(tester, root: 'F', quality: '');
+
+    expect(store.values[RepertoireRepository.songsKey], contains(r'[Gm] [F]'));
+
+    // A chord standing on its own can still be removed.
+    await tester.tap(_word('Gm'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('chordPickerRemove')));
+    await tester.pumpAndSettle();
+
+    expect(store.values[RepertoireRepository.songsKey], contains(r'\n [F]\n'));
+  });
+
+  testWidgets('places a chord after the last word of a line', (tester) async {
+    _useTallSurface(tester);
+    final store = _storeWith([
+      const Song(
+        id: 'song-1',
+        title: 'Placeholder title',
+        content: 'first placeholder line',
+      ),
+    ]);
+    await tester.pumpWidget(_testApp(store));
+    await _openSong(tester);
+
+    await tester.tap(find.byKey(const Key('toggleChordEditing')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('addChordAtLineEnd')).first);
+    await tester.pumpAndSettle();
+    await _pickChord(tester, root: 'A', quality: '');
+
+    expect(
+      store.values[RepertoireRepository.songsKey],
+      contains('first placeholder line[A]'),
+    );
   });
 
   testWidgets('removes a chord from a tapped word', (tester) async {
@@ -275,6 +337,17 @@ void main() {
     expect(find.byTooltip('Otomatik kaydırmayı başlat'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+}
+
+Future<void> _pickChord(
+  WidgetTester tester, {
+  required String root,
+  required String quality,
+}) async {
+  await tester.tap(find.byKey(Key('chordPickerRoot-$root')));
+  await tester.pumpAndSettle();
+  await tester.tap(find.byKey(Key('chordPickerQuality-$quality')));
+  await tester.pumpAndSettle();
 }
 
 Finder _word(String word) => find.byWidgetPredicate(

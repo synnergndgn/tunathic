@@ -43,7 +43,12 @@ No internal/development-only surface is intentionally exposed in release UI.
   syllable and printed chord width can never break alignment.
 - Chords can be placed by tapping a word instead of typing brackets. The editor
   therefore asks for lyrics alone, and saving a new song opens chord placement
-  directly, which is the order performers actually work in. A chord chosen while the chart is transposed is converted
+  directly, which is the order performers actually work in.
+- Chords are not limited to syllables. A `+` target past the last word of a
+  line, and one on every empty line, cover intros, instrumental breaks, and
+  chord changes that land with nothing to sing.
+- Pasting a complete lyrics-and-chords chart stays supported. It is converted
+  on save and remains editable afterwards like any other song. A chord chosen while the chart is transposed is converted
   back to the written key before it is stored.
 - Transposition covers -11…+11 semitones. Automatic spelling follows the
   transposed reference key, with explicit sharp and flat overrides.
@@ -63,7 +68,7 @@ song catalog and provides no way to obtain one.
 - Android application ID and namespace: `dev.gundev.tunathic`
 - app display name: `Tunathic`
 - Flutter package: `tunathic`
-- version: `0.3.0+4`
+- version: `0.3.0+5`
 - minimum SDK: API 24
 - target SDK: API 36
 - compile SDK: API 36

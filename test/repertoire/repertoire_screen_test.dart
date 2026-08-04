@@ -66,6 +66,19 @@ void main() {
     expect(find.byType(SongViewScreen), findsOneWidget);
     expect(find.byKey(const Key('doneEditingChords')), findsOneWidget);
 
+    // A pasted chart stays editable: its chords can be changed afterwards.
+    await tester.tap(find.text('C'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('chordPickerRoot-A')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('chordPickerQuality-m')));
+    await tester.pumpAndSettle();
+
+    expect(
+      store.values[RepertoireRepository.songsKey],
+      contains('[Am]this line [G]has words below'),
+    );
+
     // Let the snackbar time out so no timer outlives the test.
     await tester.pump(const Duration(seconds: 5));
     await tester.pumpAndSettle();

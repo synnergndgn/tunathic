@@ -16,6 +16,25 @@ abstract final class SongChordEditor {
     return '${content.substring(0, at)}[$symbol]${content.substring(at)}';
   }
 
+  /// Writes `[chord]` at [offset], separating it from a chord that already
+  /// ends there.
+  ///
+  /// Used for chords that sit past the last word or on a line of their own,
+  /// where `[Am][F]` would be legal but unreadable in the stored text.
+  static String append(
+    String content, {
+    required int offset,
+    required String chord,
+  }) {
+    final symbol = chord.trim();
+    if (symbol.isEmpty) return content;
+
+    final at = _clamp(offset, content.length);
+    final separator = at > 0 && content[at - 1] == ']' ? ' ' : '';
+    return '${content.substring(0, at)}$separator[$symbol]'
+        '${content.substring(at)}';
+  }
+
   /// Replaces the bracket spanning [start] until [end] with `[chord]`.
   static String replace(
     String content, {
