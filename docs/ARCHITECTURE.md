@@ -222,9 +222,11 @@ context. Unknown routes continue to use the localized not-found screen.
 The Repertoire is the only feature that stores user-authored content. Its
 domain layer is pure Dart: `ChordProParser` turns bracket text into a
 renderable sheet of lyric fragments with attached chords, `ChordSheetImporter`
-converts a pasted chords-above-lyrics chart into that same bracket form once,
-at save time, and `SongSheet` transposes a whole chart while keeping one
-accidental style. Attaching chords to syllables rather than columns is what
+converts a pasted chords-above-lyrics chart into that same bracket form at save
+time, and `SongSheet` transposes a whole chart while keeping one accidental
+style. Conversion is decided per line rather than per document: a line that
+already carries bracket chords is left alone, so pasting a plain second verse
+into a song whose first verse was converted still converts the new part. Attaching chords to syllables rather than columns is what
 makes transposition safe: a chord printed as `Bb` and transposed to `B` can no
 longer drag the alignment of the line with it.
 
@@ -268,7 +270,7 @@ dependency.
 
 ## Application information and licenses
 
-`ApplicationInfoLoader` isolates `package_info_plus` from widgets. Bootstrap reads the installed package version once and overrides `initialApplicationInfoProvider`; Settings, About, and the license page consume the application-owned immutable value. Tests inject arbitrary versions without a platform channel. The product version is `0.3.0+5`, representing a pre-1.0 application with Foundation plus the shipped tool set.
+`ApplicationInfoLoader` isolates `package_info_plus` from widgets. Bootstrap reads the installed package version once and overrides `initialApplicationInfoProvider`; Settings, About, and the license page consume the application-owned immutable value. Tests inject arbitrary versions without a platform channel. The product version is `0.3.0+6`, representing a pre-1.0 application with Foundation plus the shipped tool set.
 
 Open-source notices use Flutter’s standard `showLicensePage`, which reads Flutter’s license registry and presents package licenses with the app name, actual version, and legalese. No custom license database or duplicate route is maintained.
 

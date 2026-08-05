@@ -7,14 +7,17 @@ import 'package:tunathic/core/music_theory/chord_symbol_parser.dart';
 /// the column it was written above, which is what makes transposition safe:
 /// once a chord is attached to a syllable its printed width no longer matters.
 abstract final class ChordSheetImporter {
-  /// Whether [source] looks like a plain chart that should be converted.
-  static bool looksLikePlainChordSheet(String source) {
-    if (source.contains('[')) return false;
-    return _lines(source).any(isChordLine);
-  }
+  /// Whether [source] holds any plain chord line that should be converted.
+  ///
+  /// The question is asked per line, not per document: pasting a second verse
+  /// as a plain chart into a song whose first verse was already converted has
+  /// to convert the new part too. [isChordLine] ignores bracketed lines, so
+  /// fully converted text still answers false.
+  static bool looksLikePlainChordSheet(String source) =>
+      _lines(source).any(isChordLine);
 
-  /// Returns [source] as ChordPro text, converting it only when it is a plain
-  /// chart. Text that already uses bracket chords is stored untouched.
+  /// Returns [source] as ChordPro text, converting the plain chord lines in it
+  /// and leaving lines that already use bracket chords untouched.
   static String normalize(String source) =>
       looksLikePlainChordSheet(source) ? convert(source) : source;
 

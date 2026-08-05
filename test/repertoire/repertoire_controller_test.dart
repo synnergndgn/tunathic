@@ -74,6 +74,39 @@ void main() {
       );
     });
 
+    test('converts a plain chart appended to a converted song', () async {
+      final container = _container(MemoryPreferencesStore());
+      final controller = container.read(repertoireProvider.notifier);
+      await container.read(repertoireProvider.future);
+      final song = await controller.create(
+        title: 'Placeholder title',
+        content: 'C\nfirst placeholder line',
+      );
+      expect(
+        controller.songById(song.id)!.content,
+        '[C]first placeholder line',
+      );
+
+      // The second verse is pasted as a plain chart into the existing song.
+      await controller.updateDetails(
+        id: song.id,
+        title: 'Placeholder title',
+        artist: '',
+        content:
+            '${controller.songById(song.id)!.content}\n'
+            '\n'
+            'Am     F\n'
+            'second placeholder line here',
+      );
+
+      expect(
+        controller.songById(song.id)!.content,
+        '[C]first placeholder line\n'
+        '\n'
+        '[Am]second [F]placeholder line here',
+      );
+    });
+
     test('keeps the list sorted by title', () async {
       final container = _container(MemoryPreferencesStore());
       final controller = container.read(repertoireProvider.notifier);

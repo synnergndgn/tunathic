@@ -325,6 +325,22 @@ void main() {
       }
     });
 
+    test('converts a plain chart pasted into already converted text', () {
+      const source =
+          '[C]first placeholder line\n'
+          '\n'
+          'Am     F\n'
+          'second placeholder line here';
+
+      expect(ChordSheetImporter.looksLikePlainChordSheet(source), isTrue);
+      expect(
+        ChordSheetImporter.normalize(source),
+        '[C]first placeholder line\n'
+        '\n'
+        '[Am]second [F]placeholder line here',
+      );
+    });
+
     test('leaves text that already uses bracket chords untouched', () {
       const source = '[C]already written as ChordPro';
 

@@ -47,8 +47,9 @@ No internal/development-only surface is intentionally exposed in release UI.
 - Chords are not limited to syllables. A `+` target past the last word of a
   line, and one on every empty line, cover intros, instrumental breaks, and
   chord changes that land with nothing to sing.
-- Pasting a complete lyrics-and-chords chart stays supported. It is converted
-  on save and remains editable afterwards like any other song. A chord chosen while the chart is transposed is converted
+- Pasting a complete lyrics-and-chords chart stays supported. Conversion is
+  decided per line, so a chart pasted into a song that was already converted
+  is converted too, and the result remains editable like any other song. A chord chosen while the chart is transposed is converted
   back to the written key before it is stored.
 - Transposition covers -11…+11 semitones. Automatic spelling follows the
   transposed reference key, with explicit sharp and flat overrides.
@@ -68,7 +69,7 @@ song catalog and provides no way to obtain one.
 - Android application ID and namespace: `dev.gundev.tunathic`
 - app display name: `Tunathic`
 - Flutter package: `tunathic`
-- version: `0.3.0+5`
+- version: `0.3.0+6`
 - minimum SDK: API 24
 - target SDK: API 36
 - compile SDK: API 36
