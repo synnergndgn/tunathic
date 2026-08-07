@@ -42,11 +42,14 @@ Calibration and custom tuning creation remain later decisions.
 - **Later Phase 3 scope:** broader progression or songwriting reference work
   remains separately authorized and is not implied by the Phase 3 primitives.
 
-## Phase 4: Interval trainer, ear training and progress tracking
+## Phase 4: Music theory hub, ear training and progress tracking
 
-- **Phase 4A — Interval Trainer:** offline visual interval identification and
-  target-note construction with spelling-aware generation and transient session
-  scoring. It is available in the closed-test product state.
+- **Phase 4A — Music Theory:** an offline learning and reference hub of nine
+  categories built on the shared theory engine, with search, favourites,
+  recently read lessons, a beginner-to-advanced progression, and links that
+  open each example in the Chord Library, Scale Library, Interactive Fretboard,
+  Circle of Fifths, Metronome, BPM Tap, or Guitar Tuner. It replaces the
+  unreleased Interval Trainer prototype.
 - **Later Phase 4 scope:** audio-based Ear Training and progress tracking remain
   Coming Soon and require separate authorization.
 

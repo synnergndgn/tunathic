@@ -24,10 +24,15 @@ void main() {
       expect(find.text('Guitar Tuner'), findsOneWidget);
       expect(find.text('Interactive Fretboard'), findsOneWidget);
       expect(find.text('Circle of Fifths'), findsOneWidget);
-      expect(find.text('Interval Trainer'), findsOneWidget);
+      expect(find.text('Music Theory'), findsOneWidget);
       expect(find.text('Repertoire'), findsOneWidget);
       expect(find.text('Capo Calculator'), findsOneWidget);
-      expect(find.text('Open tool'), findsNWidgets(9));
+      // The learning hub describes itself instead of reporting availability.
+      expect(
+        find.text('Learn music theory from beginner to advanced.'),
+        findsOneWidget,
+      );
+      expect(find.text('Open tool'), findsNWidgets(8));
       expect(find.text('Coming Soon'), findsNWidgets(3));
     },
   );
@@ -84,9 +89,13 @@ void main() {
     expect(find.text('Gitar Akort Cihazı'), findsOneWidget);
     expect(find.text('Etkileşimli Klavye'), findsOneWidget);
     expect(find.text('Beşliler Çemberi'), findsOneWidget);
-    expect(find.text('Aralık Eğitimi'), findsOneWidget);
+    expect(find.text('Müzik Teorisi'), findsOneWidget);
     expect(find.text('Repertuar'), findsOneWidget);
-    expect(find.text('Aracı aç'), findsNWidgets(9));
+    expect(
+      find.text('Müzik teorisini başlangıçtan ileri seviyeye öğren.'),
+      findsOneWidget,
+    );
+    expect(find.text('Aracı aç'), findsNWidgets(8));
     expect(find.text('Yakında'), findsNWidgets(3));
   });
 }

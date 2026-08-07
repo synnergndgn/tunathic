@@ -16,7 +16,7 @@ Tunathic is for beginner through experienced guitarists who want dependable tool
 - Chord library
 - Scale library
 - Circle of fifths
-- Interval trainer
+- Music theory hub
 - Ear training
 - Chord finder
 - Capo calculator

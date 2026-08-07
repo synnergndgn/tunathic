@@ -212,7 +212,7 @@ The Metronome opens BPM Tap with an explicit result contract. BPM Tap returns on
 
 The dashboard groups stable tool definitions into Practice, Theory and Reference,
 and Training. Metronome, BPM Tap, Guitar Tuner, Repertoire, Chord Library, Scale Library,
-Interactive Fretboard, Circle of Fifths, and Interval Trainer are production-facing tools and receive stronger
+Interactive Fretboard, Circle of Fifths, and Music Theory are production-facing tools and receive stronger
 surface treatment. Navigation uses
 pushes for drill-in screens so Android back naturally returns to the previous
 context. Unknown routes continue to use the localized not-found screen.
@@ -257,16 +257,42 @@ performance view drives auto-scroll from a `Ticker` through the pure
 as the performer drags. The feature adds no audio, microphone, network,
 account, analytics, or backend dependency.
 
-## Interval Trainer
+## Music Theory
 
-The Interval Trainer keeps visual-theory practice self-contained. Its pure
-domain layer constructs intervals from diatonic letter movement and semitone
-distance, preserves augmented-fourth and diminished-fifth identities, rejects
-spellings that need double accidentals, and uses seeded random generation with
-a shuffled interval bag for deterministic tests. The presentation controller
-owns only a transient session with one-answer protection, accuracy, and streak
-state; it has no storage, audio, microphone, network, analytics, or account
-dependency.
+Music Theory is a reference and learning hub rather than a new theory engine.
+It adds no musical rules of its own: every worked example is a structural value
+handed to the shared `core/music_theory` engine at build time, so a lesson's
+notes, chord tones, Roman numerals, key signatures, and fretboard projections
+are produced by the same code the Chord Library, Scale Library, Interactive
+Fretboard, and Circle of Fifths already use. A lesson cannot drift from the
+tool it links to, because neither stores the answer.
+
+A lesson is structure plus addressed prose. `TheoryLesson` holds a category, a
+level, language-neutral search aliases, and an ordered list of `TheoryBlock`
+values; prose blocks carry a content identifier instead of a string. Interface
+chrome stays in the generated ARB localizations, while lesson bodies live in
+one content map per language under `content/`, because a translator editing 600
+long-form entries wants a readable file and the hub wants to prove both
+languages cover the whole catalog. A test asserts that every identifier a
+lesson references resolves in English and Turkish, that both languages define
+the same set, and that nothing was left as its own identifier.
+
+`IntervalShapes` is the one piece of derivation the hub owns, and it is derived
+rather than drawn: given an interval and a tuning it searches for the closest
+playable two-note shape, preferring a neighbouring string over a long reach on
+one string. The diagram widget then renders markers it is handed and decides
+nothing musical.
+
+"Try it" actions are structural too. `TheoryAction` carries roots, qualities,
+and scale definitions; `AppRoutes.theoryAction` turns them into the query each
+released library already parses, so no lesson knows a URL.
+
+`TheoryProgressRepository` owns the only storage access, encoding starred and
+recently read lesson identifiers as JSON through `PreferencesStore`. Stored
+identifiers are pruned against the catalog on load, so a retired lesson cannot
+leave a dead entry. The feature adds no audio, microphone, network, account,
+analytics, or backend dependency, and the catalog is a compile-time constant,
+so opening the hub costs no I/O.
 
 ## Application information and licenses
 

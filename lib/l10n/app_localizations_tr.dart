@@ -123,7 +123,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get privacyLocalDescription =>
-      'Tema, dil, dokunsal geri bildirim, Metronom ve Gitar Akort Cihazı tercihleri bu cihazda yerel olarak saklanır. Akor, gam, klavye ve Beşliler Çemberi içeriği uygulamayla birlikte gelir.';
+      'Tema, dil, dokunsal geri bildirim, Metronom ve Gitar Akort Cihazı tercihleri, yıldızladığınız ya da açtığınız Müzik Teorisi dersleriyle birlikte bu cihazda yerel olarak saklanır. Akor, gam, klavye, Beşliler Çemberi ve Müzik Teorisi içeriği uygulamayla birlikte gelir.';
 
   @override
   String get privacyMicrophoneTitle => 'Mikrofon perde analizi yerel kalır';
@@ -880,7 +880,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get intervalTrainer => 'Aralık Eğitimi';
+  String get musicTheory => 'Müzik Teorisi';
 
   @override
   String get earTraining => 'Kulak Eğitimi';
@@ -1294,30 +1294,6 @@ class AppLocalizationsTr extends AppLocalizations {
       'Perde işleme durdu. Yeniden deneyin.';
 
   @override
-  String get intervalMode => 'Mod';
-
-  @override
-  String get identifyInterval => 'Aralığı Tanı';
-
-  @override
-  String get findTargetNote => 'Hedef Notayı Bul';
-
-  @override
-  String get difficulty => 'Zorluk';
-
-  @override
-  String get direction => 'Yön';
-
-  @override
-  String get ascending => 'Çıkıcı';
-
-  @override
-  String get descending => 'İnici';
-
-  @override
-  String get mixed => 'Karışık';
-
-  @override
   String get beginner => 'Başlangıç';
 
   @override
@@ -1327,136 +1303,258 @@ class AppLocalizationsTr extends AppLocalizations {
   String get advanced => 'İleri';
 
   @override
-  String get intervalIdentifyPrompt => 'Gösterilen aralık hangisi?';
+  String get musicTheoryTagline =>
+      'Müzik teorisini başlangıçtan ileri seviyeye öğren.';
 
   @override
-  String get intervalFindTargetPrompt => 'Hedef notayı seçin.';
+  String get theoryHubIntro =>
+      'Tek notalardan gitara özgü teoriye kadar dokuz kategori. Tamamı çevrimdışı çalışır.';
 
   @override
-  String get correct => 'Doğru';
+  String get theorySearchHint => 'Ders, aralık ve akor ara';
 
   @override
-  String get incorrect => 'Yanlış';
+  String get theorySearchLabel => 'Derslerde ara';
 
   @override
-  String get next => 'Sonraki';
+  String get theoryClearSearch => 'Aramayı temizle';
 
   @override
-  String get accuracy => 'Doğruluk';
+  String get theoryLevelLabel => 'Seviye';
 
   @override
-  String get streak => 'Seri';
+  String get theoryLevelAll => 'Tümü';
 
   @override
-  String get bestStreak => 'En İyi Seri';
+  String get theoryCategoriesTitle => 'Kategoriler';
 
   @override
-  String questionsAnswered(int count) {
-    return '$count cevaplandı';
+  String get theoryFavorites => 'Favoriler';
+
+  @override
+  String get theoryFavoritesEmpty => 'Bir dersi yıldızlayınca burada durur.';
+
+  @override
+  String get theoryRecentlyViewed => 'Son görüntülenenler';
+
+  @override
+  String get theoryAddFavorite => 'Favorilere ekle';
+
+  @override
+  String get theoryRemoveFavorite => 'Favorilerden çıkar';
+
+  @override
+  String get theoryTryIt => 'Dene';
+
+  @override
+  String get theoryNextLesson => 'Sonraki ders';
+
+  @override
+  String get theoryPreviousLesson => 'Önceki ders';
+
+  @override
+  String theoryLessonCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ders',
+      one: '1 ders',
+    );
+    return '$_temp0';
   }
 
   @override
-  String accuracyValue(int percent) {
-    return 'Doğruluk %$percent';
+  String theoryResultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ders bulundu',
+      one: '1 ders bulundu',
+      zero: 'Ders bulunamadı',
+    );
+    return '$_temp0';
   }
 
   @override
-  String streakValue(int count) {
-    return 'Seri $count';
+  String theoryNoResults(String query) {
+    return '“$query” ile eşleşen ders yok.';
   }
 
   @override
-  String bestStreakValue(int count) {
-    return 'En iyi seri $count';
+  String get theoryNoResultsHint =>
+      'Bir nota adı, m3 gibi bir aralık ya da bir akor simgesi deneyin.';
+
+  @override
+  String get theoryOpenInChordLibrary => 'Akor Kütüphanesinde aç';
+
+  @override
+  String get theoryOpenInScaleLibrary => 'Gam Kütüphanesinde aç';
+
+  @override
+  String get theoryOpenCircle => 'Çemberi aç';
+
+  @override
+  String get theoryOpenInteractiveFretboard => 'Etkileşimli Klavyeyi aç';
+
+  @override
+  String get theoryOpenMetronome => 'Metronomu aç';
+
+  @override
+  String get theoryOpenBpmTap => 'BPM Vuruşu\'nu aç';
+
+  @override
+  String get theoryOpenGuitarTuner => 'Gitar Akort Cihazını aç';
+
+  @override
+  String get theoryNotesLabel => 'Notalar';
+
+  @override
+  String get theoryFormulaLabel => 'Formül';
+
+  @override
+  String get theorySemitonesLabel => 'Yarım ses';
+
+  @override
+  String get theoryQualityLabel => 'Nitelik';
+
+  @override
+  String get theoryShorthandLabel => 'Kısaltma';
+
+  @override
+  String get theoryAlsoSpelledLabel => 'Diğer yazılışı';
+
+  @override
+  String get theoryGuitarShapeLabel => 'Gitar şekli';
+
+  @override
+  String get theoryFretboardLabel => 'Klavye üzerinde';
+
+  @override
+  String get theoryOpenStringsLabel => 'Boş teller';
+
+  @override
+  String get theoryNoteValuesLabel => 'Nota değerleri';
+
+  @override
+  String get theoryKeySignaturesLabel => 'Donanımlar';
+
+  @override
+  String theoryDiatonicChordsLabel(String key) {
+    return '$key tonundaki akorlar';
   }
 
   @override
-  String intervalQuestionSemantics(
-    String root,
-    String target,
-    String direction,
-  ) {
-    return 'Notalar $root ile $target, $direction';
+  String theoryBeatsValue(String beats) {
+    return '$beats vuruş';
   }
 
   @override
-  String intervalAnswerSemantics(String answer) {
-    return 'Yanıt $answer';
+  String theoryFretRangeLabel(int first, int last) {
+    return '$first–$last. perdeler';
   }
 
   @override
-  String intervalCorrectFeedback(
-    String root,
-    String target,
+  String theoryStringFret(String string, int fret) {
+    return '$string teli, $fret. perde';
+  }
+
+  @override
+  String theoryIntervalShapeSemantics(
     String interval,
-    int semitones,
+    String rootString,
+    int rootFret,
+    String targetString,
+    int targetFret,
   ) {
-    return '$root ile $target arası $interval: $semitones yarım ses.';
+    return '$interval şekli: kök $rootString telinde $rootFret. perdede, hedef $targetString telinde $targetFret. perdede.';
   }
 
   @override
-  String intervalIncorrectFeedback(
-    String answer,
-    String root,
-    String target,
-    String interval,
-    int semitones,
+  String theoryFretboardSemantics(
+    String subject,
+    int first,
+    int last,
+    String notes,
   ) {
-    return 'Doğru yanıt $answer. $root ile $target arası $interval: $semitones yarım ses.';
+    return '$subject için klavye şeması, $first–$last. perdeler. $notes';
   }
 
   @override
-  String intervalSessionSemantics(
-    int answered,
-    int correct,
-    int accuracy,
-    int streak,
-    int bestStreak,
-  ) {
-    return 'Oturum: $answered cevaplandı, $correct doğru, %$accuracy doğruluk, geçerli seri $streak, en iyi seri $bestStreak';
+  String theoryLessonSemantics(String title, String level, String summary) {
+    return '$title, $level. $summary';
   }
 
   @override
-  String get intervalPerfectUnison => 'Tam Birli';
+  String theoryCategorySemantics(
+    String name,
+    String count,
+    String description,
+  ) {
+    return '$name, $count. $description';
+  }
 
   @override
-  String get intervalMinorSecond => 'Küçük 2\'li';
+  String get theoryCategoryMusicalNotes => 'Müzikal Notalar';
 
   @override
-  String get intervalMajorSecond => 'Büyük 2\'li';
+  String get theoryCategoryMusicalNotesDescription =>
+      'Nota adları, diyezler, bemoller, eşsesliler, oktavlar ve perde yazımı.';
 
   @override
-  String get intervalMinorThird => 'Küçük 3\'lü';
+  String get theoryCategoryIntervals => 'Aralıklar';
 
   @override
-  String get intervalMajorThird => 'Büyük 3\'lü';
+  String get theoryCategoryIntervalsDescription =>
+      'Oktav içindeki her mesafe, sesi ve gitardaki şekli.';
 
   @override
-  String get intervalPerfectFourth => 'Tam 4\'lü';
+  String get theoryCategoryChords => 'Akorlar';
 
   @override
-  String get intervalAugmentedFourth => 'Triton (Artık 4\'lü)';
+  String get theoryCategoryChordsDescription =>
+      'Üçlüler, yedililer, askılı akorlar, genişletmeler, çevrimler ve seslendirmeler.';
 
   @override
-  String get intervalDiminishedFifth => 'Triton (Eksik 5\'li)';
+  String get theoryCategoryScales => 'Gamlar';
 
   @override
-  String get intervalPerfectFifth => 'Tam 5\'li';
+  String get theoryCategoryScalesDescription =>
+      'Majör, minör, pentatonik, blues ve yedi mod.';
 
   @override
-  String get intervalMinorSixth => 'Küçük 6\'lı';
+  String get theoryCategoryCircleOfFifths => 'Beşliler Çemberi';
 
   @override
-  String get intervalMajorSixth => 'Büyük 6\'lı';
+  String get theoryCategoryCircleOfFifthsDescription =>
+      'Donanımlar, ilgili ve paralel tonlar ve modülasyon.';
 
   @override
-  String get intervalMinorSeventh => 'Küçük 7\'li';
+  String get theoryCategoryFretboardTheory => 'Klavye Teorisi';
 
   @override
-  String get intervalMajorSeventh => 'Büyük 7\'li';
+  String get theoryCategoryFretboardTheoryDescription =>
+      'Nota yerleri, oktav ve aralık şekilleri, taşınabilir kalıplar ve CAGED.';
 
   @override
-  String get intervalPerfectOctave => 'Tam Sekizli';
+  String get theoryCategoryRhythm => 'Ritim';
+
+  @override
+  String get theoryCategoryRhythmDescription =>
+      'Tempo, nota değerleri, susmalar, noktalar, triole, swing ve ölçü sayıları.';
+
+  @override
+  String get theoryCategoryHarmony => 'Armoni';
+
+  @override
+  String get theoryCategoryHarmonyDescription =>
+      'Tonik, dominant, subdominant, kadanslar ve Roma rakamları.';
+
+  @override
+  String get theoryCategoryGuitarTheory => 'Gitar Teorisi';
+
+  @override
+  String get theoryCategoryGuitarTheoryDescription =>
+      'Akortlar, kapo, transpoze, akor kurma ve gam pozisyonları.';
 
   @override
   String get repertoire => 'Repertuar';

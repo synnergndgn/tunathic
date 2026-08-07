@@ -123,7 +123,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyLocalDescription =>
-      'Theme, language, haptic, Metronome, and Guitar Tuner preferences are stored locally on this device. Chord, scale, fretboard, and Circle of Fifths content is bundled with the app.';
+      'Theme, language, haptic, Metronome, and Guitar Tuner preferences are stored locally on this device, together with the Music Theory lessons you star or open. Chord, scale, fretboard, Circle of Fifths, and Music Theory content is bundled with the app.';
 
   @override
   String get privacyMicrophoneTitle => 'Microphone pitch analysis stays local';
@@ -898,7 +898,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get intervalTrainer => 'Interval Trainer';
+  String get musicTheory => 'Music Theory';
 
   @override
   String get earTraining => 'Ear Training';
@@ -1311,30 +1311,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Pitch processing stopped. Try again.';
 
   @override
-  String get intervalMode => 'Mode';
-
-  @override
-  String get identifyInterval => 'Identify Interval';
-
-  @override
-  String get findTargetNote => 'Find Target Note';
-
-  @override
-  String get difficulty => 'Difficulty';
-
-  @override
-  String get direction => 'Direction';
-
-  @override
-  String get ascending => 'Ascending';
-
-  @override
-  String get descending => 'Descending';
-
-  @override
-  String get mixed => 'Mixed';
-
-  @override
   String get beginner => 'Beginner';
 
   @override
@@ -1344,136 +1320,258 @@ class AppLocalizationsEn extends AppLocalizations {
   String get advanced => 'Advanced';
 
   @override
-  String get intervalIdentifyPrompt => 'Which interval is shown?';
+  String get musicTheoryTagline =>
+      'Learn music theory from beginner to advanced.';
 
   @override
-  String get intervalFindTargetPrompt => 'Select the target note.';
+  String get theoryHubIntro =>
+      'Nine categories, from single notes to guitar-specific theory. Everything works offline.';
 
   @override
-  String get correct => 'Correct';
+  String get theorySearchHint => 'Search lessons, intervals, and chords';
 
   @override
-  String get incorrect => 'Incorrect';
+  String get theorySearchLabel => 'Search lessons';
 
   @override
-  String get next => 'Next';
+  String get theoryClearSearch => 'Clear search';
 
   @override
-  String get accuracy => 'Accuracy';
+  String get theoryLevelLabel => 'Level';
 
   @override
-  String get streak => 'Streak';
+  String get theoryLevelAll => 'All';
 
   @override
-  String get bestStreak => 'Best Streak';
+  String get theoryCategoriesTitle => 'Categories';
 
   @override
-  String questionsAnswered(int count) {
-    return '$count answered';
+  String get theoryFavorites => 'Favorites';
+
+  @override
+  String get theoryFavoritesEmpty => 'Star a lesson to keep it here.';
+
+  @override
+  String get theoryRecentlyViewed => 'Recently viewed';
+
+  @override
+  String get theoryAddFavorite => 'Add to favorites';
+
+  @override
+  String get theoryRemoveFavorite => 'Remove from favorites';
+
+  @override
+  String get theoryTryIt => 'Try it';
+
+  @override
+  String get theoryNextLesson => 'Next lesson';
+
+  @override
+  String get theoryPreviousLesson => 'Previous lesson';
+
+  @override
+  String theoryLessonCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lessons',
+      one: '1 lesson',
+    );
+    return '$_temp0';
   }
 
   @override
-  String accuracyValue(int percent) {
-    return 'Accuracy $percent%';
+  String theoryResultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lessons found',
+      one: '1 lesson found',
+      zero: 'No lessons found',
+    );
+    return '$_temp0';
   }
 
   @override
-  String streakValue(int count) {
-    return 'Streak $count';
+  String theoryNoResults(String query) {
+    return 'No lessons match “$query”.';
   }
 
   @override
-  String bestStreakValue(int count) {
-    return 'Best streak $count';
+  String get theoryNoResultsHint =>
+      'Try a note name, an interval such as m3, or a chord symbol.';
+
+  @override
+  String get theoryOpenInChordLibrary => 'Open in Chord Library';
+
+  @override
+  String get theoryOpenInScaleLibrary => 'Open in Scale Library';
+
+  @override
+  String get theoryOpenCircle => 'Open Circle';
+
+  @override
+  String get theoryOpenInteractiveFretboard => 'Open Interactive Fretboard';
+
+  @override
+  String get theoryOpenMetronome => 'Open Metronome';
+
+  @override
+  String get theoryOpenBpmTap => 'Open BPM Tap';
+
+  @override
+  String get theoryOpenGuitarTuner => 'Open Guitar Tuner';
+
+  @override
+  String get theoryNotesLabel => 'Notes';
+
+  @override
+  String get theoryFormulaLabel => 'Formula';
+
+  @override
+  String get theorySemitonesLabel => 'Semitones';
+
+  @override
+  String get theoryQualityLabel => 'Quality';
+
+  @override
+  String get theoryShorthandLabel => 'Shorthand';
+
+  @override
+  String get theoryAlsoSpelledLabel => 'Also spelled';
+
+  @override
+  String get theoryGuitarShapeLabel => 'Guitar shape';
+
+  @override
+  String get theoryFretboardLabel => 'On the fretboard';
+
+  @override
+  String get theoryOpenStringsLabel => 'Open strings';
+
+  @override
+  String get theoryNoteValuesLabel => 'Note values';
+
+  @override
+  String get theoryKeySignaturesLabel => 'Key signatures';
+
+  @override
+  String theoryDiatonicChordsLabel(String key) {
+    return 'Chords in $key';
   }
 
   @override
-  String intervalQuestionSemantics(
-    String root,
-    String target,
-    String direction,
-  ) {
-    return 'Notes $root to $target, $direction';
+  String theoryBeatsValue(String beats) {
+    return '$beats beats';
   }
 
   @override
-  String intervalAnswerSemantics(String answer) {
-    return 'Answer $answer';
+  String theoryFretRangeLabel(int first, int last) {
+    return 'Frets $first–$last';
   }
 
   @override
-  String intervalCorrectFeedback(
-    String root,
-    String target,
+  String theoryStringFret(String string, int fret) {
+    return 'String $string, fret $fret';
+  }
+
+  @override
+  String theoryIntervalShapeSemantics(
     String interval,
-    int semitones,
+    String rootString,
+    int rootFret,
+    String targetString,
+    int targetFret,
   ) {
-    return '$root to $target is $interval: $semitones semitones.';
+    return '$interval shape: root on string $rootString at fret $rootFret, target on string $targetString at fret $targetFret.';
   }
 
   @override
-  String intervalIncorrectFeedback(
-    String answer,
-    String root,
-    String target,
-    String interval,
-    int semitones,
+  String theoryFretboardSemantics(
+    String subject,
+    int first,
+    int last,
+    String notes,
   ) {
-    return 'The correct answer is $answer. $root to $target is $interval: $semitones semitones.';
+    return 'Fretboard diagram for $subject, frets $first to $last. $notes';
   }
 
   @override
-  String intervalSessionSemantics(
-    int answered,
-    int correct,
-    int accuracy,
-    int streak,
-    int bestStreak,
-  ) {
-    return 'Session: $answered answered, $correct correct, $accuracy% accuracy, current streak $streak, best streak $bestStreak';
+  String theoryLessonSemantics(String title, String level, String summary) {
+    return '$title, $level. $summary';
   }
 
   @override
-  String get intervalPerfectUnison => 'Perfect Unison';
+  String theoryCategorySemantics(
+    String name,
+    String count,
+    String description,
+  ) {
+    return '$name, $count. $description';
+  }
 
   @override
-  String get intervalMinorSecond => 'Minor 2nd';
+  String get theoryCategoryMusicalNotes => 'Musical Notes';
 
   @override
-  String get intervalMajorSecond => 'Major 2nd';
+  String get theoryCategoryMusicalNotesDescription =>
+      'Note names, sharps, flats, enharmonics, octaves, and pitch notation.';
 
   @override
-  String get intervalMinorThird => 'Minor 3rd';
+  String get theoryCategoryIntervals => 'Intervals';
 
   @override
-  String get intervalMajorThird => 'Major 3rd';
+  String get theoryCategoryIntervalsDescription =>
+      'Every distance inside the octave, its sound, and its shape on the guitar.';
 
   @override
-  String get intervalPerfectFourth => 'Perfect 4th';
+  String get theoryCategoryChords => 'Chords';
 
   @override
-  String get intervalAugmentedFourth => 'Tritone (Augmented 4th)';
+  String get theoryCategoryChordsDescription =>
+      'Triads, sevenths, suspensions, extensions, inversions, and voicings.';
 
   @override
-  String get intervalDiminishedFifth => 'Tritone (Diminished 5th)';
+  String get theoryCategoryScales => 'Scales';
 
   @override
-  String get intervalPerfectFifth => 'Perfect 5th';
+  String get theoryCategoryScalesDescription =>
+      'Major, minor, pentatonic, blues, and the seven modes.';
 
   @override
-  String get intervalMinorSixth => 'Minor 6th';
+  String get theoryCategoryCircleOfFifths => 'Circle of Fifths';
 
   @override
-  String get intervalMajorSixth => 'Major 6th';
+  String get theoryCategoryCircleOfFifthsDescription =>
+      'Key signatures, relative and parallel keys, and modulation.';
 
   @override
-  String get intervalMinorSeventh => 'Minor 7th';
+  String get theoryCategoryFretboardTheory => 'Fretboard Theory';
 
   @override
-  String get intervalMajorSeventh => 'Major 7th';
+  String get theoryCategoryFretboardTheoryDescription =>
+      'Note locations, octave and interval shapes, movable patterns, and CAGED.';
 
   @override
-  String get intervalPerfectOctave => 'Perfect Octave';
+  String get theoryCategoryRhythm => 'Rhythm';
+
+  @override
+  String get theoryCategoryRhythmDescription =>
+      'Tempo, note values, rests, dots, triplets, swing, and time signatures.';
+
+  @override
+  String get theoryCategoryHarmony => 'Harmony';
+
+  @override
+  String get theoryCategoryHarmonyDescription =>
+      'Tonic, dominant, subdominant, cadences, and Roman numerals.';
+
+  @override
+  String get theoryCategoryGuitarTheory => 'Guitar Theory';
+
+  @override
+  String get theoryCategoryGuitarTheoryDescription =>
+      'Tunings, capo, transposition, chord building, and scale positions.';
 
   @override
   String get repertoire => 'Repertoire';

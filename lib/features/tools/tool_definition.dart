@@ -8,11 +8,11 @@ enum ToolDefinition {
   metronome('metronome', Icons.timer_outlined),
   bpmTap('bpm-tap', Icons.touch_app_outlined),
   repertoire('repertoire', Icons.library_books_outlined),
+  musicTheory('music-theory', Icons.school_outlined),
   chordLibrary('chord-library', Icons.library_music_outlined),
   scaleLibrary('scale-library', Icons.stacked_line_chart),
   interactiveFretboard('interactive-fretboard', Icons.grid_on_outlined),
   circleOfFifths('circle-of-fifths', Icons.donut_large_outlined),
-  intervalTrainer('interval-trainer', Icons.swap_vert),
   earTraining('ear-training', Icons.hearing_outlined),
   chordFinder('chord-finder', Icons.search),
   capoCalculator('capo-calculator', Icons.calculate_outlined);
@@ -30,7 +30,7 @@ enum ToolDefinition {
       this == ToolDefinition.scaleLibrary ||
       this == ToolDefinition.interactiveFretboard ||
       this == ToolDefinition.circleOfFifths ||
-      this == ToolDefinition.intervalTrainer ||
+      this == ToolDefinition.musicTheory ||
       this == ToolDefinition.repertoire;
 
   ToolCategory get category => switch (this) {
@@ -38,13 +38,13 @@ enum ToolDefinition {
     ToolDefinition.metronome ||
     ToolDefinition.bpmTap ||
     ToolDefinition.repertoire => ToolCategory.practice,
+    ToolDefinition.musicTheory ||
     ToolDefinition.chordLibrary ||
     ToolDefinition.scaleLibrary ||
     ToolDefinition.interactiveFretboard ||
     ToolDefinition.circleOfFifths ||
     ToolDefinition.chordFinder ||
     ToolDefinition.capoCalculator => ToolCategory.theoryReference,
-    ToolDefinition.intervalTrainer ||
     ToolDefinition.earTraining => ToolCategory.training,
   };
 
@@ -60,13 +60,18 @@ enum ToolDefinition {
     ToolDefinition.metronome => localizations.metronome,
     ToolDefinition.bpmTap => localizations.bpmTap,
     ToolDefinition.repertoire => localizations.repertoire,
+    ToolDefinition.musicTheory => localizations.musicTheory,
     ToolDefinition.chordLibrary => localizations.chordLibrary,
     ToolDefinition.scaleLibrary => localizations.scaleLibrary,
     ToolDefinition.interactiveFretboard => localizations.interactiveFretboard,
     ToolDefinition.circleOfFifths => localizations.circleOfFifths,
-    ToolDefinition.intervalTrainer => localizations.intervalTrainer,
     ToolDefinition.earTraining => localizations.earTraining,
     ToolDefinition.chordFinder => localizations.chordFinder,
     ToolDefinition.capoCalculator => localizations.capoCalculator,
   };
+
+  /// The dashboard subtitle. Only the learning hub describes itself; every
+  /// other card shows its availability on that line instead.
+  String? subtitle(AppLocalizations localizations) =>
+      this == musicTheory ? localizations.musicTheoryTagline : null;
 }

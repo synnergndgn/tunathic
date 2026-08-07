@@ -9,6 +9,7 @@ import 'package:tunathic/app/theme/app_radii.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
 import 'package:tunathic/features/tuner/application/guitar_tuner_controller.dart';
 import 'package:tunathic/features/tuner/domain/tuning.dart';
+import 'package:tunathic/features/tuner/presentation/tuner_localizations.dart';
 import 'package:tunathic/features/tuner/presentation/cents_indicator.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 
@@ -148,7 +149,7 @@ final class GuitarTunerView extends StatelessWidget {
                     for (final preset in TuningPresetId.values)
                       DropdownMenuItem(
                         value: preset,
-                        child: Text(_presetName(localizations, preset)),
+                        child: Text(localizations.tuningPresetName(preset)),
                       ),
                   ],
                   onChanged: state.settingsLoaded
@@ -328,17 +329,6 @@ final class GuitarTunerView extends StatelessWidget {
       ),
     );
   }
-
-  String _presetName(AppLocalizations localizations, TuningPresetId preset) =>
-      switch (preset) {
-        TuningPresetId.standard => localizations.tuningStandard,
-        TuningPresetId.dropD => localizations.tuningDropD,
-        TuningPresetId.halfStepDown => localizations.tuningHalfStepDown,
-        TuningPresetId.fullStepDown => localizations.tuningFullStepDown,
-        TuningPresetId.dadgad => localizations.tuningDadgad,
-        TuningPresetId.openG => localizations.tuningOpenG,
-        TuningPresetId.openD => localizations.tuningOpenD,
-      };
 
   String _modeName(AppLocalizations localizations, TunerMode mode) =>
       switch (mode) {

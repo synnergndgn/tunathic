@@ -2,7 +2,7 @@
 
 **Tune. Train. Create.**
 
-Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is at **Phase 5B — Repertoire and Internal Test Release**. The validated Guitar Tuner, BPM Tap, native Oboe Metronome, Repertoire, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and Interval Trainer are being prepared for Google Play Internal Testing.
+Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is at **Phase 5B — Repertoire and Internal Test Release**. The validated Guitar Tuner, BPM Tap, native Oboe Metronome, Repertoire, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and Music Theory are being prepared for Google Play Internal Testing.
 
 ## Current contents
 
@@ -47,9 +47,10 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
   signature and chord details, and an accessible large-text ordered fallback
 - Prefilled **View Scale**, **View on Fretboard**, and diatonic-chord navigation
   from Circle of Fifths
-- Offline Interval Trainer with identify-interval and target-note modes,
-  spelling-aware tritone identities, deterministic questions, and transient
-  accuracy/streak feedback
+- Offline Music Theory hub: 64 lessons across nine categories, from note names
+  to CAGED, each with worked examples built by the shared theory engine, plus
+  offline search, favourites, recently read lessons, a beginner-to-advanced
+  progression, and "Try it" links that open the example in the matching tool
 - Offline Repertoire for songs you write or paste yourself, stored on the device
   as ChordPro text, with title/artist search, editing, and deletion
 - One-time conversion of pasted chords-above-lyrics charts into chords attached
@@ -77,7 +78,7 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Reproducible Flutter 3.44.0 GitHub Actions formatting, analysis, test, and debug-build verification
 - Unit and widget tests
 
-Guitar Tuner, Metronome, BPM Tap, Repertoire, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and Interval Trainer are available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. All reference, Interval Trainer, and Repertoire tools are fully offline and add no audio, microphone, account, analytics, network, advertising, or backend behavior.
+Guitar Tuner, Metronome, BPM Tap, Repertoire, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and Music Theory are available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. All reference, Music Theory, and Repertoire tools are fully offline and add no audio, microphone, account, analytics, network, advertising, or backend behavior.
 
 Tunathic ships no song content. The Repertoire stores only the lyrics and chords
 you enter yourself, on your own device, and offers no import, export, sharing,

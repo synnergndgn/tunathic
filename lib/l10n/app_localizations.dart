@@ -317,7 +317,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyLocalDescription.
   ///
   /// In en, this message translates to:
-  /// **'Theme, language, haptic, Metronome, and Guitar Tuner preferences are stored locally on this device. Chord, scale, fretboard, and Circle of Fifths content is bundled with the app.'**
+  /// **'Theme, language, haptic, Metronome, and Guitar Tuner preferences are stored locally on this device, together with the Music Theory lessons you star or open. Chord, scale, fretboard, Circle of Fifths, and Music Theory content is bundled with the app.'**
   String get privacyLocalDescription;
 
   /// No description provided for @privacyMicrophoneTitle.
@@ -1644,11 +1644,11 @@ abstract class AppLocalizations {
   /// **'{roman}, {chord}. Opens Chord Library.'**
   String diatonicChordSemantics(String roman, String chord);
 
-  /// No description provided for @intervalTrainer.
+  /// No description provided for @musicTheory.
   ///
   /// In en, this message translates to:
-  /// **'Interval Trainer'**
-  String get intervalTrainer;
+  /// **'Music Theory'**
+  String get musicTheory;
 
   /// No description provided for @earTraining.
   ///
@@ -2376,54 +2376,6 @@ abstract class AppLocalizations {
   /// **'Pitch processing stopped. Try again.'**
   String get tunerProcessingErrorMessage;
 
-  /// No description provided for @intervalMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Mode'**
-  String get intervalMode;
-
-  /// No description provided for @identifyInterval.
-  ///
-  /// In en, this message translates to:
-  /// **'Identify Interval'**
-  String get identifyInterval;
-
-  /// No description provided for @findTargetNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Find Target Note'**
-  String get findTargetNote;
-
-  /// No description provided for @difficulty.
-  ///
-  /// In en, this message translates to:
-  /// **'Difficulty'**
-  String get difficulty;
-
-  /// No description provided for @direction.
-  ///
-  /// In en, this message translates to:
-  /// **'Direction'**
-  String get direction;
-
-  /// No description provided for @ascending.
-  ///
-  /// In en, this message translates to:
-  /// **'Ascending'**
-  String get ascending;
-
-  /// No description provided for @descending.
-  ///
-  /// In en, this message translates to:
-  /// **'Descending'**
-  String get descending;
-
-  /// No description provided for @mixed.
-  ///
-  /// In en, this message translates to:
-  /// **'Mixed'**
-  String get mixed;
-
   /// No description provided for @beginner.
   ///
   /// In en, this message translates to:
@@ -2442,212 +2394,400 @@ abstract class AppLocalizations {
   /// **'Advanced'**
   String get advanced;
 
-  /// No description provided for @intervalIdentifyPrompt.
+  /// No description provided for @musicTheoryTagline.
   ///
   /// In en, this message translates to:
-  /// **'Which interval is shown?'**
-  String get intervalIdentifyPrompt;
+  /// **'Learn music theory from beginner to advanced.'**
+  String get musicTheoryTagline;
 
-  /// No description provided for @intervalFindTargetPrompt.
+  /// No description provided for @theoryHubIntro.
   ///
   /// In en, this message translates to:
-  /// **'Select the target note.'**
-  String get intervalFindTargetPrompt;
+  /// **'Nine categories, from single notes to guitar-specific theory. Everything works offline.'**
+  String get theoryHubIntro;
 
-  /// No description provided for @correct.
+  /// No description provided for @theorySearchHint.
   ///
   /// In en, this message translates to:
-  /// **'Correct'**
-  String get correct;
+  /// **'Search lessons, intervals, and chords'**
+  String get theorySearchHint;
 
-  /// No description provided for @incorrect.
+  /// No description provided for @theorySearchLabel.
   ///
   /// In en, this message translates to:
-  /// **'Incorrect'**
-  String get incorrect;
+  /// **'Search lessons'**
+  String get theorySearchLabel;
 
-  /// No description provided for @next.
+  /// No description provided for @theoryClearSearch.
   ///
   /// In en, this message translates to:
-  /// **'Next'**
-  String get next;
+  /// **'Clear search'**
+  String get theoryClearSearch;
 
-  /// No description provided for @accuracy.
+  /// No description provided for @theoryLevelLabel.
   ///
   /// In en, this message translates to:
-  /// **'Accuracy'**
-  String get accuracy;
+  /// **'Level'**
+  String get theoryLevelLabel;
 
-  /// No description provided for @streak.
+  /// No description provided for @theoryLevelAll.
   ///
   /// In en, this message translates to:
-  /// **'Streak'**
-  String get streak;
+  /// **'All'**
+  String get theoryLevelAll;
 
-  /// No description provided for @bestStreak.
+  /// No description provided for @theoryCategoriesTitle.
   ///
   /// In en, this message translates to:
-  /// **'Best Streak'**
-  String get bestStreak;
+  /// **'Categories'**
+  String get theoryCategoriesTitle;
 
-  /// No description provided for @questionsAnswered.
+  /// No description provided for @theoryFavorites.
   ///
   /// In en, this message translates to:
-  /// **'{count} answered'**
-  String questionsAnswered(int count);
+  /// **'Favorites'**
+  String get theoryFavorites;
 
-  /// No description provided for @accuracyValue.
+  /// No description provided for @theoryFavoritesEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Accuracy {percent}%'**
-  String accuracyValue(int percent);
+  /// **'Star a lesson to keep it here.'**
+  String get theoryFavoritesEmpty;
 
-  /// No description provided for @streakValue.
+  /// No description provided for @theoryRecentlyViewed.
   ///
   /// In en, this message translates to:
-  /// **'Streak {count}'**
-  String streakValue(int count);
+  /// **'Recently viewed'**
+  String get theoryRecentlyViewed;
 
-  /// No description provided for @bestStreakValue.
+  /// No description provided for @theoryAddFavorite.
   ///
   /// In en, this message translates to:
-  /// **'Best streak {count}'**
-  String bestStreakValue(int count);
+  /// **'Add to favorites'**
+  String get theoryAddFavorite;
 
-  /// No description provided for @intervalQuestionSemantics.
+  /// No description provided for @theoryRemoveFavorite.
   ///
   /// In en, this message translates to:
-  /// **'Notes {root} to {target}, {direction}'**
-  String intervalQuestionSemantics(
-    String root,
-    String target,
-    String direction,
-  );
+  /// **'Remove from favorites'**
+  String get theoryRemoveFavorite;
 
-  /// No description provided for @intervalAnswerSemantics.
+  /// No description provided for @theoryTryIt.
   ///
   /// In en, this message translates to:
-  /// **'Answer {answer}'**
-  String intervalAnswerSemantics(String answer);
+  /// **'Try it'**
+  String get theoryTryIt;
 
-  /// No description provided for @intervalCorrectFeedback.
+  /// No description provided for @theoryNextLesson.
   ///
   /// In en, this message translates to:
-  /// **'{root} to {target} is {interval}: {semitones} semitones.'**
-  String intervalCorrectFeedback(
-    String root,
-    String target,
+  /// **'Next lesson'**
+  String get theoryNextLesson;
+
+  /// No description provided for @theoryPreviousLesson.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous lesson'**
+  String get theoryPreviousLesson;
+
+  /// No description provided for @theoryLessonCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 lesson} other{{count} lessons}}'**
+  String theoryLessonCount(int count);
+
+  /// No description provided for @theoryResultCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No lessons found} =1{1 lesson found} other{{count} lessons found}}'**
+  String theoryResultCount(int count);
+
+  /// No description provided for @theoryNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No lessons match “{query}”.'**
+  String theoryNoResults(String query);
+
+  /// No description provided for @theoryNoResultsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a note name, an interval such as m3, or a chord symbol.'**
+  String get theoryNoResultsHint;
+
+  /// No description provided for @theoryOpenInChordLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Chord Library'**
+  String get theoryOpenInChordLibrary;
+
+  /// No description provided for @theoryOpenInScaleLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Scale Library'**
+  String get theoryOpenInScaleLibrary;
+
+  /// No description provided for @theoryOpenCircle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Circle'**
+  String get theoryOpenCircle;
+
+  /// No description provided for @theoryOpenInteractiveFretboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Interactive Fretboard'**
+  String get theoryOpenInteractiveFretboard;
+
+  /// No description provided for @theoryOpenMetronome.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Metronome'**
+  String get theoryOpenMetronome;
+
+  /// No description provided for @theoryOpenBpmTap.
+  ///
+  /// In en, this message translates to:
+  /// **'Open BPM Tap'**
+  String get theoryOpenBpmTap;
+
+  /// No description provided for @theoryOpenGuitarTuner.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Guitar Tuner'**
+  String get theoryOpenGuitarTuner;
+
+  /// No description provided for @theoryNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get theoryNotesLabel;
+
+  /// No description provided for @theoryFormulaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Formula'**
+  String get theoryFormulaLabel;
+
+  /// No description provided for @theorySemitonesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Semitones'**
+  String get theorySemitonesLabel;
+
+  /// No description provided for @theoryQualityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quality'**
+  String get theoryQualityLabel;
+
+  /// No description provided for @theoryShorthandLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Shorthand'**
+  String get theoryShorthandLabel;
+
+  /// No description provided for @theoryAlsoSpelledLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Also spelled'**
+  String get theoryAlsoSpelledLabel;
+
+  /// No description provided for @theoryGuitarShapeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Guitar shape'**
+  String get theoryGuitarShapeLabel;
+
+  /// No description provided for @theoryFretboardLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'On the fretboard'**
+  String get theoryFretboardLabel;
+
+  /// No description provided for @theoryOpenStringsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Open strings'**
+  String get theoryOpenStringsLabel;
+
+  /// No description provided for @theoryNoteValuesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note values'**
+  String get theoryNoteValuesLabel;
+
+  /// No description provided for @theoryKeySignaturesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Key signatures'**
+  String get theoryKeySignaturesLabel;
+
+  /// No description provided for @theoryDiatonicChordsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chords in {key}'**
+  String theoryDiatonicChordsLabel(String key);
+
+  /// No description provided for @theoryBeatsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{beats} beats'**
+  String theoryBeatsValue(String beats);
+
+  /// No description provided for @theoryFretRangeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Frets {first}–{last}'**
+  String theoryFretRangeLabel(int first, int last);
+
+  /// No description provided for @theoryStringFret.
+  ///
+  /// In en, this message translates to:
+  /// **'String {string}, fret {fret}'**
+  String theoryStringFret(String string, int fret);
+
+  /// No description provided for @theoryIntervalShapeSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{interval} shape: root on string {rootString} at fret {rootFret}, target on string {targetString} at fret {targetFret}.'**
+  String theoryIntervalShapeSemantics(
     String interval,
-    int semitones,
+    String rootString,
+    int rootFret,
+    String targetString,
+    int targetFret,
   );
 
-  /// No description provided for @intervalIncorrectFeedback.
+  /// No description provided for @theoryFretboardSemantics.
   ///
   /// In en, this message translates to:
-  /// **'The correct answer is {answer}. {root} to {target} is {interval}: {semitones} semitones.'**
-  String intervalIncorrectFeedback(
-    String answer,
-    String root,
-    String target,
-    String interval,
-    int semitones,
+  /// **'Fretboard diagram for {subject}, frets {first} to {last}. {notes}'**
+  String theoryFretboardSemantics(
+    String subject,
+    int first,
+    int last,
+    String notes,
   );
 
-  /// No description provided for @intervalSessionSemantics.
+  /// No description provided for @theoryLessonSemantics.
   ///
   /// In en, this message translates to:
-  /// **'Session: {answered} answered, {correct} correct, {accuracy}% accuracy, current streak {streak}, best streak {bestStreak}'**
-  String intervalSessionSemantics(
-    int answered,
-    int correct,
-    int accuracy,
-    int streak,
-    int bestStreak,
-  );
+  /// **'{title}, {level}. {summary}'**
+  String theoryLessonSemantics(String title, String level, String summary);
 
-  /// No description provided for @intervalPerfectUnison.
+  /// No description provided for @theoryCategorySemantics.
   ///
   /// In en, this message translates to:
-  /// **'Perfect Unison'**
-  String get intervalPerfectUnison;
+  /// **'{name}, {count}. {description}'**
+  String theoryCategorySemantics(String name, String count, String description);
 
-  /// No description provided for @intervalMinorSecond.
+  /// No description provided for @theoryCategoryMusicalNotes.
   ///
   /// In en, this message translates to:
-  /// **'Minor 2nd'**
-  String get intervalMinorSecond;
+  /// **'Musical Notes'**
+  String get theoryCategoryMusicalNotes;
 
-  /// No description provided for @intervalMajorSecond.
+  /// No description provided for @theoryCategoryMusicalNotesDescription.
   ///
   /// In en, this message translates to:
-  /// **'Major 2nd'**
-  String get intervalMajorSecond;
+  /// **'Note names, sharps, flats, enharmonics, octaves, and pitch notation.'**
+  String get theoryCategoryMusicalNotesDescription;
 
-  /// No description provided for @intervalMinorThird.
+  /// No description provided for @theoryCategoryIntervals.
   ///
   /// In en, this message translates to:
-  /// **'Minor 3rd'**
-  String get intervalMinorThird;
+  /// **'Intervals'**
+  String get theoryCategoryIntervals;
 
-  /// No description provided for @intervalMajorThird.
+  /// No description provided for @theoryCategoryIntervalsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Major 3rd'**
-  String get intervalMajorThird;
+  /// **'Every distance inside the octave, its sound, and its shape on the guitar.'**
+  String get theoryCategoryIntervalsDescription;
 
-  /// No description provided for @intervalPerfectFourth.
+  /// No description provided for @theoryCategoryChords.
   ///
   /// In en, this message translates to:
-  /// **'Perfect 4th'**
-  String get intervalPerfectFourth;
+  /// **'Chords'**
+  String get theoryCategoryChords;
 
-  /// No description provided for @intervalAugmentedFourth.
+  /// No description provided for @theoryCategoryChordsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Tritone (Augmented 4th)'**
-  String get intervalAugmentedFourth;
+  /// **'Triads, sevenths, suspensions, extensions, inversions, and voicings.'**
+  String get theoryCategoryChordsDescription;
 
-  /// No description provided for @intervalDiminishedFifth.
+  /// No description provided for @theoryCategoryScales.
   ///
   /// In en, this message translates to:
-  /// **'Tritone (Diminished 5th)'**
-  String get intervalDiminishedFifth;
+  /// **'Scales'**
+  String get theoryCategoryScales;
 
-  /// No description provided for @intervalPerfectFifth.
+  /// No description provided for @theoryCategoryScalesDescription.
   ///
   /// In en, this message translates to:
-  /// **'Perfect 5th'**
-  String get intervalPerfectFifth;
+  /// **'Major, minor, pentatonic, blues, and the seven modes.'**
+  String get theoryCategoryScalesDescription;
 
-  /// No description provided for @intervalMinorSixth.
+  /// No description provided for @theoryCategoryCircleOfFifths.
   ///
   /// In en, this message translates to:
-  /// **'Minor 6th'**
-  String get intervalMinorSixth;
+  /// **'Circle of Fifths'**
+  String get theoryCategoryCircleOfFifths;
 
-  /// No description provided for @intervalMajorSixth.
+  /// No description provided for @theoryCategoryCircleOfFifthsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Major 6th'**
-  String get intervalMajorSixth;
+  /// **'Key signatures, relative and parallel keys, and modulation.'**
+  String get theoryCategoryCircleOfFifthsDescription;
 
-  /// No description provided for @intervalMinorSeventh.
+  /// No description provided for @theoryCategoryFretboardTheory.
   ///
   /// In en, this message translates to:
-  /// **'Minor 7th'**
-  String get intervalMinorSeventh;
+  /// **'Fretboard Theory'**
+  String get theoryCategoryFretboardTheory;
 
-  /// No description provided for @intervalMajorSeventh.
+  /// No description provided for @theoryCategoryFretboardTheoryDescription.
   ///
   /// In en, this message translates to:
-  /// **'Major 7th'**
-  String get intervalMajorSeventh;
+  /// **'Note locations, octave and interval shapes, movable patterns, and CAGED.'**
+  String get theoryCategoryFretboardTheoryDescription;
 
-  /// No description provided for @intervalPerfectOctave.
+  /// No description provided for @theoryCategoryRhythm.
   ///
   /// In en, this message translates to:
-  /// **'Perfect Octave'**
-  String get intervalPerfectOctave;
+  /// **'Rhythm'**
+  String get theoryCategoryRhythm;
+
+  /// No description provided for @theoryCategoryRhythmDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Tempo, note values, rests, dots, triplets, swing, and time signatures.'**
+  String get theoryCategoryRhythmDescription;
+
+  /// No description provided for @theoryCategoryHarmony.
+  ///
+  /// In en, this message translates to:
+  /// **'Harmony'**
+  String get theoryCategoryHarmony;
+
+  /// No description provided for @theoryCategoryHarmonyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Tonic, dominant, subdominant, cadences, and Roman numerals.'**
+  String get theoryCategoryHarmonyDescription;
+
+  /// No description provided for @theoryCategoryGuitarTheory.
+  ///
+  /// In en, this message translates to:
+  /// **'Guitar Theory'**
+  String get theoryCategoryGuitarTheory;
+
+  /// No description provided for @theoryCategoryGuitarTheoryDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Tunings, capo, transposition, chord building, and scale positions.'**
+  String get theoryCategoryGuitarTheoryDescription;
 
   /// No description provided for @repertoire.
   ///

@@ -181,15 +181,16 @@ final class _ToolCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final title = tool.title(localizations);
-    final availability = tool.isAvailable
-        ? localizations.openTool
-        : localizations.comingSoon;
+    // A tool that describes itself says so here; the rest report availability.
+    final caption =
+        tool.subtitle(localizations) ??
+        (tool.isAvailable ? localizations.openTool : localizations.comingSoon);
     final colors = Theme.of(context).colorScheme;
 
     return Semantics(
       button: prominent,
       enabled: prominent,
-      label: '$title, $availability',
+      label: '$title, $caption',
       child: Card(
         elevation: prominent ? AppElevation.raised : AppElevation.flat,
         color: prominent ? colors.primaryContainer : null,
@@ -228,7 +229,7 @@ final class _ToolCard extends StatelessWidget {
                         ),
                         const SizedBox(height: AppSpacing.small),
                         Text(
-                          availability,
+                          caption,
                           style: Theme.of(context).textTheme.labelMedium
                               ?.copyWith(
                                 color: prominent
