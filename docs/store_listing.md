@@ -96,8 +96,7 @@ yerleşim ve anlaşılırlığa odaklanır.
 
 ## Listing verification
 
-- Do not list Interval Trainer, Ear Training, Chord Finder, or Capo Calculator
-  as available.
+- Do not list Ear Training, Chord Finder, or Capo Calculator as available.
 - Recheck all character counts after any copy edit.
 - Use localized screenshots when Turkish store copy is enabled.
 - Ensure the hosted privacy policy matches the final app and Data Safety form.

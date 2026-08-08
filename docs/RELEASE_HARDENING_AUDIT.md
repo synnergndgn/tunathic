@@ -15,8 +15,8 @@ Remote: `origin` at `https://github.com/synnergndgn/tunathic.git`
 | Android namespace | `dev.gundev.tunathic` | Consistent |
 | Display name | `Tunathic` | Consistent |
 | Flutter package | `tunathic` | Consistent |
-| Version name | `0.3.0` | Repertoire release for internal testing |
-| Version code | `6` | Codes 2 through 5 were already uploaded and tested; every later upload must increase again |
+| Version name | `0.4.0` | Music Theory release for internal testing |
+| Version code | `7` | Codes 2 through 6 were already uploaded and tested; every later upload must increase again |
 | Minimum SDK | 24 | Flutter 3.44 stable default; compatible with current dependencies |
 | Target SDK | 36 | Meets the 31 August 2026 new-app requirement |
 | Compile SDK | 36 | Matches installed stable Android platform |
@@ -29,8 +29,8 @@ https://support.google.com/googleplay/android-developer/answer/11926878
 
 | Classification | Features |
 | --- | --- |
-| Ready | Guitar Tuner, Metronome, BPM Tap, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, Settings, About, Privacy, Licenses |
-| Coming Soon | Interval Trainer, Ear Training, Chord Finder, Capo Calculator |
+| Ready | Guitar Tuner, Metronome, BPM Tap, Repertoire, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, Music Theory, Settings, About, Privacy, Licenses |
+| Coming Soon | Ear Training, Chord Finder, Capo Calculator |
 | Debug-only | Tuner Diagnostics route, guarded by `kDebugMode` |
 | Internal/development-only | `tool/` coverage, click-generation, and pitch-diagnostic commands |
 

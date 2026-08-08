@@ -69,7 +69,7 @@ song catalog and provides no way to obtain one.
 - Android application ID and namespace: `dev.gundev.tunathic`
 - app display name: `Tunathic`
 - Flutter package: `tunathic`
-- version: `0.3.0+6`
+- version: `0.4.0+7`
 - minimum SDK: API 24
 - target SDK: API 36
 - compile SDK: API 36
