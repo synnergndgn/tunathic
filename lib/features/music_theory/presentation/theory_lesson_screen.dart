@@ -15,6 +15,7 @@ import 'package:tunathic/features/music_theory/presentation/widgets/theory_block
 import 'package:tunathic/features/music_theory/presentation/widgets/theory_lesson_tile.dart';
 import 'package:tunathic/features/tool_placeholder/presentation/not_found_screen.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 
 /// One lesson: explanation, worked examples, and links into the tools.
 final class TheoryLessonScreen extends ConsumerStatefulWidget {
@@ -159,21 +160,22 @@ final class _LessonNavigation extends StatelessWidget {
       runSpacing: AppSpacing.small,
       children: [
         if (previous case final lesson?)
-          OutlinedButton.icon(
+          SkeuoButton(
             key: const Key('theoryPreviousLesson'),
             onPressed: () => onOpen(lesson),
-            icon: const Icon(Icons.arrow_back),
-            label: Text(
+            icon: Icons.arrow_back,
+            child: Text(
               '${localizations.theoryPreviousLesson}: '
               '${content.text(lesson.titleId)}',
             ),
           ),
         if (next case final lesson?)
-          FilledButton.icon(
+          SkeuoButton(
             key: const Key('theoryNextLesson'),
             onPressed: () => onOpen(lesson),
-            icon: const Icon(Icons.arrow_forward),
-            label: Text(
+            selected: true,
+            icon: Icons.arrow_forward,
+            child: Text(
               '${localizations.theoryNextLesson}: '
               '${content.text(lesson.titleId)}',
             ),

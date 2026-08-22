@@ -18,6 +18,8 @@ import 'package:tunathic/features/music_theory/domain/theory_search.dart';
 import 'package:tunathic/features/music_theory/presentation/theory_localizations.dart';
 import 'package:tunathic/features/music_theory/presentation/widgets/theory_lesson_tile.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
 
 /// The Music Theory hub: search, level filter, saved reading, and categories.
 final class MusicTheoryScreen extends ConsumerStatefulWidget {
@@ -319,11 +321,12 @@ final class _LevelFilter extends StatelessWidget {
           runSpacing: AppSpacing.small,
           children: [
             for (final entry in entries)
-              ChoiceChip(
+              SkeuoButton(
                 key: Key('theoryLevel_${entry.$1?.id ?? 'all'}'),
-                label: Text(entry.$2),
+                compact: true,
                 selected: level == entry.$1,
-                onSelected: (_) => onChanged(entry.$1),
+                onPressed: () => onChanged(entry.$1),
+                child: Text(entry.$2),
               ),
           ],
         ),
@@ -346,7 +349,7 @@ final class _CollapsibleSection extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) => Card(
+  Widget build(BuildContext context) => SkeuoCard(
     margin: EdgeInsets.zero,
     child: ExpansionTile(
       key: sectionKey,
@@ -388,7 +391,7 @@ final class _CategoryCard extends StatelessWidget {
       button: true,
       label: localizations.theoryCategorySemantics(name, count, description),
       child: ExcludeSemantics(
-        child: Card(
+        child: SkeuoCard(
           margin: EdgeInsets.zero,
           clipBehavior: Clip.antiAlias,
           child: InkWell(

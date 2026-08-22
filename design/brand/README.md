@@ -9,11 +9,11 @@ is a single-weight line (26 units on the 512 grid) with round caps.
 
 | Token          | Hex       | Use                                     |
 | -------------- | --------- | --------------------------------------- |
-| Electric blue  | `#287DFF` | Primary mark, mark on light backgrounds |
-| Soft cyan      | `#72D7F3` | Mark on dark (charcoal) backgrounds      |
-| Off-white      | `#F3F7FA` | Light icon surface, wordmark on dark    |
-| Charcoal surf. | `#18232D` | Dark icon / adaptive background         |
-| Deep charcoal  | `#111820` | Wordmark text on light                  |
+| Warm orange    | `#C85818` | Primary mark and controls                |
+| Amber          | `#E1842F` | Mark on dark workshop backgrounds        |
+| Warm ivory     | `#FFFDF8` | Light icon and application surface       |
+| Workshop brown | `#4A3C32` | Optional dark icon surface               |
+| Warm charcoal  | `#302822` | Wordmark and primary text                |
 
 These match `lib/app/theme/app_colors.dart`.
 
@@ -31,8 +31,8 @@ These match `lib/app/theme/app_colors.dart`.
 ## Usage
 
 - Keep clear space of at least one prong-width around the mark.
-- Never restretch, recolor outside the palette, add a second colour to the
-  mark, or apply gradients/shadows — the direction is flat and restrained.
+- Never restretch or recolor the mark outside the palette. Surface depth may
+  use the restrained enamel bevel and shadow rules from the application UI.
 - Keep the line weight proportional; do not thin it below the 26/512 ratio, or
   the prongs disappear at favicon sizes.
 - The wordmark uses a Segoe UI / system sans fallback. Swap in the product

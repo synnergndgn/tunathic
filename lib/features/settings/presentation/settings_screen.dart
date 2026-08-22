@@ -6,11 +6,20 @@ import 'package:go_router/go_router.dart';
 import 'package:tunathic/app/router/app_router.dart';
 import 'package:tunathic/app/settings/app_settings.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
+import 'package:tunathic/app/theme/app_typography.dart';
 import 'package:tunathic/core/app_info/application_info.dart';
 import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/features/about/presentation/license_page.dart';
+import 'package:tunathic/features/tuner/application/tuning_reference_controller.dart';
+import 'package:tunathic/features/tuner/presentation/widgets/tuning_reference_selector.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/rack_panel.dart';
+import 'package:tunathic/shared/widgets/studio/settings_group.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
+import 'package:tunathic/shared/widgets/studio/tunathic_scaffold.dart';
 
+/// Device preferences, grouped the way a rack unit's menu would be.
 final class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -21,6 +30,7 @@ final class SettingsScreen extends ConsumerWidget {
     final applicationInfo = ref.watch(initialApplicationInfoProvider);
     final controller = ref.read(appSettingsProvider.notifier);
     final haptics = ref.read(appHapticsProvider);
+    final reference = ref.watch(tuningReferenceProvider);
 
     void selectTheme(ThemeMode mode) {
       unawaited(haptics.selection());
@@ -32,166 +42,237 @@ final class SettingsScreen extends ConsumerWidget {
       unawaited(controller.setLocale(locale));
     }
 
-    return Scaffold(
-      appBar: AppBar(title: Text(localizations.settingsTitle)),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: AppSpacing.contentMaxWidth,
-            ),
-            child: ListView(
-              key: const Key('settingsScroll'),
-              padding: const EdgeInsets.all(AppSpacing.medium),
-              children: [
-                _SettingsSection(
-                  title: localizations.appearanceTitle,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        localizations.themeModeLabel,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: AppSpacing.small),
-                      Wrap(
-                        spacing: AppSpacing.small,
-                        runSpacing: AppSpacing.small,
-                        children: [
-                          _ThemeChoice(
-                            value: ThemeMode.system,
-                            label: localizations.themeSystem,
-                            selected: settings.themeMode == ThemeMode.system,
-                            onSelected: selectTheme,
-                          ),
-                          _ThemeChoice(
-                            value: ThemeMode.light,
-                            label: localizations.themeLight,
-                            selected: settings.themeMode == ThemeMode.light,
-                            onSelected: selectTheme,
-                          ),
-                          _ThemeChoice(
-                            value: ThemeMode.dark,
-                            label: localizations.themeDark,
-                            selected: settings.themeMode == ThemeMode.dark,
-                            onSelected: selectTheme,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.large),
-                      Text(
-                        localizations.languageTitle,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: AppSpacing.small),
-                      _LocaleChoice(
-                        value: AppLocale.system,
-                        label: localizations.languageSystem,
-                        selected: settings.locale == AppLocale.system,
-                        onSelected: selectLocale,
-                      ),
-                      _LocaleChoice(
-                        value: AppLocale.english,
-                        label: localizations.languageEnglish,
-                        selected: settings.locale == AppLocale.english,
-                        onSelected: selectLocale,
-                      ),
-                      _LocaleChoice(
-                        value: AppLocale.turkish,
-                        label: localizations.languageTurkish,
-                        selected: settings.locale == AppLocale.turkish,
-                        onSelected: selectLocale,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.large),
-                _SettingsSection(
-                  title: localizations.interactionTitle,
-                  child: SwitchListTile(
-                    key: const Key('hapticsToggle'),
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(localizations.hapticFeedbackTitle),
-                    subtitle: Text(localizations.hapticFeedbackDescription),
-                    value: settings.hapticsEnabled,
-                    onChanged: (enabled) =>
-                        unawaited(controller.setHapticsEnabled(enabled)),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.large),
-                _SettingsSection(
-                  title: localizations.applicationTitle,
-                  child: Column(
-                    children: [
-                      _ApplicationTile(
-                        key: const Key('settingsAbout'),
-                        icon: Icons.info_outline,
-                        title: localizations.aboutTunathic,
-                        onTap: () {
-                          unawaited(haptics.selection());
-                          context.push(AppRoutes.about);
-                        },
-                      ),
-                      _ApplicationTile(
-                        key: const Key('settingsPrivacy'),
-                        icon: Icons.privacy_tip_outlined,
-                        title: localizations.privacyTitle,
-                        onTap: () {
-                          unawaited(haptics.selection());
-                          context.push(AppRoutes.privacy);
-                        },
-                      ),
-                      _ApplicationTile(
-                        key: const Key('settingsLicenses'),
-                        icon: Icons.code_outlined,
-                        title: localizations.openSourceLicenses,
-                        onTap: () {
-                          unawaited(haptics.selection());
-                          showTunathicLicensePage(context, applicationInfo);
-                        },
-                      ),
-                      ListTile(
-                        key: const Key('settingsVersion'),
-                        contentPadding: EdgeInsets.zero,
-                        leading: const Icon(Icons.tag_outlined),
-                        title: Text(localizations.versionLabel),
-                        trailing: Text(applicationInfo.displayVersion),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+    return TunathicScaffold(
+      title: localizations.settingsTitle,
+      body: ListView(
+        key: const Key('settingsScroll'),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.medium,
+          AppSpacing.medium,
+          AppSpacing.medium,
+          AppSpacing.xLarge,
         ),
+        children: [
+          SettingsGroup(
+            title: localizations.settingsAudioSection,
+            icon: Icons.graphic_eq,
+            children: [
+              _ChoiceRow(
+                label: localizations.referencePitchLabel,
+                description: localizations.referencePitchRangeNote,
+                child: TuningReferenceSelector(
+                  reference: reference,
+                  showSlider: true,
+                  onChanged: (value) {
+                    unawaited(haptics.selection());
+                    unawaited(
+                      ref
+                          .read(tuningReferenceProvider.notifier)
+                          .setReference(value),
+                    );
+                  },
+                ),
+              ),
+              _InfoRow(
+                label: localizations.microphoneUsageLabel,
+                value: localizations.microphoneUsageValue,
+                description: localizations.microphoneUsageDescription,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          SettingsGroup(
+            title: localizations.appearanceTitle,
+            icon: Icons.contrast,
+            children: [
+              _ChoiceRow(
+                label: localizations.themeModeLabel,
+                child: Wrap(
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.sm,
+                  children: [
+                    _ThemeChoice(
+                      value: ThemeMode.system,
+                      label: localizations.themeSystem,
+                      selected: settings.themeMode == ThemeMode.system,
+                      onSelected: selectTheme,
+                    ),
+                    _ThemeChoice(
+                      value: ThemeMode.light,
+                      label: localizations.themeLight,
+                      selected: settings.themeMode == ThemeMode.light,
+                      onSelected: selectTheme,
+                    ),
+                    _ThemeChoice(
+                      value: ThemeMode.dark,
+                      label: localizations.themeDark,
+                      selected: settings.themeMode == ThemeMode.dark,
+                      onSelected: selectTheme,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          SettingsGroup(
+            title: localizations.interactionTitle,
+            icon: Icons.vibration,
+            children: [
+              _ToggleRow(
+                key: const Key('hapticsToggle'),
+                label: localizations.hapticFeedbackTitle,
+                description: localizations.hapticFeedbackDescription,
+                value: settings.hapticsEnabled,
+                onChanged: (enabled) =>
+                    unawaited(controller.setHapticsEnabled(enabled)),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          SettingsGroup(
+            title: localizations.languageTitle,
+            icon: Icons.translate,
+            children: [
+              _LocaleChoice(
+                value: AppLocale.system,
+                label: localizations.languageSystem,
+                selected: settings.locale == AppLocale.system,
+                onSelected: selectLocale,
+              ),
+              _LocaleChoice(
+                value: AppLocale.english,
+                label: localizations.languageEnglish,
+                selected: settings.locale == AppLocale.english,
+                onSelected: selectLocale,
+              ),
+              _LocaleChoice(
+                value: AppLocale.turkish,
+                label: localizations.languageTurkish,
+                selected: settings.locale == AppLocale.turkish,
+                onSelected: selectLocale,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          SettingsGroup(
+            title: localizations.applicationTitle,
+            icon: Icons.info_outline,
+            children: [
+              _ApplicationTile(
+                key: const Key('settingsAbout'),
+                icon: Icons.info_outline,
+                title: localizations.aboutTunathic,
+                onTap: () {
+                  unawaited(haptics.selection());
+                  context.push(AppRoutes.about);
+                },
+              ),
+              _ApplicationTile(
+                key: const Key('settingsPrivacy'),
+                icon: Icons.privacy_tip_outlined,
+                title: localizations.privacyTitle,
+                onTap: () {
+                  unawaited(haptics.selection());
+                  context.push(AppRoutes.privacy);
+                },
+              ),
+              _ApplicationTile(
+                key: const Key('settingsLicenses'),
+                icon: Icons.code_outlined,
+                title: localizations.openSourceLicenses,
+                onTap: () {
+                  unawaited(haptics.selection());
+                  showTunathicLicensePage(context, applicationInfo);
+                },
+              ),
+              RackRow(
+                key: const Key('settingsVersion'),
+                icon: Icons.tag_outlined,
+                label: localizations.versionLabel,
+                value: Text(
+                  applicationInfo.displayVersion,
+                  style: TunathicTextStyles.metadata(context),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 }
 
-final class _SettingsSection extends StatelessWidget {
-  const _SettingsSection({required this.title, required this.child});
+/// A read-only fact about how the device behaves.
+final class _InfoRow extends StatelessWidget {
+  const _InfoRow({
+    required this.label,
+    required this.value,
+    required this.description,
+  });
 
-  final String title;
-  final Widget child;
+  final String label;
+  final String value;
+  final String description;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Semantics(
-          header: true,
-          child: Text(title, style: Theme.of(context).textTheme.headlineSmall),
-        ),
-        const SizedBox(height: AppSpacing.small),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.medium),
-            child: child,
+    return SkeuoInsetPanel(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.xs,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(label, style: TunathicTextStyles.compactLabel(context)),
+              Text(
+                value,
+                style: TunathicTextStyles.metadata(
+                  context,
+                ).copyWith(color: Theme.of(context).colorScheme.primary),
+              ),
+            ],
           ),
-        ),
-      ],
+          const SizedBox(height: AppSpacing.xs),
+          Text(description, style: TunathicTextStyles.metadata(context)),
+        ],
+      ),
+    );
+  }
+}
+
+/// A labelled row whose control is too wide to sit beside its label.
+final class _ChoiceRow extends StatelessWidget {
+  const _ChoiceRow({
+    required this.label,
+    required this.child,
+    this.description,
+  });
+
+  final String label;
+  final Widget child;
+  final String? description;
+
+  @override
+  Widget build(BuildContext context) {
+    final description = this.description;
+    return SkeuoInsetPanel(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: TunathicTextStyles.compactLabel(context)),
+          if (description != null) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(description, style: TunathicTextStyles.metadata(context)),
+          ],
+          const SizedBox(height: AppSpacing.md),
+          child,
+        ],
+      ),
     );
   }
 }
@@ -210,12 +291,15 @@ final class _ApplicationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: Icon(icon),
-      title: Text(title),
-      trailing: const Icon(Icons.chevron_right),
+    return RackRow(
+      icon: icon,
+      label: title,
       onTap: onTap,
+      value: Icon(
+        Icons.chevron_right,
+        size: 20,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
     );
   }
 }
@@ -235,14 +319,12 @@ final class _ThemeChoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
+    return SkeuoButton(
+      compact: true,
       selected: selected,
-      button: true,
-      child: ChoiceChip(
-        label: Text(label),
-        selected: selected,
-        onSelected: (_) => onSelected(value),
-      ),
+      semanticLabel: label,
+      onPressed: () => onSelected(value),
+      child: Text(label, textAlign: TextAlign.center),
     );
   }
 }
@@ -262,14 +344,62 @@ final class _LocaleChoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Semantics(
       selected: selected,
       button: true,
-      child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(label),
-        trailing: selected ? const Icon(Icons.check) : null,
+      child: RackRow(
+        label: label,
         onTap: () => onSelected(value),
+        value: selected
+            ? SkeuoStatusBadge(
+                label: label,
+                color: colors.primary,
+                icon: Icons.check,
+              )
+            : Icon(
+                Icons.radio_button_unchecked,
+                size: 18,
+                color: colors.onSurfaceVariant,
+              ),
+      ),
+    );
+  }
+}
+
+final class _ToggleRow extends StatelessWidget {
+  const _ToggleRow({
+    required this.label,
+    required this.description,
+    required this.value,
+    required this.onChanged,
+    super.key,
+  });
+
+  final String label;
+  final String description;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return SkeuoInsetPanel(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: TunathicTextStyles.compactLabel(context)),
+                const SizedBox(height: AppSpacing.xs),
+                Text(description, style: TunathicTextStyles.metadata(context)),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          SkeuoSwitch(value: value, semanticLabel: label, onChanged: onChanged),
+        ],
       ),
     );
   }

@@ -4,6 +4,8 @@ import 'package:tunathic/core/music_theory/chord_symbol_parser.dart';
 import 'package:tunathic/core/music_theory/pitch_class.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/pitch_class_selector.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
 
 /// What the performer chose in the chord picker.
 sealed class ChordPickerResult {
@@ -45,11 +47,16 @@ final class ChordPickerSheet extends StatefulWidget {
   }) => showModalBottomSheet<ChordPickerResult>(
     context: context,
     isScrollControlled: true,
-    showDragHandle: true,
-    builder: (context) => ChordPickerSheet(
-      word: word,
-      currentChord: currentChord,
-      songChords: songChords,
+    showDragHandle: false,
+    backgroundColor: Colors.transparent,
+    builder: (context) => SkeuoSurface(
+      prominent: true,
+      padding: const EdgeInsets.only(top: AppSpacing.medium),
+      child: ChordPickerSheet(
+        word: word,
+        currentChord: currentChord,
+        songChords: songChords,
+      ),
     ),
   );
 
@@ -117,6 +124,16 @@ class _ChordPickerSheetState extends State<ChordPickerSheet> {
               ),
             ),
             const SizedBox(height: AppSpacing.medium),
+            if (widget.currentChord != null) ...[
+              SkeuoButton(
+                key: const Key('chordPickerRemove'),
+                icon: Icons.backspace_outlined,
+                onPressed: () =>
+                    Navigator.of(context).pop(const ChordCleared()),
+                child: Text(localizations.removeChord),
+              ),
+              const SizedBox(height: AppSpacing.large),
+            ],
             if (widget.songChords.isNotEmpty) ...[
               Text(
                 localizations.chordsUsedInSong,
@@ -128,10 +145,11 @@ class _ChordPickerSheetState extends State<ChordPickerSheet> {
                 runSpacing: AppSpacing.small,
                 children: [
                   for (final chord in widget.songChords)
-                    ActionChip(
+                    SkeuoButton(
                       key: Key('chordPickerRecent-$chord'),
-                      label: Text(chord),
+                      compact: true,
                       onPressed: () => _choose(chord),
+                      child: Text(chord),
                     ),
                 ],
               ),
@@ -158,23 +176,14 @@ class _ChordPickerSheetState extends State<ChordPickerSheet> {
               runSpacing: AppSpacing.small,
               children: [
                 for (final quality in _qualities)
-                  ActionChip(
+                  SkeuoButton(
                     key: Key('chordPickerQuality-$quality'),
-                    label: Text('${_root.symbol}$quality'),
+                    compact: true,
                     onPressed: () => _choose('${_root.symbol}$quality'),
+                    child: Text('${_root.symbol}$quality'),
                   ),
               ],
             ),
-            if (widget.currentChord != null) ...[
-              const SizedBox(height: AppSpacing.large),
-              OutlinedButton.icon(
-                key: const Key('chordPickerRemove'),
-                onPressed: () =>
-                    Navigator.of(context).pop(const ChordCleared()),
-                icon: const Icon(Icons.backspace_outlined),
-                label: Text(localizations.removeChord),
-              ),
-            ],
           ],
         ),
       ),

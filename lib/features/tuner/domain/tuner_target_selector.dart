@@ -1,4 +1,5 @@
 import 'package:tunathic/features/tuner/domain/tuning.dart';
+import 'package:tunathic/features/tuner/domain/tuning_reference.dart';
 import 'package:tunathic/features/tuner_realtime/domain/pitch_stabilizer.dart';
 
 final class TunerTargetSelector {
@@ -13,12 +14,20 @@ final class TunerTargetSelector {
 
   TuningStringTarget? get current => _current;
 
-  TuningStringTarget? select(StabilizedPitch? pitch, TuningPreset tuning) {
+  TuningStringTarget? select(
+    StabilizedPitch? pitch,
+    TuningPreset tuning, {
+    TuningReference reference = TuningReference.standard,
+  }) {
     if (pitch == null) return recordNoPitch();
     _noPitchCount = 0;
 
-    final candidate = _nearest(pitch.frequencyHz, tuning);
-    final candidateDistance = _distance(pitch.frequencyHz, candidate);
+    final candidate = _nearest(pitch.frequencyHz, tuning, reference);
+    final candidateDistance = _distance(
+      pitch.frequencyHz,
+      candidate,
+      reference,
+    );
     if (candidateDistance > configuration.maximumAutomaticTargetDistanceCents) {
       return recordNoPitch();
     }
@@ -33,7 +42,7 @@ final class TunerTargetSelector {
       return current;
     }
 
-    final currentDistance = _distance(pitch.frequencyHz, current);
+    final currentDistance = _distance(pitch.frequencyHz, current, reference);
     if (currentDistance <=
         candidateDistance + configuration.targetHysteresisCents) {
       _clearPending();
@@ -67,11 +76,15 @@ final class TunerTargetSelector {
     _clearPending();
   }
 
-  TuningStringTarget _nearest(double frequency, TuningPreset tuning) {
+  TuningStringTarget _nearest(
+    double frequency,
+    TuningPreset tuning,
+    TuningReference reference,
+  ) {
     var nearest = tuning.strings.first;
-    var nearestDistance = _distance(frequency, nearest);
+    var nearestDistance = _distance(frequency, nearest, reference);
     for (final target in tuning.strings.skip(1)) {
-      final distance = _distance(frequency, target);
+      final distance = _distance(frequency, target, reference);
       if (distance < nearestDistance) {
         nearest = target;
         nearestDistance = distance;
@@ -80,8 +93,14 @@ final class TunerTargetSelector {
     return nearest;
   }
 
-  double _distance(double frequency, TuningStringTarget target) =>
-      TunerPitchMath.centsBetween(frequency, target.frequencyHz)!.abs();
+  double _distance(
+    double frequency,
+    TuningStringTarget target,
+    TuningReference reference,
+  ) => TunerPitchMath.centsBetween(
+    frequency,
+    target.frequencyHzFor(reference),
+  )!.abs();
 
   void _accept(TuningStringTarget target) {
     _current = target;

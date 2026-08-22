@@ -1,8 +1,16 @@
 import 'dart:math' as math;
 
+import 'package:tunathic/features/tuner/domain/tuning_reference.dart';
+
 enum TunerMode {
+  /// Tunathic picks the closest string of the active preset.
   automatic('automatic'),
-  manual('manual');
+
+  /// The player locks one string of the active preset.
+  manual('manual'),
+
+  /// No preset at all: whatever note is played is named and measured.
+  chromatic('chromatic');
 
   const TunerMode(this.id);
 
@@ -51,7 +59,15 @@ final class TuningStringTarget {
 
   int get octave => midiNote ~/ 12 - 1;
 
+  /// The target at concert pitch. Use [frequencyHzFor] when the player has
+  /// chosen a different reference.
   double get frequencyHz => TunerPitchMath.frequencyForMidi(midiNote);
+
+  double frequencyHzFor(TuningReference reference) =>
+      TunerPitchMath.frequencyForMidi(
+        midiNote,
+        referenceFrequencyHz: reference.a4FrequencyHz,
+      );
 }
 
 final class TuningPreset {

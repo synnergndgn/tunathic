@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:tunathic/app/theme/app_radii.dart';
 import 'package:tunathic/core/music_theory/fretboard.dart';
 
 enum FretboardDisplayMode { notes, degrees }
@@ -244,7 +245,7 @@ final class _FretboardPainter extends CustomPainter {
             center: center,
             radius: _FretboardGeometry.noteRadius,
           ),
-          const Radius.circular(5),
+          AppRadii.large,
         );
         canvas.drawRRect(rect, fill);
         canvas.drawRRect(rect.inflate(2), outline);

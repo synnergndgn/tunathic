@@ -278,6 +278,48 @@ abstract class AppLocalizations {
   /// **'© 2026 GUNDEV. All rights reserved.'**
   String get copyrightNotice;
 
+  /// No description provided for @settingsAudioSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio and tuning'**
+  String get settingsAudioSection;
+
+  /// No description provided for @referencePitchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference pitch'**
+  String get referencePitchLabel;
+
+  /// No description provided for @referencePitchRangeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Every tool tunes to this reference. 430–450 Hz, in 1 Hz steps.'**
+  String get referencePitchRangeNote;
+
+  /// No description provided for @microphoneUsageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone'**
+  String get microphoneUsageLabel;
+
+  /// No description provided for @microphoneUsageValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuner only'**
+  String get microphoneUsageValue;
+
+  /// No description provided for @microphoneUsageDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested when you open the tuner, released when you leave it. Nothing is recorded.'**
+  String get microphoneUsageDescription;
+
+  /// No description provided for @aboutManifesto.
+  ///
+  /// In en, this message translates to:
+  /// **'Built for musicians who need fast, clean and reliable tuning.'**
+  String get aboutManifesto;
+
   /// No description provided for @availableToolsTitle.
   ///
   /// In en, this message translates to:
@@ -329,7 +371,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyMicrophoneDescription.
   ///
   /// In en, this message translates to:
-  /// **'The Guitar Tuner uses microphone access only after you start it. Raw audio and pitch estimates are processed transiently on this device, are never saved or uploaded, and stop when you leave the tuner or the app enters the background.'**
+  /// **'The Guitar Tuner uses microphone access only while it is open, starting when you enter the screen. Raw audio and pitch estimates are processed transiently on this device, are never saved or uploaded, and stop when you leave the tuner or the app enters the background.'**
   String get privacyMicrophoneDescription;
 
   /// No description provided for @privacyNoCollectionTitle.
@@ -2154,6 +2196,12 @@ abstract class AppLocalizations {
   /// **'Manual'**
   String get manualMode;
 
+  /// No description provided for @chromaticMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Chromatic'**
+  String get chromaticMode;
+
   /// No description provided for @targetStringLabel.
   ///
   /// In en, this message translates to:
@@ -2195,6 +2243,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stop tuning'**
   String get stopTuning;
+
+  /// No description provided for @resumeTuning.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume listening'**
+  String get resumeTuning;
 
   /// No description provided for @retryMicrophone.
   ///
@@ -2319,7 +2373,7 @@ abstract class AppLocalizations {
   /// No description provided for @tunerStoppedMessage.
   ///
   /// In en, this message translates to:
-  /// **'Tap Start when you are ready to tune.'**
+  /// **'Listening paused.'**
   String get tunerStoppedMessage;
 
   /// No description provided for @tunerRequestingPermissionMessage.
@@ -2337,13 +2391,13 @@ abstract class AppLocalizations {
   /// No description provided for @tunerWaitingForSignalMessage.
   ///
   /// In en, this message translates to:
-  /// **'Listening. Play one string.'**
+  /// **'Listening… Play one note.'**
   String get tunerWaitingForSignalMessage;
 
   /// No description provided for @tunerUnstableSignalMessage.
   ///
   /// In en, this message translates to:
-  /// **'Signal is unstable. Let one string ring clearly.'**
+  /// **'Listening… no stable pitch yet.'**
   String get tunerUnstableSignalMessage;
 
   /// No description provided for @tunerStablePitchMessage.
@@ -2355,13 +2409,13 @@ abstract class AppLocalizations {
   /// No description provided for @tunerNoSignalMessage.
   ///
   /// In en, this message translates to:
-  /// **'No reliable signal. Play one string.'**
+  /// **'No reliable signal. Play one note.'**
   String get tunerNoSignalMessage;
 
   /// No description provided for @tunerPermissionDeniedMessage.
   ///
   /// In en, this message translates to:
-  /// **'Microphone permission is needed to tune.'**
+  /// **'Microphone permission required.'**
   String get tunerPermissionDeniedMessage;
 
   /// No description provided for @tunerMicrophoneUnavailableMessage.
@@ -2375,6 +2429,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pitch processing stopped. Try again.'**
   String get tunerProcessingErrorMessage;
+
+  /// No description provided for @tunerModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Detection'**
+  String get tunerModeLabel;
+
+  /// No description provided for @tunerAutomaticTargetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tunathic picks the closest string while you play. Switch to Manual to lock one.'**
+  String get tunerAutomaticTargetHint;
+
+  /// No description provided for @tunerChromaticTargetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Any note you play is named against your reference pitch. No tuning preset is used.'**
+  String get tunerChromaticTargetHint;
+
+  /// No description provided for @tunerChromaticTargetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chromatic'**
+  String get tunerChromaticTargetLabel;
+
+  /// No description provided for @tunerTargetPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for a string'**
+  String get tunerTargetPending;
+
+  /// No description provided for @tunerActiveTargetSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuning to {note}, string {position}'**
+  String tunerActiveTargetSemantics(String note, int position);
+
+  /// No description provided for @referencePitchValue.
+  ///
+  /// In en, this message translates to:
+  /// **'A4 = {value} Hz'**
+  String referencePitchValue(String value);
+
+  /// No description provided for @referencePitchSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference pitch A4, {value} hertz'**
+  String referencePitchSemantics(String value);
+
+  /// No description provided for @decreaseReferencePitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower the reference pitch'**
+  String get decreaseReferencePitch;
+
+  /// No description provided for @increaseReferencePitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Raise the reference pitch'**
+  String get increaseReferencePitch;
+
+  /// No description provided for @resetReferencePitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to A4 = 440 Hz'**
+  String get resetReferencePitch;
+
+  /// No description provided for @tunerMicrophonePermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission required'**
+  String get tunerMicrophonePermissionTitle;
+
+  /// No description provided for @tunerMicrophoneUnavailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone unavailable'**
+  String get tunerMicrophoneUnavailableTitle;
+
+  /// No description provided for @tunerProcessingErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pitch analysis stopped'**
+  String get tunerProcessingErrorTitle;
+
+  /// No description provided for @tunerNoSignalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No signal detected'**
+  String get tunerNoSignalTitle;
 
   /// No description provided for @beginner.
   ///

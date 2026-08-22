@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
 import 'package:tunathic/core/music_theory/pitch_class.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 
 final class PitchClassChoice {
   const PitchClassChoice({required this.spelling, this.label});
@@ -122,11 +123,12 @@ final class PitchClassSelector extends StatelessWidget {
           runSpacing: AppSpacing.small,
           children: [
             for (final choice in choices)
-              ChoiceChip(
+              SkeuoButton(
                 key: Key('$keyPrefix-${choice.spelling.symbol}'),
-                label: Text(choice.displayLabel),
+                compact: true,
                 selected: selectedRoot.pitchClass == choice.spelling.pitchClass,
-                onSelected: (_) => onSelected(choice.spelling),
+                onPressed: () => onSelected(choice.spelling),
+                child: Text(choice.displayLabel),
               ),
           ],
         ),

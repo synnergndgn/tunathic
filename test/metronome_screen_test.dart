@@ -7,6 +7,7 @@ import 'package:tunathic/core/preferences/preferences_store.dart';
 import 'package:tunathic/features/bpm_tap/presentation/bpm_tap_controller.dart';
 import 'package:tunathic/features/metronome/application/metronome_controller.dart';
 import 'package:tunathic/features/metronome/domain/metronome_config.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 
 import 'support/fakes.dart';
 import 'support/metronome_fakes.dart';
@@ -56,14 +57,10 @@ void main() {
     );
     expect(find.text('Current beat: 1 of 4'), findsOneWidget);
 
-    await tester.scrollUntilVisible(
-      find.byKey(const Key('signature-3/4')),
-      180,
-      scrollable: _scrollableInside('metronomeScroll'),
-    );
+    await _reveal(tester, find.byKey(const Key('signature-3/4')));
     await tester.tap(find.byKey(const Key('signature-3/4')));
     await tester.pump();
-    final threeFour = tester.widget<ChoiceChip>(
+    final threeFour = tester.widget<SkeuoButton>(
       find.byKey(const Key('signature-3/4')),
     );
     expect(threeFour.selected, isTrue);
@@ -71,7 +68,7 @@ void main() {
     await tester.tap(find.byKey(const Key('metronomeReset')));
     await tester.pumpAndSettle();
 
-    final fourFour = tester.widget<ChoiceChip>(
+    final fourFour = tester.widget<SkeuoButton>(
       find.byKey(const Key('signature-4/4')),
     );
     expect(fourFour.selected, isTrue);
@@ -188,7 +185,7 @@ void main() {
       scrollable: _scrollableInside('metronomeScroll'),
     );
 
-    final accentSwitch = tester.widget<SwitchListTile>(
+    final accentSwitch = tester.widget<SkeuoSwitch>(
       find.byKey(const Key('metronomeAccent')),
     );
     expect(accentSwitch.value, isTrue);
@@ -198,7 +195,7 @@ void main() {
 
     expect(
       tester
-          .widget<SwitchListTile>(find.byKey(const Key('metronomeAccent')))
+          .widget<SkeuoSwitch>(find.byKey(const Key('metronomeAccent')))
           .value,
       isFalse,
     );
@@ -218,11 +215,7 @@ void main() {
 
     await tester.tap(find.byKey(const Key('metronomeStartStop')));
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
-      find.text('Metronome audio unavailable'),
-      -220,
-      scrollable: _scrollableInside('metronomeScroll'),
-    );
+    await _reveal(tester, find.text('Metronome audio unavailable'));
 
     expect(find.text('Metronome audio unavailable'), findsOneWidget);
     expect(find.text('Retry audio'), findsOneWidget);
@@ -294,6 +287,17 @@ void main() {
 
     await tester.pumpWidget(const SizedBox());
   });
+}
+
+/// Scrolls [finder] into view inside the metronome list and settles, so a
+/// following tap hits the widget where it ended up.
+Future<void> _reveal(WidgetTester tester, Finder finder) async {
+  await tester.scrollUntilVisible(
+    finder,
+    220,
+    scrollable: _scrollableInside('metronomeScroll'),
+  );
+  await tester.pumpAndSettle();
 }
 
 Finder _scrollableInside(String key) => find

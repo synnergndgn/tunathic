@@ -10,6 +10,8 @@ import 'package:tunathic/features/circle_of_fifths/presentation/circle_of_fifths
 import 'package:tunathic/features/fretboard/domain/fretboard_route_state.dart';
 import 'package:tunathic/features/scale_library/domain/scale_library_route_state.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
 
 final class CircleOfFifthsScreen extends StatefulWidget {
   const CircleOfFifthsScreen({super.key});
@@ -226,10 +228,11 @@ final class _KeyDetails extends StatelessWidget {
           const SizedBox(height: AppSpacing.small),
           Align(
             alignment: AlignmentDirectional.centerStart,
-            child: ActionChip(
+            child: SkeuoButton(
               key: const Key('enharmonicKeyAction'),
-              avatar: const Icon(Icons.swap_horiz, size: 18),
-              label: Text(
+              compact: true,
+              icon: Icons.swap_horiz,
+              child: Text(
                 '${localizations.enharmonicEquivalentLabel}: '
                 '${localizations.keyName(enharmonic)}',
               ),
@@ -252,17 +255,18 @@ final class _KeyDetails extends StatelessWidget {
           spacing: AppSpacing.small,
           runSpacing: AppSpacing.small,
           children: [
-            FilledButton.icon(
+            SkeuoButton(
               key: const Key('circleViewScale'),
               onPressed: onViewScale,
-              icon: const Icon(Icons.stacked_line_chart),
-              label: Text(localizations.viewScale),
+              selected: true,
+              icon: Icons.stacked_line_chart,
+              child: Text(localizations.viewScale),
             ),
-            OutlinedButton.icon(
+            SkeuoButton(
               key: const Key('circleViewFretboard'),
               onPressed: onViewFretboard,
-              icon: const Icon(Icons.grid_on_outlined),
-              label: Text(localizations.viewOnFretboard),
+              icon: Icons.grid_on_outlined,
+              child: Text(localizations.viewOnFretboard),
             ),
           ],
         ),
@@ -324,7 +328,7 @@ final class _KeySignatureCard extends StatelessWidget {
       container: true,
       excludeSemantics: true,
       label: localizations.keySignatureSemantics(description, spokenNotes),
-      child: Card(
+      child: SkeuoCard(
         key: const Key('keySignatureCard'),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.medium),
@@ -380,7 +384,7 @@ final class _RelationshipsCard extends StatelessWidget {
     final relative = selectedKey.relativeKey;
     final fifth = CircleOfFifths.clockwiseNeighbor(selectedKey);
     final fourth = CircleOfFifths.counterClockwiseNeighbor(selectedKey);
-    return Card(
+    return SkeuoCard(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.medium),
         child: Wrap(
@@ -440,9 +444,11 @@ final class _RelationshipChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ActionChip(
-      avatar: Icon(icon, size: 18),
-      label: Text.rich(
+    return SkeuoButton(
+      compact: true,
+      icon: icon,
+      onPressed: onPressed,
+      child: Text.rich(
         TextSpan(
           children: [
             TextSpan(
@@ -456,7 +462,6 @@ final class _RelationshipChip extends StatelessWidget {
           ],
         ),
       ),
-      onPressed: onPressed,
     );
   }
 }
@@ -469,7 +474,7 @@ final class _ScaleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
-    return Card(
+    return SkeuoCard(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.medium),
         child: Column(
@@ -572,7 +577,7 @@ final class _DiatonicChordCard extends StatelessWidget {
         entry.chord.symbol,
       ),
       onTap: onTap,
-      child: Card(
+      child: SkeuoCard(
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: AppRadii.smallBorder,

@@ -8,6 +8,8 @@ import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_controller.dart';
 import 'package:tunathic/features/tuner_realtime/application/realtime_pitch_pipeline.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
 
 final class TunerAudioPrototypeScreen extends ConsumerStatefulWidget {
   const TunerAudioPrototypeScreen({super.key});
@@ -43,7 +45,9 @@ final class _TunerAudioPrototypeScreenState
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _controller?.releaseForNavigation();
+    // Capture is not stopped from here: the provider write would land after
+    // this element is defunct. Auto-disposal of the capture provider closes
+    // the microphone once nothing is watching it.
     super.dispose();
   }
 
@@ -97,8 +101,10 @@ final class _TunerAudioPrototypeScreenState
                         spacing: AppSpacing.small,
                         runSpacing: AppSpacing.small,
                         children: [
-                          FilledButton.icon(
+                          SkeuoButton(
                             key: const Key('startTunerAudioCapture'),
+                            selected: true,
+                            icon: Icons.mic_outlined,
                             onPressed:
                                 state.status == TunerCaptureStatus.capturing ||
                                     state.isBusy
@@ -107,19 +113,18 @@ final class _TunerAudioPrototypeScreenState
                                     unawaited(haptics.lightImpact());
                                     unawaited(controller.start());
                                   },
-                            icon: const Icon(Icons.mic_outlined),
-                            label: Text(localizations.startCapture),
+                            child: Text(localizations.startCapture),
                           ),
-                          OutlinedButton.icon(
+                          SkeuoButton(
                             key: const Key('stopTunerAudioCapture'),
+                            icon: Icons.stop_outlined,
                             onPressed: state.canStop
                                 ? () {
                                     unawaited(haptics.selection());
                                     unawaited(controller.stop());
                                   }
                                 : null,
-                            icon: const Icon(Icons.stop_outlined),
-                            label: Text(localizations.stopCapture),
+                            child: Text(localizations.stopCapture),
                           ),
                         ],
                       ),
@@ -445,7 +450,7 @@ final class _NoticeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    return Card(
+    return SkeuoCard(
       color: colors.secondaryContainer,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.medium),
@@ -475,7 +480,7 @@ final class _SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return SkeuoCard(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.medium),
         child: Column(
@@ -535,7 +540,7 @@ final class _InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return SkeuoCard(
       child: ListTile(
         contentPadding: const EdgeInsets.all(AppSpacing.medium),
         leading: Icon(icon),

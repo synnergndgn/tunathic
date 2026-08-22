@@ -18,6 +18,8 @@ import 'package:tunathic/features/repertoire/domain/song_sheet.dart';
 import 'package:tunathic/features/repertoire/presentation/chord_picker_sheet.dart';
 import 'package:tunathic/features/repertoire/presentation/song_sheet_view.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
 
 /// The performance view: transpose by semitone and scroll hands-free.
 final class SongViewScreen extends ConsumerStatefulWidget {
@@ -365,7 +367,7 @@ final class _ChordEditingBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
+    return SkeuoCard(
       color: theme.colorScheme.secondaryContainer,
       margin: const EdgeInsets.fromLTRB(
         AppSpacing.medium,
@@ -393,7 +395,7 @@ final class _ChordEditingBanner extends StatelessWidget {
                 ),
               ),
             ),
-            FilledButton.tonal(
+            SkeuoButton(
               key: const Key('doneEditingChords'),
               onPressed: onDone,
               child: Text(localizations.doneEditingChords),
@@ -435,7 +437,7 @@ final class _PerformanceControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
+    return SkeuoCard(
       margin: const EdgeInsets.fromLTRB(
         AppSpacing.medium,
         AppSpacing.small,
@@ -501,25 +503,24 @@ final class _PerformanceControls extends StatelessWidget {
             const SizedBox(height: AppSpacing.small),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: SegmentedButton<SheetSpelling>(
+              child: SkeuoSegmentedControl<SheetSpelling>(
                 key: const Key('accidentalStyle'),
-                showSelectedIcon: false,
                 segments: [
-                  ButtonSegment(
+                  SkeuoSegment(
                     value: SheetSpelling.auto,
-                    label: Text(localizations.accidentalAuto),
+                    label: localizations.accidentalAuto,
                   ),
-                  ButtonSegment(
+                  SkeuoSegment(
                     value: SheetSpelling.sharps,
-                    label: Text(localizations.accidentalSharps),
+                    label: localizations.accidentalSharps,
                   ),
-                  ButtonSegment(
+                  SkeuoSegment(
                     value: SheetSpelling.flats,
-                    label: Text(localizations.accidentalFlats),
+                    label: localizations.accidentalFlats,
                   ),
                 ],
-                selected: {spelling},
-                onSelectionChanged: (selection) => onSpelling(selection.first),
+                selected: spelling,
+                onChanged: onSpelling,
               ),
             ),
             const SizedBox(height: AppSpacing.small),
@@ -534,11 +535,12 @@ final class _PerformanceControls extends StatelessWidget {
                   message: scrolling
                       ? localizations.stopAutoScroll
                       : localizations.startAutoScroll,
-                  child: FilledButton.tonalIcon(
+                  child: SkeuoButton(
                     key: const Key('autoScrollToggle'),
                     onPressed: onToggleScroll,
-                    icon: Icon(scrolling ? Icons.pause : Icons.play_arrow),
-                    label: Text(localizations.autoScroll),
+                    selected: scrolling,
+                    icon: scrolling ? Icons.pause : Icons.play_arrow,
+                    child: Text(localizations.autoScroll),
                   ),
                 ),
                 SizedBox(

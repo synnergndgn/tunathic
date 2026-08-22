@@ -9,6 +9,8 @@ import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/features/repertoire/application/repertoire_controller.dart';
 import 'package:tunathic/features/repertoire/domain/song.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
 
 /// Lists the songs stored on this device.
 final class RepertoireScreen extends ConsumerStatefulWidget {
@@ -144,7 +146,7 @@ final class _SongList extends StatelessWidget {
             ),
           ),
         for (final song in songs)
-          Card(
+          SkeuoCard(
             clipBehavior: Clip.antiAlias,
             child: ListTile(
               key: Key('song-${song.id}'),
@@ -194,11 +196,12 @@ final class _EmptyRepertoire extends StatelessWidget {
         const SizedBox(height: AppSpacing.large),
         Align(
           alignment: AlignmentDirectional.centerStart,
-          child: FilledButton.icon(
+          child: SkeuoButton(
             key: const Key('addFirstSong'),
             onPressed: onAdd,
-            icon: const Icon(Icons.add),
-            label: Text(localizations.addSong),
+            selected: true,
+            icon: Icons.add,
+            child: Text(localizations.addSong),
           ),
         ),
       ],

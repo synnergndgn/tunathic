@@ -5,6 +5,7 @@ import 'package:tunathic/app/settings/app_settings.dart';
 import 'package:tunathic/app/theme/app_theme.dart';
 import 'package:tunathic/app/theme/app_motion.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/studio_background.dart';
 
 final class TunathicApp extends ConsumerWidget {
   const TunathicApp({super.key});
@@ -16,6 +17,8 @@ final class TunathicApp extends ConsumerWidget {
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
+      builder: (context, child) =>
+          StudioBackground(child: child ?? const SizedBox.shrink()),
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,

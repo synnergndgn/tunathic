@@ -10,6 +10,8 @@ import 'package:tunathic/features/repertoire/application/repertoire_controller.d
 import 'package:tunathic/features/repertoire/domain/chord_sheet_importer.dart';
 import 'package:tunathic/features/repertoire/domain/song.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
 
 /// Creates or edits a song. A pasted chart is converted to ChordPro on save.
 final class SongEditorScreen extends ConsumerStatefulWidget {
@@ -113,11 +115,12 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.large),
-                FilledButton.icon(
+                SkeuoButton(
                   key: const Key('saveSong'),
                   onPressed: _save,
-                  icon: const Icon(Icons.check),
-                  label: Text(localizations.saveSong),
+                  selected: true,
+                  icon: Icons.check,
+                  child: Text(localizations.saveSong),
                 ),
               ],
             ),
@@ -198,20 +201,47 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
     final localizations = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(localizations.deleteSong),
-        content: Text(localizations.deleteSongPrompt(song.title)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(localizations.cancelAction),
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: SkeuoSurface(
+          prominent: true,
+          padding: const EdgeInsets.all(AppSpacing.large),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                localizations.deleteSong,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              SkeuoDisplayPanel(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                child: Text(localizations.deleteSongPrompt(song.title)),
+              ),
+              const SizedBox(height: AppSpacing.large),
+              Wrap(
+                alignment: WrapAlignment.end,
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: [
+                  SkeuoButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(localizations.cancelAction),
+                  ),
+                  SkeuoButton(
+                    key: const Key('confirmDeleteSong'),
+                    destructive: true,
+                    selected: true,
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text(localizations.deleteAction),
+                  ),
+                ],
+              ),
+            ],
           ),
-          FilledButton(
-            key: const Key('confirmDeleteSong'),
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(localizations.deleteAction),
-          ),
-        ],
+        ),
       ),
     );
     if (confirmed != true || !mounted) return;

@@ -5,8 +5,11 @@ import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/core/logging/app_logger.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
 import 'package:tunathic/features/tuner/application/tuner_preferences.dart';
+import 'package:tunathic/features/tuner/application/tuning_reference_controller.dart';
+import 'package:tunathic/features/tuner/domain/chromatic_tuner_engine.dart';
 import 'package:tunathic/features/tuner/domain/tuner_target_selector.dart';
 import 'package:tunathic/features/tuner/domain/tuning.dart';
+import 'package:tunathic/features/tuner/domain/tuning_reference.dart';
 import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_controller.dart';
 import 'package:tunathic/features/tuner_realtime/application/realtime_pitch_pipeline.dart';
 import 'package:tunathic/features/tuner_realtime/domain/pitch_stabilizer.dart';
@@ -30,27 +33,46 @@ final class GuitarTunerState {
     required this.settings,
     required this.preset,
     required this.signalState,
+    this.reference = TuningReference.standard,
     this.target,
     this.pitch,
+    this.note,
     this.cents,
     this.accuracy,
     this.direction,
     this.settingsLoaded = false,
   });
 
-  factory GuitarTunerState.initial(TunerAudioState audio) => GuitarTunerState(
+  factory GuitarTunerState.initial(
+    TunerAudioState audio,
+    TuningReference reference,
+  ) => GuitarTunerState(
     audio: audio,
     settings: const TunerPreferencesState(),
     preset: TuningPresets.standard,
     signalState: TunerSignalState.stopped,
+    reference: reference,
   );
 
   final TunerAudioState audio;
   final TunerPreferencesState settings;
   final TuningPreset preset;
   final TunerSignalState signalState;
+
+  /// The concert pitch every note name and cents value here was measured
+  /// against.
+  final TuningReference reference;
+
+  /// The string being tuned. Always null in chromatic mode, which has no
+  /// preset to aim at.
   final TuningStringTarget? target;
+
   final StabilizedPitch? pitch;
+
+  /// What [pitch] is called at [reference]. Named for every mode, so the big
+  /// readout never disagrees with the reference the player chose.
+  final ChromaticPitch? note;
+
   final double? cents;
   final TunerAccuracy? accuracy;
   final TunerDirection? direction;
@@ -60,6 +82,8 @@ final class GuitarTunerState {
       audio.status == TunerCaptureStatus.capturing ||
       audio.status == TunerCaptureStatus.starting ||
       audio.status == TunerCaptureStatus.requestingPermission;
+
+  bool get isChromatic => settings.mode == TunerMode.chromatic;
 }
 
 final tunerUiConfigurationProvider = Provider<TunerUiConfiguration>(
@@ -78,9 +102,15 @@ final class GuitarTunerController extends Notifier<GuitarTunerState> {
   late final AppHaptics _haptics;
   late final AppLogger _logger;
   late TunerAudioState _audio;
+  late TuningReference _reference;
   TunerPreferencesState _settings = const TunerPreferencesState();
   bool _settingsLoaded = false;
   bool _disposed = false;
+
+  /// Whether the screen wants the microphone open. Set when the screen asks
+  /// to listen, cleared when the player stops on purpose, so returning from
+  /// the background only resumes a session the player did not end.
+  bool _autoListenRequested = false;
   int _inTuneCount = 0;
   bool _inTuneHapticArmed = true;
   StabilizedPitch? _displayPitch;
@@ -96,15 +126,23 @@ final class GuitarTunerController extends Notifier<GuitarTunerState> {
     _haptics = ref.read(appHapticsProvider);
     _logger = ref.read(appLoggerProvider);
     _audio = ref.read(tunerAudioProvider);
+    _reference = ref.read(tuningReferenceProvider);
     ref.listen<TunerAudioState>(tunerAudioProvider, (previous, next) {
       _onAudioState(previous, next);
     });
+    ref.listen<TuningReference>(tuningReferenceProvider, (previous, next) {
+      _onReferenceChanged(next);
+    });
     ref.onDispose(() => _disposed = true);
     unawaited(_loadPreferences());
-    return GuitarTunerState.initial(_audio);
+    return GuitarTunerState.initial(_audio, _reference);
   }
 
+  /// Opens the microphone. Safe to call more than once: the audio controller
+  /// ignores a start while a session is already opening or running, so a
+  /// rebuild cannot produce a second listener.
   Future<void> start() async {
+    _autoListenRequested = true;
     _targetSelector.reset();
     _resetDisplayPitch();
     _resetInTuneHaptic();
@@ -112,15 +150,33 @@ final class GuitarTunerController extends Notifier<GuitarTunerState> {
     await ref.read(tunerAudioProvider.notifier).start();
   }
 
-  Future<void> stop() => ref.read(tunerAudioProvider.notifier).stop();
-
-  Future<void> handleLifecycle({required bool isForeground}) => ref
-      .read(tunerAudioProvider.notifier)
-      .handleLifecycle(isForeground: isForeground);
-
-  void releaseForNavigation() {
-    ref.read(tunerAudioProvider.notifier).releaseForNavigation();
+  /// What the screen calls when it appears. Starts listening straight away,
+  /// except after a refusal: re-asking on every visit would be nagging, so a
+  /// denied microphone waits for the player to ask again with [start].
+  Future<void> ensureListening() async {
+    _autoListenRequested = true;
+    if (_audio.permissionStatus == TunerPermissionStatus.denied) return;
+    await start();
   }
+
+  Future<void> stop() async {
+    _autoListenRequested = false;
+    await ref.read(tunerAudioProvider.notifier).stop();
+  }
+
+  Future<void> handleLifecycle({required bool isForeground}) async {
+    if (!isForeground) {
+      await ref
+          .read(tunerAudioProvider.notifier)
+          .handleLifecycle(isForeground: false);
+      return;
+    }
+    if (!_autoListenRequested) return;
+    await ensureListening();
+  }
+
+  Future<void> setReference(TuningReference reference) =>
+      ref.read(tuningReferenceProvider.notifier).setReference(reference);
 
   Future<void> setMode(TunerMode mode) async {
     if (_settings.mode == mode) return;
@@ -142,6 +198,18 @@ final class GuitarTunerController extends Notifier<GuitarTunerState> {
     _processPitch(_audio);
     _publish();
     await _savePreferences();
+  }
+
+  void _onReferenceChanged(TuningReference reference) {
+    if (_disposed || reference == _reference) return;
+    _reference = reference;
+    // Targets move with the reference, so the evidence behind the current one
+    // no longer applies. Nothing about the microphone changes here: a new
+    // reference must never open a second capture session.
+    _targetSelector.reset();
+    _resetInTuneHaptic();
+    _processPitch(_audio);
+    _publish();
   }
 
   Future<void> selectManualString(int position) async {
@@ -194,11 +262,17 @@ final class GuitarTunerController extends Notifier<GuitarTunerState> {
   }
 
   void _processPitch(TunerAudioState audio) {
-    if (_settings.mode == TunerMode.manual) return;
+    // Only automatic mode picks its own target: manual is locked to a string
+    // and chromatic aims at nothing.
+    if (_settings.mode != TunerMode.automatic) return;
     final status = audio.analysisStatus;
     final pitch = _retainedPitch(audio);
     if (pitch != null) {
-      _targetSelector.select(pitch, TuningPresets.byId(_settings.presetId));
+      _targetSelector.select(
+        pitch,
+        TuningPresets.byId(_settings.presetId),
+        reference: _reference,
+      );
     } else if (status == RealtimePitchStatus.noSignal ||
         status == RealtimePitchStatus.stopped ||
         status == RealtimePitchStatus.permissionDenied ||
@@ -213,20 +287,31 @@ final class GuitarTunerController extends Notifier<GuitarTunerState> {
   void _publish() {
     if (_disposed) return;
     final preset = TuningPresets.byId(_settings.presetId);
-    final target = _settings.mode == TunerMode.manual
-        ? preset.stringAt(_settings.manualStringPosition)
-        : _targetSelector.current;
+    final target = switch (_settings.mode) {
+      TunerMode.manual => preset.stringAt(_settings.manualStringPosition),
+      TunerMode.automatic => _targetSelector.current,
+      TunerMode.chromatic => null,
+    };
     final pitch = _updateDisplayPitch(_audio, target);
-    final cents = TunerPitchMath.centsBetween(
+    final note = ChromaticTunerEngine.resolve(
       pitch?.frequencyHz,
-      target?.frequencyHz,
+      reference: _reference,
     );
+    // Chromatic measures against the note it just named; the other modes
+    // measure against the string being tuned.
+    final cents = _settings.mode == TunerMode.chromatic
+        ? note?.cents
+        : TunerPitchMath.centsBetween(
+            pitch?.frequencyHz,
+            target?.frequencyHzFor(_reference),
+          );
     final accuracy = cents == null ? null : _configuration.accuracyFor(cents);
     final direction = cents == null ? null : _configuration.directionFor(cents);
-    final previousTarget = stateOrNull?.target;
-    final targetChanged =
-        previousTarget?.stringPosition != target?.stringPosition ||
-        stateOrNull?.preset.id != preset.id;
+    final previous = stateOrNull;
+    final targetChanged = _settings.mode == TunerMode.chromatic
+        ? previous?.note?.midiNote != note?.midiNote
+        : previous?.target?.stringPosition != target?.stringPosition ||
+              previous?.preset.id != preset.id;
     if (targetChanged) _resetInTuneHaptic();
 
     state = GuitarTunerState(
@@ -234,8 +319,10 @@ final class GuitarTunerController extends Notifier<GuitarTunerState> {
       settings: _settings,
       preset: preset,
       signalState: _signalState(_audio),
+      reference: _reference,
       target: target,
       pitch: pitch,
+      note: note,
       cents: cents,
       accuracy: accuracy,
       direction: direction,
@@ -248,12 +335,15 @@ final class GuitarTunerController extends Notifier<GuitarTunerState> {
     GuitarTunerState next, {
     required bool targetChanged,
   }) {
+    final hasSomethingToTuneTo = next.isChromatic
+        ? next.note != null
+        : next.target != null;
     final isStableInTune =
         !targetChanged &&
         next.signalState == TunerSignalState.stablePitch &&
         _displayPitchFresh &&
         next.accuracy == TunerAccuracy.inTune &&
-        next.target != null;
+        hasSomethingToTuneTo;
     if (!isStableInTune) {
       _inTuneCount = 0;
       if (!targetChanged) _inTuneHapticArmed = true;
@@ -286,11 +376,14 @@ final class GuitarTunerController extends Notifier<GuitarTunerState> {
     final candidate = _retainedPitch(audio);
     final candidateCents = TunerPitchMath.centsBetween(
       candidate?.frequencyHz,
-      target?.frequencyHz,
+      target?.frequencyHzFor(_reference),
     );
+    // Only automatic mode rejects a reading for being far from its target:
+    // that guard exists to stop it chasing an octave error. Manual and
+    // chromatic show whatever was played.
     final candidateIsSupported =
         candidate != null &&
-        (_settings.mode == TunerMode.manual ||
+        (_settings.mode != TunerMode.automatic ||
             (candidateCents != null &&
                 candidateCents.abs() <=
                     _configuration.maximumAutomaticTargetDistanceCents));

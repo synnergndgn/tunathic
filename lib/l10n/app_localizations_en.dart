@@ -102,6 +102,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get copyrightNotice => '© 2026 GUNDEV. All rights reserved.';
 
   @override
+  String get settingsAudioSection => 'Audio and tuning';
+
+  @override
+  String get referencePitchLabel => 'Reference pitch';
+
+  @override
+  String get referencePitchRangeNote =>
+      'Every tool tunes to this reference. 430–450 Hz, in 1 Hz steps.';
+
+  @override
+  String get microphoneUsageLabel => 'Microphone';
+
+  @override
+  String get microphoneUsageValue => 'Tuner only';
+
+  @override
+  String get microphoneUsageDescription =>
+      'Requested when you open the tuner, released when you leave it. Nothing is recorded.';
+
+  @override
+  String get aboutManifesto =>
+      'Built for musicians who need fast, clean and reliable tuning.';
+
+  @override
   String get availableToolsTitle => 'Available tools';
 
   @override
@@ -130,7 +154,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacyMicrophoneDescription =>
-      'The Guitar Tuner uses microphone access only after you start it. Raw audio and pitch estimates are processed transiently on this device, are never saved or uploaded, and stop when you leave the tuner or the app enters the background.';
+      'The Guitar Tuner uses microphone access only while it is open, starting when you enter the screen. Raw audio and pitch estimates are processed transiently on this device, are never saved or uploaded, and stop when you leave the tuner or the app enters the background.';
 
   @override
   String get privacyNoCollectionTitle =>
@@ -1181,6 +1205,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manualMode => 'Manual';
 
   @override
+  String get chromaticMode => 'Chromatic';
+
+  @override
   String get targetStringLabel => 'Target string';
 
   @override
@@ -1200,6 +1227,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get stopTuning => 'Stop tuning';
+
+  @override
+  String get resumeTuning => 'Resume listening';
 
   @override
   String get retryMicrophone => 'Try microphone again';
@@ -1276,7 +1306,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get tunerStoppedMessage => 'Tap Start when you are ready to tune.';
+  String get tunerStoppedMessage => 'Listening paused.';
 
   @override
   String get tunerRequestingPermissionMessage =>
@@ -1286,21 +1316,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tunerListeningMessage => 'Microphone is starting.';
 
   @override
-  String get tunerWaitingForSignalMessage => 'Listening. Play one string.';
+  String get tunerWaitingForSignalMessage => 'Listening… Play one note.';
 
   @override
-  String get tunerUnstableSignalMessage =>
-      'Signal is unstable. Let one string ring clearly.';
+  String get tunerUnstableSignalMessage => 'Listening… no stable pitch yet.';
 
   @override
   String get tunerStablePitchMessage => 'Pitch detected.';
 
   @override
-  String get tunerNoSignalMessage => 'No reliable signal. Play one string.';
+  String get tunerNoSignalMessage => 'No reliable signal. Play one note.';
 
   @override
-  String get tunerPermissionDeniedMessage =>
-      'Microphone permission is needed to tune.';
+  String get tunerPermissionDeniedMessage => 'Microphone permission required.';
 
   @override
   String get tunerMicrophoneUnavailableMessage =>
@@ -1309,6 +1337,59 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tunerProcessingErrorMessage =>
       'Pitch processing stopped. Try again.';
+
+  @override
+  String get tunerModeLabel => 'Detection';
+
+  @override
+  String get tunerAutomaticTargetHint =>
+      'Tunathic picks the closest string while you play. Switch to Manual to lock one.';
+
+  @override
+  String get tunerChromaticTargetHint =>
+      'Any note you play is named against your reference pitch. No tuning preset is used.';
+
+  @override
+  String get tunerChromaticTargetLabel => 'Chromatic';
+
+  @override
+  String get tunerTargetPending => 'Waiting for a string';
+
+  @override
+  String tunerActiveTargetSemantics(String note, int position) {
+    return 'Tuning to $note, string $position';
+  }
+
+  @override
+  String referencePitchValue(String value) {
+    return 'A4 = $value Hz';
+  }
+
+  @override
+  String referencePitchSemantics(String value) {
+    return 'Reference pitch A4, $value hertz';
+  }
+
+  @override
+  String get decreaseReferencePitch => 'Lower the reference pitch';
+
+  @override
+  String get increaseReferencePitch => 'Raise the reference pitch';
+
+  @override
+  String get resetReferencePitch => 'Reset to A4 = 440 Hz';
+
+  @override
+  String get tunerMicrophonePermissionTitle => 'Microphone permission required';
+
+  @override
+  String get tunerMicrophoneUnavailableTitle => 'Microphone unavailable';
+
+  @override
+  String get tunerProcessingErrorTitle => 'Pitch analysis stopped';
+
+  @override
+  String get tunerNoSignalTitle => 'No signal detected';
 
   @override
   String get beginner => 'Beginner';

@@ -35,7 +35,7 @@ https://support.google.com/googleplay/android-developer/answer/9866151
 - [ ] Export listing icon from the approved tuning-fork mark; do not upscale a
       192 px launcher PNG.
 - [ ] Verify icon contrast on light/dark store surfaces and Android icon masks.
-- [ ] Produce feature graphic using deep charcoal, electric blue, and soft cyan
+- [ ] Produce feature graphic using warm ivory, orange, and muted copper
       without unverified marketing claims.
 - [ ] Capture release/profile UI only; exclude status-bar notifications,
       personal data, debug overlays, and diagnostics.

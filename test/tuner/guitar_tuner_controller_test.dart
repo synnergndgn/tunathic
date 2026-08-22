@@ -7,7 +7,11 @@ import 'package:tunathic/core/logging/app_logger.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
 import 'package:tunathic/features/tuner/application/guitar_tuner_controller.dart';
 import 'package:tunathic/features/tuner/application/tuner_preferences.dart';
+import 'package:tunathic/features/tuner/application/tuning_reference_controller.dart';
+import 'package:tunathic/features/tuner/application/tuning_reference_preferences.dart';
 import 'package:tunathic/features/tuner/domain/tuning.dart';
+import 'package:tunathic/features/tuner/domain/tuning_reference.dart';
+import 'package:tunathic/features/tuner_audio/audio/tuner_audio_input.dart';
 import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_controller.dart';
 import 'package:tunathic/features/tuner_pitch/domain/musical_note.dart';
 import 'package:tunathic/features/tuner_pitch/domain/pitch_estimate.dart';
@@ -204,6 +208,149 @@ void main() {
     expect(state.signalState, TunerSignalState.stopped);
     expect(state.target, isNull);
     expect(audioInput.stopCount, 1);
+  });
+
+  test('chromatic mode names any note without a preset target', () async {
+    await controller.setMode(TunerMode.chromatic);
+    pitchExecutor.result = _estimate(329.63);
+    await controller.start();
+    await emitAnalysisFrame();
+
+    final state = container.read(guitarTunerProvider);
+    expect(state.signalState, TunerSignalState.stablePitch);
+    expect(state.target, isNull, reason: 'chromatic aims at no string');
+    expect(state.note?.displayName, 'E4');
+    expect(state.cents, closeTo(0, 2));
+    expect(preferences.values[TunerPreferences.modeKey], 'chromatic');
+  });
+
+  test('chromatic mode follows a note no tuning preset contains', () async {
+    await controller.setMode(TunerMode.chromatic);
+    // Well above the top string of every preset, so automatic mode would
+    // have discarded it.
+    pitchExecutor.result = _estimate(1046.5);
+    await controller.start();
+    await emitAnalysisFrame();
+
+    final state = container.read(guitarTunerProvider);
+    expect(state.note?.displayName, 'C6');
+    expect(state.pitch?.frequencyHz, closeTo(1046.5, 0.5));
+  });
+
+  test('the reference renames the note and moves the string target', () async {
+    await controller.setMode(TunerMode.chromatic);
+    pitchExecutor.result = _estimate(440);
+    await controller.start();
+    await emitAnalysisFrame();
+    expect(container.read(guitarTunerProvider).cents, closeTo(0, 0.01));
+
+    await container
+        .read(tuningReferenceProvider.notifier)
+        .setReference(TuningReference.resolve(432));
+    await _flushMicrotasks();
+
+    var state = container.read(guitarTunerProvider);
+    expect(state.reference.a4FrequencyHz, 432);
+    expect(state.note?.displayName, 'A4');
+    expect(state.cents, closeTo(31.8, 0.2));
+
+    // The same shift moves the string targets the other modes aim at.
+    await controller.setMode(TunerMode.manual);
+    await controller.selectManualString(5);
+    state = container.read(guitarTunerProvider);
+    expect(state.target?.displayName, 'A2');
+    expect(
+      state.target!.frequencyHzFor(state.reference),
+      closeTo(108, 0.01),
+      reason: 'A2 at 432 Hz is 108 Hz',
+    );
+  });
+
+  test('changing the reference does not open a second capture', () async {
+    pitchExecutor.result = _estimate(110);
+    await controller.start();
+    await emitAnalysisFrame();
+    expect(audioInput.startCount, 1);
+
+    final reference = container.read(tuningReferenceProvider.notifier);
+    await reference.setReference(TuningReference.resolve(438));
+    await reference.setReference(TuningReference.resolve(444));
+    await _flushMicrotasks();
+
+    expect(audioInput.startCount, 1);
+    expect(audioInput.stopCount, 0);
+    expect(container.read(guitarTunerProvider).reference.a4FrequencyHz, 444);
+  });
+
+  test('the reference is read back from storage on the next launch', () async {
+    await container
+        .read(tuningReferenceProvider.notifier)
+        .setReference(TuningReference.resolve(437));
+
+    final reloaded = await TuningReferencePreferences(preferences).load();
+
+    expect(reloaded.a4FrequencyHz, 437);
+  });
+
+  test('ensureListening starts exactly one session, however often it is '
+      'called', () async {
+    pitchExecutor.result = _estimate(110);
+
+    await controller.ensureListening();
+    await controller.ensureListening();
+    await controller.ensureListening();
+    await emitAnalysisFrame();
+
+    expect(audioInput.startCount, 1);
+    expect(container.read(guitarTunerProvider).isCapturing, isTrue);
+  });
+
+  test('returning to the foreground resumes an interrupted session', () async {
+    pitchExecutor.result = _estimate(110);
+    await controller.ensureListening();
+    await emitAnalysisFrame();
+
+    await controller.handleLifecycle(isForeground: false);
+    expect(container.read(guitarTunerProvider).isCapturing, isFalse);
+
+    await controller.handleLifecycle(isForeground: true);
+
+    expect(audioInput.startCount, 2);
+    expect(container.read(guitarTunerProvider).isCapturing, isTrue);
+  });
+
+  test('returning to the foreground does not undo a deliberate stop', () async {
+    pitchExecutor.result = _estimate(110);
+    await controller.ensureListening();
+    await emitAnalysisFrame();
+    await controller.stop();
+
+    await controller.handleLifecycle(isForeground: true);
+
+    expect(audioInput.startCount, 1);
+    expect(container.read(guitarTunerProvider).isCapturing, isFalse);
+  });
+
+  test('a refused microphone is not asked again on every visit', () async {
+    audioInput.permission = MicrophonePermissionResult.denied;
+
+    await controller.ensureListening();
+    await _flushMicrotasks();
+    expect(
+      container.read(guitarTunerProvider).signalState,
+      TunerSignalState.permissionDenied,
+    );
+    final requestsAfterFirstVisit = audioInput.requestPermissionCount;
+
+    // Coming back from the background must not re-prompt on its own.
+    await controller.handleLifecycle(isForeground: true);
+    await _flushMicrotasks();
+    expect(audioInput.requestPermissionCount, requestsAfterFirstVisit);
+
+    // Asking for it explicitly still does.
+    await controller.start();
+    await _flushMicrotasks();
+    expect(audioInput.requestPermissionCount, requestsAfterFirstVisit + 1);
   });
 
   test('late detector completion cannot restore a stopped session', () async {

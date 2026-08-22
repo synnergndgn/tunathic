@@ -8,6 +8,7 @@ import 'package:tunathic/features/fretboard/presentation/interactive_fretboard_v
 import 'package:tunathic/features/scale_library/presentation/scale_library_localizations.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/pitch_class_selector.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 
 final class InteractiveFretboardScreen extends StatefulWidget {
   const InteractiveFretboardScreen({
@@ -147,25 +148,24 @@ final class _InteractiveFretboardScreenState
   Widget _buildPrimaryControls(AppLocalizations localizations) {
     final modeControl = _LabeledControl(
       label: localizations.fretboardModeLabel,
-      child: SegmentedButton<FretboardMode>(
+      child: SkeuoSegmentedControl<FretboardMode>(
         key: const Key('fretboardModeSelector'),
-        showSelectedIcon: false,
         segments: [
-          ButtonSegment(
+          SkeuoSegment(
             value: FretboardMode.chord,
-            label: Text(localizations.chordMode),
-            icon: const Icon(Icons.library_music_outlined),
+            label: localizations.chordMode,
+            icon: Icons.library_music_outlined,
           ),
-          ButtonSegment(
+          SkeuoSegment(
             value: FretboardMode.scale,
-            label: Text(localizations.scaleMode),
-            icon: const Icon(Icons.stacked_line_chart),
+            label: localizations.scaleMode,
+            icon: Icons.stacked_line_chart,
           ),
         ],
-        selected: {_mode},
-        onSelectionChanged: (selection) {
+        selected: _mode,
+        onChanged: (selection) {
           setState(() {
-            _mode = selection.single;
+            _mode = selection;
             _selectedPosition = null;
           });
         },
@@ -173,22 +173,21 @@ final class _InteractiveFretboardScreenState
     );
     final displayControl = _LabeledControl(
       label: localizations.displayModeLabel,
-      child: SegmentedButton<FretboardDisplayMode>(
+      child: SkeuoSegmentedControl<FretboardDisplayMode>(
         key: const Key('fretboardDisplayModeSelector'),
-        showSelectedIcon: false,
         segments: [
-          ButtonSegment(
+          SkeuoSegment(
             value: FretboardDisplayMode.notes,
-            label: Text(localizations.noteNames),
+            label: localizations.noteNames,
           ),
-          ButtonSegment(
+          SkeuoSegment(
             value: FretboardDisplayMode.degrees,
-            label: Text(localizations.degreesIntervals),
+            label: localizations.degreesIntervals,
           ),
         ],
-        selected: {_displayMode},
-        onSelectionChanged: (selection) {
-          setState(() => _displayMode = selection.single);
+        selected: _displayMode,
+        onChanged: (selection) {
+          setState(() => _displayMode = selection);
         },
       ),
     );

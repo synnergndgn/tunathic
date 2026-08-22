@@ -4,6 +4,7 @@ import 'package:tunathic/features/music_theory/domain/theory_content.dart';
 import 'package:tunathic/features/music_theory/domain/theory_lesson.dart';
 import 'package:tunathic/features/music_theory/presentation/theory_localizations.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
 
 /// One lesson in a list, with its level and a favourite toggle.
 final class TheoryLessonTile extends StatelessWidget {
@@ -35,7 +36,7 @@ final class TheoryLessonTile extends StatelessWidget {
         ? '${localizations.theoryCategoryName(lesson.category)} · $level'
         : level;
 
-    return Card(
+    return SkeuoCard(
       margin: const EdgeInsets.only(bottom: AppSpacing.small),
       child: Row(
         children: [

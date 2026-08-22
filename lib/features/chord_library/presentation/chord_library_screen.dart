@@ -12,6 +12,7 @@ import 'package:tunathic/features/chord_library/presentation/chord_library_local
 import 'package:tunathic/features/fretboard/domain/fretboard_route_state.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/pitch_class_selector.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 
 final class ChordLibraryScreen extends StatefulWidget {
   const ChordLibraryScreen({
@@ -161,8 +162,9 @@ final class _ChordLibraryScreenState extends State<ChordLibraryScreen> {
                 const SizedBox(height: AppSpacing.medium),
                 Align(
                   alignment: AlignmentDirectional.centerStart,
-                  child: OutlinedButton.icon(
+                  child: SkeuoButton(
                     key: const Key('chordViewOnFretboard'),
+                    icon: Icons.grid_on_outlined,
                     onPressed: () {
                       context.push(
                         AppRoutes.fretboard(
@@ -174,8 +176,7 @@ final class _ChordLibraryScreenState extends State<ChordLibraryScreen> {
                         ),
                       );
                     },
-                    icon: const Icon(Icons.grid_on_outlined),
-                    label: Text(localizations.viewOnFretboard),
+                    child: Text(localizations.viewOnFretboard),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xLarge),
@@ -457,11 +458,12 @@ final class _ShapeChoices extends StatelessWidget {
       runSpacing: AppSpacing.small,
       children: [
         for (var index = 0; index < shapes.length; index++)
-          ChoiceChip(
+          SkeuoButton(
             key: Key('shapeChoice-$index'),
+            compact: true,
             selected: selectedIndex == index,
-            onSelected: (_) => onSelected(index),
-            label: Text(
+            onPressed: () => onSelected(index),
+            child: Text(
               [
                 localizations.shapeCategoryName(shapes[index].category),
                 if (shapes[index].startingFret > 1)

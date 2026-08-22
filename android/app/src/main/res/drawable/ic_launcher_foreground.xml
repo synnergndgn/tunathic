@@ -9,13 +9,13 @@
         android:scaleX="0.92"
         android:scaleY="0.92">
         <path
-            android:strokeColor="#72D7F3"
+            android:strokeColor="#C85818"
             android:strokeWidth="26"
             android:strokeLineCap="round"
             android:strokeLineJoin="round"
             android:pathData="M170,116 L170,224 A86,86 0 0 0 342,224 L342,116" />
         <path
-            android:strokeColor="#72D7F3"
+            android:strokeColor="#C85818"
             android:strokeWidth="26"
             android:strokeLineCap="round"
             android:strokeLineJoin="round"

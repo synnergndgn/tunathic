@@ -41,13 +41,11 @@ and screen-reader semantics.
 
 No accounts. No ads. No analytics.
 
-**First Closed Test – What's New:**
+**0.7.1 (11) Skeuomorphic Instrument Refinement – What's New:**
 
-First closed-test build of Tunathic – Guitar Toolkit. Includes the Guitar
-Tuner, native Metronome, BPM Tap, Chord Library, Scale Library, Interactive
-Fretboard, Circle of Fifths, English/Turkish localization, and offline
-references. This test focuses on device compatibility, tuner behavior,
-metronome reliability, layout, and clarity.
+- Deeper physical instrument surfaces, controls, and responsive states
+- New analog tuner dial, recessed readouts, and hardware-style A4 control
+- Coming-soon tools are hidden until they are ready for testing
 
 ## Turkish (tr-TR)
 
@@ -86,13 +84,11 @@ okuyucu açıklamalarını destekler.
 
 Hesap yok. Reklam yok. Analiz yok.
 
-**İlk Kapalı Test – Yenilikler:**
+**0.7.1 (11) Skeuomorphic Cihaz İyileştirmesi – Yenilikler:**
 
-Tunathic – Gitar Araç Seti'nin ilk kapalı test sürümü. Gitar Akort Cihazı,
-yerel Metronom, BPM Dokunma, Akor Kütüphanesi, Gam Kütüphanesi, Etkileşimli
-Klavye, Beşliler Çemberi, İngilizce/Türkçe desteği ve çevrimdışı kaynaklar
-sunulur. Bu test cihaz uyumluluğu, akort davranışı, metronom güvenilirliği,
-yerleşim ve anlaşılırlığa odaklanır.
+- Daha derin fiziksel cihaz yüzeyleri, kontrolleri ve responsive durumları
+- Yeni analog tuner kadranı, gömülü göstergeler ve cihaz tipi A4 kontrolü
+- Yakında sunulacak araçlar teste hazır olana kadar gizlendi
 
 ## Listing verification
 

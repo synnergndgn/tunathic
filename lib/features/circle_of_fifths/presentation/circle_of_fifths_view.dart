@@ -1,10 +1,13 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:tunathic/app/theme/app_radii.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
 import 'package:tunathic/core/music_theory/music_theory.dart';
 import 'package:tunathic/features/circle_of_fifths/presentation/circle_of_fifths_localizations.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
 
 final class CircleOfFifthsView extends StatelessWidget {
   const CircleOfFifthsView({
@@ -223,7 +226,7 @@ final class _CircleKeyButton extends StatelessWidget {
         : null;
     final shape = musicalKey.tonality == KeyTonality.major
         ? RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: AppRadii.mediumBorder,
             side: BorderSide(
               color: selected || relative || fifth || fourth
                   ? colors.primary
@@ -328,7 +331,7 @@ final class _AccessibleCircleOrder extends StatelessWidget {
         for (final position in CircleOfFifths.positions)
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.small),
-            child: Card(
+            child: SkeuoCard(
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.small),
                 child: Wrap(
@@ -366,14 +369,16 @@ final class _AccessibleCircleOrder extends StatelessWidget {
     final selected =
         selectedKey.tonality == key.tonality &&
         selectedKey.tonic.pitchClass == key.tonic.pitchClass;
-    return FilledButton.tonalIcon(
+    return SkeuoButton(
       key: Key(
         '${key.tonality == KeyTonality.major ? 'circleMajor' : 'circleMinor'}'
         '-${position.index}',
       ),
       onPressed: () => onSelected(key),
-      icon: Icon(selected ? Icons.check : Icons.music_note_outlined),
-      label: Text('$tonicLabel ${localizations.keyTonalityName(key.tonality)}'),
+      compact: true,
+      selected: selected,
+      icon: selected ? Icons.check : Icons.music_note_outlined,
+      child: Text('$tonicLabel ${localizations.keyTonalityName(key.tonality)}'),
     );
   }
 }

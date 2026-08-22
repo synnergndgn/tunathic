@@ -11,4 +11,10 @@ extension TunerLocalizations on AppLocalizations {
     TuningPresetId.openG => tuningOpenG,
     TuningPresetId.openD => tuningOpenD,
   };
+
+  String tunerModeName(TunerMode mode) => switch (mode) {
+    TunerMode.automatic => automaticMode,
+    TunerMode.manual => manualMode,
+    TunerMode.chromatic => chromaticMode,
+  };
 }

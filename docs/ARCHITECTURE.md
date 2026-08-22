@@ -296,7 +296,7 @@ so opening the hub costs no I/O.
 
 ## Application information and licenses
 
-`ApplicationInfoLoader` isolates `package_info_plus` from widgets. Bootstrap reads the installed package version once and overrides `initialApplicationInfoProvider`; Settings, About, and the license page consume the application-owned immutable value. Tests inject arbitrary versions without a platform channel. The product version is `0.4.0+7`, representing a pre-1.0 application with Foundation plus the shipped tool set.
+`ApplicationInfoLoader` isolates `package_info_plus` from widgets. Bootstrap reads the installed package version once and overrides `initialApplicationInfoProvider`; Settings, About, and the license page consume the application-owned immutable value. Tests inject arbitrary versions without a platform channel. The product version is `0.7.1+11`, representing the second-pass physical instrument refinement for closed testing with the shipped tool set intact.
 
 Open-source notices use Flutter’s standard `showLicensePage`, which reads Flutter’s license registry and presents package licenses with the app name, actual version, and legalese. No custom license database or duplicate route is maintained.
 
@@ -454,7 +454,7 @@ The stored values are theme mode, optional locale code, default-on haptic feedba
 
 ## Theme system
 
-The application uses Material 3 with light, dark, and system modes. Centralized theme files define the deep-charcoal, electric-blue, soft-cyan, and off-white palette plus spacing, typography, restrained radii, two elevation levels, and limited motion durations. Feature widgets consume the active `ThemeData`, `ColorScheme`, and shared tokens instead of duplicating design constants. Only available dashboard tools use subtle raised elevation; Phase 1C adds no decorative animation, gradients, or glass effects.
+The application uses Material 3 with light, dark, and system modes. Centralized theme files define warm ivory and cream surfaces, orange and copper accents, warm charcoal text, restrained radii, tactile elevation, typography, spacing, and limited motion durations. `StudioTheme` and the shared studio widgets provide enamel faceplates, recessed readouts, short bevel gradients, analog-style meters, and consistent state panels without moving storage or audio logic into UI code. Feature widgets consume the active `ThemeData`, `ColorScheme`, and shared tokens instead of duplicating design constants; the optional dark mode is a warm workshop palette rather than a near-black or neon theme.
 
 Shared maximum widths produce readable phone, large-phone, and tablet columns. Core screens remain vertically scrollable, Wrap replaces rigid rows where selections can expand, and tests exercise narrow 360-pixel layouts with large text. Availability, selection, running state, and accented beats retain text or semantic meaning rather than relying on color alone.
 

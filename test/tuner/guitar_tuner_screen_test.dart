@@ -3,11 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tunathic/app/theme/app_theme.dart';
 import 'package:tunathic/features/tuner/application/guitar_tuner_controller.dart';
 import 'package:tunathic/features/tuner/application/tuner_preferences.dart';
+import 'package:tunathic/features/tuner/domain/chromatic_tuner_engine.dart';
 import 'package:tunathic/features/tuner/domain/tuning.dart';
+import 'package:tunathic/features/tuner/domain/tuning_reference.dart';
 import 'package:tunathic/features/tuner/presentation/guitar_tuner_screen.dart';
 import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_controller.dart';
 import 'package:tunathic/features/tuner_realtime/domain/pitch_stabilizer.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 
 void main() {
   testWidgets('stopped screen is production-facing and has no diagnostics', (
@@ -16,13 +19,65 @@ void main() {
     await tester.pumpWidget(_app(_state()));
 
     expect(find.text('Guitar Tuner'), findsOneWidget);
-    await _reveal(tester, find.text('Tap Start when you are ready to tune.'));
-    expect(find.text('Tap Start when you are ready to tune.'), findsOneWidget);
-    await _reveal(tester, find.byKey(const Key('startGuitarTuner')));
-    expect(find.byKey(const Key('startGuitarTuner')), findsOneWidget);
+    await _reveal(tester, find.text('Listening paused.'));
+    expect(find.text('Listening paused.'), findsOneWidget);
     expect(find.text('Raw detector result'), findsNothing);
     expect(find.text('Frames analyzed'), findsNothing);
     expect(find.text('Development diagnostic only.'), findsNothing);
+  });
+
+  testWidgets('there is no start button, and no resume button either', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(_state(signal: TunerSignalState.waitingForSignal, capturing: true)),
+    );
+
+    // Listening begins on its own, so while it runs the only transport
+    // control is the one that ends it.
+    expect(find.byKey(const Key('startGuitarTuner')), findsNothing);
+    expect(find.byKey(const Key('retryGuitarTunerMicrophone')), findsNothing);
+    expect(find.byKey(const Key('stopGuitarTuner')), findsOneWidget);
+
+    // Stopped for an ordinary reason, the tuner picks itself back up rather
+    // than asking, so the dock has nothing to offer and disappears.
+    await tester.pumpWidget(_app(_state()));
+    await tester.pump();
+    expect(find.byKey(const Key('startGuitarTuner')), findsNothing);
+    expect(find.byKey(const Key('stopGuitarTuner')), findsNothing);
+    expect(find.byKey(const Key('retryGuitarTunerMicrophone')), findsNothing);
+    expect(find.text('Resume listening'), findsNothing);
+  });
+
+  testWidgets('a refused microphone still keeps its retry', (tester) async {
+    await tester.pumpWidget(
+      _app(_state(signal: TunerSignalState.permissionDenied)),
+    );
+
+    expect(find.byKey(const Key('retryGuitarTunerMicrophone')), findsOneWidget);
+
+    // The dock is the one control that survives the resume button, so its
+    // Turkish label is checked here rather than in the localization sweep.
+    await tester.pumpWidget(
+      _app(
+        _state(signal: TunerSignalState.permissionDenied),
+        locale: const Locale('tr'),
+      ),
+    );
+    await tester.pump();
+    expect(find.text('Mikrofonu yeniden dene'), findsOneWidget);
+  });
+
+  testWidgets('a refused microphone explains itself and offers a retry', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(_state(signal: TunerSignalState.permissionDenied)),
+    );
+
+    expect(find.text('Try microphone again'), findsOneWidget);
+    await _reveal(tester, find.text('Microphone permission required'));
+    expect(find.text('Microphone permission required'), findsOneWidget);
   });
 
   testWidgets('listening and no-signal states never invent a note', (
@@ -31,16 +86,18 @@ void main() {
     await tester.pumpWidget(
       _app(_state(signal: TunerSignalState.waitingForSignal, capturing: true)),
     );
-    await _reveal(tester, find.text('Listening. Play one string.'));
-    expect(find.text('Listening. Play one string.'), findsOneWidget);
+    // The readout leads the screen, so it is checked before scrolling away
+    // from it to reach the signal message.
     expect(find.text('—'), findsWidgets);
+    await _reveal(tester, find.text('Listening… Play one note.'));
+    expect(find.text('Listening… Play one note.'), findsOneWidget);
 
     await tester.pumpWidget(
       _app(_state(signal: TunerSignalState.noSignal, capturing: true)),
     );
     await tester.pump();
-    await _reveal(tester, find.text('No reliable signal. Play one string.'));
-    expect(find.text('No reliable signal. Play one string.'), findsOneWidget);
+    await _reveal(tester, find.text('No reliable signal. Play one note.'));
+    expect(find.text('No reliable signal. Play one note.'), findsOneWidget);
     expect(find.byKey(const Key('tunerDetectedOctave')), findsNothing);
   });
 
@@ -124,14 +181,17 @@ void main() {
       ),
     );
 
+    await _reveal(tester, find.byKey(const Key('tunerString3')));
     await tester.tap(find.byKey(const Key('tunerString3')));
     await tester.pump();
     expect(selectedString, 3);
 
+    await _reveal(tester, find.text('Automatic'));
     await tester.tap(find.text('Automatic'));
     await tester.pump();
     expect(selectedMode, TunerMode.automatic);
 
+    await _reveal(tester, find.byType(DropdownButtonFormField<TuningPresetId>));
     await tester.tap(find.byType(DropdownButtonFormField<TuningPresetId>));
     await tester.pumpAndSettle();
     await tester.tap(find.text('DADGAD').last);
@@ -145,12 +205,130 @@ void main() {
     );
 
     expect(find.text('Gitar Akort Cihazı'), findsOneWidget);
-    expect(find.text('Akort düzeni'), findsOneWidget);
+
+    await _reveal(tester, find.byKey(const Key('tunerModeSelector')));
     expect(find.text('Otomatik'), findsOneWidget);
     expect(find.text('Manuel'), findsOneWidget);
+    expect(find.text('Kromatik'), findsOneWidget);
+    await _reveal(tester, find.byKey(const Key('tunerReferenceSelector')));
+    expect(find.text('Referans perde'), findsWidgets);
+    await _reveal(tester, find.text('Akort düzeni'));
+    expect(find.text('Akort düzeni'), findsWidgets);
+    await _reveal(tester, find.text('Hedef tel'));
     expect(find.text('Hedef tel'), findsOneWidget);
-    await _reveal(tester, find.byKey(const Key('startGuitarTuner')));
-    expect(find.text('Akordu başlat'), findsOneWidget);
+  });
+
+  testWidgets('chromatic mode drops the preset and names any note', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        _state(
+          signal: TunerSignalState.stablePitch,
+          capturing: true,
+          mode: TunerMode.chromatic,
+          pitch: _pitch(329.63, 'E', 4),
+          cents: -7,
+          accuracy: TunerAccuracy.near,
+          direction: TunerDirection.flat,
+        ),
+      ),
+    );
+
+    expect(find.text('E'), findsOneWidget);
+    expect(find.text('4'), findsOneWidget);
+    expect(find.text('Chromatic'), findsWidgets);
+    expect(find.text('329.6 Hz'), findsOneWidget);
+    await _reveal(tester, find.byKey(const Key('tunerCentsValue')));
+    expect(find.text('-7 cents'), findsOneWidget);
+
+    // No preset can apply when any note is fair game.
+    expect(find.byType(DropdownButtonFormField<TuningPresetId>), findsNothing);
+    expect(find.byKey(const Key('tunerString3')), findsNothing);
+  });
+
+  testWidgets('the reference selector reads and edits the reference', (
+    tester,
+  ) async {
+    final changes = <TuningReference>[];
+    await tester.pumpWidget(
+      _app(
+        _state(reference: TuningReference.resolve(432)),
+        onReference: changes.add,
+      ),
+    );
+
+    await _reveal(tester, find.byKey(const Key('tunerReferenceValue')));
+    expect(find.text('A4 = 432 Hz'), findsWidgets);
+
+    await tester.tap(find.byKey(const Key('tunerReferenceIncrease')));
+    await tester.pump();
+    expect(changes.single.a4FrequencyHz, 433);
+
+    await tester.tap(find.byKey(const Key('tunerReferenceDecrease')));
+    await tester.pump();
+    expect(changes.last.a4FrequencyHz, 431);
+
+    await _reveal(tester, find.byKey(const Key('tunerReferenceReset')));
+    await tester.tap(find.byKey(const Key('tunerReferenceReset')));
+    await tester.pump();
+    expect(changes.last, TuningReference.standard);
+  });
+
+  testWidgets('the reference selector cannot leave its range', (tester) async {
+    final changes = <TuningReference>[];
+    await tester.pumpWidget(
+      _app(
+        _state(reference: TuningReference.resolve(TuningReference.minimumHz)),
+        onReference: changes.add,
+      ),
+    );
+
+    await _reveal(tester, find.byKey(const Key('tunerReferenceDecrease')));
+    final decrease = tester.widget<SkeuoButton>(
+      find.byKey(const Key('tunerReferenceDecrease')),
+    );
+    expect(decrease.onPressed, isNull);
+
+    await tester.pumpWidget(
+      _app(
+        _state(reference: TuningReference.resolve(TuningReference.maximumHz)),
+        onReference: changes.add,
+      ),
+    );
+    await tester.pump();
+    await _reveal(tester, find.byKey(const Key('tunerReferenceIncrease')));
+    final increase = tester.widget<SkeuoButton>(
+      find.byKey(const Key('tunerReferenceIncrease')),
+    );
+    expect(increase.onPressed, isNull);
+    expect(changes, isEmpty);
+  });
+
+  testWidgets('a shifted reference renames the note under the same pitch', (
+    tester,
+  ) async {
+    // 440 Hz is A4 at concert pitch and still A4 — but sharp — at 432 Hz.
+    await tester.pumpWidget(
+      _app(
+        _state(
+          signal: TunerSignalState.stablePitch,
+          capturing: true,
+          mode: TunerMode.chromatic,
+          pitch: _pitch(440, 'A', 4),
+          reference: TuningReference.resolve(432),
+          cents: 31.8,
+          accuracy: TunerAccuracy.out,
+          direction: TunerDirection.sharp,
+        ),
+      ),
+    );
+
+    expect(find.text('A'), findsOneWidget);
+    expect(find.text('4'), findsOneWidget);
+    expect(find.text('A4 = 432 Hz'), findsWidgets);
+    await _reveal(tester, find.byKey(const Key('tunerCentsValue')));
+    expect(find.text('+32 cents'), findsOneWidget);
   });
 
   testWidgets('light and dark themes render the same tuner hierarchy', (
@@ -208,11 +386,11 @@ void main() {
       ),
     );
 
-    await _reveal(tester, find.byKey(const Key('tunerFrequencyValue')));
     expect(find.bySemanticsLabel('Detected note A, octave 2'), findsOneWidget);
     expect(find.bySemanticsLabel('6 cents Flat'), findsWidgets);
-    expect(find.bySemanticsLabel('Target string 5, A2'), findsOneWidget);
     expect(find.bySemanticsLabel('Frequency 109.6 hertz'), findsOneWidget);
+    await _reveal(tester, find.byKey(const Key('tunerString5')));
+    expect(find.bySemanticsLabel('Target string 5, A2'), findsOneWidget);
     semantics.dispose();
   });
 }
@@ -238,6 +416,7 @@ Widget _app(
   ValueChanged<TunerMode>? onMode,
   ValueChanged<TuningPresetId>? onPreset,
   ValueChanged<int>? onString,
+  ValueChanged<TuningReference>? onReference,
   TextScaler textScaler = TextScaler.noScaling,
 }) {
   return MaterialApp(
@@ -253,11 +432,12 @@ Widget _app(
     ),
     home: GuitarTunerView(
       state: state,
-      onStart: () {},
+      onResume: () {},
       onStop: () {},
       onModeChanged: onMode ?? (_) {},
       onPresetChanged: onPreset ?? (_) {},
       onStringSelected: onString ?? (_) {},
+      onReferenceChanged: onReference ?? (_) {},
     ),
   );
 }
@@ -272,6 +452,7 @@ GuitarTunerState _state({
   double? cents,
   TunerAccuracy? accuracy,
   TunerDirection? direction,
+  TuningReference reference = TuningReference.standard,
 }) {
   final settings = TunerPreferencesState(
     presetId: preset.id,
@@ -287,8 +468,13 @@ GuitarTunerState _state({
     settings: settings,
     preset: preset,
     signalState: signal,
+    reference: reference,
     target: target,
     pitch: pitch,
+    note: ChromaticTunerEngine.resolve(
+      pitch?.frequencyHz,
+      reference: reference,
+    ),
     cents: cents,
     accuracy: accuracy,
     direction: direction,

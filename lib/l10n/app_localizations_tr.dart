@@ -102,6 +102,30 @@ class AppLocalizationsTr extends AppLocalizations {
   String get copyrightNotice => '© 2026 GUNDEV. Tüm hakları saklıdır.';
 
   @override
+  String get settingsAudioSection => 'Ses ve akort';
+
+  @override
+  String get referencePitchLabel => 'Referans perde';
+
+  @override
+  String get referencePitchRangeNote =>
+      'Tüm araçlar bu referansa göre akort eder. 430–450 Hz, 1 Hz adımlarla.';
+
+  @override
+  String get microphoneUsageLabel => 'Mikrofon';
+
+  @override
+  String get microphoneUsageValue => 'Yalnızca akort';
+
+  @override
+  String get microphoneUsageDescription =>
+      'Akort ekranını açtığınızda istenir, ekrandan çıkınca bırakılır. Hiçbir şey kaydedilmez.';
+
+  @override
+  String get aboutManifesto =>
+      'Hızlı, temiz ve güvenilir akort isteyen müzisyenler için yapıldı.';
+
+  @override
   String get availableToolsTitle => 'Kullanılabilir araçlar';
 
   @override
@@ -130,7 +154,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get privacyMicrophoneDescription =>
-      'Gitar Akort Cihazı, mikrofon erişimini yalnızca siz başlattıktan sonra kullanır. Ham ses ve perde tahminleri bu cihazda geçici olarak işlenir, kaydedilmez veya yüklenmez; akort cihazından ayrıldığınızda ya da uygulama arka plana geçtiğinde durur.';
+      'Gitar Akort Cihazı, mikrofon erişimini yalnızca ekran açıkken kullanır ve ekrana girdiğinizde başlar. Ham ses ve perde tahminleri bu cihazda geçici olarak işlenir, kaydedilmez veya yüklenmez; akort cihazından ayrıldığınızda ya da uygulama arka plana geçtiğinde durur.';
 
   @override
   String get privacyNoCollectionTitle =>
@@ -1163,6 +1187,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get manualMode => 'Manuel';
 
   @override
+  String get chromaticMode => 'Kromatik';
+
+  @override
   String get targetStringLabel => 'Hedef tel';
 
   @override
@@ -1182,6 +1209,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get stopTuning => 'Akordu durdur';
+
+  @override
+  String get resumeTuning => 'Dinlemeye devam et';
 
   @override
   String get retryMicrophone => 'Mikrofonu yeniden dene';
@@ -1258,8 +1288,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get tunerStoppedMessage =>
-      'Akort etmeye hazır olduğunuzda Başlat\'a dokunun.';
+  String get tunerStoppedMessage => 'Dinleme duraklatıldı.';
 
   @override
   String get tunerRequestingPermissionMessage => 'Mikrofon izni isteniyor.';
@@ -1268,22 +1297,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tunerListeningMessage => 'Mikrofon başlatılıyor.';
 
   @override
-  String get tunerWaitingForSignalMessage => 'Dinleniyor. Tek bir tele vurun.';
+  String get tunerWaitingForSignalMessage => 'Dinleniyor… Bir nota çalın.';
 
   @override
-  String get tunerUnstableSignalMessage =>
-      'Sinyal kararsız. Tek bir telin temizce çalmasına izin verin.';
+  String get tunerUnstableSignalMessage => 'Dinleniyor… kararlı bir perde yok.';
 
   @override
   String get tunerStablePitchMessage => 'Perde algılandı.';
 
   @override
-  String get tunerNoSignalMessage =>
-      'Güvenilir sinyal yok. Tek bir tele vurun.';
+  String get tunerNoSignalMessage => 'Güvenilir sinyal yok. Bir nota çalın.';
 
   @override
-  String get tunerPermissionDeniedMessage =>
-      'Akort için mikrofon izni gereklidir.';
+  String get tunerPermissionDeniedMessage => 'Mikrofon izni gerekli.';
 
   @override
   String get tunerMicrophoneUnavailableMessage =>
@@ -1292,6 +1318,59 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get tunerProcessingErrorMessage =>
       'Perde işleme durdu. Yeniden deneyin.';
+
+  @override
+  String get tunerModeLabel => 'Algılama';
+
+  @override
+  String get tunerAutomaticTargetHint =>
+      'Tunathic siz çaldıkça en yakın teli seçer. Bir teli sabitlemek için Manuel\'e geçin.';
+
+  @override
+  String get tunerChromaticTargetHint =>
+      'Çaldığınız her nota, referans perdenize göre adlandırılır. Akort düzeni kullanılmaz.';
+
+  @override
+  String get tunerChromaticTargetLabel => 'Kromatik';
+
+  @override
+  String get tunerTargetPending => 'Tel bekleniyor';
+
+  @override
+  String tunerActiveTargetSemantics(String note, int position) {
+    return '$note akort ediliyor, tel $position';
+  }
+
+  @override
+  String referencePitchValue(String value) {
+    return 'A4 = $value Hz';
+  }
+
+  @override
+  String referencePitchSemantics(String value) {
+    return 'Referans perde A4, $value hertz';
+  }
+
+  @override
+  String get decreaseReferencePitch => 'Referans perdeyi düşür';
+
+  @override
+  String get increaseReferencePitch => 'Referans perdeyi yükselt';
+
+  @override
+  String get resetReferencePitch => "A4 = 440 Hz'e dön";
+
+  @override
+  String get tunerMicrophonePermissionTitle => 'Mikrofon izni gerekli';
+
+  @override
+  String get tunerMicrophoneUnavailableTitle => 'Mikrofon kullanılamıyor';
+
+  @override
+  String get tunerProcessingErrorTitle => 'Perde analizi durdu';
+
+  @override
+  String get tunerNoSignalTitle => 'Sinyal algılanmadı';
 
   @override
   String get beginner => 'Başlangıç';

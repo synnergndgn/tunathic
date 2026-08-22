@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tunathic/app/router/app_router.dart';
+import 'package:tunathic/app/theme/app_radii.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
 import 'package:tunathic/core/music_theory/music_theory.dart';
 import 'package:tunathic/features/music_theory/domain/interval_shape.dart';
@@ -15,6 +16,8 @@ import 'package:tunathic/features/circle_of_fifths/presentation/circle_of_fifths
 import 'package:tunathic/features/scale_library/presentation/scale_library_localizations.dart';
 import 'package:tunathic/features/tuner/presentation/tuner_localizations.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
 
 /// Renders one lesson block.
 ///
@@ -106,11 +109,12 @@ final class TheoryBlockView extends StatelessWidget {
       ),
       TheoryTryIt(:final action) => Align(
         alignment: AlignmentDirectional.centerStart,
-        child: FilledButton.tonalIcon(
+        child: SkeuoButton(
           key: Key('theoryAction_${action.tool.id}'),
           onPressed: () => onOpenAction(AppRoutes.theoryAction(action)),
-          icon: Icon(action.tool.icon),
-          label: Text(_actionLabel(localizations, action)),
+          selected: true,
+          icon: action.tool.icon,
+          child: Text(_actionLabel(localizations, action)),
         ),
       ),
     };
@@ -501,7 +505,7 @@ final class _DiatonicTable extends StatelessWidget {
                     border: Border.all(
                       color: Theme.of(context).colorScheme.outlineVariant,
                     ),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: AppRadii.mediumBorder,
                   ),
                   child: Column(
                     children: [
@@ -639,7 +643,7 @@ final class _ExampleCard extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) => Card(
+  Widget build(BuildContext context) => SkeuoCard(
     margin: EdgeInsets.zero,
     child: Padding(
       padding: const EdgeInsets.all(AppSpacing.medium),
