@@ -13,6 +13,7 @@ import 'package:tunathic/features/fretboard/domain/fretboard_route_state.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/pitch_class_selector.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/tunathic_scaffold.dart';
 
 final class ChordLibraryScreen extends StatefulWidget {
   const ChordLibraryScreen({
@@ -130,80 +131,72 @@ final class _ChordLibraryScreenState extends State<ChordLibraryScreen> {
         ? null
         : shapes[_shapeIndex.clamp(0, shapes.length - 1)];
 
-    return Scaffold(
-      appBar: AppBar(title: Text(localizations.chordLibrary)),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: AppSpacing.pageMaxWidth,
-            ),
-            child: ListView(
-              key: const Key('chordLibraryScroll'),
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.medium,
-                AppSpacing.large,
-                AppSpacing.medium,
-                AppSpacing.xLarge,
-              ),
-              children: [
-                Text(
-                  localizations.chordLibraryIntro,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(height: AppSpacing.large),
-                _buildSearch(localizations),
-                const SizedBox(height: AppSpacing.large),
-                _buildRootSelector(localizations),
-                const SizedBox(height: AppSpacing.large),
-                _buildQualitySelector(localizations),
-                const SizedBox(height: AppSpacing.xLarge),
-                _ChordSummary(chord: chord),
-                const SizedBox(height: AppSpacing.medium),
-                Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: SkeuoButton(
-                    key: const Key('chordViewOnFretboard'),
-                    icon: Icons.grid_on_outlined,
-                    onPressed: () {
-                      context.push(
-                        AppRoutes.fretboard(
-                          FretboardRouteState(
-                            mode: FretboardMode.chord,
-                            root: _root,
-                            chordQuality: _quality,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Text(localizations.viewOnFretboard),
+    return TunathicScaffold(
+      title: localizations.chordLibrary,
+      maxContentWidth: AppSpacing.pageMaxWidth,
+      body: ListView(
+        key: const Key('chordLibraryScroll'),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.medium,
+          AppSpacing.large,
+          AppSpacing.medium,
+          AppSpacing.xLarge,
+        ),
+        children: [
+          Text(
+            localizations.chordLibraryIntro,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: AppSpacing.large),
+          _buildSearch(localizations),
+          const SizedBox(height: AppSpacing.large),
+          _buildRootSelector(localizations),
+          const SizedBox(height: AppSpacing.large),
+          _buildQualitySelector(localizations),
+          const SizedBox(height: AppSpacing.xLarge),
+          _ChordSummary(chord: chord),
+          const SizedBox(height: AppSpacing.medium),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: SkeuoButton(
+              key: const Key('chordViewOnFretboard'),
+              icon: Icons.grid_on_outlined,
+              onPressed: () {
+                context.push(
+                  AppRoutes.fretboard(
+                    FretboardRouteState(
+                      mode: FretboardMode.chord,
+                      root: _root,
+                      chordQuality: _quality,
+                    ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.xLarge),
-                Semantics(
-                  header: true,
-                  child: Text(
-                    localizations.guitarShapesLabel,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.medium),
-                if (selectedShape == null)
-                  _NoShapeState(chordSymbol: chord.symbol)
-                else
-                  _ShapeContent(
-                    chordSymbol: chord.symbol,
-                    shapes: shapes,
-                    selectedIndex: _shapeIndex,
-                    selectedShape: selectedShape,
-                    onSelected: (index) {
-                      setState(() => _shapeIndex = index);
-                    },
-                  ),
-              ],
+                );
+              },
+              child: Text(localizations.viewOnFretboard),
             ),
           ),
-        ),
+          const SizedBox(height: AppSpacing.xLarge),
+          Semantics(
+            header: true,
+            child: Text(
+              localizations.guitarShapesLabel,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          if (selectedShape == null)
+            _NoShapeState(chordSymbol: chord.symbol)
+          else
+            _ShapeContent(
+              chordSymbol: chord.symbol,
+              shapes: shapes,
+              selectedIndex: _shapeIndex,
+              selectedShape: selectedShape,
+              onSelected: (index) {
+                setState(() => _shapeIndex = index);
+              },
+            ),
+        ],
       ),
     );
   }

@@ -20,6 +20,7 @@ import 'package:tunathic/features/repertoire/presentation/song_sheet_view.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
+import 'package:tunathic/shared/widgets/studio/tunathic_scaffold.dart';
 
 /// The performance view: transpose by semitone and scroll hands-free.
 final class SongViewScreen extends ConsumerStatefulWidget {
@@ -87,8 +88,8 @@ class _SongViewScreenState extends ConsumerState<SongViewScreen>
     }
 
     if (song == null) {
-      return Scaffold(
-        appBar: AppBar(title: Text(localizations.repertoire)),
+      return TunathicScaffold(
+        title: localizations.repertoire,
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.medium),
@@ -106,118 +107,104 @@ class _SongViewScreenState extends ConsumerState<SongViewScreen>
       song.content,
     ).transpose(_transpose, spelling: _spelling);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(song.title),
-        actions: [
-          IconButton(
-            key: const Key('toggleChordEditing'),
-            tooltip: _editingChords
-                ? localizations.doneEditingChords
-                : localizations.editChords,
-            onPressed: sheet.isEmpty ? null : _toggleChordEditing,
-            icon: Icon(_editingChords ? Icons.done : Icons.edit_note),
-          ),
-          IconButton(
-            key: const Key('editSong'),
-            tooltip: localizations.editSong,
-            onPressed: () {
-              _stopScrolling();
-              context.push(AppRoutes.repertoireSongEditor(song.id));
-            },
-            icon: const Icon(Icons.edit_outlined),
-          ),
-          const SizedBox(width: AppSpacing.small),
-        ],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: AppSpacing.contentMaxWidth,
-            ),
-            child: Column(
-              children: [
-                if (_editingChords)
-                  _ChordEditingBanner(
-                    localizations: localizations,
-                    onDone: _toggleChordEditing,
-                  )
-                else
-                  _PerformanceControls(
-                    localizations: localizations,
-                    transpose: _transpose,
-                    speedLevel: _speedLevel,
-                    spelling: _spelling,
-                    scrolling: _scrolling,
-                    onTransposeBy: (delta) =>
-                        _setTranspose(song, _transpose + delta),
-                    onTransposeReset: () => _setTranspose(song, 0),
-                    onSpelling: (value) => setState(() => _spelling = value),
-                    onSpeed: (value) => _setSpeed(song, value),
-                    onToggleScroll: _toggleScrolling,
-                  ),
-                Expanded(
-                  child: NotificationListener<ScrollStartNotification>(
-                    // A performer taking over by hand stops the auto-scroll.
-                    onNotification: (notification) {
-                      if (notification.dragDetails != null) _stopScrolling();
-                      return false;
-                    },
-                    child: SingleChildScrollView(
-                      key: const Key('songSheetScroll'),
-                      controller: _scrollController,
-                      padding: const EdgeInsets.fromLTRB(
-                        AppSpacing.medium,
-                        AppSpacing.small,
-                        AppSpacing.medium,
-                        AppSpacing.xxLarge,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (song.artist.isNotEmpty) ...[
-                            Text(
-                              song.artist,
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            const SizedBox(height: AppSpacing.small),
-                          ],
-                          if (sheet.chordSymbols.isNotEmpty) ...[
-                            Text(
-                              '${localizations.songChordsLabel}: '
-                              '${sheet.chordSymbols.join('  ')}',
-                              key: const Key('songChordSummary'),
-                              style: Theme.of(context).textTheme.labelLarge
-                                  ?.copyWith(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.secondary,
-                                  ),
-                            ),
-                            const SizedBox(height: AppSpacing.medium),
-                          ],
-                          if (sheet.isEmpty)
-                            Text(
-                              localizations.emptySongContent,
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            )
-                          else
-                            SongSheetView(
-                              sheet: sheet,
-                              onSelectWord: _editingChords
-                                  ? (target) => _placeChord(song, sheet, target)
-                                  : null,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+    return TunathicScaffold(
+      title: song.title,
+      maxContentWidth: AppSpacing.contentMaxWidth,
+      actions: [
+        IconButton(
+          key: const Key('toggleChordEditing'),
+          tooltip: _editingChords
+              ? localizations.doneEditingChords
+              : localizations.editChords,
+          onPressed: sheet.isEmpty ? null : _toggleChordEditing,
+          icon: Icon(_editingChords ? Icons.done : Icons.edit_note),
         ),
+        IconButton(
+          key: const Key('editSong'),
+          tooltip: localizations.editSong,
+          onPressed: () {
+            _stopScrolling();
+            context.push(AppRoutes.repertoireSongEditor(song.id));
+          },
+          icon: const Icon(Icons.edit_outlined),
+        ),
+        const SizedBox(width: AppSpacing.small),
+      ],
+      body: Column(
+        children: [
+          if (_editingChords)
+            _ChordEditingBanner(
+              localizations: localizations,
+              onDone: _toggleChordEditing,
+            )
+          else
+            _PerformanceControls(
+              localizations: localizations,
+              transpose: _transpose,
+              speedLevel: _speedLevel,
+              spelling: _spelling,
+              scrolling: _scrolling,
+              onTransposeBy: (delta) => _setTranspose(song, _transpose + delta),
+              onTransposeReset: () => _setTranspose(song, 0),
+              onSpelling: (value) => setState(() => _spelling = value),
+              onSpeed: (value) => _setSpeed(song, value),
+              onToggleScroll: _toggleScrolling,
+            ),
+          Expanded(
+            child: NotificationListener<ScrollStartNotification>(
+              // A performer taking over by hand stops the auto-scroll.
+              onNotification: (notification) {
+                if (notification.dragDetails != null) _stopScrolling();
+                return false;
+              },
+              child: SingleChildScrollView(
+                key: const Key('songSheetScroll'),
+                controller: _scrollController,
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.medium,
+                  AppSpacing.small,
+                  AppSpacing.medium,
+                  AppSpacing.xxLarge,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (song.artist.isNotEmpty) ...[
+                      Text(
+                        song.artist,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: AppSpacing.small),
+                    ],
+                    if (sheet.chordSymbols.isNotEmpty) ...[
+                      Text(
+                        '${localizations.songChordsLabel}: '
+                        '${sheet.chordSymbols.join('  ')}',
+                        key: const Key('songChordSummary'),
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.medium),
+                    ],
+                    if (sheet.isEmpty)
+                      Text(
+                        localizations.emptySongContent,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      )
+                    else
+                      SongSheetView(
+                        sheet: sheet,
+                        onSelectWord: _editingChords
+                            ? (target) => _placeChord(song, sheet, target)
+                            : null,
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

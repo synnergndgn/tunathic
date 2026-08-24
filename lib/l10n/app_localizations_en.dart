@@ -254,6 +254,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String volumePercentShort(int percent) {
+    return '$percent%';
+  }
+
+  @override
   String get openBpmTapForMetronome => 'Open BPM Tap';
 
   @override

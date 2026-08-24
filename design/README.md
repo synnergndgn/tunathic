@@ -22,3 +22,11 @@ Files in `references/` are inspiration only. They may inform broad visual qualit
 - `references/` stores approved visual inspiration.
 - `wireframes/` stores product-owned layout explorations.
 - `brand/` stores product-owned identity assets and guidance.
+- `store/` stores the Google Play asset masters and the scripts that render
+  them. `store/out/` is generated: change the SVG or the script, never the PNG.
+  The direction, concepts, copy and capture plan live in
+  `docs/store_assets/`.
+
+Note that `AppRadii` no longer keeps corners at 6 and 10 logical pixels: the
+scale is now 2/3/4 with 6 for a device edge, and nothing in the system is
+pill-shaped. Store assets follow the tighter scale.

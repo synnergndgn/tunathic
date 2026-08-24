@@ -95,6 +95,13 @@
       "percent": {"type": "int"}
     }
   },
+  "volumePercentShort": "{percent}%",
+  "@volumePercentShort": {
+    "description": "The volume readout beside the slider. Short because it sits in a narrow numeric column; the full volumePercent string carries the meaning for screen readers.",
+    "placeholders": {
+      "percent": {"type": "int"}
+    }
+  },
   "openBpmTapForMetronome": "Open BPM Tap",
   "applyBpmTapResult": "Apply BPM Tap result",
   "bpmTapApplied": "Applied {bpm} BPM to the metronome.",

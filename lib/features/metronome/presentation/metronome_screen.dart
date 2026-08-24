@@ -261,16 +261,23 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
                         onChangeEnd: (_) => controller.commitVolume(),
                       ),
                     ),
+                    // An engraved numeric readout, not a sentence: the column
+                    // is 56 pt wide and the full "65% volume" string only ever
+                    // fitted as "65% vo…". The whole phrase still reaches a
+                    // screen reader through semanticsLabel.
                     SizedBox(
                       width: 56,
                       child: Text(
-                        localizations.volumePercent(
+                        localizations.volumePercentShort(
+                          (config.volume * 100).round(),
+                        ),
+                        semanticsLabel: localizations.volumePercent(
                           (config.volume * 100).round(),
                         ),
                         textAlign: TextAlign.end,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TunathicTextStyles.metadata(context),
+                        style: TunathicTextStyles.readout(context),
                       ),
                     ),
                   ],

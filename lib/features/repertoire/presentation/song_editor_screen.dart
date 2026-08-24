@@ -12,6 +12,7 @@ import 'package:tunathic/features/repertoire/domain/song.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
+import 'package:tunathic/shared/widgets/studio/tunathic_scaffold.dart';
 
 /// Creates or edits a song. A pasted chart is converted to ChordPro on save.
 final class SongEditorScreen extends ConsumerStatefulWidget {
@@ -46,86 +47,72 @@ class _SongEditorScreenState extends ConsumerState<SongEditorScreen> {
     final song = editing && songs != null ? _findSong(songs) : null;
     if (song != null) _prefill(song);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          editing ? localizations.editSongTitle : localizations.newSongTitle,
+    return TunathicScaffold(
+      title: editing ? localizations.editSongTitle : localizations.newSongTitle,
+      maxContentWidth: AppSpacing.contentMaxWidth,
+      actions: [
+        if (editing)
+          IconButton(
+            key: const Key('deleteSong'),
+            tooltip: localizations.deleteSong,
+            onPressed: song == null ? null : () => _confirmDelete(song),
+            icon: const Icon(Icons.delete_outline),
+          ),
+        const SizedBox(width: AppSpacing.small),
+      ],
+      body: ListView(
+        key: const Key('songEditorScroll'),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.medium,
+          AppSpacing.medium,
+          AppSpacing.medium,
+          AppSpacing.xLarge,
         ),
-        actions: [
-          if (editing)
-            IconButton(
-              key: const Key('deleteSong'),
-              tooltip: localizations.deleteSong,
-              onPressed: song == null ? null : () => _confirmDelete(song),
-              icon: const Icon(Icons.delete_outline),
-            ),
-          const SizedBox(width: AppSpacing.small),
-        ],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: AppSpacing.contentMaxWidth,
-            ),
-            child: ListView(
-              key: const Key('songEditorScroll'),
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.medium,
-                AppSpacing.medium,
-                AppSpacing.medium,
-                AppSpacing.xLarge,
-              ),
-              children: [
-                TextField(
-                  key: const Key('songTitleField'),
-                  controller: _titleController,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: localizations.songTitleLabel,
-                    errorText: _titleMissing
-                        ? localizations.songTitleRequired
-                        : null,
-                    border: const OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.medium),
-                TextField(
-                  key: const Key('songArtistField'),
-                  controller: _artistController,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: localizations.songArtistLabel,
-                    border: const OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.medium),
-                TextField(
-                  key: const Key('songContentField'),
-                  controller: _contentController,
-                  minLines: 10,
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(
-                    labelText: localizations.songContentLabel,
-                    helperText: localizations.songContentHint,
-                    helperMaxLines: 4,
-                    alignLabelWithHint: true,
-                    border: const OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.large),
-                SkeuoButton(
-                  key: const Key('saveSong'),
-                  onPressed: _save,
-                  selected: true,
-                  icon: Icons.check,
-                  child: Text(localizations.saveSong),
-                ),
-              ],
+        children: [
+          TextField(
+            key: const Key('songTitleField'),
+            controller: _titleController,
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              labelText: localizations.songTitleLabel,
+              errorText: _titleMissing ? localizations.songTitleRequired : null,
+              border: const OutlineInputBorder(),
             ),
           ),
-        ),
+          const SizedBox(height: AppSpacing.medium),
+          TextField(
+            key: const Key('songArtistField'),
+            controller: _artistController,
+            textInputAction: TextInputAction.next,
+            decoration: InputDecoration(
+              labelText: localizations.songArtistLabel,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          TextField(
+            key: const Key('songContentField'),
+            controller: _contentController,
+            minLines: 10,
+            maxLines: null,
+            keyboardType: TextInputType.multiline,
+            decoration: InputDecoration(
+              labelText: localizations.songContentLabel,
+              helperText: localizations.songContentHint,
+              helperMaxLines: 4,
+              alignLabelWithHint: true,
+              border: const OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.large),
+          SkeuoButton(
+            key: const Key('saveSong'),
+            onPressed: _save,
+            selected: true,
+            icon: Icons.check,
+            child: Text(localizations.saveSong),
+          ),
+        ],
       ),
     );
   }

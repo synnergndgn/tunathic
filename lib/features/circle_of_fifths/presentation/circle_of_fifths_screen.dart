@@ -12,6 +12,7 @@ import 'package:tunathic/features/scale_library/domain/scale_library_route_state
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
+import 'package:tunathic/shared/widgets/studio/tunathic_scaffold.dart';
 
 final class CircleOfFifthsScreen extends StatefulWidget {
   const CircleOfFifthsScreen({super.key});
@@ -28,79 +29,71 @@ final class _CircleOfFifthsScreenState extends State<CircleOfFifthsScreen> {
     final localizations = AppLocalizations.of(context);
     final harmony = DiatonicHarmonyConstructor.construct(_selectedKey);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(localizations.circleOfFifths)),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: AppSpacing.pageMaxWidth,
-            ),
-            child: ListView(
-              key: const Key('circleOfFifthsScroll'),
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.medium,
-                AppSpacing.large,
-                AppSpacing.medium,
-                AppSpacing.xLarge,
-              ),
-              children: [
-                Text(
-                  localizations.circleOfFifthsIntro,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(height: AppSpacing.small),
-                Text(
-                  localizations.circleOrientationHint,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: AppSpacing.large),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    final circle = Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const _CircleLegend(),
-                        const SizedBox(height: AppSpacing.small),
-                        CircleOfFifthsView(
-                          selectedKey: _selectedKey,
-                          onSelected: _selectKey,
-                        ),
-                      ],
-                    );
-                    final details = _KeyDetails(
-                      key: const Key('circleKeyDetails'),
-                      selectedKey: _selectedKey,
-                      harmony: harmony,
-                      onSelectKey: _selectKey,
-                      onViewScale: _viewScale,
-                      onViewFretboard: _viewFretboard,
-                      onOpenChord: _openChord,
-                    );
-                    if (constraints.maxWidth < 840) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          circle,
-                          const SizedBox(height: AppSpacing.xLarge),
-                          details,
-                        ],
-                      );
-                    }
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(flex: 10, child: circle),
-                        const SizedBox(width: AppSpacing.xLarge),
-                        Expanded(flex: 11, child: details),
-                      ],
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
+    return TunathicScaffold(
+      title: localizations.circleOfFifths,
+      maxContentWidth: AppSpacing.pageMaxWidth,
+      body: ListView(
+        key: const Key('circleOfFifthsScroll'),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.medium,
+          AppSpacing.large,
+          AppSpacing.medium,
+          AppSpacing.xLarge,
         ),
+        children: [
+          Text(
+            localizations.circleOfFifthsIntro,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: AppSpacing.small),
+          Text(
+            localizations.circleOrientationHint,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: AppSpacing.large),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final circle = Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const _CircleLegend(),
+                  const SizedBox(height: AppSpacing.small),
+                  CircleOfFifthsView(
+                    selectedKey: _selectedKey,
+                    onSelected: _selectKey,
+                  ),
+                ],
+              );
+              final details = _KeyDetails(
+                key: const Key('circleKeyDetails'),
+                selectedKey: _selectedKey,
+                harmony: harmony,
+                onSelectKey: _selectKey,
+                onViewScale: _viewScale,
+                onViewFretboard: _viewFretboard,
+                onOpenChord: _openChord,
+              );
+              if (constraints.maxWidth < 840) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    circle,
+                    const SizedBox(height: AppSpacing.xLarge),
+                    details,
+                  ],
+                );
+              }
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 10, child: circle),
+                  const SizedBox(width: AppSpacing.xLarge),
+                  Expanded(flex: 11, child: details),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }

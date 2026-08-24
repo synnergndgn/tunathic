@@ -9,6 +9,7 @@ import 'package:tunathic/features/scale_library/presentation/scale_library_local
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/pitch_class_selector.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/tunathic_scaffold.dart';
 
 final class InteractiveFretboardScreen extends StatefulWidget {
   const InteractiveFretboardScreen({
@@ -59,88 +60,80 @@ final class _InteractiveFretboardScreenState
         ? '${_root.symbol}${_chordQuality.symbol}'
         : '${_root.symbol} ${localizations.scaleName(_scaleDefinition)}';
 
-    return Scaffold(
-      appBar: AppBar(title: Text(localizations.interactiveFretboard)),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: AppSpacing.pageMaxWidth,
-            ),
-            child: ListView(
-              key: const Key('interactiveFretboardScroll'),
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.medium,
-                AppSpacing.large,
-                AppSpacing.medium,
-                AppSpacing.xLarge,
+    return TunathicScaffold(
+      title: localizations.interactiveFretboard,
+      maxContentWidth: AppSpacing.pageMaxWidth,
+      body: ListView(
+        key: const Key('interactiveFretboardScroll'),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.medium,
+          AppSpacing.large,
+          AppSpacing.medium,
+          AppSpacing.xLarge,
+        ),
+        children: [
+          Text(
+            localizations.fretboardIntro,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: AppSpacing.large),
+          _buildPrimaryControls(localizations),
+          const SizedBox(height: AppSpacing.large),
+          PitchClassSelector(
+            label: localizations.rootNoteLabel,
+            choices: chromaticPitchClassChoices,
+            selectedRoot: _root,
+            keyPrefix: 'fretboardRoot',
+            onSelected: (root) {
+              setState(() {
+                _root = root;
+                _selectedPosition = null;
+              });
+            },
+          ),
+          const SizedBox(height: AppSpacing.large),
+          _buildDefinitionSelector(localizations),
+          const SizedBox(height: AppSpacing.large),
+          Text(
+            selectionName,
+            key: const Key('fretboardSelectionName'),
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const SizedBox(height: AppSpacing.small),
+          Text(localizations.fretboardOrientationHint),
+          const SizedBox(height: AppSpacing.small),
+          Text(
+            localizations.tapHighlightedNoteHint,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Theme.of(context).colorScheme.outlineVariant,
               ),
-              children: [
-                Text(
-                  localizations.fretboardIntro,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(height: AppSpacing.large),
-                _buildPrimaryControls(localizations),
-                const SizedBox(height: AppSpacing.large),
-                PitchClassSelector(
-                  label: localizations.rootNoteLabel,
-                  choices: chromaticPitchClassChoices,
-                  selectedRoot: _root,
-                  keyPrefix: 'fretboardRoot',
-                  onSelected: (root) {
-                    setState(() {
-                      _root = root;
-                      _selectedPosition = null;
-                    });
-                  },
-                ),
-                const SizedBox(height: AppSpacing.large),
-                _buildDefinitionSelector(localizations),
-                const SizedBox(height: AppSpacing.large),
-                Text(
+              borderRadius: AppRadii.mediumBorder,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.small),
+              child: InteractiveFretboardView(
+                positions: positions,
+                maximumFret: _maximumFret,
+                displayMode: _displayMode,
+                semanticLabel: localizations.fretboardSemantics(
                   selectionName,
-                  key: const Key('fretboardSelectionName'),
-                  style: Theme.of(context).textTheme.headlineSmall,
+                  _maximumFret,
+                  _root.symbol,
                 ),
-                const SizedBox(height: AppSpacing.small),
-                Text(localizations.fretboardOrientationHint),
-                const SizedBox(height: AppSpacing.small),
-                Text(
-                  localizations.tapHighlightedNoteHint,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                const SizedBox(height: AppSpacing.medium),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.outlineVariant,
-                    ),
-                    borderRadius: AppRadii.mediumBorder,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.small),
-                    child: InteractiveFretboardView(
-                      positions: positions,
-                      maximumFret: _maximumFret,
-                      displayMode: _displayMode,
-                      semanticLabel: localizations.fretboardSemantics(
-                        selectionName,
-                        _maximumFret,
-                        _root.symbol,
-                      ),
-                      onPositionSelected: (position) {
-                        setState(() => _selectedPosition = position);
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.large),
-                _SelectedPositionDetails(position: _selectedPosition),
-              ],
+                onPositionSelected: (position) {
+                  setState(() => _selectedPosition = position);
+                },
+              ),
             ),
           ),
-        ),
+          const SizedBox(height: AppSpacing.large),
+          _SelectedPositionDetails(position: _selectedPosition),
+        ],
       ),
     );
   }

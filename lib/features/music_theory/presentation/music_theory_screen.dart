@@ -20,6 +20,7 @@ import 'package:tunathic/features/music_theory/presentation/widgets/theory_lesso
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
+import 'package:tunathic/shared/widgets/studio/tunathic_scaffold.dart';
 
 /// The Music Theory hub: search, level filter, saved reading, and categories.
 final class MusicTheoryScreen extends ConsumerStatefulWidget {
@@ -49,55 +50,47 @@ final class _MusicTheoryScreenState extends ConsumerState<MusicTheoryScreen> {
     final progress =
         ref.watch(theoryProgressProvider).value ?? TheoryProgress.empty;
 
-    return Scaffold(
-      appBar: AppBar(title: Text(localizations.musicTheory)),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: AppSpacing.pageMaxWidth,
-            ),
-            child: ListView(
-              key: const Key('musicTheoryScroll'),
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.medium,
-                AppSpacing.medium,
-                AppSpacing.medium,
-                AppSpacing.xLarge,
-              ),
-              children: [
-                Text(
-                  localizations.musicTheoryTagline,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: AppSpacing.xSmall),
-                Text(
-                  localizations.theoryHubIntro,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: AppSpacing.medium),
-                _SearchField(
-                  controller: _searchController,
-                  onChanged: (value) => setState(() => _query = value),
-                  onClear: () {
-                    _searchController.clear();
-                    setState(() => _query = '');
-                  },
-                ),
-                const SizedBox(height: AppSpacing.medium),
-                _LevelFilter(
-                  level: _level,
-                  onChanged: (level) => setState(() => _level = level),
-                ),
-                const SizedBox(height: AppSpacing.large),
-                if (_isFiltering)
-                  ..._buildResults(context, content, progress)
-                else
-                  ..._buildBrowse(context, content, progress),
-              ],
-            ),
-          ),
+    return TunathicScaffold(
+      title: localizations.musicTheory,
+      maxContentWidth: AppSpacing.pageMaxWidth,
+      body: ListView(
+        key: const Key('musicTheoryScroll'),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.medium,
+          AppSpacing.medium,
+          AppSpacing.medium,
+          AppSpacing.xLarge,
         ),
+        children: [
+          Text(
+            localizations.musicTheoryTagline,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: AppSpacing.xSmall),
+          Text(
+            localizations.theoryHubIntro,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          _SearchField(
+            controller: _searchController,
+            onChanged: (value) => setState(() => _query = value),
+            onClear: () {
+              _searchController.clear();
+              setState(() => _query = '');
+            },
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          _LevelFilter(
+            level: _level,
+            onChanged: (level) => setState(() => _level = level),
+          ),
+          const SizedBox(height: AppSpacing.large),
+          if (_isFiltering)
+            ..._buildResults(context, content, progress)
+          else
+            ..._buildBrowse(context, content, progress),
+        ],
       ),
     );
   }

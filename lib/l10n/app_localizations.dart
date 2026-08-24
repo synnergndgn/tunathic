@@ -542,6 +542,12 @@ abstract class AppLocalizations {
   /// **'{percent}% volume'**
   String volumePercent(int percent);
 
+  /// The volume readout beside the slider. Short because it sits in a narrow numeric column; the full volumePercent string carries the meaning for screen readers.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}%'**
+  String volumePercentShort(int percent);
+
   /// No description provided for @openBpmTapForMetronome.
   ///
   /// In en, this message translates to:

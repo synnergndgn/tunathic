@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"
+     role="img" aria-label="Tunathic app icon: tuning fork in a recessed well">
+  <title>Tunathic icon: Fork in the Well</title>
+  <desc>Concept C. The existing Tunathic tuning-fork mark, kept line for line,
+  but seated in a machined circular recess on an ivory faceplate with a green
+  in-tune segment on the rim. Continuity option: the launcher icon already
+  ships this mark, so the store icon would not read as a different product.</desc>
+
+  <defs>
+    <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0"    stop-color="#FFFDF8"/>
+      <stop offset="0.52" stop-color="#F8F1E7"/>
+      <stop offset="1"    stop-color="#EFE3D4"/>
+    </linearGradient>
+
+    <pattern id="grain" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="none"/>
+      <line x1="0" y1="0.5" x2="8" y2="0.5" stroke="#6B4A32" stroke-opacity="0.035" stroke-width="1"/>
+    </pattern>
+
+    <radialGradient id="well" cx="0.5" cy="0.28" r="0.95">
+      <stop offset="0"    stop-color="#DFD1BE"/>
+      <stop offset="0.45" stop-color="#EDE2D3"/>
+      <stop offset="1"    stop-color="#F6EDE1"/>
+    </radialGradient>
+
+    <linearGradient id="fork" gradientUnits="userSpaceOnUse"
+                    x1="180" y1="120" x2="340" y2="400">
+      <stop offset="0"    stop-color="#E1842F"/>
+      <stop offset="0.45" stop-color="#C85818"/>
+      <stop offset="1"    stop-color="#9C3F0E"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#plate)"/>
+  <rect width="512" height="512" fill="url(#grain)"/>
+
+  <rect x="22" y="22" width="468" height="468" rx="26"
+        fill="none" stroke="#D9C9B8" stroke-width="2"/>
+  <rect x="25.5" y="25.5" width="461" height="461" rx="23"
+        fill="none" stroke="#FFFFFF" stroke-opacity="0.85" stroke-width="1.5"/>
+
+  <!-- Machined recess -->
+  <circle cx="256" cy="256" r="182" fill="#FFFFFF" fill-opacity="0.9"/>
+  <circle cx="256" cy="256" r="178" fill="url(#well)"/>
+  <circle cx="256" cy="256" r="178" fill="none" stroke="#6B4A32" stroke-opacity="0.18" stroke-width="4"/>
+  <circle cx="256" cy="256" r="172" fill="none" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="3"/>
+
+  <!-- In-tune segment on the rim, at twelve o'clock -->
+  <path d="M215.5,84.7 A178,178 0 0 1 296.5,84.7" fill="none"
+        stroke="#35734C" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- The Tunathic mark, geometry unchanged from design/brand/tunathic-mark.svg -->
+  <g transform="translate(256,256) scale(0.82) translate(-256,-256)">
+    <g fill="none" stroke="url(#fork)" stroke-width="34"
+       stroke-linecap="round" stroke-linejoin="round">
+      <path d="M170 116 L170 224 A86 86 0 0 0 342 224 L342 116"/>
+      <path d="M256 310 L256 396"/>
+    </g>
+  </g>
+</svg>

@@ -37,7 +37,8 @@ final class ControlDock extends StatelessWidget {
 /// One control on a dock: an icon over a short label, sized like a footswitch.
 ///
 /// The label wraps to two lines before it is ever ellipsised, which is what
-/// keeps the longer Turkish tool names readable on a 320 pt screen.
+/// keeps the longer Turkish tool names readable on a 320 pt screen. A label
+/// that is one long word instead shrinks to fit — see [_DockLabel].
 final class ControlDockItem extends StatelessWidget {
   const ControlDockItem({
     required this.icon,
@@ -75,6 +76,9 @@ final class ControlDockItem extends StatelessWidget {
       label: caption == null ? label : '$label, $caption',
       child: ExcludeSemantics(
         child: SkeuoButton(
+          // Compact padding, so three footswitches across a 411 pt phone leave
+          // their labels room to sit on one line at the default text scale.
+          compact: true,
           selected: accent,
           expand: true,
           onPressed: enabled ? onTap : null,
@@ -88,15 +92,7 @@ final class ControlDockItem extends StatelessWidget {
               children: [
                 Icon(icon, size: 24, color: foreground),
                 const SizedBox(height: AppSpacing.sm),
-                Text(
-                  label,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TunathicTextStyles.compactLabel(
-                    context,
-                  ).copyWith(color: foreground),
-                ),
+                _DockLabel(label: label, color: foreground),
                 if (caption != null) ...[
                   const SizedBox(height: AppSpacing.xs),
                   Text(
@@ -114,6 +110,62 @@ final class ControlDockItem extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// A dock label that never gets cut in half.
+///
+/// Flutter wraps at a space when it can and breaks mid-word when it cannot, so
+/// a one-word tool name wider than its column came out as "Metrono / me". This
+/// measures the longest word first and shrinks the whole label just enough for
+/// that word to fit on one line, which leaves two-word labels wrapping at their
+/// space exactly as before.
+final class _DockLabel extends StatelessWidget {
+  const _DockLabel({required this.label, required this.color});
+
+  /// Below this the label would be too small to read; it ellipsises instead.
+  static const _minimumScale = 0.74;
+
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = TunathicTextStyles.compactLabel(
+      context,
+    ).copyWith(color: color);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        var effective = style;
+        final available = constraints.maxWidth;
+        if (available.isFinite && available > 0) {
+          final longest = label
+              .split(RegExp(r'\s+'))
+              .fold<String>('', (a, b) => b.length > a.length ? b : a);
+          final painter = TextPainter(
+            text: TextSpan(text: longest, style: style),
+            textDirection: Directionality.of(context),
+            textScaler: MediaQuery.textScalerOf(context),
+          )..layout();
+          if (painter.width > available) {
+            final scale = (available / painter.width).clamp(_minimumScale, 1.0);
+            effective = style.copyWith(
+              fontSize: (style.fontSize ?? 14) * scale,
+            );
+          }
+          painter.dispose();
+        }
+
+        return Text(
+          label,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: effective,
+        );
+      },
     );
   }
 }

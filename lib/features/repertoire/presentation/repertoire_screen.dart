@@ -11,6 +11,7 @@ import 'package:tunathic/features/repertoire/domain/song.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_surface.dart';
+import 'package:tunathic/shared/widgets/studio/tunathic_scaffold.dart';
 
 /// Lists the songs stored on this device.
 final class RepertoireScreen extends ConsumerStatefulWidget {
@@ -45,44 +46,36 @@ class _RepertoireScreenState extends ConsumerState<RepertoireScreen> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(title: Text(localizations.repertoire)),
+    return TunathicScaffold(
+      title: localizations.repertoire,
+      maxContentWidth: AppSpacing.contentMaxWidth,
       floatingActionButton: FloatingActionButton.extended(
         key: const Key('addSong'),
         onPressed: () => openEditor(null),
         icon: const Icon(Icons.add),
         label: Text(localizations.addSong),
       ),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: AppSpacing.contentMaxWidth,
-            ),
-            child: songs.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stackTrace) => Padding(
-                padding: const EdgeInsets.all(AppSpacing.medium),
-                child: Text(localizations.unexpectedErrorDescription),
-              ),
-              data: (songs) => songs.isEmpty
-                  ? _EmptyRepertoire(
-                      localizations: localizations,
-                      onAdd: () => openEditor(null),
-                    )
-                  : _SongList(
-                      songs: _filter(songs),
-                      searchController: _searchController,
-                      localizations: localizations,
-                      onQueryChanged: (value) => setState(() => _query = value),
-                      onOpen: (song) {
-                        unawaited(haptics.selection());
-                        context.push(AppRoutes.repertoireSong(song.id));
-                      },
-                    ),
-            ),
-          ),
+      body: songs.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => Padding(
+          padding: const EdgeInsets.all(AppSpacing.medium),
+          child: Text(localizations.unexpectedErrorDescription),
         ),
+        data: (songs) => songs.isEmpty
+            ? _EmptyRepertoire(
+                localizations: localizations,
+                onAdd: () => openEditor(null),
+              )
+            : _SongList(
+                songs: _filter(songs),
+                searchController: _searchController,
+                localizations: localizations,
+                onQueryChanged: (value) => setState(() => _query = value),
+                onOpen: (song) {
+                  unawaited(haptics.selection());
+                  context.push(AppRoutes.repertoireSong(song.id));
+                },
+              ),
       ),
     );
   }

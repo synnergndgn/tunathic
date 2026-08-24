@@ -41,11 +41,11 @@ and screen-reader semantics.
 
 No accounts. No ads. No analytics.
 
-**0.7.1 (11) Skeuomorphic Instrument Refinement – What's New:**
+**0.7.4 (14) – What's New:**
 
-- Deeper physical instrument surfaces, controls, and responsive states
-- New analog tuner dial, recessed readouts, and hardware-style A4 control
-- Coming-soon tools are hidden until they are ready for testing
+- Every screen now shares the same instrument workbench surface
+- Dashboard tool labels no longer break mid-word
+- Clearer metronome volume readout
 
 ## Turkish (tr-TR)
 
@@ -84,11 +84,11 @@ okuyucu açıklamalarını destekler.
 
 Hesap yok. Reklam yok. Analiz yok.
 
-**0.7.1 (11) Skeuomorphic Cihaz İyileştirmesi – Yenilikler:**
+**0.7.4 (14) – Yenilikler:**
 
-- Daha derin fiziksel cihaz yüzeyleri, kontrolleri ve responsive durumları
-- Yeni analog tuner kadranı, gömülü göstergeler ve cihaz tipi A4 kontrolü
-- Yakında sunulacak araçlar teste hazır olana kadar gizlendi
+- Tüm ekranlar artık aynı cihaz yüzeyini paylaşıyor
+- Ana ekrandaki araç etiketleri artık kelime ortasından bölünmüyor
+- Metronom ses düzeyi göstergesi daha okunaklı
 
 ## Listing verification
 

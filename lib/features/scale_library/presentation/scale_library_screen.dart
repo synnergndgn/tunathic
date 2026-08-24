@@ -11,6 +11,7 @@ import 'package:tunathic/features/scale_library/presentation/scale_library_local
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/pitch_class_selector.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/tunathic_scaffold.dart';
 
 final class ScaleLibraryScreen extends StatefulWidget {
   const ScaleLibraryScreen({
@@ -130,93 +131,85 @@ final class _ScaleLibraryScreenState extends State<ScaleLibraryScreen> {
       root: _root,
       definition: _definition,
     );
-    return Scaffold(
-      appBar: AppBar(title: Text(localizations.scaleLibrary)),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: AppSpacing.pageMaxWidth,
-            ),
-            child: ListView(
-              key: const Key('scaleLibraryScroll'),
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.medium,
-                AppSpacing.large,
-                AppSpacing.medium,
-                AppSpacing.xLarge,
-              ),
-              children: [
-                Text(
-                  localizations.scaleLibraryIntro,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(height: AppSpacing.large),
-                _buildSearch(localizations),
-                const SizedBox(height: AppSpacing.large),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    final rootSelector = PitchClassSelector(
-                      label: localizations.rootNoteLabel,
-                      choices: _roots,
-                      selectedRoot: _root,
-                      keyPrefix: 'scaleRoot',
-                      onSelected: (root) {
-                        setState(() {
-                          _root = root;
-                          _searchHasError = false;
-                        });
-                      },
-                    );
-                    final scaleSelector = _buildScaleSelector(localizations);
-                    if (constraints.maxWidth < 760) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          rootSelector,
-                          const SizedBox(height: AppSpacing.large),
-                          scaleSelector,
-                        ],
-                      );
-                    }
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(flex: 3, child: rootSelector),
-                        const SizedBox(width: AppSpacing.xLarge),
-                        Expanded(flex: 2, child: scaleSelector),
-                      ],
-                    );
-                  },
-                ),
-                const SizedBox(height: AppSpacing.xLarge),
-                _ScaleSummary(scale: scale),
-                const SizedBox(height: AppSpacing.medium),
-                Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: SkeuoButton(
-                    key: const Key('scaleViewOnFretboard'),
-                    icon: Icons.grid_on_outlined,
-                    onPressed: () {
-                      context.push(
-                        AppRoutes.fretboard(
-                          FretboardRouteState(
-                            mode: FretboardMode.scale,
-                            root: _root,
-                            scaleDefinition: _definition,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Text(localizations.viewOnFretboard),
+    return TunathicScaffold(
+      title: localizations.scaleLibrary,
+      maxContentWidth: AppSpacing.pageMaxWidth,
+      body: ListView(
+        key: const Key('scaleLibraryScroll'),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.medium,
+          AppSpacing.large,
+          AppSpacing.medium,
+          AppSpacing.xLarge,
+        ),
+        children: [
+          Text(
+            localizations.scaleLibraryIntro,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: AppSpacing.large),
+          _buildSearch(localizations),
+          const SizedBox(height: AppSpacing.large),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final rootSelector = PitchClassSelector(
+                label: localizations.rootNoteLabel,
+                choices: _roots,
+                selectedRoot: _root,
+                keyPrefix: 'scaleRoot',
+                onSelected: (root) {
+                  setState(() {
+                    _root = root;
+                    _searchHasError = false;
+                  });
+                },
+              );
+              final scaleSelector = _buildScaleSelector(localizations);
+              if (constraints.maxWidth < 760) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    rootSelector,
+                    const SizedBox(height: AppSpacing.large),
+                    scaleSelector,
+                  ],
+                );
+              }
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 3, child: rootSelector),
+                  const SizedBox(width: AppSpacing.xLarge),
+                  Expanded(flex: 2, child: scaleSelector),
+                ],
+              );
+            },
+          ),
+          const SizedBox(height: AppSpacing.xLarge),
+          _ScaleSummary(scale: scale),
+          const SizedBox(height: AppSpacing.medium),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: SkeuoButton(
+              key: const Key('scaleViewOnFretboard'),
+              icon: Icons.grid_on_outlined,
+              onPressed: () {
+                context.push(
+                  AppRoutes.fretboard(
+                    FretboardRouteState(
+                      mode: FretboardMode.scale,
+                      root: _root,
+                      scaleDefinition: _definition,
+                    ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.large),
-                _ScaleDetails(scale: scale),
-              ],
+                );
+              },
+              child: Text(localizations.viewOnFretboard),
             ),
           ),
-        ),
+          const SizedBox(height: AppSpacing.large),
+          _ScaleDetails(scale: scale),
+        ],
       ),
     );
   }

@@ -95,6 +95,12 @@
       "percent": {"type": "int"}
     }
   },
+  "volumePercentShort": "%{percent}",
+  "@volumePercentShort": {
+    "placeholders": {
+      "percent": {"type": "int"}
+    }
+  },
   "openBpmTapForMetronome": "BPM Dokunuşu'nu aç",
   "applyBpmTapResult": "BPM Dokunuşu sonucunu uygula",
   "bpmTapApplied": "{bpm} BPM metronoma uygulandı.",

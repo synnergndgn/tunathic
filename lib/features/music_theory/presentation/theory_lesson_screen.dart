@@ -16,6 +16,7 @@ import 'package:tunathic/features/music_theory/presentation/widgets/theory_lesso
 import 'package:tunathic/features/tool_placeholder/presentation/not_found_screen.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/tunathic_scaffold.dart';
 
 /// One lesson: explanation, worked examples, and links into the tools.
 final class TheoryLessonScreen extends ConsumerStatefulWidget {
@@ -55,79 +56,65 @@ final class _TheoryLessonScreenState extends ConsumerState<TheoryLessonScreen> {
     final next = TheoryLibrary.next(lesson);
     final previous = TheoryLibrary.previous(lesson);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(content.text(lesson.titleId)),
-        actions: [
-          TheoryFavoriteButton(
-            lessonId: lesson.id,
-            isFavorite: progress.isFavorite(lesson.id),
-            onPressed: () => unawaited(
-              ref
-                  .read(theoryProgressProvider.notifier)
-                  .toggleFavorite(lesson.id),
-            ),
-          ),
-          const SizedBox(width: AppSpacing.small),
-        ],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: AppSpacing.readingMaxWidth,
-            ),
-            child: ListView(
-              key: const Key('theoryLessonScroll'),
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.medium,
-                AppSpacing.medium,
-                AppSpacing.medium,
-                AppSpacing.xLarge,
-              ),
-              children: [
-                Wrap(
-                  spacing: AppSpacing.small,
-                  runSpacing: AppSpacing.small,
-                  children: [
-                    Chip(
-                      label: Text(
-                        localizations.theoryCategoryName(lesson.category),
-                      ),
-                      avatar: Icon(theoryCategoryIcon(lesson.category)),
-                    ),
-                    Chip(
-                      key: const Key('theoryLessonLevel'),
-                      label: Text(localizations.theoryLevelName(lesson.level)),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.medium),
-                Text(
-                  content.text(lesson.summaryId),
-                  key: const Key('theoryLessonSummary'),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: AppSpacing.large),
-                for (final block in lesson.blocks) ...[
-                  TheoryBlockView(
-                    block: block,
-                    content: content,
-                    onOpenAction: _open,
-                  ),
-                  const SizedBox(height: AppSpacing.medium),
-                ],
-                const SizedBox(height: AppSpacing.medium),
-                _LessonNavigation(
-                  previous: previous,
-                  next: next,
-                  onOpen: (TheoryLesson target) =>
-                      _open(AppRoutes.musicTheoryLesson(target.id)),
-                ),
-              ],
-            ),
+    return TunathicScaffold(
+      title: content.text(lesson.titleId),
+      maxContentWidth: AppSpacing.readingMaxWidth,
+      actions: [
+        TheoryFavoriteButton(
+          lessonId: lesson.id,
+          isFavorite: progress.isFavorite(lesson.id),
+          onPressed: () => unawaited(
+            ref.read(theoryProgressProvider.notifier).toggleFavorite(lesson.id),
           ),
         ),
+        const SizedBox(width: AppSpacing.small),
+      ],
+      body: ListView(
+        key: const Key('theoryLessonScroll'),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.medium,
+          AppSpacing.medium,
+          AppSpacing.medium,
+          AppSpacing.xLarge,
+        ),
+        children: [
+          Wrap(
+            spacing: AppSpacing.small,
+            runSpacing: AppSpacing.small,
+            children: [
+              Chip(
+                label: Text(localizations.theoryCategoryName(lesson.category)),
+                avatar: Icon(theoryCategoryIcon(lesson.category)),
+              ),
+              Chip(
+                key: const Key('theoryLessonLevel'),
+                label: Text(localizations.theoryLevelName(lesson.level)),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          Text(
+            content.text(lesson.summaryId),
+            key: const Key('theoryLessonSummary'),
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: AppSpacing.large),
+          for (final block in lesson.blocks) ...[
+            TheoryBlockView(
+              block: block,
+              content: content,
+              onOpenAction: _open,
+            ),
+            const SizedBox(height: AppSpacing.medium),
+          ],
+          const SizedBox(height: AppSpacing.medium),
+          _LessonNavigation(
+            previous: previous,
+            next: next,
+            onOpen: (TheoryLesson target) =>
+                _open(AppRoutes.musicTheoryLesson(target.id)),
+          ),
+        ],
       ),
     );
   }
