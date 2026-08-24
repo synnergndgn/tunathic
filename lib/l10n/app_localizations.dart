@@ -2406,12 +2406,6 @@ abstract class AppLocalizations {
   /// **'Pitch detected.'**
   String get tunerStablePitchMessage;
 
-  /// No description provided for @tunerNoSignalMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'No reliable signal. Play one note.'**
-  String get tunerNoSignalMessage;
-
   /// No description provided for @tunerPermissionDeniedMessage.
   ///
   /// In en, this message translates to:
@@ -2435,6 +2429,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Detection'**
   String get tunerModeLabel;
+
+  /// No description provided for @tunerSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuning settings'**
+  String get tunerSettingsTitle;
+
+  /// No description provided for @tunerSettingsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Open tuning settings'**
+  String get tunerSettingsTooltip;
+
+  /// No description provided for @tuningSystemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuning system'**
+  String get tuningSystemLabel;
 
   /// No description provided for @tunerAutomaticTargetHint.
   ///
@@ -2513,12 +2525,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pitch analysis stopped'**
   String get tunerProcessingErrorTitle;
-
-  /// No description provided for @tunerNoSignalTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'No signal detected'**
-  String get tunerNoSignalTitle;
 
   /// No description provided for @beginner.
   ///

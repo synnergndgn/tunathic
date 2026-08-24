@@ -226,6 +226,8 @@ final class TunerUiConfiguration {
     this.targetSwitchConfirmations = 2,
     this.noPitchTargetClearCount = 8,
     this.inTuneHapticConfirmations = 3,
+    this.centsDisplayThreshold = 1,
+    this.frequencyDisplayThresholdHz = 0.1,
   }) : assert(inTuneThresholdCents > 0),
        assert(nearThresholdCents >= inTuneThresholdCents),
        assert(visualRangeCents >= nearThresholdCents),
@@ -233,7 +235,9 @@ final class TunerUiConfiguration {
        assert(maximumAutomaticTargetDistanceCents > 0),
        assert(targetSwitchConfirmations > 0),
        assert(noPitchTargetClearCount > 0),
-       assert(inTuneHapticConfirmations > 0);
+       assert(inTuneHapticConfirmations > 0),
+       assert(centsDisplayThreshold > 0),
+       assert(frequencyDisplayThresholdHz > 0);
 
   final double inTuneThresholdCents;
   final double nearThresholdCents;
@@ -243,6 +247,11 @@ final class TunerUiConfiguration {
   final int targetSwitchConfirmations;
   final int noPitchTargetClearCount;
   final int inTuneHapticConfirmations;
+
+  /// Minimum movement worth publishing to the presentation layer.
+  /// Detection and haptic confirmation still process every estimate.
+  final double centsDisplayThreshold;
+  final double frequencyDisplayThresholdHz;
 
   TunerAccuracy accuracyFor(double cents) {
     final distance = cents.abs();

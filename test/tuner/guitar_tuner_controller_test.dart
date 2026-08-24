@@ -38,7 +38,6 @@ void main() {
     container = ProviderContainer(
       overrides: [
         tunerAudioInputFactoryProvider.overrideWithValue(() => audioInput),
-        stopMetronomeBeforeCaptureProvider.overrideWithValue(() async {}),
         pitchDetectionExecutorProvider.overrideWithValue(pitchExecutor),
         tunerRealtimeClockProvider.overrideWithValue(() => now),
         preferencesStoreProvider.overrideWithValue(preferences),
@@ -370,6 +369,52 @@ void main() {
     expect(state.signalState, TunerSignalState.stopped);
     expect(state.pitch, isNull);
     expect(state.target, isNull);
+  });
+
+  test('repeated no-signal snapshots do not notify tuner UI', () async {
+    pitchExecutor.result = _estimate(110);
+    await controller.start();
+    await emitAnalysisFrame();
+    pitchExecutor.result = PitchEstimate.noPitch(NoPitchReason.lowConfidence);
+    for (var index = 0; index < 9; index++) {
+      await emitAnalysisFrame(sampleCount: 2048);
+    }
+    expect(
+      container.read(guitarTunerProvider).signalState,
+      TunerSignalState.noSignal,
+    );
+
+    var notifications = 0;
+    final uiSubscription = container.listen<GuitarTunerState>(
+      guitarTunerProvider,
+      (_, _) => notifications++,
+    );
+    addTearDown(uiSubscription.close);
+
+    for (var index = 0; index < 5; index++) {
+      await emitAnalysisFrame(sampleCount: 2048);
+    }
+
+    expect(notifications, 0);
+  });
+
+  test('sub-threshold pitch movement does not notify tuner UI', () async {
+    await controller.setMode(TunerMode.chromatic);
+    pitchExecutor.result = _estimate(440);
+    await controller.start();
+    await emitAnalysisFrame();
+
+    var notifications = 0;
+    final uiSubscription = container.listen<GuitarTunerState>(
+      guitarTunerProvider,
+      (_, _) => notifications++,
+    );
+    addTearDown(uiSubscription.close);
+
+    pitchExecutor.result = _estimate(440.02);
+    await emitAnalysisFrame(sampleCount: 2048);
+
+    expect(notifications, 0);
   });
 }
 

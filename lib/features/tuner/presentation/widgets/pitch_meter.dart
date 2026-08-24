@@ -101,28 +101,56 @@ final class SkeuoAnalogMeter extends StatelessWidget {
                 child: Column(
                   children: [
                     Expanded(
-                      child: TweenAnimationBuilder<double>(
-                        tween: Tween(begin: normalized, end: normalized),
-                        duration: MediaQuery.disableAnimationsOf(context)
-                            ? Duration.zero
-                            : AppMotion.standard,
-                        curve: AppMotion.standardCurve,
-                        builder: (context, value, _) => CustomPaint(
-                          painter: _AnalogDialPainter(
-                            normalized: value,
-                            hasReading: reading != null,
-                            needleColor: needleColor,
-                            ink: theme.colorScheme.onSurface,
-                            mutedInk: theme.colorScheme.onSurfaceVariant,
-                            grid: studio.gridLine,
-                            centre: studio.inTune,
-                            flatLabel: flatLabel,
-                            inTuneLabel: inTuneLabel,
-                            sharpLabel: sharpLabel,
-                            isDark: theme.brightness == Brightness.dark,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          RepaintBoundary(
+                            child: CustomPaint(
+                              isComplex: true,
+                              willChange: false,
+                              painter: _AnalogDialPainter(
+                                normalized: 0,
+                                hasReading: false,
+                                needleColor: needleColor,
+                                ink: theme.colorScheme.onSurface,
+                                mutedInk: theme.colorScheme.onSurfaceVariant,
+                                grid: studio.gridLine,
+                                centre: studio.inTune,
+                                flatLabel: flatLabel,
+                                inTuneLabel: inTuneLabel,
+                                sharpLabel: sharpLabel,
+                                isDark: theme.brightness == Brightness.dark,
+                                paintDial: true,
+                                paintNeedle: false,
+                              ),
+                            ),
                           ),
-                          child: const SizedBox.expand(),
-                        ),
+                          TweenAnimationBuilder<double>(
+                            tween: Tween(begin: normalized, end: normalized),
+                            duration: MediaQuery.disableAnimationsOf(context)
+                                ? Duration.zero
+                                : AppMotion.standard,
+                            curve: AppMotion.standardCurve,
+                            builder: (context, value, _) => CustomPaint(
+                              willChange: true,
+                              painter: _AnalogDialPainter(
+                                normalized: value,
+                                hasReading: reading != null,
+                                needleColor: needleColor,
+                                ink: theme.colorScheme.onSurface,
+                                mutedInk: theme.colorScheme.onSurfaceVariant,
+                                grid: studio.gridLine,
+                                centre: studio.inTune,
+                                flatLabel: flatLabel,
+                                inTuneLabel: inTuneLabel,
+                                sharpLabel: sharpLabel,
+                                isDark: theme.brightness == Brightness.dark,
+                                paintDial: false,
+                                paintNeedle: true,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -205,6 +233,8 @@ final class _AnalogDialPainter extends CustomPainter {
     required this.inTuneLabel,
     required this.sharpLabel,
     required this.isDark,
+    this.paintDial = true,
+    this.paintNeedle = true,
   });
 
   final double normalized;
@@ -218,6 +248,8 @@ final class _AnalogDialPainter extends CustomPainter {
   final String inTuneLabel;
   final String sharpLabel;
   final bool isDark;
+  final bool paintDial;
+  final bool paintNeedle;
 
   static const _startAngle = math.pi * 1.10;
   static const _sweepAngle = math.pi * 0.80;
@@ -229,11 +261,15 @@ final class _AnalogDialPainter extends CustomPainter {
     final radius = math.min(size.width * 0.43, size.height * 0.70);
     final arcRect = Rect.fromCircle(center: pivot, radius: radius);
 
-    _paintDialFace(canvas, arcRect);
-    _paintArcs(canvas, arcRect);
-    _paintTicks(canvas, pivot, radius);
-    _paintNeedle(canvas, pivot, radius);
-    _paintPivot(canvas, pivot, size);
+    if (paintDial) {
+      _paintDialFace(canvas, arcRect);
+      _paintArcs(canvas, arcRect);
+      _paintTicks(canvas, pivot, radius);
+    }
+    if (paintNeedle) {
+      _paintNeedle(canvas, pivot, radius);
+      _paintPivot(canvas, pivot, size);
+    }
   }
 
   void _paintDialFace(Canvas canvas, Rect arcRect) {
@@ -445,9 +481,11 @@ final class _AnalogDialPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_AnalogDialPainter oldDelegate) =>
-      oldDelegate.normalized != normalized ||
-      oldDelegate.hasReading != hasReading ||
-      oldDelegate.needleColor != needleColor ||
+      oldDelegate.paintDial != paintDial ||
+      oldDelegate.paintNeedle != paintNeedle ||
+      (paintNeedle && oldDelegate.normalized != normalized) ||
+      (paintNeedle && oldDelegate.hasReading != hasReading) ||
+      (paintNeedle && oldDelegate.needleColor != needleColor) ||
       oldDelegate.ink != ink ||
       oldDelegate.mutedInk != mutedInk ||
       oldDelegate.grid != grid ||

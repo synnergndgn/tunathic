@@ -75,10 +75,11 @@ final class MetronomeController extends Notifier<MetronomeState> {
   late final MetronomePreferences _preferences;
   late final AppLogger _logger;
   late final ToolAudioCoordinator _audioCoordinator;
-  late final ReleaseAudioTool _registeredRelease;
   late final StreamSubscription<MetronomeEngineEvent> _engineEvents;
 
   bool _acceptRuntimeEvents = true;
+  bool _runRequested = false;
+  bool _resumeAfterLifecycle = false;
   int _operationVersion = 0;
   int? _activeRunId;
   int? _activeStreamGeneration;
@@ -96,12 +97,8 @@ final class MetronomeController extends Notifier<MetronomeState> {
     _preferences = MetronomePreferences(ref.read(preferencesStoreProvider));
     _logger = ref.read(appLoggerProvider);
     _audioCoordinator = ref.read(toolAudioCoordinatorProvider);
-    _registeredRelease = () =>
-        releaseAudio(reason: MetronomeStopReason.tunerCoordination);
-    _audioCoordinator.registerMetronome(_registeredRelease);
     _engineEvents = _engine.events.listen(_onEngineEvent);
     ref.onDispose(() {
-      _audioCoordinator.unregisterMetronome(_registeredRelease);
       unawaited(_engineEvents.cancel());
     });
     return MetronomeState(config: ref.read(initialMetronomeConfigProvider));
@@ -109,7 +106,13 @@ final class MetronomeController extends Notifier<MetronomeState> {
 
   Future<void> toggle() => state.isRunning ? stop() : start();
 
-  Future<void> start() async {
+  Future<void> start() {
+    _runRequested = true;
+    _resumeAfterLifecycle = false;
+    return _startEngine();
+  }
+
+  Future<void> _startEngine() async {
     if (!_acceptRuntimeEvents || state.isRunning || state.isInitializing) {
       return;
     }
@@ -205,6 +208,12 @@ final class MetronomeController extends Notifier<MetronomeState> {
   }
 
   Future<void> stop({MetronomeStopReason reason = MetronomeStopReason.user}) {
+    _runRequested = false;
+    _resumeAfterLifecycle = false;
+    return _stopEngine(reason);
+  }
+
+  Future<void> _stopEngine(MetronomeStopReason reason) {
     _operationVersion++;
     _activeRunId = null;
     _activeStreamGeneration = null;
@@ -330,38 +339,29 @@ final class MetronomeController extends Notifier<MetronomeState> {
 
   Future<void> handleLifecycle({required bool isForeground}) async {
     if (!isForeground) {
-      await stop(reason: MetronomeStopReason.lifecycle);
+      if (!_runRequested || _resumeAfterLifecycle) return;
+      _resumeAfterLifecycle = true;
+      await _stopEngine(MetronomeStopReason.lifecycle);
+      return;
     }
+    if (!_resumeAfterLifecycle || !_runRequested) return;
+    _resumeAfterLifecycle = false;
+    await _startEngine();
   }
 
   void prepareForScreen() {
     _acceptRuntimeEvents = true;
-    _operationVersion++;
     _debug(
       'Metronome route prepared operation=$_operationVersion '
       'pendingRelease=${_releaseFuture != null}',
-    );
-    if (!state.isRunning && !state.isInitializing && state.currentBeat == 0) {
-      return;
-    }
-    _activeRunId = null;
-    _activeStreamGeneration = null;
-    _audioCoordinator.release(_audioLease);
-    _audioLease = null;
-    _debug(
-      'Metronome transition running=false operation=$_operationVersion '
-      'reason=${MetronomeStopReason.navigation.name}',
-    );
-    state = state.copyWith(
-      currentBeat: 0,
-      isRunning: false,
-      isInitializing: false,
     );
   }
 
   Future<void> releaseAudio({
     MetronomeStopReason reason = MetronomeStopReason.navigation,
   }) {
+    _runRequested = false;
+    _resumeAfterLifecycle = false;
     _acceptRuntimeEvents = false;
     _operationVersion++;
     _activeRunId = null;
@@ -372,6 +372,11 @@ final class MetronomeController extends Notifier<MetronomeState> {
     _debug(
       'Metronome release requested operation=$_operationVersion '
       'reason=${reason.name}',
+    );
+    state = state.copyWith(
+      currentBeat: 0,
+      isRunning: false,
+      isInitializing: false,
     );
     return _runLifecycleCleanup(() => _performRelease(reason), reason: reason);
   }
@@ -481,7 +486,7 @@ final class MetronomeController extends Notifier<MetronomeState> {
       );
       return;
     }
-    _operationVersion++;
+    final recoveryOperation = ++_operationVersion;
     _activeRunId = null;
     _activeStreamGeneration = null;
     _audioCoordinator.release(_audioLease);
@@ -492,57 +497,36 @@ final class MetronomeController extends Notifier<MetronomeState> {
       event.message,
     );
     _debug(
-      'Metronome transition running=false operation=$_operationVersion '
+      'Metronome recovery requested operation=$recoveryOperation '
       'reason=${MetronomeStopReason.nativeError.name}',
     );
     state = state.copyWith(
       currentBeat: 0,
       isRunning: false,
-      isInitializing: false,
-      failure: MetronomeFailure.audioUnavailable,
+      isInitializing: _runRequested,
+      clearFailure: true,
+    );
+    final cleanup = _runLifecycleCleanup(
+      () => _stopAndDisposeAfterFailure(MetronomeStopReason.nativeError),
+      reason: MetronomeStopReason.nativeError,
     );
     unawaited(
-      _runLifecycleCleanup(
-        () => _stopAndDisposeAfterFailure(MetronomeStopReason.nativeError),
-        reason: MetronomeStopReason.nativeError,
-      ),
+      cleanup.whenComplete(() => _restartAfterRecovery(recoveryOperation)),
     );
   }
 
   void _runEngineUpdate(Future<void> update, String description) {
     unawaited(
-      update.catchError((Object error, StackTrace stackTrace) async {
+      update.catchError((Object error, StackTrace stackTrace) {
         _logger.error('Could not $description', error, stackTrace);
-        if (state.isRunning && _activeRunId != null) {
-          _operationVersion++;
-          _activeRunId = null;
-          _activeStreamGeneration = null;
-          _audioCoordinator.release(_audioLease);
-          _audioLease = null;
-          _debug(
-            'Metronome transition running=false '
-            'operation=$_operationVersion '
-            'reason=${MetronomeStopReason.engineCallback.name}',
-          );
-          state = state.copyWith(
-            currentBeat: 0,
-            isRunning: false,
-            isInitializing: false,
-            failure: MetronomeFailure.audioUnavailable,
-          );
-          await _runLifecycleCleanup(
-            () =>
-                _stopAndDisposeAfterFailure(MetronomeStopReason.engineCallback),
-            reason: MetronomeStopReason.engineCallback,
-          );
-        } else {
-          await _runLifecycleCleanup(
-            _disposeEngineSafely,
-            reason: MetronomeStopReason.engineCallback,
-          );
-        }
       }),
     );
+  }
+
+  Future<void> _restartAfterRecovery(int recoveryOperation) async {
+    if (!_isCurrent(recoveryOperation) || !_runRequested) return;
+    state = state.copyWith(isInitializing: false);
+    await _startEngine();
   }
 
   Future<void> _handleStartFailure(

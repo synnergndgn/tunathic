@@ -221,7 +221,7 @@ void main() {
     expect(find.text('Retry audio'), findsOneWidget);
   });
 
-  testWidgets('navigating back stops and releases a running metronome', (
+  testWidgets('navigation rebuild does not stop a running metronome', (
     tester,
   ) async {
     final engine = FakeMetronomeEngine();
@@ -241,13 +241,13 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    expect(engine.isRunning, isFalse);
-    expect(engine.disposeCount, greaterThanOrEqualTo(1));
+    expect(engine.isRunning, isTrue);
+    expect(engine.disposeCount, 0);
 
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('re-entering after navigation resets outside the build phase', (
+  testWidgets('re-entering after navigation preserves the active run', (
     tester,
   ) async {
     final engine = FakeMetronomeEngine();
@@ -272,16 +272,14 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.byKey(const Key('metronomeBpm')), findsOneWidget);
-    expect(engine.isRunning, isFalse);
+    expect(engine.isRunning, isTrue);
+    expect(engine.startCount, 1);
 
     await tester.scrollUntilVisible(
       find.byKey(const Key('metronomeStartStop')),
       220,
       scrollable: _scrollableInside('metronomeScroll'),
     );
-    await tester.tap(find.byKey(const Key('metronomeStartStop')));
-    await tester.pumpAndSettle();
-
     expect(tester.takeException(), isNull);
     expect(engine.isRunning, isTrue);
 

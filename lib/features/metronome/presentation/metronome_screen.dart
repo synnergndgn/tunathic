@@ -48,17 +48,17 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    unawaited(
-      _metronomeController.handleLifecycle(
-        isForeground: state == AppLifecycleState.resumed,
-      ),
-    );
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_metronomeController.handleLifecycle(isForeground: true));
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      unawaited(_metronomeController.handleLifecycle(isForeground: false));
+    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    unawaited(_metronomeController.releaseAudio());
     _tempoTextController.dispose();
     _tempoFocusNode.dispose();
     super.dispose();

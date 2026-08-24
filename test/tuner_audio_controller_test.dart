@@ -21,19 +21,14 @@ void main() {
   late ProviderContainer container;
   late ProviderSubscription<TunerAudioState> subscription;
   late TunerAudioController controller;
-  var metronomeStopCount = 0;
 
   setUp(() {
     audioInput = FakeTunerAudioInput();
     logger = RecordingLogger();
     pitchExecutor = FakePitchDetectionExecutor();
-    metronomeStopCount = 0;
     container = ProviderContainer(
       overrides: [
         tunerAudioInputFactoryProvider.overrideWithValue(() => audioInput),
-        stopMetronomeBeforeCaptureProvider.overrideWithValue(() async {
-          metronomeStopCount++;
-        }),
         appLoggerProvider.overrideWithValue(logger),
         pitchDetectionExecutorProvider.overrideWithValue(pitchExecutor),
       ],
@@ -53,7 +48,7 @@ void main() {
   });
 
   test(
-    'permission granted starts capture and stops metronome output',
+    'permission granted starts capture without coordinating a metronome stop',
     () async {
       await controller.start();
 
@@ -64,7 +59,6 @@ void main() {
       expect(audioInput.startCount, 1);
       expect(audioInput.lastConfiguration?.sampleRate, 48000);
       expect(audioInput.lastConfiguration?.channelCount, 1);
-      expect(metronomeStopCount, 1);
     },
   );
 
@@ -78,7 +72,6 @@ void main() {
     expect(state.permissionStatus, TunerPermissionStatus.denied);
     expect(state.failure, TunerCaptureFailure.permissionDenied);
     expect(audioInput.startCount, 0);
-    expect(metronomeStopCount, 0);
   });
 
   test('start failure is friendly and retryable', () async {

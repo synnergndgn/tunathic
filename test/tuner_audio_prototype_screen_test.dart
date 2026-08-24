@@ -267,7 +267,6 @@ Widget _testApp(
       pitchDetectionExecutorProvider.overrideWithValue(
         pitchExecutor ?? FakePitchDetectionExecutor(),
       ),
-      stopMetronomeBeforeCaptureProvider.overrideWithValue(() async {}),
       hapticFeedbackOutputProvider.overrideWithValue(
         FakeHapticFeedbackOutput(),
       ),

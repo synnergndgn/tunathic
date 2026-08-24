@@ -301,43 +301,44 @@ void main() {
     expect(container.read(metronomeProvider).isRunning, isTrue);
   });
 
-  test('runtime engine failure stops safely and permits recovery', () async {
-    await controller.start();
-    engine.emitFailure();
-    await _flushMicrotasks();
+  test(
+    'runtime engine failure automatically restores the requested run',
+    () async {
+      await controller.start();
+      engine.emitFailure();
+      await _flushMicrotasks();
 
-    expect(container.read(metronomeProvider).isRunning, isFalse);
-    expect(
-      container.read(metronomeProvider).failure,
-      MetronomeFailure.audioUnavailable,
-    );
+      expect(container.read(metronomeProvider).isRunning, isTrue);
+      expect(container.read(metronomeProvider).failure, isNull);
+      expect(engine.startCount, 2);
+      expect(engine.initializeCount, 2);
+    },
+  );
 
-    await controller.start();
-    expect(container.read(metronomeProvider).isRunning, isTrue);
-  });
-
-  test('failed live update transitions to a recoverable error', () async {
+  test('failed live update does not stop or restart the active run', () async {
     await controller.start();
     engine.failUpdates = true;
 
     controller.setBpm(140);
     await _flushMicrotasks();
 
-    expect(container.read(metronomeProvider).isRunning, isFalse);
-    expect(
-      container.read(metronomeProvider).failure,
-      MetronomeFailure.audioUnavailable,
-    );
+    expect(container.read(metronomeProvider).isRunning, isTrue);
+    expect(engine.isRunning, isTrue);
+    expect(engine.startCount, 1);
+    expect(engine.stopCount, 0);
+    expect(logger.errorMessages, isNotEmpty);
   });
 
-  test('backgrounding stops and foregrounding never auto-starts', () async {
+  test('lifecycle pause resumes unless the user stopped the run', () async {
     await controller.start();
 
     await controller.handleLifecycle(isForeground: false);
+    expect(container.read(metronomeProvider).isRunning, isFalse);
+
     await controller.handleLifecycle(isForeground: true);
 
-    expect(container.read(metronomeProvider).isRunning, isFalse);
-    expect(engine.startCount, 1);
+    expect(container.read(metronomeProvider).isRunning, isTrue);
+    expect(engine.startCount, 2);
   });
 
   test('route release disposes resources and re-entry can restart', () async {

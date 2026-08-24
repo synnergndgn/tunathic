@@ -1306,9 +1306,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tunerStablePitchMessage => 'Perde algılandı.';
 
   @override
-  String get tunerNoSignalMessage => 'Güvenilir sinyal yok. Bir nota çalın.';
-
-  @override
   String get tunerPermissionDeniedMessage => 'Mikrofon izni gerekli.';
 
   @override
@@ -1321,6 +1318,15 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tunerModeLabel => 'Algılama';
+
+  @override
+  String get tunerSettingsTitle => 'Akort ayarları';
+
+  @override
+  String get tunerSettingsTooltip => 'Akort ayarlarını aç';
+
+  @override
+  String get tuningSystemLabel => 'Akort sistemi';
 
   @override
   String get tunerAutomaticTargetHint =>
@@ -1358,7 +1364,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get increaseReferencePitch => 'Referans perdeyi yükselt';
 
   @override
-  String get resetReferencePitch => "A4 = 440 Hz'e dön";
+  String get resetReferencePitch => 'A4 = 440 Hz\'e dön';
 
   @override
   String get tunerMicrophonePermissionTitle => 'Mikrofon izni gerekli';
@@ -1368,9 +1374,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tunerProcessingErrorTitle => 'Perde analizi durdu';
-
-  @override
-  String get tunerNoSignalTitle => 'Sinyal algılanmadı';
 
   @override
   String get beginner => 'Başlangıç';

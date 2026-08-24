@@ -31,6 +31,8 @@ final class TunerDisplayPanel extends StatelessWidget {
     required this.flatLabel,
     required this.inTuneLabel,
     required this.sharpLabel,
+    this.showTarget = true,
+    this.showReference = true,
     super.key,
   });
 
@@ -50,6 +52,8 @@ final class TunerDisplayPanel extends StatelessWidget {
   final String flatLabel;
   final String inTuneLabel;
   final String sharpLabel;
+  final bool showTarget;
+  final bool showReference;
 
   @override
   Widget build(BuildContext context) {
@@ -57,22 +61,7 @@ final class TunerDisplayPanel extends StatelessWidget {
     final signalColor = studio.signalColor(signal);
     final isReading = signal != StudioSignal.idle;
 
-    return Stack(
-      fit: StackFit.passthrough,
-      children: [
-        _display(context, signalColor: signalColor, isReading: isReading),
-        // Brackets mark the display as live. They appear with the first
-        // reading and take the signal colour, so they say the same thing the
-        // meter and the label already say.
-        if (isReading)
-          Positioned.fill(
-            child: StudioCornerBrackets(
-              color: signalColor.withValues(alpha: 0.7),
-              inset: 3,
-            ),
-          ),
-      ],
-    );
+    return _display(context, signalColor: signalColor, isReading: isReading);
   }
 
   Widget _display(
@@ -83,10 +72,8 @@ final class TunerDisplayPanel extends StatelessWidget {
     final studio = StudioTheme.of(context);
     return SkeuoSurface(
       prominent: true,
-      accent: isReading ? signalColor.withValues(alpha: 0.58) : null,
       padding: const EdgeInsets.all(AppSpacing.sm),
       child: SkeuoDisplayPanel(
-        accent: isReading ? signalColor.withValues(alpha: 0.52) : null,
         padding: const EdgeInsets.all(AppSpacing.medium),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -94,31 +81,34 @@ final class TunerDisplayPanel extends StatelessWidget {
           children: [
             // Target and reference share a Wrap so a long preset name pushes
             // the reference onto its own line instead of squeezing it.
-            Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
-              children: [
-                FrequencyReadout(
-                  label: targetSemantics,
-                  value: targetText,
-                  icon: Icons.adjust_outlined,
-                ),
-                FrequencyReadout(
-                  label: referenceSemantics,
-                  value: referenceText,
-                  icon: Icons.tune_outlined,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.medium),
+            if (showTarget || showReference) ...[
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: [
+                  if (showTarget)
+                    FrequencyReadout(
+                      label: targetSemantics,
+                      value: targetText,
+                      icon: Icons.adjust_outlined,
+                    ),
+                  if (showReference)
+                    FrequencyReadout(
+                      label: referenceSemantics,
+                      value: referenceText,
+                      icon: Icons.tune_outlined,
+                    ),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.medium),
+            ],
             SkeuoDisplayPanel(
               radius: const Radius.circular(5),
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.medium,
                 vertical: AppSpacing.sm,
               ),
-              accent: isReading ? signalColor.withValues(alpha: 0.42) : null,
               child: Semantics(
                 key: const Key('detectedNoteSemantics'),
                 container: true,

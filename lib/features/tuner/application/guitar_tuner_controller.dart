@@ -314,7 +314,7 @@ final class GuitarTunerController extends Notifier<GuitarTunerState> {
               previous?.preset.id != preset.id;
     if (targetChanged) _resetInTuneHaptic();
 
-    state = GuitarTunerState(
+    final next = GuitarTunerState(
       audio: _audio,
       settings: _settings,
       preset: preset,
@@ -328,8 +328,58 @@ final class GuitarTunerController extends Notifier<GuitarTunerState> {
       direction: direction,
       settingsLoaded: _settingsLoaded,
     );
-    _updateInTuneHaptic(state, targetChanged: targetChanged);
+    _updateInTuneHaptic(next, targetChanged: targetChanged);
+    if (_hasMeaningfulUiChange(previous, next)) state = next;
   }
+
+  bool _hasMeaningfulUiChange(
+    GuitarTunerState? previous,
+    GuitarTunerState next,
+  ) {
+    if (previous == null) return true;
+
+    // Capture, permission and lifecycle transitions must always reach the UI.
+    if (previous.audio.status != next.audio.status ||
+        previous.audio.permissionStatus != next.audio.permissionStatus ||
+        previous.audio.failure != next.audio.failure ||
+        _visibleSignalIssue(previous.signalState) !=
+            _visibleSignalIssue(next.signalState) ||
+        previous.settingsLoaded != next.settingsLoaded ||
+        previous.settings != next.settings ||
+        previous.preset.id != next.preset.id ||
+        previous.reference != next.reference ||
+        previous.target?.stringPosition != next.target?.stringPosition ||
+        previous.note?.midiNote != next.note?.midiNote ||
+        previous.accuracy != next.accuracy ||
+        previous.direction != next.direction) {
+      return true;
+    }
+
+    final oldPitch = previous.pitch;
+    final newPitch = next.pitch;
+    if ((oldPitch == null) != (newPitch == null)) return true;
+    if (oldPitch != null && newPitch != null) {
+      if ((oldPitch.frequencyHz - newPitch.frequencyHz).abs() >=
+          _configuration.frequencyDisplayThresholdHz) {
+        return true;
+      }
+    }
+
+    final oldCents = previous.cents;
+    final newCents = next.cents;
+    if ((oldCents == null) != (newCents == null)) return true;
+    return oldCents != null &&
+        newCents != null &&
+        (oldCents - newCents).abs() >= _configuration.centsDisplayThreshold;
+  }
+
+  TunerSignalState? _visibleSignalIssue(TunerSignalState signal) =>
+      switch (signal) {
+        TunerSignalState.permissionDenied ||
+        TunerSignalState.microphoneUnavailable ||
+        TunerSignalState.processingError => signal,
+        _ => null,
+      };
 
   void _updateInTuneHaptic(
     GuitarTunerState next, {

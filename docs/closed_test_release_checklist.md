@@ -31,7 +31,14 @@
 
 - [ ] Physical Android profile/release cold launch and navigation smoke
 - [ ] Theme, EN/TR language, text scaling, and settings persistence
-- [ ] Tuner permission/start/stable note/stop/route/background cleanup
+- [ ] Tuner auto-start/stable note/route/background cleanup
+- [ ] Tuner stays visually still during silence; no “No signal detected” text
+- [ ] Tuner reacts promptly when sound begins and settles without repeated UI
+      updates when sound ends
+- [ ] Tuner settings route changes Chromatic/preset and A4 (430–450 Hz), and
+      the main screen reflects the result after Back
+- [ ] Automatic/Manual state and manual target selection remain correct
+- [ ] Microphone-denied state remains visible and retryable
 - [ ] Android microphone indicator disappears after cleanup
 - [ ] Metronome start/stop/BPM/signature/accent and smoke-session continuity
 - [ ] Chords: open, barre, extended, alternatives, search

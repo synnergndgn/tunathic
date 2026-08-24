@@ -25,6 +25,7 @@ import 'package:tunathic/features/tool_placeholder/presentation/not_found_screen
 import 'package:tunathic/features/tool_placeholder/presentation/tool_placeholder_screen.dart';
 import 'package:tunathic/features/tools/tool_definition.dart';
 import 'package:tunathic/features/tuner/presentation/guitar_tuner_screen.dart';
+import 'package:tunathic/features/tuner/presentation/tuning_settings_screen.dart';
 import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_prototype_screen.dart';
 
 abstract final class AppRoutes {
@@ -33,6 +34,7 @@ abstract final class AppRoutes {
   static const about = '/about';
   static const privacy = '/privacy';
   static const tunerDiagnostics = '/debug/tuner-diagnostics';
+  static const tunerSettings = '/tools/guitar-tuner/settings';
 
   static const repertoire = '/tools/repertoire';
   static const repertoireNewSong = '/tools/repertoire/new';
@@ -112,6 +114,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: AppRoutes.tunerDiagnostics,
           builder: (context, state) => const TunerAudioPrototypeScreen(),
         ),
+      GoRoute(
+        path: AppRoutes.tunerSettings,
+        builder: (context, state) => const TuningSettingsScreen(),
+      ),
       GoRoute(
         path: AppRoutes.repertoireNewSong,
         builder: (context, state) => const SongEditorScreen(),

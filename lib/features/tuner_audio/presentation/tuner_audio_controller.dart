@@ -112,14 +112,9 @@ final class TunerAudioState {
 }
 
 typedef TunerAudioInputFactory = TunerAudioInput Function();
-typedef StopMetronomeBeforeCapture = Future<void> Function();
 
 final tunerAudioInputFactoryProvider = Provider<TunerAudioInputFactory>(
   (ref) => RecordTunerAudioInput.new,
-);
-
-final stopMetronomeBeforeCaptureProvider = Provider<StopMetronomeBeforeCapture>(
-  (ref) => ref.read(toolAudioCoordinatorProvider).releaseMetronome,
 );
 
 final pitchDetectionExecutorProvider = Provider<PitchDetectionExecutor>(
@@ -145,7 +140,6 @@ final class TunerAudioController extends Notifier<TunerAudioState> {
   static const uiUpdateInterval = Duration(milliseconds: 100);
 
   late final TunerAudioInput _audioInput;
-  late final StopMetronomeBeforeCapture _stopMetronome;
   late final ToolAudioCoordinator _audioCoordinator;
   late final ReleaseAudioTool _registeredRelease;
   late final AppLogger _logger;
@@ -169,7 +163,6 @@ final class TunerAudioController extends Notifier<TunerAudioState> {
   @override
   TunerAudioState build() {
     _audioInput = ref.read(tunerAudioInputFactoryProvider)();
-    _stopMetronome = ref.read(stopMetronomeBeforeCaptureProvider);
     _audioCoordinator = ref.read(toolAudioCoordinatorProvider);
     _registeredRelease = releaseAudio;
     _audioCoordinator.registerTuner(_registeredRelease);
@@ -224,9 +217,6 @@ final class TunerAudioController extends Notifier<TunerAudioState> {
         permissionStatus: TunerPermissionStatus.granted,
         clearFailure: true,
       );
-      await _stopMetronome();
-      if (!_isCurrent(operation)) return;
-
       final configuration = state.requestedConfiguration;
       _debugLog(
         'Tuner audio start requestedRate=${configuration.sampleRate} '

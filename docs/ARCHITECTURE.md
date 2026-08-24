@@ -171,9 +171,11 @@ Riverpod provides scoped dependency injection and reactive application settings.
 
 `TunerAudioController` owns the capture state machine and creates its audio input through an injectable factory. It requests permission only in response to Start, releases Metronome audio before capture, rejects duplicate operations, subscribes to frames and configuration changes, and owns all cleanup. It feeds normalized frame-owned samples into `RealtimePitchPipeline`; the UI observes only immutable scalar snapshots and never receives PCM bytes. Controller operation versions and pipeline generations invalidate delayed permission, detector, stop, and restart work. Backgrounding stops capture and analysis, and foregrounding never restarts them automatically.
 
-`GuitarTunerController` listens to immutable `TunerAudioState` and owns only product behavior: persisted preset/mode/manual-string settings, automatic target selection, target-relative cents, accuracy bands, signal messaging, and stable in-tune haptics. It delegates Start, Stop, lifecycle, and route release to `TunerAudioController`. Widgets never read preferences, select targets, calculate cents, or trigger haptics from animation frames.
+`GuitarTunerController` listens to immutable `TunerAudioState` and owns only product behavior: persisted preset/mode/manual-string settings, automatic target selection, target-relative cents, accuracy bands, visible permission/error state, and stable in-tune haptics. It delegates capture and lifecycle work to `TunerAudioController`. Detection and haptics still consume every estimate, while presentation publication is suppressed for repeated silent/invalid snapshots and sub-threshold movement (1 cent and 0.1 Hz). Widgets never read preferences, select targets, calculate cents, or trigger haptics from animation frames.
 
 The production controller keeps an existing stabilized pitch visible while the realtime pipeline reports a short `unstableSignal` gap with retained stabilizer history. In Automatic mode it also refuses to present a candidate more than 200 cents from the active tuning's selected string; this product-level guard prevents a release-tail A1/55 Hz estimate from being shown while A2 is the valid target. The last accepted display pitch may bridge up to eight new detector results, but retained or rejected data is not counted as fresh evidence for haptic feedback. Sustained invalid input or the realtime 350 ms stale deadline still clears the visible pitch. Manual mode remains deliberately ungated so a selected string can show a large tuning error.
+
+The production tuner has no start/stop or no-signal surface. Opening it requests listening; silence leaves the instrument display neutral, and only permission/capture/analysis failures add a status panel. The main screen keeps the compact Automatic/Manual control and, in Manual mode, the target-string strip. Chromatic/preset selection and A4 reference controls live at `/tools/guitar-tuner/settings`. The analog meter caches its static dial in a separate repaint boundary, so needle animation repaints only the moving layer.
 
 ## Navigation
 
@@ -186,6 +188,7 @@ GoRouter provides one central route table:
 - `/tools/bpm-tap` displays the functional BPM Tap screen.
 - `/tools/metronome` displays the functional Metronome screen.
 - `/tools/guitar-tuner` displays the production Guitar Tuner.
+- `/tools/guitar-tuner/settings` displays tuning-system and A4 reference controls.
 - `/tools/chord-library` displays the offline Chord Library.
 - `/tools/scale-library` displays the offline Scale Library.
 - `/tools/interactive-fretboard` displays the offline Interactive Fretboard;
@@ -296,7 +299,7 @@ so opening the hub costs no I/O.
 
 ## Application information and licenses
 
-`ApplicationInfoLoader` isolates `package_info_plus` from widgets. Bootstrap reads the installed package version once and overrides `initialApplicationInfoProvider`; Settings, About, and the license page consume the application-owned immutable value. Tests inject arbitrary versions without a platform channel. The product version is `0.7.1+11`, representing the second-pass physical instrument refinement for closed testing with the shipped tool set intact.
+`ApplicationInfoLoader` isolates `package_info_plus` from widgets. Bootstrap reads the installed package version once and overrides `initialApplicationInfoProvider`; Settings, About, and the license page consume the application-owned immutable value. Tests inject arbitrary versions without a platform channel. The product version is `0.7.3+13`, representing the tuner performance and control simplification pass plus tuner display and metronome stability fixes for closed testing with the shipped tool set intact.
 
 Open-source notices use Flutter’s standard `showLicensePage`, which reads Flutter’s license registry and presents package licenses with the app name, actual version, and legalese. No custom license database or duplicate route is maintained.
 

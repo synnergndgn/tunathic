@@ -48,23 +48,15 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Guitar Tuner'), findsOneWidget);
-    // Opening the tuner is the request to listen: there is nothing to press
-    // first, only a way to stop.
+    // Opening the tuner is the request to listen; transport controls stay out
+    // of the focused instrument surface.
     expect(find.byKey(const Key('startGuitarTuner')), findsNothing);
-    expect(find.byKey(const Key('stopGuitarTuner')), findsOneWidget);
-    // The tuning selector sits under the readout.
-    await tester.scrollUntilVisible(
-      find.text('Tuning'),
-      300,
-      scrollable: find
-          .descendant(
-            of: find.byKey(const Key('guitarTunerScroll')),
-            matching: find.byType(Scrollable),
-          )
-          .first,
-    );
+    expect(find.byKey(const Key('stopGuitarTuner')), findsNothing);
+    expect(find.byKey(const Key('openTuningSettings')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('openTuningSettings')));
     await tester.pumpAndSettle();
-    expect(find.text('Tuning'), findsOneWidget);
+    expect(find.text('Tuning settings'), findsOneWidget);
     expect(find.text('Real-Time Pitch Diagnostic'), findsNothing);
   });
 

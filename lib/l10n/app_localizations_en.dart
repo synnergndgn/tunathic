@@ -1325,9 +1325,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tunerStablePitchMessage => 'Pitch detected.';
 
   @override
-  String get tunerNoSignalMessage => 'No reliable signal. Play one note.';
-
-  @override
   String get tunerPermissionDeniedMessage => 'Microphone permission required.';
 
   @override
@@ -1340,6 +1337,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tunerModeLabel => 'Detection';
+
+  @override
+  String get tunerSettingsTitle => 'Tuning settings';
+
+  @override
+  String get tunerSettingsTooltip => 'Open tuning settings';
+
+  @override
+  String get tuningSystemLabel => 'Tuning system';
 
   @override
   String get tunerAutomaticTargetHint =>
@@ -1387,9 +1393,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tunerProcessingErrorTitle => 'Pitch analysis stopped';
-
-  @override
-  String get tunerNoSignalTitle => 'No signal detected';
 
   @override
   String get beginner => 'Beginner';
