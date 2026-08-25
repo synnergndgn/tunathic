@@ -5,7 +5,9 @@ rendered to 512×512 by `design/store/render_svg.py --all`. Small-size reads wer
 judged off `design/store/out/_contact_sheet_icons.png`, which renders each one at
 256 / 128 / 72 / 48 px on both a white and a `#202124` store background.
 
-**Recommended: Concept A — Instrument Face.**
+**Decided: Concept A — Instrument Face.** Chosen 2026-08-24 and shipped as
+`release_assets/google_play_0.7.4/icon/tunathic_play_icon_512.png`. B and C stay
+in the repo as the alternates the decision was made against.
 
 ## The edge rule, learned the hard way
 
@@ -31,7 +33,7 @@ That renders the icon under both mask radii, with Play's shadow, at 256 and
 
 ---
 
-## Concept A — Instrument Face ✅ FINAL
+## Concept A — Instrument Face ✅ SHIPPING
 
 `design/store/icon/tunathic_icon_a_instrument_face.svg`
 
@@ -125,29 +127,40 @@ leaves you with exactly the icon you already have.
 
 ---
 
-## Recommendation
+## Decision
 
-Ship **A**. It is the only one of the three that could not belong to another
+**A ships.** It is the only one of the three that could not belong to another
 app, it is the most faithful to the UI a user is about to open, and it keeps the
 palette pure ivory-and-orange.
 
-Keep **B** as the fallback if a small-size A/B test shows A losing tap-through
-on a light Play surface — B's contrast advantage is real.
+**B** stays as the fallback if a small-size test ever shows A losing
+tap-through on a light Play surface — its contrast advantage is real.
 
-Treat **C** as the "do nothing" option. It is safe and it is already half
-shipped, but it does not solve the problem you asked about, which is that the
-store does not look like the new app.
+**C** was the "do nothing" option: safe, already half shipped in the launcher,
+but it does not close the gap between the store and the new app.
 
-### If you ship A, also update the launcher
+### Open follow-up: the launcher still shows the fork
 
-`android/app/src/main/res/drawable/ic_launcher_foreground.xml` currently scales
-the fork to 0.92 of the 512 viewport. Measured against the adaptive-icon safe
-zone (the central 72/108 dp circle, 341 px on this grid), the mark's half
-diagonal is ≈168 px against a 170 px radius — it fits, but only just, and it
-reads noticeably larger than a normal launcher icon on a device. If the store
-icon becomes the dial, regenerate both layers from the same master and bring the
-foreground down to roughly 0.62–0.68 scale.
+Now that the store icon is the dial, the listing and the home screen show two
+different marks. `android/app/src/main/res/drawable/ic_launcher_foreground.xml`
+and every `mipmap-*/ic_launcher.png` still carry the tuning fork.
 
-Note that `monochrome` points at the same drawable. The dial has no single-path
-silhouette, so a themed-icon variant needs its own simplified drawable — arc,
-needle, pivot as solid shapes, no gradients.
+Closing that gap is a separate, deliberate change, because it swaps the icon on
+existing users' home screens and needs its own release:
+
+1. Redraw the dial as an adaptive foreground. It must survive the circular
+   launcher mask, so it needs its own composition — the store icon's dial fills
+   a square, and a circle would clip the scale arc's ends.
+2. Bring the foreground down to roughly 0.62–0.68 of the viewport. The current
+   fork sits at 0.92, which puts its half diagonal at ≈168 px against the
+   safe-zone radius of 170 px: it fits, but only just, and it reads noticeably
+   larger than a normal launcher icon on a device.
+3. `monochrome` points at the same drawable, and the dial has no single-path
+   silhouette, so the themed-icon variant needs its own simplified drawable —
+   arc, needle and pivot as solid shapes, no gradients.
+4. Regenerate every `mipmap-*` density from that master.
+5. Update `design/brand/README.md`, which still documents the tuning fork as
+   the Tunathic mark.
+
+Until that lands, the store icon and the launcher icon disagree. That is
+survivable for one release but should not become permanent.
