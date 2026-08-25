@@ -132,7 +132,7 @@ powershell -Command "Get-ChildItem lib,build -Recurse -Force -Directory | ForEac
 
 ### 4.3 Device state before capturing
 
-`design/store/capture_phone.sh` does all of this, but if you shoot by hand:
+`design/store/capture_device.sh` does all of this, but if you shoot by hand:
 
 - Animations off (`window_animation_scale`, `transition_animation_scale`,
   `animator_duration_scale` = 0).
@@ -166,14 +166,18 @@ notification icon appears in the strip before it is cropped.
 ### 4.5 Run it
 
 ```bash
-design/store/capture_phone.sh emulator-5554 build/store_capture/phone-en-US
-python design/store/compose_screenshots.py build/store_capture/phone-en-US release_assets/google_play/screenshots/en-US/phone en-US phone
+design/store/capture_device.sh emulator-5554 build/store_capture/phone-en-US phone
+python design/store/compose_screenshots.py build/store_capture/phone-en-US release_assets/google_play_0.7.4/screenshots/en-US/phone en-US phone
 ```
 
 Then switch the in-app language to Turkish and repeat into `phone-tr-TR` /
-`tr-TR`. Tap coordinates in the script are raw 1080×2400 pixels read off this
-build — **re-read them after any layout change**, they are not resolution
-independent.
+`tr-TR`, and run the `tablet7` and `tablet10` profiles the same way.
+
+Tap coordinates are raw device pixels and live in
+`design/store/profiles/<profile>.env`, one file per device class — **re-read
+them after any layout change**, they are not resolution independent. The
+quickest way to re-read them is to capture one screen, open the PNG, and take
+the coordinates straight off it.
 
 ---
 
@@ -218,9 +222,15 @@ Play recommends at least four large-screen screenshots. Use the same eight
 stems, or a subset of 01 / 02 / 05 / 06 / 07. Known behaviour on these AVDs, from
 the previous asset run and still true:
 
-- 10-inch: several pages finish well above the bottom of the viewport and read
-  bottom-empty. Nothing is stretched or clipped.
-- 7-inch: longer pages need a small scroll so a card is not cut at the screen
-  edge.
+- 10-inch: the dashboard, the tuner and the tuning settings finish well above
+  the bottom of the viewport and read bottom-empty. Nothing is stretched or
+  clipped, and the Chord Library's two-pane layout — diagram beside fingering
+  list — is a genuine large-screen improvement worth showing.
+- 7-inch: everything fits without scrolling; the dashboard lays out in two
+  columns, the 10-inch in three.
 
-Prefer native tablet captures over framed phone images. Portrait for all sets.
+Prefer native tablet captures over framed phone images. Portrait for all sets;
+`tablet10.env` sets `USER_ROTATION=1` because that AVD is natively landscape.
+
+Both tablet sets were produced for 0.7.4 (14) and are in
+`release_assets/google_play_0.7.4/`.

@@ -34,7 +34,8 @@ design/store/
   render_svg.py                SVG -> PNG via headless Edge/Chromium
   compose_feature_graphic_b.py feature graphic B (needs a real capture)
   compose_screenshots.py       raw capture -> 9:16 store canvas
-  capture_phone.sh             drives the emulator through the real UI
+  capture_device.sh            drives an emulator through the real UI
+  profiles/*.env               per-device tap targets for that script
   pick_beat_one.py             keeps the metronome frame that hit beat 1
   validate_assets.py           re-checks exports against Play's format rules
   out/                         generated PNGs; regenerate, never hand-edit
@@ -47,7 +48,7 @@ design/store/
 flutter build apk --profile
 
 # 2. Capture, per locale. Sets device state, then walks the real UI.
-design/store/capture_phone.sh emulator-5554 build/store_capture/phone-en-US
+design/store/capture_device.sh emulator-5554 build/store_capture/phone-en-US phone
 
 # 3. Compose onto the ivory 9:16 canvas.
 python design/store/compose_screenshots.py \
@@ -64,7 +65,9 @@ python design/store/compose_feature_graphic_b.py \
 python design/store/validate_assets.py
 ```
 
-Then repeat steps 2–3 with the app language set to Turkish.
+Then repeat steps 2–3 with the app language set to Turkish, and again for the
+`tablet7` and `tablet10` profiles (device class `tablet-7` / `tablet-10` in
+step 3) if you are filling the large-screen listing slots.
 
 ## Naming
 
