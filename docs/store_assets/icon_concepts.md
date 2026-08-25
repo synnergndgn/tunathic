@@ -7,6 +7,28 @@ judged off `design/store/out/_contact_sheet_icons.png`, which renders each one a
 
 **Recommended: Concept A — Instrument Face.**
 
+## The edge rule, learned the hard way
+
+Play masks the uploaded 512 square with **its own rounded square** (~22 % radius
+in Console today, 30 % in the icon-design spec) and adds **its own drop shadow**.
+
+All three concepts originally carried a thin inset "machined frame" a few pixels
+in from the edge, at a much tighter radius. Under Play's mask that became two
+mismatched rounded rectangles — a visible frame inside a frame, and it looked
+broken in the listing. The frames are gone; the plate runs full bleed and Play's
+mask supplies the only edge.
+
+So: **nothing may be drawn near the icon's edge.** No frame, no border, no
+corners of its own, no shadow. Anything within roughly 40 px of the 512 edge is
+either cut by the mask or fights it. Check before uploading:
+
+```bash
+python design/store/play_icon_preview.py design/store/out/icon_a_512.png
+```
+
+That renders the icon under both mask radii, with Play's shadow, at 256 and
+96 px, so a collision shows up locally instead of in Console.
+
 ---
 
 ## Concept A — Instrument Face ✅ FINAL
@@ -19,10 +41,11 @@ physical instrument faceplate: a half-disc dial recess sunk into ivory enamel, a
 charcoal scale arc, engraved major and minor ticks, a green in-tune band sitting
 on zero, a warm-orange needle parked on the mark, and a brass pivot cap.
 
-**Composition.** Full-bleed 512 square. Pivot at (256, 376), rim radius 226 —
-the dial is centred on the canvas's optical centre, not its geometric one, so it
-sits correctly once Play's corner mask is applied. A 2.5 px machined frame is
-inset 22 px. Nothing sits within 22 px of the edge.
+**Composition.** Full-bleed 512 square, no frame and no corners of its own.
+Pivot at (256, 376), rim radius 226 — the dial is centred on the canvas's
+optical centre, not its geometric one, so it sits correctly once Play's corner
+mask is applied. The scale arc's outermost point is 41 px in from the edge,
+clear of the mask at both radii.
 
 **Colour.** Ivory plate `#FFFDF8 → #EBDDCA`; scale and ticks `#302822`; minor
 ticks `#9A8168`; in-tune band `#35734C`; needle `#E1842F → #C85818 → #8E3A0D`;
@@ -39,8 +62,8 @@ kind (short gradients, 1–2 px bevels) rather than plastic chrome.
 that survives downscaling; the orange needle is the only saturated mass, so it
 reads as a pointer even when the ticks blur; the green band survives as a notch.
 Weakest of the three on a white store background, because the plate is nearly
-white — the charcoal arc and frame are what stop it dissolving, so neither may
-be lightened.
+white — with no frame to fall back on, the charcoal arc is the only thing
+holding the shape, so it may not be lightened or thinned.
 
 **Variant worth testing.** Needle at about −20 % of range instead of dead centre
 reads more dynamic ("approaching the mark") at the cost of symmetry. Symmetry
@@ -57,8 +80,10 @@ hardware screws, a row of five indicator lamps with only the centre one lit
 green, and a sunken dark display window carrying the note `E` in warm orange —
 the same monospace, oversized note readout the app puts at the top of the tuner.
 
-**Composition.** Screws at the four corners inside the mask-safe zone; lamp row
-at y=152; display window 360×184 at y=204; note centred. Strictly symmetric.
+**Composition.** Screws at (76, 76) and the three mirrored corners — 110 px from
+the mask's corner arc centre against a 154 px radius, so they survive the mask
+at 30 % with room to spare. Lamp row at y=152; display window 360×184 at y=204;
+note centred. Strictly symmetric.
 
 **Colour.** Ivory plate; window `#3B322C → #221C19`; note `#E1842F`; lamp
 `#35734C`; screws warm steel.

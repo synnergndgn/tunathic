@@ -35,10 +35,10 @@
   <rect width="512" height="512" fill="url(#plate)"/>
   <rect width="512" height="512" fill="url(#grain)"/>
 
-  <rect x="22" y="22" width="468" height="468" rx="26"
-        fill="none" stroke="#D9C9B8" stroke-width="2"/>
-  <rect x="25.5" y="25.5" width="461" height="461" rx="23"
-        fill="none" stroke="#FFFFFF" stroke-opacity="0.85" stroke-width="1.5"/>
+  <!-- No frame and no rounded corners of our own: Play masks the icon with its
+       own rounded square and adds its own shadow. Drawing an inset frame here
+       put a second, tighter-radius rounded rect inside Play's mask, which read
+       as a broken double border. The plate runs full bleed instead. -->
 
   <!-- Machined recess -->
   <circle cx="256" cy="256" r="182" fill="#FFFFFF" fill-opacity="0.9"/>

@@ -27,6 +27,7 @@ icon/
   alt_b_pedal_face_512.png          alternate concept, not for upload
   alt_c_fork_well_512.png           alternate concept, not for upload
   _icon_size_review.png             all three at 256/128/72/48 on light and dark
+  _play_mask_preview.png            all three under Play's corner mask + shadow
 feature_graphic/
   tunathic_feature_graphic_1024x500.png      <- upload this (en-US)
   tunathic_feature_graphic_tr_1024x500.png   <- upload this (tr-TR)
@@ -51,6 +52,9 @@ Everything here is regenerated from source:
   `design/store/compose_screenshots.py`
 - format gate → `python design/store/validate_assets.py release_assets/google_play_0.7.4`
   (55 files, 0 problems on export)
+- icon edge check → `python design/store/play_icon_preview.py <icon>.png`. Play
+  masks the corners itself, so the icons carry no frame, border or corners of
+  their own; an early revision did and showed a broken double edge in Console.
 
 Raw captures live in `build/store_capture/<device>-<locale>/` and are
 gitignored. Tap targets per device class are in `design/store/profiles/`.

@@ -15,7 +15,7 @@ Official sources:
 
 | Asset | Requirement | How to check |
 | --- | --- | --- |
-| Listing icon | 512×512, 32-bit PNG with alpha, sRGB, ≤ 1,024 KB, **full square**, **no rounded corners, no drop shadow** — Play masks at 30 % radius and adds its own shadow | `python design/store/validate_assets.py` |
+| Listing icon | 512×512, 32-bit PNG with alpha, sRGB, ≤ 1,024 KB, **full square**, **no rounded corners, no drop shadow, no frame or border** — Play masks the corners (~22–30 % radius) and adds its own shadow | `validate_assets.py` for the format, then `play_icon_preview.py` to see it under the mask |
 | Feature graphic | 1024×500, JPEG or 24-bit PNG, **no alpha** | same |
 | Screenshots | JPEG or 24-bit PNG, no alpha; each side 320–3,840 px; long side ≤ 2× short side; ≤ 8 MB; 2–8 per device type | same |
 | Phone promo | ≥ 4 shots at ≥ 1,080 px, 16:9 or 9:16 | 1350×2400 ✓ |
@@ -88,6 +88,7 @@ Official sources:
       ivory icon and feature graphic sit on a dark Play surface in dark mode —
       confirm they still read.
 - [ ] Check the icon at real launcher size, not just in Console.
+- [ ] Confirm no double edge where Play's corner mask meets the icon artwork.
 - [ ] Confirm the store listing text still matches what the screenshots show
       (`docs/store_listing.md` is written against 0.7.1 — refresh the
       "What's New" block for the release you are actually shipping).

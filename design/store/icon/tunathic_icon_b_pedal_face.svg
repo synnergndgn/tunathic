@@ -44,10 +44,10 @@
   <rect width="512" height="512" fill="url(#plate)"/>
   <rect width="512" height="512" fill="url(#grain)"/>
 
-  <rect x="24" y="24" width="464" height="464" rx="26"
-        fill="none" stroke="#D9C9B8" stroke-width="2"/>
-  <rect x="27.5" y="27.5" width="457" height="457" rx="23"
-        fill="none" stroke="#FFFFFF" stroke-opacity="0.85" stroke-width="1.5"/>
+  <!-- No frame and no rounded corners of our own: Play masks the icon with its
+       own rounded square and adds its own shadow. Drawing an inset frame here
+       put a second, tighter-radius rounded rect inside Play's mask, which read
+       as a broken double border. The plate runs full bleed instead. -->
 
   <!-- Hardware screws, the app's own faceplate detail -->
   <g>

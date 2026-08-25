@@ -93,8 +93,12 @@ case. No exclamation marks, no all-caps headlines.
   guitar body, no floating musical notes.
 - The object must be **the app's own analog movement** — the semicircular dial
   from `pitch_meter.dart`, not a generic gauge and not a stock tuning fork.
-- Full-bleed square, **square corners**, no drop shadow: Play applies its own
-  30 % corner mask and shadow. Rounding it yourself gives a double-rounded icon.
+- Full-bleed square, **square corners**, no drop shadow, **and no frame or
+  border of its own**: Play applies its own corner mask (~22–30 % radius) and
+  shadow. An inset frame at a different radius shows up inside that mask as a
+  broken double edge — this happened, and it is why the concepts carry no frame.
+  Keep everything at least 40 px in from the 512 edge and check with
+  `design/store/play_icon_preview.py` before uploading.
 - No text, no wordmark, no letters other than a note name (concept B only).
 - Must survive 48 px. That means one dark silhouette element carrying the shape
   (the charcoal scale arc), one saturated element carrying the brand (the orange

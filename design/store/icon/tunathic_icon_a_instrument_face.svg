@@ -53,11 +53,10 @@
   <rect width="512" height="512" fill="url(#plate)"/>
   <rect width="512" height="512" fill="url(#grain)"/>
 
-  <!-- Machined frame -->
-  <rect x="22" y="22" width="468" height="468" rx="26"
-        fill="none" stroke="#C9B39C" stroke-width="2.5"/>
-  <rect x="26" y="26" width="460" height="460" rx="22"
-        fill="none" stroke="#FFFFFF" stroke-opacity="0.9" stroke-width="1.5"/>
+  <!-- No frame and no rounded corners of our own: Play masks the icon with its
+       own rounded square and adds its own shadow. Drawing an inset frame here
+       put a second, tighter-radius rounded rect inside Play's mask, which read
+       as a broken double border. The plate runs full bleed instead. -->
 
   <!-- Dial recess: the same half disc the app paints -->
   <path d="M30,376 A226,226 0 0 1 482,376 Z" fill="#F1E7D9"/>

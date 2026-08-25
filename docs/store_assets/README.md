@@ -38,6 +38,7 @@ design/store/
   profiles/*.env               per-device tap targets for that script
   pick_beat_one.py             keeps the metronome frame that hit beat 1
   validate_assets.py           re-checks exports against Play's format rules
+  play_icon_preview.py         shows an icon under Play's corner mask + shadow
   out/                         generated PNGs; regenerate, never hand-edit
 ```
 
