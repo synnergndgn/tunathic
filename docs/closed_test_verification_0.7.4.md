@@ -70,6 +70,7 @@ confirming the scaler reaches the tree rather than the tests passing vacuously.
 | Native ABIs | `arm64-v8a`, `armeabi-v7a`, `x86_64` |
 | Native libs | `libapp.so`, `libflutter.so`, `liboboe.so`, `libtunathic_metronome.so`, `libc++_shared.so`, `libdatastore_shared_counter.so` |
 | Runtime permissions | **`RECORD_AUDIO` only** |
+| Version code | `14`. Confirmed by the owner on 2026-08-25 as **not yet uploaded**, so it is free to use. The last consumed code is `13` (0.7.3). |
 
 `android.permission.DUMP` appears once in the merged manifest. It is not a
 `uses-permission`: it is the permission *required of callers* of AndroidX's
@@ -99,7 +100,8 @@ Neither blocks Closed Test.
 
 ## Not verifiable here — owner action before upload
 
-These are account- and policy-level and cannot be checked from the repo:
+These are account- and policy-level and cannot be checked from the repo. The
+version code question is closed: see the bundle table above.
 
 - Data Safety form reverified against this exact AAB.
 - App Content answers reverified in the current Play Console.
@@ -107,9 +109,6 @@ These are account- and policy-level and cannot be checked from the repo:
 - Target audience and any Families implications approved.
 - Privacy policy hosted over public HTTPS with a live contact, matching in-app text.
 - Play App Signing key strategy approved; the upload key backed up off this machine.
-- **Version code must be greater than every previous Play upload.** This build is
-  `14`. If `0.7.4+14` has already been uploaded, bump `pubspec.yaml` and rebuild
-  before uploading again.
 - Closed Testing tester list, feedback channel, and the 12-testers/14-days
   requirement.
 - Physical-device cold launch smoke. Everything above is emulator-verified; a
