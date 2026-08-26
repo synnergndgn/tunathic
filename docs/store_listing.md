@@ -41,11 +41,11 @@ and screen-reader semantics.
 
 No accounts. No ads. No analytics.
 
-**0.7.4 (14) – What's New:**
+**0.7.5 (15) – What's New:**
 
-- Every screen now shares the same instrument workbench surface
-- Dashboard tool labels no longer break mid-word
-- Clearer metronome volume readout
+- New app icon: the analog tuner dial, matching the one on the store listing
+- The icon now follows your system theme on Android 13 and later
+- The back gesture previews where it is taking you
 
 ## Turkish (tr-TR)
 
@@ -84,11 +84,11 @@ okuyucu açıklamalarını destekler.
 
 Hesap yok. Reklam yok. Analiz yok.
 
-**0.7.4 (14) – Yenilikler:**
+**0.7.5 (15) – Yenilikler:**
 
-- Tüm ekranlar artık aynı cihaz yüzeyini paylaşıyor
-- Ana ekrandaki araç etiketleri artık kelime ortasından bölünmüyor
-- Metronom ses düzeyi göstergesi daha okunaklı
+- Yeni uygulama simgesi: mağaza sayfasındakiyle aynı analog akort kadranı
+- Simge artık Android 13 ve sonrasında sistem temanıza uyum sağlıyor
+- Geri hareketi artık nereye gideceğinizi önizliyor
 
 ## Listing verification
 

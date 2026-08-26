@@ -12,6 +12,12 @@ exported on 2026-07-27 from `0.2.0+1` and shows a UI that no longer exists
 | Locales | `en-US` and `tr-TR`, selected in-app under Settings → Language |
 | Devices | `Medium_Phone` 1080×2400 @420 dpi · `Tunathic_Tablet7` 1200×1920 @320 dpi · `Tunathic_Tablet10` 1600×2560 @320 dpi (rotated to portrait). All Android 15 / API 35, portrait. |
 
+**Still current for 0.7.5 (15).** That release changed the launcher icon, the
+themed-icon layer and the predictive-back flag — Android resources and the
+manifest. No Dart changed, so every in-app screen is byte-identical and the
+captures did not need re-shooting. The launcher icon does not appear in any
+screenshot, and the listing icon and feature graphic were already the dial.
+
 Profile rather than release, for the same reason as the previous set: the
 release build type requires local upload-key credentials, and profile is an AOT
 build with no debug banner, no debug overlays, and no `kDebugMode` diagnostics
