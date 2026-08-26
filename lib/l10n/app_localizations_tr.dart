@@ -102,6 +102,30 @@ class AppLocalizationsTr extends AppLocalizations {
   String get copyrightNotice => '© 2026 GUNDEV. Tüm hakları saklıdır.';
 
   @override
+  String get settingsAudioSection => 'Ses ve akort';
+
+  @override
+  String get referencePitchLabel => 'Referans perde';
+
+  @override
+  String get referencePitchRangeNote =>
+      'Tüm araçlar bu referansa göre akort eder. 430–450 Hz, 1 Hz adımlarla.';
+
+  @override
+  String get microphoneUsageLabel => 'Mikrofon';
+
+  @override
+  String get microphoneUsageValue => 'Yalnızca akort';
+
+  @override
+  String get microphoneUsageDescription =>
+      'Akort ekranını açtığınızda istenir, ekrandan çıkınca bırakılır. Hiçbir şey kaydedilmez.';
+
+  @override
+  String get aboutManifesto =>
+      'Hızlı, temiz ve güvenilir akort isteyen müzisyenler için yapıldı.';
+
+  @override
   String get availableToolsTitle => 'Kullanılabilir araçlar';
 
   @override
@@ -109,7 +133,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get privacySummary =>
-      'Tunathic, mevcut pratik deneyimini özel ve cihazında yerel tutacak şekilde tasarlanmıştır.';
+      'Tunathic çevrimdışı bir gitar araç seti olarak tasarlanmıştır. Mevcut araçlar uygulama verilerini GUNDEV\'e veya başka üçüncü taraflara göndermez.';
 
   @override
   String get privacyBpmTitle => 'Pratik oturumları geçicidir';
@@ -123,14 +147,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get privacyLocalDescription =>
-      'Tema, dil, dokunsal geri bildirim ve Metronom ayarları bu cihazda yerel olarak saklanır.';
+      'Tema, dil, dokunsal geri bildirim, Metronom ve Gitar Akort Cihazı tercihleri, yıldızladığınız ya da açtığınız Müzik Teorisi dersleriyle birlikte bu cihazda yerel olarak saklanır. Akor, gam, klavye, Beşliler Çemberi ve Müzik Teorisi içeriği uygulamayla birlikte gelir.';
 
   @override
   String get privacyMicrophoneTitle => 'Mikrofon perde analizi yerel kalır';
 
   @override
   String get privacyMicrophoneDescription =>
-      'Mikrofon erişimi yalnızca Gerçek Zamanlı Perde Tanılaması etkinken kullanılır. Ham ses ve perde tahminleri geçici ve yerel kalır, kaydedilmez veya yüklenmez; ekrandan ayrıldığınızda ya da uygulama arka plana geçtiğinde durur.';
+      'Gitar Akort Cihazı, mikrofon erişimini yalnızca ekran açıkken kullanır ve ekrana girdiğinizde başlar. Ham ses ve perde tahminleri bu cihazda geçici olarak işlenir, kaydedilmez veya yüklenmez; akort cihazından ayrıldığınızda ya da uygulama arka plana geçtiğinde durur.';
 
   @override
   String get privacyNoCollectionTitle =>
@@ -142,7 +166,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get privacyFutureChanges =>
-      'Üretim akort cihazı, kayıt, reklam, analiz, hesap, bulut veya sunucu özellikleri yayınlanmadan önce bu gizlilik bilgileri gözden geçirilmelidir.';
+      'Tunathic mikrofon kaydı saklamaz, hesap oluşturmaz, reklam göstermez, analiz çalıştırmaz, veri satmaz veya uygulama verilerini paylaşmaz. Uygulamanın davranışı değişirse bu bilgiler güncellenecektir.';
 
   @override
   String get comingSoon => 'Yakında';
@@ -226,6 +250,11 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String volumePercent(int percent) {
     return '%$percent ses düzeyi';
+  }
+
+  @override
+  String volumePercentShort(int percent) {
+    return '%$percent';
   }
 
   @override
@@ -323,13 +352,564 @@ class AppLocalizationsTr extends AppLocalizations {
   String get chordLibrary => 'Akor Kütüphanesi';
 
   @override
+  String get chordLibraryIntro =>
+      'Akorları müzik teorisinden oluşturun ve doğrulanmış gitar şekillerini çevrimdışı inceleyin.';
+
+  @override
+  String get chordSearchLabel => 'Akor arama';
+
+  @override
+  String get chordSearchHint => 'C, Cm, Cmaj7, F#m veya Bb7 deneyin';
+
+  @override
+  String get searchAction => 'Ara';
+
+  @override
+  String get unsupportedChordSearch =>
+      'Cmaj7 veya F#m gibi desteklenen bir akor sembolü girin.';
+
+  @override
+  String get rootNoteLabel => 'Kök nota';
+
+  @override
+  String get chordQualityLabel => 'Akor niteliği';
+
+  @override
+  String get chordSymbolLabel => 'Akor sembolü';
+
+  @override
+  String get chordTonesLabel => 'Akor sesleri';
+
+  @override
+  String get guitarShapesLabel => 'Gitar şekilleri';
+
+  @override
+  String get primaryShapeLabel => 'Seçili şekil';
+
+  @override
+  String get alternateShapesLabel => 'Kullanılabilir şekiller';
+
+  @override
+  String get fingeringLabel => 'Parmak yerleşimi';
+
+  @override
+  String get noChordShapeTitle => 'Doğrulanmış gitar şekli yok';
+
+  @override
+  String get noChordShapeDescription =>
+      'Akor kuramsal olarak geçerli, ancak bu çevrimdışı kütüphanede henüz doğrulanmış bir şekli bulunmuyor.';
+
+  @override
+  String startingFretValue(int fret) {
+    return 'Başlangıç perdesi $fret';
+  }
+
+  @override
+  String get openPositionShape => 'Açık pozisyon';
+
+  @override
+  String get movableEShape => 'Hareketli Mi şekli';
+
+  @override
+  String get movableAShape => 'Hareketli La şekli';
+
+  @override
+  String get compactShape => 'Kompakt çevrim';
+
+  @override
+  String get beginnerDifficulty => 'Başlangıç';
+
+  @override
+  String get intermediateDifficulty => 'Orta';
+
+  @override
+  String get advancedDifficulty => 'İleri';
+
+  @override
+  String omittedTonesDescription(String tones) {
+    return 'Bilinçli olarak atlanan sesler: $tones.';
+  }
+
+  @override
+  String get rootlessVoicingDescription => 'Köksüz çevrim.';
+
+  @override
+  String get triadCategory => 'Üç sesli akorlar';
+
+  @override
+  String get seventhChordCategory => 'Yedili akorlar';
+
+  @override
+  String get extendedChordCategory => 'Genişletilmiş akorlar';
+
+  @override
+  String get qualityMajor => 'Majör';
+
+  @override
+  String get qualityMinor => 'Minör';
+
+  @override
+  String get qualityDiminished => 'Eksiltilmiş';
+
+  @override
+  String get qualityAugmented => 'Artırılmış';
+
+  @override
+  String get qualitySus2 => 'Asılı 2';
+
+  @override
+  String get qualitySus4 => 'Asılı 4';
+
+  @override
+  String get qualityMajor7 => 'Majör 7';
+
+  @override
+  String get qualityDominant7 => 'Dominant 7';
+
+  @override
+  String get qualityMinor7 => 'Minör 7';
+
+  @override
+  String get qualityMinorMajor7 => 'Minör majör 7';
+
+  @override
+  String get qualityDiminished7 => 'Eksiltilmiş 7';
+
+  @override
+  String get qualityHalfDiminished7 => 'Yarı eksiltilmiş (m7b5)';
+
+  @override
+  String get quality6 => 'Majör 6';
+
+  @override
+  String get qualityMinor6 => 'Minör 6';
+
+  @override
+  String get qualityAdd9 => 'Ek 9';
+
+  @override
+  String get qualityMinorAdd9 => 'Minör ek 9';
+
+  @override
+  String get quality9 => 'Dominant 9';
+
+  @override
+  String get qualityMajor9 => 'Majör 9';
+
+  @override
+  String get qualityMinor9 => 'Minör 9';
+
+  @override
+  String get quality11 => 'Dominant 11';
+
+  @override
+  String get qualityMinor11 => 'Minör 11';
+
+  @override
+  String get quality13 => 'Dominant 13';
+
+  @override
+  String get lowEString => 'Kalın Mi teli';
+
+  @override
+  String get aString => 'La teli';
+
+  @override
+  String get dString => 'Re teli';
+
+  @override
+  String get gString => 'Sol teli';
+
+  @override
+  String get bString => 'Si teli';
+
+  @override
+  String get highEString => 'İnce Mi teli';
+
+  @override
+  String get mutedMarker => 'Susturulmuş';
+
+  @override
+  String get openMarker => 'Açık';
+
+  @override
+  String fretOnlyValue(int fret) {
+    return '$fret. perde';
+  }
+
+  @override
+  String fretAndFingerValue(int fret, int finger) {
+    return '$fret. perde, $finger. parmak';
+  }
+
+  @override
+  String guitarStringMutedDescription(String stringName) {
+    return '$stringName susturulmuş.';
+  }
+
+  @override
+  String guitarStringOpenDescription(String stringName) {
+    return '$stringName açık.';
+  }
+
+  @override
+  String guitarStringFrettedDescription(String stringName, int fret) {
+    return '$stringName $fret. perde.';
+  }
+
+  @override
+  String guitarStringFingerDescription(
+    String stringName,
+    int fret,
+    int finger,
+  ) {
+    return '$stringName $fret. perde, $finger. parmak.';
+  }
+
+  @override
+  String barreDescription(
+    int fret,
+    String fromString,
+    String toString,
+    int finger,
+  ) {
+    return '$fret. perdede $fromString ile $toString arasında $finger. parmakla bare.';
+  }
+
+  @override
+  String chordDiagramSemantics(String chordSymbol, String details) {
+    return '$chordSymbol gitar akor diyagramı. $details';
+  }
+
+  @override
   String get scaleLibrary => 'Gam Kütüphanesi';
+
+  @override
+  String get scaleLibraryIntro =>
+      'Gamları yeniden kullanılabilir müzik teorisinden oluşturun; notalarını, derece formüllerini ve ilişkilerini çevrimdışı inceleyin.';
+
+  @override
+  String get scaleSearchLabel => 'Gam arama';
+
+  @override
+  String get scaleSearchHint =>
+      'C majör, F# minör, D doryen veya A minör pentatonik deneyin';
+
+  @override
+  String get unsupportedScaleSearch =>
+      'C majör veya D doryen gibi desteklenen bir gamı tam adıyla girin.';
+
+  @override
+  String get scaleTypeLabel => 'Gam';
+
+  @override
+  String get scaleNotesLabel => 'Notalar';
+
+  @override
+  String get scaleFormulaLabel => 'Derece formülü';
+
+  @override
+  String get scaleCategoryLabel => 'Kategori';
+
+  @override
+  String get scaleAliasesLabel => 'Diğer adı';
+
+  @override
+  String get scaleRelationshipsLabel => 'İlişkiler';
+
+  @override
+  String get relativeMinorLabel => 'İlgili minör';
+
+  @override
+  String get relativeMajorLabel => 'İlgili majör';
+
+  @override
+  String get parentMajorLabel => 'Ana majör';
+
+  @override
+  String modeDegreeValue(int degree) {
+    return 'Ana majör gamın $degree. modu';
+  }
+
+  @override
+  String get ascendingMelodicMinorNote =>
+      'Gösterilen melodik minör formülü çıkıcı biçimdir.';
+
+  @override
+  String scaleSummarySemantics(String name, String notes, String formula) {
+    return '$name. Notalar: $notes. Derece formülü: $formula.';
+  }
+
+  @override
+  String get scaleMajor => 'Majör';
+
+  @override
+  String get scaleNaturalMinor => 'Doğal Minör';
+
+  @override
+  String get scaleHarmonicMinor => 'Armonik Minör';
+
+  @override
+  String get scaleMelodicMinor => 'Melodik Minör';
+
+  @override
+  String get scaleDorian => 'Doryen';
+
+  @override
+  String get scalePhrygian => 'Frigyen';
+
+  @override
+  String get scaleLydian => 'Lidyen';
+
+  @override
+  String get scaleMixolydian => 'Miksolidyen';
+
+  @override
+  String get scaleLocrian => 'Lokriyen';
+
+  @override
+  String get scaleMajorPentatonic => 'Majör Pentatonik';
+
+  @override
+  String get scaleMinorPentatonic => 'Minör Pentatonik';
+
+  @override
+  String get scaleBlues => 'Blues';
+
+  @override
+  String get scaleCategoryMajorMinor => 'Majör / Minör';
+
+  @override
+  String get scaleCategoryModes => 'Modlar';
+
+  @override
+  String get scaleCategoryPentatonicBlues => 'Pentatonik / Blues';
+
+  @override
+  String get scaleCategoryOther => 'Diğer';
+
+  @override
+  String get scaleAliasIonian => 'İyonyen';
+
+  @override
+  String get scaleAliasAeolian => 'Eolyen';
+
+  @override
+  String get degreeOneSpoken => 'bir';
+
+  @override
+  String get degreeFlatTwoSpoken => 'bemol iki';
+
+  @override
+  String get degreeTwoSpoken => 'iki';
+
+  @override
+  String get degreeFlatThreeSpoken => 'bemol üç';
+
+  @override
+  String get degreeThreeSpoken => 'üç';
+
+  @override
+  String get degreeFourSpoken => 'dört';
+
+  @override
+  String get degreeSharpFourSpoken => 'diyez dört';
+
+  @override
+  String get degreeFlatFiveSpoken => 'bemol beş';
+
+  @override
+  String get degreeFiveSpoken => 'beş';
+
+  @override
+  String get degreeFlatSixSpoken => 'bemol altı';
+
+  @override
+  String get degreeSixSpoken => 'altı';
+
+  @override
+  String get degreeFlatSevenSpoken => 'bemol yedi';
+
+  @override
+  String get degreeSevenSpoken => 'yedi';
+
+  @override
+  String get interactiveFretboard => 'Etkileşimli Klavye';
+
+  @override
+  String get fretboardIntro =>
+      'Standart akortlu gitar klavyesindeki akor seslerini ve gam notalarını inceleyin.';
+
+  @override
+  String get fretboardModeLabel => 'İçerik';
+
+  @override
+  String get chordMode => 'Akor';
+
+  @override
+  String get scaleMode => 'Gam';
+
+  @override
+  String get displayModeLabel => 'Etiketler';
+
+  @override
+  String get noteNames => 'Notalar';
+
+  @override
+  String get degreesIntervals => 'Dereceler / aralıklar';
+
+  @override
+  String get visibleFretRange => 'Görünen perde aralığı';
+
+  @override
+  String fretRangeValue(int fret) {
+    return '0–$fret';
+  }
+
+  @override
+  String get fretboardOrientationHint =>
+      'İnce Mi üstte, kalın Mi altta gösterilir. İlerideki perdeleri görmek için yatay kaydırın.';
+
+  @override
+  String fretboardSemantics(String name, int fret, String root) {
+    return '$name klavyesi, sıfırdan $fret. perdeye kadar. Kök $root notaları vurgulanmış. İnce Mi üstte, kalın Mi altta.';
+  }
+
+  @override
+  String get selectedPositionTitle => 'Seçili konum';
+
+  @override
+  String get selectedNoteLabel => 'Nota';
+
+  @override
+  String get degreeIntervalLabel => 'Derece / aralık';
+
+  @override
+  String get stringLabel => 'Tel';
+
+  @override
+  String get fretLabel => 'Perde';
+
+  @override
+  String get tapHighlightedNoteHint =>
+      'Nota, tel, perde ve ilişki ayrıntıları için vurgulanmış bir notaya dokunun.';
+
+  @override
+  String get viewOnFretboard => 'Klavyede Gör';
 
   @override
   String get circleOfFifths => 'Beşliler Çemberi';
 
   @override
-  String get intervalTrainer => 'Aralık Eğitimi';
+  String get circleOfFifthsIntro =>
+      'Ton işaretlerini, ilgili tonları, komşu beşli ve dörtlüleri ve diyatonik armoniyi çevrimdışı inceleyin.';
+
+  @override
+  String get keyMajor => 'Majör';
+
+  @override
+  String get keyMinor => 'Minör';
+
+  @override
+  String get parallelMajorLabel => 'Paralel majör';
+
+  @override
+  String get parallelMinorLabel => 'Paralel minör';
+
+  @override
+  String get keySignatureLabel => 'Ton işaretleri';
+
+  @override
+  String get alteredNotesLabel => 'Değiştirilmiş notalar';
+
+  @override
+  String get enharmonicEquivalentLabel => 'Anarmonik karşılık';
+
+  @override
+  String sharpCount(int count) {
+    return '$count diyez';
+  }
+
+  @override
+  String flatCount(int count) {
+    return '$count bemol';
+  }
+
+  @override
+  String get noSharpsOrFlats => 'Diyez veya bemol yok';
+
+  @override
+  String get fifthNeighborLabel => 'Beşli';
+
+  @override
+  String get fourthNeighborLabel => 'Dörtlü';
+
+  @override
+  String get diatonicChordsLabel => 'Diyatonik akorlar';
+
+  @override
+  String get triadsLabel => 'Üç sesli akorlar';
+
+  @override
+  String get seventhChordsLabel => 'Yedili akorlar';
+
+  @override
+  String get viewScale => 'Gamı Gör';
+
+  @override
+  String get circleOrientationHint =>
+      'C majör saat 12 yönündedir. Saat yönünde beşlilerle, ters yönde dörtlülerle ilerleyin.';
+
+  @override
+  String get circleLargeTextOrder => 'Çember sırası';
+
+  @override
+  String get selectedKeyIndicator => 'Seçili ton';
+
+  @override
+  String get relativeKeyIndicator => 'İlgili ton';
+
+  @override
+  String get fifthNeighborIndicator => 'Saat yönündeki beşli komşu';
+
+  @override
+  String get fourthNeighborIndicator => 'Saat yönünün tersindeki dörtlü komşu';
+
+  @override
+  String get tapChordHint =>
+      'Akor Kütüphanesi\'nde açmak için bir akora dokunun.';
+
+  @override
+  String get relationshipUnavailable =>
+      'Desteklenen ton işareti aralığında kullanılamıyor';
+
+  @override
+  String circleSemantics(
+    String selected,
+    String relative,
+    String fifth,
+    String fourth,
+  ) {
+    return 'Beşliler Çemberi. $selected seçili. İlgili ton $relative. Saat yönündeki komşu $fifth. Saat yönünün tersindeki komşu $fourth.';
+  }
+
+  @override
+  String circleKeySemantics(String name, String relationship) {
+    return '$name. $relationship.';
+  }
+
+  @override
+  String keySignatureSemantics(String description, String notes) {
+    return '$description. Değiştirilmiş notalar: $notes.';
+  }
+
+  @override
+  String diatonicChordSemantics(String roman, String chord) {
+    return '$roman, $chord. Akor Kütüphanesi\'ni açar.';
+  }
+
+  @override
+  String get musicTheory => 'Müzik Teorisi';
 
   @override
   String get earTraining => 'Kulak Eğitimi';
@@ -612,6 +1192,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get manualMode => 'Manuel';
 
   @override
+  String get chromaticMode => 'Kromatik';
+
+  @override
   String get targetStringLabel => 'Hedef tel';
 
   @override
@@ -631,6 +1214,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get stopTuning => 'Akordu durdur';
+
+  @override
+  String get resumeTuning => 'Dinlemeye devam et';
 
   @override
   String get retryMicrophone => 'Mikrofonu yeniden dene';
@@ -707,8 +1293,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get tunerStoppedMessage =>
-      'Akort etmeye hazır olduğunuzda Başlat\'a dokunun.';
+  String get tunerStoppedMessage => 'Dinleme duraklatıldı.';
 
   @override
   String get tunerRequestingPermissionMessage => 'Mikrofon izni isteniyor.';
@@ -717,22 +1302,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tunerListeningMessage => 'Mikrofon başlatılıyor.';
 
   @override
-  String get tunerWaitingForSignalMessage => 'Dinleniyor. Tek bir tele vurun.';
+  String get tunerWaitingForSignalMessage => 'Dinleniyor… Bir nota çalın.';
 
   @override
-  String get tunerUnstableSignalMessage =>
-      'Sinyal kararsız. Tek bir telin temizce çalmasına izin verin.';
+  String get tunerUnstableSignalMessage => 'Dinleniyor… kararlı bir perde yok.';
 
   @override
   String get tunerStablePitchMessage => 'Perde algılandı.';
 
   @override
-  String get tunerNoSignalMessage =>
-      'Güvenilir sinyal yok. Tek bir tele vurun.';
-
-  @override
-  String get tunerPermissionDeniedMessage =>
-      'Akort için mikrofon izni gereklidir.';
+  String get tunerPermissionDeniedMessage => 'Mikrofon izni gerekli.';
 
   @override
   String get tunerMicrophoneUnavailableMessage =>
@@ -741,4 +1320,502 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get tunerProcessingErrorMessage =>
       'Perde işleme durdu. Yeniden deneyin.';
+
+  @override
+  String get tunerModeLabel => 'Algılama';
+
+  @override
+  String get tunerSettingsTitle => 'Akort ayarları';
+
+  @override
+  String get tunerSettingsTooltip => 'Akort ayarlarını aç';
+
+  @override
+  String get tuningSystemLabel => 'Akort sistemi';
+
+  @override
+  String get tunerAutomaticTargetHint =>
+      'Tunathic siz çaldıkça en yakın teli seçer. Bir teli sabitlemek için Manuel\'e geçin.';
+
+  @override
+  String get tunerChromaticTargetHint =>
+      'Çaldığınız her nota, referans perdenize göre adlandırılır. Akort düzeni kullanılmaz.';
+
+  @override
+  String get tunerChromaticTargetLabel => 'Kromatik';
+
+  @override
+  String get tunerTargetPending => 'Tel bekleniyor';
+
+  @override
+  String tunerActiveTargetSemantics(String note, int position) {
+    return '$note akort ediliyor, tel $position';
+  }
+
+  @override
+  String referencePitchValue(String value) {
+    return 'A4 = $value Hz';
+  }
+
+  @override
+  String referencePitchSemantics(String value) {
+    return 'Referans perde A4, $value hertz';
+  }
+
+  @override
+  String get decreaseReferencePitch => 'Referans perdeyi düşür';
+
+  @override
+  String get increaseReferencePitch => 'Referans perdeyi yükselt';
+
+  @override
+  String get resetReferencePitch => 'A4 = 440 Hz\'e dön';
+
+  @override
+  String get tunerMicrophonePermissionTitle => 'Mikrofon izni gerekli';
+
+  @override
+  String get tunerMicrophoneUnavailableTitle => 'Mikrofon kullanılamıyor';
+
+  @override
+  String get tunerProcessingErrorTitle => 'Perde analizi durdu';
+
+  @override
+  String get beginner => 'Başlangıç';
+
+  @override
+  String get intermediate => 'Orta';
+
+  @override
+  String get advanced => 'İleri';
+
+  @override
+  String get musicTheoryTagline =>
+      'Müzik teorisini başlangıçtan ileri seviyeye öğren.';
+
+  @override
+  String get theoryHubIntro =>
+      'Tek notalardan gitara özgü teoriye kadar dokuz kategori. Tamamı çevrimdışı çalışır.';
+
+  @override
+  String get theorySearchHint => 'Ders, aralık ve akor ara';
+
+  @override
+  String get theorySearchLabel => 'Derslerde ara';
+
+  @override
+  String get theoryClearSearch => 'Aramayı temizle';
+
+  @override
+  String get theoryLevelLabel => 'Seviye';
+
+  @override
+  String get theoryLevelAll => 'Tümü';
+
+  @override
+  String get theoryCategoriesTitle => 'Kategoriler';
+
+  @override
+  String get theoryFavorites => 'Favoriler';
+
+  @override
+  String get theoryFavoritesEmpty => 'Bir dersi yıldızlayınca burada durur.';
+
+  @override
+  String get theoryRecentlyViewed => 'Son görüntülenenler';
+
+  @override
+  String get theoryAddFavorite => 'Favorilere ekle';
+
+  @override
+  String get theoryRemoveFavorite => 'Favorilerden çıkar';
+
+  @override
+  String get theoryTryIt => 'Dene';
+
+  @override
+  String get theoryNextLesson => 'Sonraki ders';
+
+  @override
+  String get theoryPreviousLesson => 'Önceki ders';
+
+  @override
+  String theoryLessonCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ders',
+      one: '1 ders',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String theoryResultCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ders bulundu',
+      one: '1 ders bulundu',
+      zero: 'Ders bulunamadı',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String theoryNoResults(String query) {
+    return '“$query” ile eşleşen ders yok.';
+  }
+
+  @override
+  String get theoryNoResultsHint =>
+      'Bir nota adı, m3 gibi bir aralık ya da bir akor simgesi deneyin.';
+
+  @override
+  String get theoryOpenInChordLibrary => 'Akor Kütüphanesinde aç';
+
+  @override
+  String get theoryOpenInScaleLibrary => 'Gam Kütüphanesinde aç';
+
+  @override
+  String get theoryOpenCircle => 'Çemberi aç';
+
+  @override
+  String get theoryOpenInteractiveFretboard => 'Etkileşimli Klavyeyi aç';
+
+  @override
+  String get theoryOpenMetronome => 'Metronomu aç';
+
+  @override
+  String get theoryOpenBpmTap => 'BPM Vuruşu\'nu aç';
+
+  @override
+  String get theoryOpenGuitarTuner => 'Gitar Akort Cihazını aç';
+
+  @override
+  String get theoryNotesLabel => 'Notalar';
+
+  @override
+  String get theoryFormulaLabel => 'Formül';
+
+  @override
+  String get theorySemitonesLabel => 'Yarım ses';
+
+  @override
+  String get theoryQualityLabel => 'Nitelik';
+
+  @override
+  String get theoryShorthandLabel => 'Kısaltma';
+
+  @override
+  String get theoryAlsoSpelledLabel => 'Diğer yazılışı';
+
+  @override
+  String get theoryGuitarShapeLabel => 'Gitar şekli';
+
+  @override
+  String get theoryFretboardLabel => 'Klavye üzerinde';
+
+  @override
+  String get theoryOpenStringsLabel => 'Boş teller';
+
+  @override
+  String get theoryNoteValuesLabel => 'Nota değerleri';
+
+  @override
+  String get theoryKeySignaturesLabel => 'Donanımlar';
+
+  @override
+  String theoryDiatonicChordsLabel(String key) {
+    return '$key tonundaki akorlar';
+  }
+
+  @override
+  String theoryBeatsValue(String beats) {
+    return '$beats vuruş';
+  }
+
+  @override
+  String theoryFretRangeLabel(int first, int last) {
+    return '$first–$last. perdeler';
+  }
+
+  @override
+  String theoryStringFret(String string, int fret) {
+    return '$string teli, $fret. perde';
+  }
+
+  @override
+  String theoryIntervalShapeSemantics(
+    String interval,
+    String rootString,
+    int rootFret,
+    String targetString,
+    int targetFret,
+  ) {
+    return '$interval şekli: kök $rootString telinde $rootFret. perdede, hedef $targetString telinde $targetFret. perdede.';
+  }
+
+  @override
+  String theoryFretboardSemantics(
+    String subject,
+    int first,
+    int last,
+    String notes,
+  ) {
+    return '$subject için klavye şeması, $first–$last. perdeler. $notes';
+  }
+
+  @override
+  String theoryLessonSemantics(String title, String level, String summary) {
+    return '$title, $level. $summary';
+  }
+
+  @override
+  String theoryCategorySemantics(
+    String name,
+    String count,
+    String description,
+  ) {
+    return '$name, $count. $description';
+  }
+
+  @override
+  String get theoryCategoryMusicalNotes => 'Müzikal Notalar';
+
+  @override
+  String get theoryCategoryMusicalNotesDescription =>
+      'Nota adları, diyezler, bemoller, eşsesliler, oktavlar ve perde yazımı.';
+
+  @override
+  String get theoryCategoryIntervals => 'Aralıklar';
+
+  @override
+  String get theoryCategoryIntervalsDescription =>
+      'Oktav içindeki her mesafe, sesi ve gitardaki şekli.';
+
+  @override
+  String get theoryCategoryChords => 'Akorlar';
+
+  @override
+  String get theoryCategoryChordsDescription =>
+      'Üçlüler, yedililer, askılı akorlar, genişletmeler, çevrimler ve seslendirmeler.';
+
+  @override
+  String get theoryCategoryScales => 'Gamlar';
+
+  @override
+  String get theoryCategoryScalesDescription =>
+      'Majör, minör, pentatonik, blues ve yedi mod.';
+
+  @override
+  String get theoryCategoryCircleOfFifths => 'Beşliler Çemberi';
+
+  @override
+  String get theoryCategoryCircleOfFifthsDescription =>
+      'Donanımlar, ilgili ve paralel tonlar ve modülasyon.';
+
+  @override
+  String get theoryCategoryFretboardTheory => 'Klavye Teorisi';
+
+  @override
+  String get theoryCategoryFretboardTheoryDescription =>
+      'Nota yerleri, oktav ve aralık şekilleri, taşınabilir kalıplar ve CAGED.';
+
+  @override
+  String get theoryCategoryRhythm => 'Ritim';
+
+  @override
+  String get theoryCategoryRhythmDescription =>
+      'Tempo, nota değerleri, susmalar, noktalar, triole, swing ve ölçü sayıları.';
+
+  @override
+  String get theoryCategoryHarmony => 'Armoni';
+
+  @override
+  String get theoryCategoryHarmonyDescription =>
+      'Tonik, dominant, subdominant, kadanslar ve Roma rakamları.';
+
+  @override
+  String get theoryCategoryGuitarTheory => 'Gitar Teorisi';
+
+  @override
+  String get theoryCategoryGuitarTheoryDescription =>
+      'Akortlar, kapo, transpoze, akor kurma ve gam pozisyonları.';
+
+  @override
+  String get repertoire => 'Repertuar';
+
+  @override
+  String get repertoireEmptyTitle => 'Henüz şarkı yok';
+
+  @override
+  String get repertoireEmptyDescription =>
+      'Sözleri akorlarıyla birlikte ekle, sonra transpoze et ve iki elin de gitarda kalırken sayfa kendi kaysın.';
+
+  @override
+  String get addSong => 'Şarkı ekle';
+
+  @override
+  String get newSongTitle => 'Yeni şarkı';
+
+  @override
+  String get editSongTitle => 'Şarkıyı düzenle';
+
+  @override
+  String get editSong => 'Düzenle';
+
+  @override
+  String get songTitleLabel => 'Başlık';
+
+  @override
+  String get songArtistLabel => 'Sanatçı';
+
+  @override
+  String get songContentLabel => 'Sözler';
+
+  @override
+  String get songContentHint =>
+      'Yalnızca sözleri yazman yeterli. Kaydettikten sonra istediğin kelimeye dokunarak akor koyabilirsin. Sözlerin üstünde akor bulunan yapıştırılmış metinler ve [Am] biçimi de çalışır.';
+
+  @override
+  String get songTitleRequired => 'Bir başlık gir.';
+
+  @override
+  String get saveSong => 'Kaydet';
+
+  @override
+  String get deleteSong => 'Şarkıyı sil';
+
+  @override
+  String deleteSongPrompt(String songTitle) {
+    return '$songTitle silinsin mi? Şarkılar yalnızca bu cihazda saklanır ve geri getirilemez.';
+  }
+
+  @override
+  String get deleteAction => 'Sil';
+
+  @override
+  String get cancelAction => 'Vazgeç';
+
+  @override
+  String get chartConverted =>
+      'Sözlerin üstündeki akorlar otomatik dönüştürüldü.';
+
+  @override
+  String get searchSongs => 'Şarkı ara';
+
+  @override
+  String get noMatchingSongs => 'Aramanla eşleşen şarkı yok.';
+
+  @override
+  String get emptySongContent =>
+      'Bu şarkının sözleri henüz yok. Eklemek için Düzenle\'yi kullan.';
+
+  @override
+  String get transposeLabel => 'Transpoze';
+
+  @override
+  String get transposeDown => 'Bir yarım ses aşağı transpoze et';
+
+  @override
+  String get transposeUp => 'Bir yarım ses yukarı transpoze et';
+
+  @override
+  String get transposeReset => 'Yazılı tona dön';
+
+  @override
+  String transposeSemitones(int value) {
+    return '$value yarım ses transpoze edildi';
+  }
+
+  @override
+  String get accidentalStyle => 'Arızalar';
+
+  @override
+  String get accidentalAuto => 'Otomatik';
+
+  @override
+  String get accidentalSharps => 'Diyez';
+
+  @override
+  String get accidentalFlats => 'Bemol';
+
+  @override
+  String get autoScroll => 'Otomatik kaydırma';
+
+  @override
+  String get startAutoScroll => 'Otomatik kaydırmayı başlat';
+
+  @override
+  String get stopAutoScroll => 'Otomatik kaydırmayı durdur';
+
+  @override
+  String get scrollSpeed => 'Kaydırma hızı';
+
+  @override
+  String scrollSpeedValue(int level, int max) {
+    return 'Hız $level / $max';
+  }
+
+  @override
+  String get songChordsLabel => 'Akorlar';
+
+  @override
+  String get editChords => 'Akorları düzenle';
+
+  @override
+  String get doneEditingChords => 'Bitti';
+
+  @override
+  String get editChordsHint =>
+      'Akor koymak için bir kelimeye, akoru değiştirmek veya kaldırmak için akora dokun. Altında söz olmayan akorlar için + kullan; giriş veya ara bölümler böyle eklenir.';
+
+  @override
+  String get addChordAtLineEnd => 'Bu satırın son kelimesinden sonra akor ekle';
+
+  @override
+  String get addChordOnEmptyLine => 'Bu boş satıra akor ekle';
+
+  @override
+  String changeChord(String chord) {
+    return '$chord akorunu değiştir';
+  }
+
+  @override
+  String get chordPickerTitleNoWord => 'Akor';
+
+  @override
+  String chordPickerTitle(String word) {
+    return '\"$word\" üzerindeki akor';
+  }
+
+  @override
+  String get chordPickerRoot => 'Kök';
+
+  @override
+  String get chordPickerQuality => 'Tür';
+
+  @override
+  String get chordsUsedInSong => 'Bu şarkıda kullanılan';
+
+  @override
+  String get removeChord => 'Akoru kaldır';
+
+  @override
+  String placeChordOn(String word) {
+    return '$word kelimesine akor koy';
+  }
+
+  @override
+  String changeChordOn(String chord, String word) {
+    return '$word kelimesindeki $chord akorunu değiştir';
+  }
+
+  @override
+  String get privacyRepertoireTitle => 'Şarkıların bu cihazda kalır';
+
+  @override
+  String get privacyRepertoireDescription =>
+      'Repertuar\'a eklediğin şarkılar — sözleri, akorları ve transpoze ayarlarıyla birlikte — yalnızca bu cihazda saklanır. Yüklenmez, GUNDEV\'e gönderilmez ve paylaşılmaz.';
 }

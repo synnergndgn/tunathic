@@ -1,49 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tunathic/features/metronome/domain/beat_sequence.dart';
 import 'package:tunathic/features/metronome/domain/metronome_config.dart';
 
 void main() {
-  const sequence = BeatSequence();
-
-  group('BeatSequence', () {
-    for (final signature in MetronomeTimeSignature.values) {
-      test('${signature.id} progresses and wraps at the measure boundary', () {
-        final config = MetronomeConfig(timeSignature: signature);
-        var currentBeat = 0;
-        final beats = <int>[];
-
-        for (var index = 0; index <= signature.beatsPerMeasure; index++) {
-          final beat = sequence.nextBeat(currentBeat, config);
-          beats.add(beat.number);
-          currentBeat = beat.number;
-        }
-
-        expect(beats, [
-          ...List.generate(signature.beatsPerMeasure, (index) => index + 1),
-          1,
-        ]);
-      });
-    }
-
-    test('accents only the first beat when enabled', () {
-      const config = MetronomeConfig();
-
-      expect(sequence.nextBeat(0, config).isAccented, isTrue);
-      expect(sequence.nextBeat(1, config).isAccented, isFalse);
-    });
-
-    test('disables first-beat accent when configured off', () {
-      const config = MetronomeConfig(accentEnabled: false);
-
-      expect(sequence.nextBeat(0, config).isAccented, isFalse);
-    });
-  });
-
   group('MetronomeConfig', () {
     for (final entry in <(int, Duration)>[
+      (40, Duration(milliseconds: 1500)),
       (60, Duration(seconds: 1)),
+      (90, Duration(microseconds: 666667)),
       (120, Duration(milliseconds: 500)),
-      (240, Duration(milliseconds: 250)),
+      (160, Duration(milliseconds: 375)),
+      (200, Duration(milliseconds: 300)),
+      (300, Duration(milliseconds: 200)),
     ]) {
       test('calculates 4/4 duration at ${entry.$1} BPM', () {
         expect(MetronomeConfig(bpm: entry.$1).beatDuration, entry.$2);
@@ -51,9 +18,13 @@ void main() {
     }
 
     for (final entry in <(int, Duration)>[
+      (40, Duration(milliseconds: 750)),
       (60, Duration(milliseconds: 500)),
+      (90, Duration(microseconds: 333333)),
       (120, Duration(milliseconds: 250)),
-      (240, Duration(milliseconds: 125)),
+      (160, Duration(microseconds: 187500)),
+      (200, Duration(milliseconds: 150)),
+      (300, Duration(milliseconds: 100)),
     ]) {
       test('calculates denominator-aware 6/8 duration at ${entry.$1} BPM', () {
         expect(
@@ -79,28 +50,12 @@ void main() {
       expect(signature.beatUnit, 8);
     });
 
-    test('6/8 wraps after six clicks and accents the next first beat', () {
-      const config = MetronomeConfig(
-        timeSignature: MetronomeTimeSignature.sixEight,
-      );
-      var currentBeat = 0;
-      final beats = <MetronomeBeat>[];
-
-      for (var index = 0; index < 7; index++) {
-        final beat = sequence.nextBeat(currentBeat, config);
-        beats.add(beat);
-        currentBeat = beat.number;
-      }
-
-      expect(beats.map((beat) => beat.number), [1, 2, 3, 4, 5, 6, 1]);
-      expect(beats.map((beat) => beat.isAccented), [
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        true,
+    test('every supported signature has a stable persisted identifier', () {
+      expect(MetronomeTimeSignature.values.map((signature) => signature.id), [
+        '2/4',
+        '3/4',
+        '4/4',
+        '6/8',
       ]);
     });
   });

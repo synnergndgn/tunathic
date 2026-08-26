@@ -1,12 +1,12 @@
 # Tunathic Privacy Policy
 
-**Effective date: July 27, 2026**
+**Effective date: August 25, 2026**
 
 Tunathic respects your privacy. This Privacy Policy explains how information is handled when you use the Tunathic mobile application.
 
 ## 1. Overview
 
-Tunathic is a guitar and music utility application providing tools such as a guitar tuner, metronome, BPM tap tool, chord library, scale library, interactive fretboard, and music theory references.
+Tunathic is a guitar and music utility application providing tools such as a guitar tuner, metronome, BPM tap tool, chord library, scale library, interactive fretboard, music theory references, and a repertoire of song sheets you write yourself.
 
 The current version of Tunathic does not require an account and does not operate a developer-controlled backend service.
 
@@ -32,7 +32,11 @@ You may revoke microphone permission at any time through your device settings. T
 
 Tunathic may store application preferences locally on your device, such as interface or tool settings.
 
-This information is used to preserve your preferences between sessions and is not transmitted to Tunathic servers.
+Tunathic also stores your Music Theory progress locally: which lessons you have starred as favourites and which you have opened most recently. This is kept only to bring you back to what you were reading.
+
+Tunathic also stores the songs you add to the Repertoire, including their lyrics, chords, and transposition settings, locally on your device. This content is created or entered by you. Tunathic provides no song catalog and no import, export, or sharing feature.
+
+This information is used to preserve your preferences, your songs, and your reading position between sessions, and is not transmitted to Tunathic servers. You can delete a song at any time in the app, and clearing the application's storage or uninstalling the application removes all of it.
 
 ## 4. Data Collection and Sharing
 
@@ -83,7 +87,17 @@ Because the current version does not intentionally transmit personal information
 
 Information stored locally by the application remains subject to the security protections provided by the user's device and operating system.
 
-## 10. Changes to This Privacy Policy
+## 10. Artificial Intelligence
+
+Tunathic contains no artificial intelligence or machine learning feature that processes your data. No user content — songs, lyrics, chords, transposition settings, preferences, or microphone audio — is sent to an artificial intelligence service, and none of it is used to train an artificial intelligence model.
+
+Pitch detection in the Guitar Tuner is a deterministic signal-processing algorithm that runs locally on your device. It is not a remote artificial intelligence service and requires no Internet connection.
+
+Development disclosure: parts of Tunathic's source code were written with the assistance of artificial intelligence coding tools (OpenAI Codex and Anthropic Claude). These tools are used only during development, on the developer's own systems, and have no access to user data, to your device, or to the application at runtime. Code produced with their assistance is reviewed by the developer before release.
+
+If a future version of Tunathic introduces a feature that transmits user data to an artificial intelligence service, this Privacy Policy will be updated before or alongside that release.
+
+## 11. Changes to This Privacy Policy
 
 This Privacy Policy may be updated as Tunathic evolves.
 
@@ -91,15 +105,24 @@ Changes may be necessary when new features, third-party services, advertising, a
 
 The effective date at the top of this page will be updated when material changes are made.
 
-## 11. Contact
+## 12. Contact
 
 For privacy questions, requests, or concerns regarding Tunathic, contact:
 
 **Developer:** GUNDEV  
-**Email:** [PUBLIC SUPPORT EMAIL]
+**Email:** aligundogan2@gmail.com
 
-## 12. Application Information
+## Application Information
 
 **Application:** Tunathic  
 **Android package:** dev.gundev.tunathic  
-**Developer:** GUNDEV
+**Developer:** GUNDEV  
+**Published policy URL:** https://gundev.dev/gizlilik/tunathic
+
+This file is the source text. The published page at the URL above must be kept
+in step with it; Play Console references the published page, not this file.
+
+The published page is generated from `app/gizlilik/policies.ts` in the GUNDEV
+portfolio site repo, which holds the English and Turkish text side by side. Any
+change here has to be made there too, in both languages, and the effective date
+bumped in three places: the `effective` field and the EN and TR meta rows.

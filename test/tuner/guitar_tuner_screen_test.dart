@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tunathic/app/theme/app_theme.dart';
 import 'package:tunathic/features/tuner/application/guitar_tuner_controller.dart';
 import 'package:tunathic/features/tuner/application/tuner_preferences.dart';
+import 'package:tunathic/features/tuner/domain/chromatic_tuner_engine.dart';
 import 'package:tunathic/features/tuner/domain/tuning.dart';
 import 'package:tunathic/features/tuner/presentation/guitar_tuner_screen.dart';
 import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_controller.dart';
@@ -10,43 +11,47 @@ import 'package:tunathic/features/tuner_realtime/domain/pitch_stabilizer.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('stopped screen is production-facing and has no diagnostics', (
-    tester,
-  ) async {
-    await tester.pumpWidget(_app(_state()));
-
-    expect(find.text('Guitar Tuner'), findsOneWidget);
-    await _reveal(tester, find.text('Tap Start when you are ready to tune.'));
-    expect(find.text('Tap Start when you are ready to tune.'), findsOneWidget);
-    await _reveal(tester, find.byKey(const Key('startGuitarTuner')));
-    expect(find.byKey(const Key('startGuitarTuner')), findsOneWidget);
-    expect(find.text('Raw detector result'), findsNothing);
-    expect(find.text('Frames analyzed'), findsNothing);
-    expect(find.text('Development diagnostic only.'), findsNothing);
-  });
-
-  testWidgets('listening and no-signal states never invent a note', (
+  testWidgets('quiet and no-signal states stay visually neutral', (
     tester,
   ) async {
     await tester.pumpWidget(
       _app(_state(signal: TunerSignalState.waitingForSignal, capturing: true)),
     );
-    await _reveal(tester, find.text('Listening. Play one string.'));
-    expect(find.text('Listening. Play one string.'), findsOneWidget);
+
     expect(find.text('—'), findsWidgets);
+    expect(find.textContaining('No signal'), findsNothing);
+    expect(find.textContaining('Play one note'), findsNothing);
+    expect(find.byKey(const Key('stopGuitarTuner')), findsNothing);
 
     await tester.pumpWidget(
       _app(_state(signal: TunerSignalState.noSignal, capturing: true)),
     );
     await tester.pump();
-    await _reveal(tester, find.text('No reliable signal. Play one string.'));
-    expect(find.text('No reliable signal. Play one string.'), findsOneWidget);
+
+    expect(find.textContaining('No signal'), findsNothing);
     expect(find.byKey(const Key('tunerDetectedOctave')), findsNothing);
+    expect(find.byKey(const Key('tunerCentsIndicator')), findsOneWidget);
   });
 
-  testWidgets('stable note shows note, octave, frequency and in-tune state', (
+  testWidgets('permission failure remains visible and retryable', (
     tester,
   ) async {
+    var retried = false;
+    await tester.pumpWidget(
+      _app(
+        _state(signal: TunerSignalState.permissionDenied),
+        onResume: () => retried = true,
+      ),
+    );
+
+    await _reveal(tester, find.text('Microphone permission required'));
+    expect(find.text('Microphone permission required'), findsOneWidget);
+    expect(find.byKey(const Key('retryGuitarTunerMicrophone')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('retryGuitarTunerMicrophone')));
+    expect(retried, isTrue);
+  });
+
+  testWidgets('stable pitch shows note, cents and frequency', (tester) async {
     await tester.pumpWidget(
       _app(
         _state(
@@ -63,104 +68,89 @@ void main() {
 
     expect(find.text('A'), findsOneWidget);
     expect(find.text('2'), findsOneWidget);
-    await _reveal(tester, find.byKey(const Key('tunerCentsValue')));
     expect(find.text('+0 cents'), findsOneWidget);
     expect(find.text('110.0 Hz'), findsOneWidget);
-    expect(find.text('In tune'), findsOneWidget);
-    expect(find.byKey(const Key('stopGuitarTuner')), findsOneWidget);
+    expect(find.byKey(const Key('stopGuitarTuner')), findsNothing);
   });
 
-  testWidgets('flat and sharp direction are readable without color', (
+  testWidgets('top control only exposes automatic and manual modes', (
+    tester,
+  ) async {
+    TunerMode? selectedMode;
+    await tester.pumpWidget(
+      _app(
+        _state(mode: TunerMode.automatic),
+        onMode: (mode) => selectedMode = mode,
+      ),
+    );
+
+    expect(find.byKey(const Key('tunerAutoManualToggle')), findsOneWidget);
+    expect(find.text('Automatic'), findsOneWidget);
+    expect(find.text('Manual'), findsOneWidget);
+    expect(find.text('Chromatic'), findsNothing);
+    await tester.tap(find.byKey(const Key('tunerManualMode')));
+    expect(selectedMode, TunerMode.manual);
+  });
+
+  testWidgets('manual mode exposes a compact target-string selector', (
+    tester,
+  ) async {
+    int? selectedString;
+    await tester.pumpWidget(
+      _app(
+        _state(mode: TunerMode.manual),
+        onString: (position) => selectedString = position,
+      ),
+    );
+
+    await _reveal(tester, find.byKey(const Key('tunerString3')));
+    await tester.tap(find.byKey(const Key('tunerString3')));
+    expect(selectedString, 3);
+  });
+
+  testWidgets('chromatic mode hides target and preset controls', (
     tester,
   ) async {
     await tester.pumpWidget(
       _app(
         _state(
+          mode: TunerMode.chromatic,
           signal: TunerSignalState.stablePitch,
           capturing: true,
-          pitch: _pitch(109.4, 'A', 2),
-          target: TuningPresets.standard.stringAt(5),
-          cents: -9.5,
+          pitch: _pitch(329.63, 'E', 4),
+          cents: -7,
           accuracy: TunerAccuracy.near,
           direction: TunerDirection.flat,
         ),
       ),
     );
-    await _reveal(tester, find.byKey(const Key('tunerCentsValue')));
-    expect(find.text('-10 cents'), findsOneWidget);
-    expect(find.text('Flat'), findsOneWidget);
 
-    await tester.pumpWidget(
-      _app(
-        _state(
-          signal: TunerSignalState.stablePitch,
-          capturing: true,
-          pitch: _pitch(111, 'A', 2),
-          target: TuningPresets.standard.stringAt(5),
-          cents: 15.7,
-          accuracy: TunerAccuracy.out,
-          direction: TunerDirection.sharp,
-        ),
-      ),
-    );
-    await tester.pump();
-    await _reveal(tester, find.byKey(const Key('tunerCentsValue')));
-    expect(find.text('+16 cents'), findsOneWidget);
-    expect(find.text('Sharp'), findsOneWidget);
+    expect(find.text('E'), findsOneWidget);
+    expect(find.text('329.6 Hz'), findsOneWidget);
+    expect(find.byKey(const Key('tunerString3')), findsNothing);
+    expect(find.text('Target pending'), findsNothing);
   });
 
-  testWidgets('preset, mode, and manual string controls invoke callbacks', (
-    tester,
-  ) async {
-    TuningPresetId? selectedPreset;
-    TunerMode? selectedMode;
-    int? selectedString;
+  testWidgets('settings action is always available', (tester) async {
+    var opened = false;
     await tester.pumpWidget(
-      _app(
-        _state(mode: TunerMode.manual),
-        onPreset: (value) => selectedPreset = value,
-        onMode: (value) => selectedMode = value,
-        onString: (value) => selectedString = value,
-      ),
+      _app(_state(), onOpenSettings: () => opened = true),
     );
 
-    await tester.tap(find.byKey(const Key('tunerString3')));
-    await tester.pump();
-    expect(selectedString, 3);
-
-    await tester.tap(find.text('Automatic'));
-    await tester.pump();
-    expect(selectedMode, TunerMode.automatic);
-
-    await tester.tap(find.byType(DropdownButtonFormField<TuningPresetId>));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('DADGAD').last);
-    await tester.pumpAndSettle();
-    expect(selectedPreset, TuningPresetId.dadgad);
+    await tester.tap(find.byKey(const Key('openTuningSettings')));
+    expect(opened, isTrue);
   });
 
-  testWidgets('production tuner is fully localized in Turkish', (tester) async {
+  testWidgets('production controls are localized in Turkish', (tester) async {
     await tester.pumpWidget(
       _app(_state(mode: TunerMode.manual), locale: const Locale('tr')),
     );
 
     expect(find.text('Gitar Akort Cihazı'), findsOneWidget);
-    expect(find.text('Akort düzeni'), findsOneWidget);
     expect(find.text('Otomatik'), findsOneWidget);
     expect(find.text('Manuel'), findsOneWidget);
+    await _reveal(tester, find.text('Hedef tel'));
     expect(find.text('Hedef tel'), findsOneWidget);
-    await _reveal(tester, find.byKey(const Key('startGuitarTuner')));
-    expect(find.text('Akordu başlat'), findsOneWidget);
-  });
-
-  testWidgets('light and dark themes render the same tuner hierarchy', (
-    tester,
-  ) async {
-    for (final mode in [ThemeMode.light, ThemeMode.dark]) {
-      await tester.pumpWidget(_app(_state(), themeMode: mode));
-      expect(find.byKey(const Key('tunerCentsIndicator')), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    }
   });
 
   testWidgets('narrow large-text layout remains scrollable without overflow', (
@@ -190,7 +180,7 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('semantics expose complete note, target, cents and frequency', (
+  testWidgets('semantics expose note, target, cents and frequency', (
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
@@ -208,11 +198,10 @@ void main() {
       ),
     );
 
-    await _reveal(tester, find.byKey(const Key('tunerFrequencyValue')));
     expect(find.bySemanticsLabel('Detected note A, octave 2'), findsOneWidget);
     expect(find.bySemanticsLabel('6 cents Flat'), findsWidgets);
-    expect(find.bySemanticsLabel('Target string 5, A2'), findsOneWidget);
     expect(find.bySemanticsLabel('Frequency 109.6 hertz'), findsOneWidget);
+    expect(find.bySemanticsLabel('Tuning to A2, string 5'), findsOneWidget);
     semantics.dispose();
   });
 }
@@ -234,10 +223,10 @@ Future<void> _reveal(WidgetTester tester, Finder finder) async {
 Widget _app(
   GuitarTunerState state, {
   Locale locale = const Locale('en'),
-  ThemeMode themeMode = ThemeMode.light,
   ValueChanged<TunerMode>? onMode,
-  ValueChanged<TuningPresetId>? onPreset,
   ValueChanged<int>? onString,
+  VoidCallback? onResume,
+  VoidCallback? onOpenSettings,
   TextScaler textScaler = TextScaler.noScaling,
 }) {
   return MaterialApp(
@@ -245,19 +234,16 @@ Widget _app(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     theme: AppTheme.light,
-    darkTheme: AppTheme.dark,
-    themeMode: themeMode,
     builder: (context, child) => MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaler: textScaler),
       child: child!,
     ),
     home: GuitarTunerView(
       state: state,
-      onStart: () {},
-      onStop: () {},
+      onResume: onResume ?? () {},
       onModeChanged: onMode ?? (_) {},
-      onPresetChanged: onPreset ?? (_) {},
       onStringSelected: onString ?? (_) {},
+      onOpenSettings: onOpenSettings ?? () {},
     ),
   );
 }
@@ -289,6 +275,7 @@ GuitarTunerState _state({
     signalState: signal,
     target: target,
     pitch: pitch,
+    note: ChromaticTunerEngine.resolve(pitch?.frequencyHz),
     cents: cents,
     accuracy: accuracy,
     direction: direction,

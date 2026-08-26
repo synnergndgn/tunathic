@@ -5,13 +5,21 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tunathic/app/router/app_router.dart';
+import 'package:tunathic/app/theme/app_motion.dart';
 import 'package:tunathic/app/theme/app_radii.dart';
 import 'package:tunathic/app/theme/app_spacing.dart';
+import 'package:tunathic/app/theme/app_typography.dart';
+import 'package:tunathic/app/theme/studio_theme.dart';
 import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/features/metronome/application/metronome_controller.dart';
 import 'package:tunathic/features/metronome/domain/metronome_config.dart';
 import 'package:tunathic/features/tools/tool_definition.dart';
 import 'package:tunathic/l10n/app_localizations.dart';
+import 'package:tunathic/shared/widgets/studio/control_dock.dart';
+import 'package:tunathic/shared/widgets/studio/rack_panel.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
+import 'package:tunathic/shared/widgets/studio/studio_state_panel.dart';
+import 'package:tunathic/shared/widgets/studio/tunathic_scaffold.dart';
 
 final class MetronomeScreen extends ConsumerStatefulWidget {
   const MetronomeScreen({super.key});
@@ -30,25 +38,27 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
   void initState() {
     super.initState();
     _metronomeController = ref.read(metronomeProvider.notifier);
-    _metronomeController.prepareForScreen();
     final bpm = ref.read(metronomeProvider).config.bpm;
     _tempoTextController = TextEditingController(text: bpm.toString());
     WidgetsBinding.instance.addObserver(this);
+    Future<void>.microtask(() {
+      if (mounted) _metronomeController.prepareForScreen();
+    });
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    unawaited(
-      _metronomeController.handleLifecycle(
-        isForeground: state == AppLifecycleState.resumed,
-      ),
-    );
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_metronomeController.handleLifecycle(isForeground: true));
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      unawaited(_metronomeController.handleLifecycle(isForeground: false));
+    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    unawaited(_metronomeController.releaseAudio());
     _tempoTextController.dispose();
     _tempoFocusNode.dispose();
     super.dispose();
@@ -67,231 +77,233 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
       _tempoTextController.text = config.bpm.toString();
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.metronome),
-        actions: [
-          IconButton(
-            key: const Key('metronomeReset'),
-            tooltip: localizations.reset,
-            onPressed: () {
-              unawaited(haptics.selection());
-              unawaited(controller.reset());
-            },
-            icon: const Icon(Icons.restart_alt),
-          ),
-          const SizedBox(width: AppSpacing.small),
-        ],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 680),
-            child: ListView(
-              key: const Key('metronomeScroll'),
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.medium,
-                AppSpacing.small,
-                AppSpacing.medium,
-                AppSpacing.large,
+    return TunathicScaffold(
+      title: localizations.metronome,
+      showSignalLines: false,
+      maxContentWidth: AppSpacing.readingMaxWidth,
+      actions: [
+        IconButton(
+          key: const Key('metronomeReset'),
+          tooltip: localizations.reset,
+          onPressed: () {
+            unawaited(haptics.selection());
+            unawaited(controller.reset());
+          },
+          icon: const Icon(Icons.restart_alt),
+        ),
+      ],
+      bottomDock: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.medium,
+          AppSpacing.sm,
+          AppSpacing.medium,
+          AppSpacing.medium,
+        ),
+        child: ControlDock(
+          children: [
+            Semantics(
+              button: true,
+              label: state.isRunning
+                  ? localizations.stopMetronome
+                  : localizations.startMetronome,
+              child: SkeuoButton(
+                key: const Key('metronomeStartStop'),
+                selected: state.isRunning,
+                expand: true,
+                onPressed: state.isInitializing
+                    ? null
+                    : () {
+                        unawaited(haptics.lightImpact());
+                        unawaited(controller.toggle());
+                      },
+                icon: state.isInitializing
+                    ? null
+                    : state.isRunning
+                    ? Icons.stop
+                    : Icons.play_arrow,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (state.isInitializing) ...[
+                      const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                    ],
+                    Flexible(
+                      child: Text(
+                        state.isInitializing
+                            ? localizations.preparingAudio
+                            : state.isRunning
+                            ? localizations.stopMetronome
+                            : localizations.startMetronome,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+            ),
+            // The dock is tight, so the switch shows the tool's short name
+            // and keeps the full sentence for assistive tech.
+            Semantics(
+              button: true,
+              label: localizations.openBpmTapForMetronome,
+              child: SkeuoButton(
+                key: const Key('openBpmTapFromMetronome'),
+                icon: Icons.touch_app_outlined,
+                expand: true,
+                onPressed: () {
+                  unawaited(haptics.selection());
+                  unawaited(_openBpmTap(context, controller));
+                },
+                child: Text(
+                  localizations.bpmTap,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: ListView(
+        key: const Key('metronomeScroll'),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.medium,
+          AppSpacing.medium,
+          AppSpacing.medium,
+          AppSpacing.medium,
+        ),
+        children: [
+          _TempoDisplay(state: state),
+          const SizedBox(height: AppSpacing.md),
+          RackPanel(
+            label: localizations.tempo,
+            labelIcon: Icons.speed_outlined,
+            child: _TempoControls(
+              state: state,
+              textController: _tempoTextController,
+              focusNode: _tempoFocusNode,
+              onDecrement: controller.decrementBpm,
+              onIncrement: controller.incrementBpm,
+              onSubmitted: (value) {
+                final bpm = int.tryParse(value);
+                if (bpm != null) controller.setBpm(bpm);
+                _tempoFocusNode.unfocus();
+              },
+              onSliderChanged: (value) => controller.previewBpm(value.round()),
+              onSliderChangeEnd: (_) => controller.commitBpm(),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          RackPanel(
+            label: localizations.timeSignature,
+            labelIcon: Icons.grid_view_outlined,
+            child: Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
               children: [
-                Semantics(
-                  label: localizations.tempoValue(config.bpm),
-                  child: ExcludeSemantics(
-                    child: Column(
-                      children: [
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            config.bpm.toString(),
-                            key: const Key('metronomeBpm'),
-                            style: Theme.of(context).textTheme.displayLarge
-                                ?.copyWith(
-                                  fontSize: 88,
-                                  height: 1,
-                                  fontWeight: FontWeight.w700,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.xSmall),
-                        Text(
-                          localizations.beatsPerMinute,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ],
+                for (final signature in MetronomeTimeSignature.values)
+                  Semantics(
+                    selected: config.timeSignature == signature,
+                    button: true,
+                    child: SkeuoButton(
+                      key: Key('signature-${signature.id}'),
+                      compact: true,
+                      selected: config.timeSignature == signature,
+                      onPressed: () {
+                        unawaited(haptics.selection());
+                        controller.setTimeSignature(signature);
+                      },
+                      child: Text(signature.id),
                     ),
                   ),
-                ),
-                const SizedBox(height: AppSpacing.medium),
-                _TempoControls(
-                  state: state,
-                  textController: _tempoTextController,
-                  focusNode: _tempoFocusNode,
-                  onDecrement: controller.decrementBpm,
-                  onIncrement: controller.incrementBpm,
-                  onSubmitted: (value) {
-                    final bpm = int.tryParse(value);
-                    if (bpm != null) controller.setBpm(bpm);
-                    _tempoFocusNode.unfocus();
-                  },
-                  onSliderChanged: (value) =>
-                      controller.previewBpm(value.round()),
-                  onSliderChangeEnd: (_) => controller.commitBpm(),
-                ),
-                const SizedBox(height: AppSpacing.medium),
-                _SectionCard(
-                  title: localizations.currentBeat,
-                  child: Column(
-                    children: [
-                      Text(
-                        _runningStatus(localizations, state),
-                        key: const Key('metronomeStatus'),
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: AppSpacing.medium),
-                      _BeatIndicators(state: state),
-                    ],
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.medium),
+          RackPanel(
+            label: localizations.sound,
+            labelIcon: Icons.volume_up_outlined,
+            child: Column(
+              children: [
+                RackRow(
+                  label: localizations.accentFirstBeat,
+                  value: SkeuoSwitch(
+                    key: const Key('metronomeAccent'),
+                    semanticLabel: localizations.accentFirstBeat,
+                    value: config.accentEnabled,
+                    onChanged: (enabled) {
+                      unawaited(haptics.selection());
+                      controller.setAccentEnabled(enabled);
+                    },
                   ),
                 ),
-                const SizedBox(height: AppSpacing.medium),
-                _SectionCard(
-                  title: localizations.timeSignature,
-                  child: Wrap(
-                    spacing: AppSpacing.small,
-                    runSpacing: AppSpacing.small,
-                    children: [
-                      for (final signature in MetronomeTimeSignature.values)
-                        Semantics(
-                          selected: config.timeSignature == signature,
-                          button: true,
-                          child: ChoiceChip(
-                            key: Key('signature-${signature.id}'),
-                            label: Text(signature.id),
-                            selected: config.timeSignature == signature,
-                            onSelected: (_) {
-                              unawaited(haptics.selection());
-                              controller.setTimeSignature(signature);
-                            },
-                          ),
+                Row(
+                  children: [
+                    const Icon(Icons.volume_down_outlined),
+                    const SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: Slider(
+                        key: const Key('metronomeVolume'),
+                        value: config.volume,
+                        divisions: 20,
+                        label: localizations.volumePercent(
+                          (config.volume * 100).round(),
                         ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.medium),
-                _SectionCard(
-                  title: localizations.sound,
-                  child: Column(
-                    children: [
-                      SwitchListTile(
-                        key: const Key('metronomeAccent'),
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(localizations.accentFirstBeat),
-                        value: config.accentEnabled,
-                        onChanged: (enabled) {
-                          unawaited(haptics.selection());
-                          controller.setAccentEnabled(enabled);
-                        },
+                        semanticFormatterCallback: (_) => localizations
+                            .volumePercent((config.volume * 100).round()),
+                        onChanged: controller.previewVolume,
+                        onChangeEnd: (_) => controller.commitVolume(),
                       ),
-                      Row(
-                        children: [
-                          const Icon(Icons.volume_down_outlined),
-                          const SizedBox(width: AppSpacing.small),
-                          Expanded(
-                            child: Slider(
-                              key: const Key('metronomeVolume'),
-                              value: config.volume,
-                              divisions: 20,
-                              label: localizations.volumePercent(
-                                (config.volume * 100).round(),
-                              ),
-                              semanticFormatterCallback: (_) => localizations
-                                  .volumePercent((config.volume * 100).round()),
-                              onChanged: controller.previewVolume,
-                              onChangeEnd: (_) => controller.commitVolume(),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 52,
-                            child: Text(
-                              localizations.volumePercent(
-                                (config.volume * 100).round(),
-                              ),
-                              textAlign: TextAlign.end,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                if (state.failure != null) ...[
-                  const SizedBox(height: AppSpacing.medium),
-                  _AudioErrorCard(onRetry: () => unawaited(controller.start())),
-                ],
-                const SizedBox(height: AppSpacing.large),
-                Semantics(
-                  button: true,
-                  label: state.isRunning
-                      ? localizations.stopMetronome
-                      : localizations.startMetronome,
-                  child: FilledButton.icon(
-                    key: const Key('metronomeStartStop'),
-                    onPressed: state.isInitializing
-                        ? null
-                        : () {
-                            unawaited(haptics.lightImpact());
-                            unawaited(controller.toggle());
-                          },
-                    icon: state.isInitializing
-                        ? const SizedBox.square(
-                            dimension: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Icon(state.isRunning ? Icons.stop : Icons.play_arrow),
-                    label: Text(
-                      state.isInitializing
-                          ? localizations.preparingAudio
-                          : state.isRunning
-                          ? localizations.stopMetronome
-                          : localizations.startMetronome,
                     ),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.small),
-                OutlinedButton.icon(
-                  key: const Key('openBpmTapFromMetronome'),
-                  onPressed: () {
-                    unawaited(haptics.selection());
-                    unawaited(_openBpmTap(context, controller));
-                  },
-                  icon: const Icon(Icons.touch_app_outlined),
-                  label: Text(localizations.openBpmTapForMetronome),
-                ),
-                const SizedBox(height: AppSpacing.medium),
-                Text(
-                  localizations.metronomeGuidance,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                    // An engraved numeric readout, not a sentence: the column
+                    // is 56 pt wide and the full "65% volume" string only ever
+                    // fitted as "65% vo…". The whole phrase still reaches a
+                    // screen reader through semanticsLabel.
+                    SizedBox(
+                      width: 56,
+                      child: Text(
+                        localizations.volumePercentShort(
+                          (config.volume * 100).round(),
+                        ),
+                        semanticsLabel: localizations.volumePercent(
+                          (config.volume * 100).round(),
+                        ),
+                        textAlign: TextAlign.end,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TunathicTextStyles.readout(context),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-        ),
+          if (state.failure != null) ...[
+            const SizedBox(height: AppSpacing.medium),
+            StudioStatePanel(
+              icon: Icons.volume_off_outlined,
+              title: localizations.audioUnavailableTitle,
+              description: localizations.audioUnavailableDescription,
+              actionLabel: localizations.retryAudio,
+              onAction: () => unawaited(controller.start()),
+              tone: StudioStateTone.problem,
+            ),
+          ],
+          const SizedBox(height: AppSpacing.medium),
+          Text(
+            localizations.metronomeGuidance,
+            textAlign: TextAlign.center,
+            style: TunathicTextStyles.metadata(context),
+          ),
+        ],
       ),
-    );
-  }
-
-  String _runningStatus(AppLocalizations localizations, MetronomeState state) {
-    if (state.isInitializing) return localizations.preparingAudio;
-    if (!state.isRunning) return localizations.metronomeStopped;
-    return localizations.currentBeatValue(
-      state.currentBeat,
-      state.config.timeSignature.beatsPerMeasure,
     );
   }
 
@@ -315,6 +327,97 @@ final class _MetronomeScreenState extends ConsumerState<MetronomeScreen>
         ),
       );
     }
+  }
+}
+
+/// The tempo readout and the beat lamps, on one recessed display.
+final class _TempoDisplay extends StatelessWidget {
+  const _TempoDisplay({required this.state});
+
+  final MetronomeState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    final colors = Theme.of(context).colorScheme;
+    final config = state.config;
+
+    return DecoratedBox(
+      decoration: TunathicSurfaces.tunerDisplay(
+        context,
+        signal: state.isRunning ? colors.primary : null,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.medium),
+        child: Column(
+          children: [
+            Semantics(
+              container: true,
+              label: localizations.tempoValue(config.bpm),
+              child: ExcludeSemantics(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            config.bpm.toString(),
+                            key: const Key('metronomeBpm'),
+                            style:
+                                TunathicTextStyles.heroNote(
+                                  context,
+                                  size: (constraints.maxWidth * 0.3).clamp(
+                                    56.0,
+                                    104.0,
+                                  ),
+                                ).copyWith(
+                                  color: state.isRunning
+                                      ? colors.primary
+                                      : colors.onSurface,
+                                ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: AppSpacing.md,
+                            ),
+                            child: Text(
+                              localizations.bpmLabel,
+                              style: TunathicTextStyles.sectionTitle(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              _runningStatus(localizations, state),
+              key: const Key('metronomeStatus'),
+              textAlign: TextAlign.center,
+              style: TunathicTextStyles.metadata(context),
+            ),
+            const SizedBox(height: AppSpacing.medium),
+            _BeatIndicators(state: state),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _runningStatus(AppLocalizations localizations, MetronomeState state) {
+    if (state.isInitializing) return localizations.preparingAudio;
+    if (!state.isRunning) return localizations.metronomeStopped;
+    return localizations.currentBeatValue(
+      state.currentBeat,
+      state.config.timeSignature.beatsPerMeasure,
+    );
   }
 }
 
@@ -343,24 +446,21 @@ final class _TempoControls extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final bpm = state.config.bpm;
-    return _SectionCard(
-      title: localizations.tempo,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton.filledTonal(
-                key: const Key('decrementTempo'),
-                tooltip: localizations.decreaseTempo,
-                onPressed: bpm <= MetronomeConfig.minimumBpm
-                    ? null
-                    : onDecrement,
-                icon: const Icon(Icons.remove),
-              ),
-              const SizedBox(width: AppSpacing.medium),
-              SizedBox(
-                width: 112,
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton.filledTonal(
+              key: const Key('decrementTempo'),
+              tooltip: localizations.decreaseTempo,
+              onPressed: bpm <= MetronomeConfig.minimumBpm ? null : onDecrement,
+              icon: const Icon(Icons.remove),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Flexible(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 132),
                 child: TextField(
                   key: const Key('tempoInput'),
                   controller: textController,
@@ -369,38 +469,36 @@ final class _TempoControls extends StatelessWidget {
                   keyboardType: TextInputType.number,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
-                    labelText: localizations.tempo,
                     suffixText: localizations.bpmLabel,
-                    border: const OutlineInputBorder(),
+                    border: const OutlineInputBorder(
+                      borderRadius: AppRadii.mediumBorder,
+                    ),
                   ),
                   onSubmitted: onSubmitted,
                 ),
               ),
-              const SizedBox(width: AppSpacing.medium),
-              IconButton.filledTonal(
-                key: const Key('incrementTempo'),
-                tooltip: localizations.increaseTempo,
-                onPressed: bpm >= MetronomeConfig.maximumBpm
-                    ? null
-                    : onIncrement,
-                icon: const Icon(Icons.add),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.small),
-          Slider(
-            key: const Key('tempoSlider'),
-            value: bpm.toDouble(),
-            min: MetronomeConfig.minimumBpm.toDouble(),
-            max: MetronomeConfig.maximumBpm.toDouble(),
-            divisions: MetronomeConfig.maximumBpm - MetronomeConfig.minimumBpm,
-            label: localizations.tempoValue(bpm),
-            semanticFormatterCallback: (_) => localizations.tempoValue(bpm),
-            onChanged: onSliderChanged,
-            onChangeEnd: onSliderChangeEnd,
-          ),
-        ],
-      ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            IconButton.filledTonal(
+              key: const Key('incrementTempo'),
+              tooltip: localizations.increaseTempo,
+              onPressed: bpm >= MetronomeConfig.maximumBpm ? null : onIncrement,
+              icon: const Icon(Icons.add),
+            ),
+          ],
+        ),
+        Slider(
+          key: const Key('tempoSlider'),
+          value: bpm.toDouble(),
+          min: MetronomeConfig.minimumBpm.toDouble(),
+          max: MetronomeConfig.maximumBpm.toDouble(),
+          divisions: MetronomeConfig.maximumBpm - MetronomeConfig.minimumBpm,
+          label: localizations.tempoValue(bpm),
+          semanticFormatterCallback: (_) => localizations.tempoValue(bpm),
+          onChanged: onSliderChanged,
+          onChangeEnd: onSliderChangeEnd,
+        ),
+      ],
     );
   }
 }
@@ -416,11 +514,11 @@ final class _BeatIndicators extends StatelessWidget {
     final config = state.config;
     return Wrap(
       alignment: WrapAlignment.center,
-      spacing: AppSpacing.small,
-      runSpacing: AppSpacing.small,
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
       children: [
         for (var beat = 1; beat <= config.timeSignature.beatsPerMeasure; beat++)
-          _BeatIndicator(
+          _BeatLamp(
             number: beat,
             isCurrent: state.isRunning && state.currentBeat == beat,
             isAccented: config.accentEnabled && beat == 1,
@@ -437,8 +535,9 @@ final class _BeatIndicators extends StatelessWidget {
   }
 }
 
-final class _BeatIndicator extends StatelessWidget {
-  const _BeatIndicator({
+/// One beat, drawn as a lamp on the transport.
+final class _BeatLamp extends StatelessWidget {
+  const _BeatLamp({
     required this.number,
     required this.isCurrent,
     required this.isAccented,
@@ -453,109 +552,39 @@ final class _BeatIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final studio = StudioTheme.of(context);
+    final reducedMotion = MediaQuery.disableAnimationsOf(context);
+    final lampColor = isAccented ? colors.secondary : colors.primary;
+
     return Semantics(
+      container: true,
       label: AppLocalizations.of(
         context,
       ).beatIndicatorSemantics(number, semanticDetails),
       child: ExcludeSemantics(
-        child: Container(
-          width: 48,
-          height: 48,
+        child: AnimatedContainer(
+          duration: reducedMotion ? Duration.zero : AppMotion.fast,
+          width: 44,
+          height: 44,
+          alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isCurrent ? colors.primary : colors.surfaceContainerHighest,
-            borderRadius: AppRadii.smallBorder,
+            color: isCurrent ? lampColor.withValues(alpha: 0.24) : studio.panel,
+            borderRadius: AppRadii.mediumBorder,
             border: Border.all(
-              color: isAccented ? colors.secondary : colors.outlineVariant,
-              width: isAccented ? 2 : 1,
+              color: isCurrent
+                  ? lampColor
+                  : isAccented
+                  ? colors.secondary.withValues(alpha: 0.5)
+                  : studio.panelBorder,
+              width: isCurrent || isAccented ? 1.5 : 1,
             ),
           ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Text(
-                number.toString(),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: isCurrent ? colors.onPrimary : colors.onSurface,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              if (isAccented)
-                Positioned(
-                  top: 0,
-                  right: 2,
-                  child: Icon(
-                    Icons.expand_more,
-                    size: 16,
-                    color: isCurrent ? colors.onPrimary : colors.secondary,
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-final class _SectionCard extends StatelessWidget {
-  const _SectionCard({required this.title, required this.child});
-
-  final String title;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.medium),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(title, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: AppSpacing.medium),
-            child,
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-final class _AudioErrorCard extends StatelessWidget {
-  const _AudioErrorCard({required this.onRetry});
-
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
-    final colors = Theme.of(context).colorScheme;
-    return Semantics(
-      container: true,
-      child: Card(
-        color: colors.errorContainer,
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.medium),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                localizations.audioUnavailableTitle,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: colors.onErrorContainer,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.small),
-              Text(
-                localizations.audioUnavailableDescription,
-                style: TextStyle(color: colors.onErrorContainer),
-              ),
-              const SizedBox(height: AppSpacing.small),
-              TextButton(
-                onPressed: onRetry,
-                child: Text(localizations.retryAudio),
-              ),
-            ],
+          child: Text(
+            number.toString(),
+            style: TunathicTextStyles.compactLabel(context).copyWith(
+              color: isCurrent ? lampColor : colors.onSurfaceVariant,
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ),
       ),

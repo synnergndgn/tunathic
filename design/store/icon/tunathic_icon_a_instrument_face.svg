@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"
+     role="img" aria-label="Tunathic app icon: analog tuner faceplate">
+  <title>Tunathic icon: Instrument Face</title>
+  <desc>Concept A. An ivory enamel faceplate carrying the app's own analog tuner
+  movement: a semicircular dial recess, a charcoal scale with a green in-tune
+  band on zero, a warm-orange needle and a brass pivot cap. Full-bleed square,
+  because Google Play applies its own corner mask.</desc>
+
+  <defs>
+    <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0"    stop-color="#FFFDF8"/>
+      <stop offset="0.52" stop-color="#F8F1E7"/>
+      <stop offset="1"    stop-color="#EBDDCA"/>
+    </linearGradient>
+
+    <pattern id="grain" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="none"/>
+      <line x1="0" y1="0.5" x2="8" y2="0.5" stroke="#6B4A32" stroke-opacity="0.04" stroke-width="1"/>
+    </pattern>
+
+    <radialGradient id="dialFace" cx="0.5" cy="0.92" r="1.05">
+      <stop offset="0"    stop-color="#FFFFFF" stop-opacity="0.75"/>
+      <stop offset="0.60" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="1"    stop-color="#6B4A32" stop-opacity="0.13"/>
+    </radialGradient>
+
+    <linearGradient id="wellTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"    stop-color="#6B4A32" stop-opacity="0.20"/>
+      <stop offset="0.34" stop-color="#6B4A32" stop-opacity="0"/>
+    </linearGradient>
+
+    <radialGradient id="pivot" cx="0.32" cy="0.28" r="0.85">
+      <stop offset="0"    stop-color="#FFFFFF"/>
+      <stop offset="0.42" stop-color="#D6C0A8"/>
+      <stop offset="0.78" stop-color="#A98F76"/>
+      <stop offset="1"    stop-color="#4A3B31"/>
+    </radialGradient>
+    <radialGradient id="pivotCore" cx="0.34" cy="0.30" r="0.85">
+      <stop offset="0"    stop-color="#FFD9BE"/>
+      <stop offset="0.45" stop-color="#C85818"/>
+      <stop offset="1"    stop-color="#7A2F0C"/>
+    </radialGradient>
+
+    <linearGradient id="needle" gradientUnits="userSpaceOnUse"
+                    x1="232" y1="202" x2="282" y2="380">
+      <stop offset="0"    stop-color="#E1842F"/>
+      <stop offset="0.35" stop-color="#C85818"/>
+      <stop offset="1"    stop-color="#8E3A0D"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Faceplate -->
+  <rect width="512" height="512" fill="url(#plate)"/>
+  <rect width="512" height="512" fill="url(#grain)"/>
+
+  <!-- No frame and no rounded corners of our own: Play masks the icon with its
+       own rounded square and adds its own shadow. Drawing an inset frame here
+       put a second, tighter-radius rounded rect inside Play's mask, which read
+       as a broken double border. The plate runs full bleed instead. -->
+
+  <!-- Dial recess: the same half disc the app paints -->
+  <path d="M30,376 A226,226 0 0 1 482,376 Z" fill="#F1E7D9"/>
+  <path d="M30,376 A226,226 0 0 1 482,376 Z" fill="url(#dialFace)"/>
+  <path d="M30,376 A226,226 0 0 1 482,376 Z" fill="url(#wellTop)"/>
+
+  <!-- Scale. The charcoal arc is what carries the icon's silhouette at 48 px. -->
+  <path d="M41.1,306.2 A226,226 0 0 1 470.9,306.2" fill="none"
+        stroke="#302822" stroke-width="17"/>
+  <path d="M45.6,311.5 A220,220 0 0 1 466.4,311.5" fill="none"
+        stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="2.5"/>
+
+  <!-- The in-tune band, cut into the scale on zero -->
+  <path d="M216.7,151.9 A226,226 0 0 1 295.3,151.9" fill="none"
+        stroke="#35734C" stroke-width="25" stroke-linecap="butt"/>
+
+  <!-- Engraved ticks -->
+  <g stroke="#302822" stroke-width="15" stroke-linecap="butt">
+    <line x1="63.9"  y1="309.9" x2="101.9" y2="325.9"/>
+    <line x1="137.2" y1="212.5" x2="160.8" y2="244.9"/>
+    <line x1="374.8" y1="212.5" x2="351.2" y2="244.9"/>
+    <line x1="448.1" y1="309.9" x2="410.1" y2="325.9"/>
+  </g>
+  <g stroke="#9A8168" stroke-width="9" stroke-linecap="butt">
+    <line x1="92.3"  y1="257.0" x2="110.4" y2="270.2"/>
+    <line x1="194.6" y1="186.6" x2="200.4" y2="204.8"/>
+    <line x1="317.4" y1="186.6" x2="311.6" y2="204.8"/>
+    <line x1="419.7" y1="257.0" x2="401.6" y2="270.2"/>
+  </g>
+
+  <!-- Needle, parked on zero -->
+  <path d="M236,382 L248,216 Q256,202 264,216 L276,382 Z"
+        fill="#5A3A24" fill-opacity="0.22" transform="translate(6,8)"/>
+  <path d="M236,382 L248,216 Q256,202 264,216 L276,382 Z" fill="url(#needle)"/>
+  <path d="M244,378 L251,222 Q256,210 256,222 L256,378 Z"
+        fill="#FFFFFF" fill-opacity="0.30"/>
+
+  <!-- Brass pivot cap -->
+  <circle cx="261" cy="383" r="46" fill="#5A3A24" fill-opacity="0.22"/>
+  <circle cx="256" cy="376" r="45" fill="url(#pivot)"/>
+  <circle cx="256" cy="376" r="45" fill="none" stroke="#302822" stroke-opacity="0.45" stroke-width="2"/>
+  <circle cx="256" cy="376" r="20" fill="url(#pivotCore)"/>
+</svg>

@@ -278,6 +278,48 @@ abstract class AppLocalizations {
   /// **'© 2026 GUNDEV. All rights reserved.'**
   String get copyrightNotice;
 
+  /// No description provided for @settingsAudioSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio and tuning'**
+  String get settingsAudioSection;
+
+  /// No description provided for @referencePitchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference pitch'**
+  String get referencePitchLabel;
+
+  /// No description provided for @referencePitchRangeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Every tool tunes to this reference. 430–450 Hz, in 1 Hz steps.'**
+  String get referencePitchRangeNote;
+
+  /// No description provided for @microphoneUsageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone'**
+  String get microphoneUsageLabel;
+
+  /// No description provided for @microphoneUsageValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuner only'**
+  String get microphoneUsageValue;
+
+  /// No description provided for @microphoneUsageDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested when you open the tuner, released when you leave it. Nothing is recorded.'**
+  String get microphoneUsageDescription;
+
+  /// No description provided for @aboutManifesto.
+  ///
+  /// In en, this message translates to:
+  /// **'Built for musicians who need fast, clean and reliable tuning.'**
+  String get aboutManifesto;
+
   /// No description provided for @availableToolsTitle.
   ///
   /// In en, this message translates to:
@@ -293,7 +335,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacySummary.
   ///
   /// In en, this message translates to:
-  /// **'Tunathic is designed to keep the current practice experience private and local to your device.'**
+  /// **'Tunathic is designed as an offline guitar toolkit. Its current tools do not send your app data to GUNDEV or other third parties.'**
   String get privacySummary;
 
   /// No description provided for @privacyBpmTitle.
@@ -317,7 +359,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyLocalDescription.
   ///
   /// In en, this message translates to:
-  /// **'Theme, language, haptic, and Metronome settings are stored locally on this device.'**
+  /// **'Theme, language, haptic, Metronome, and Guitar Tuner preferences are stored locally on this device, together with the Music Theory lessons you star or open. Chord, scale, fretboard, Circle of Fifths, and Music Theory content is bundled with the app.'**
   String get privacyLocalDescription;
 
   /// No description provided for @privacyMicrophoneTitle.
@@ -329,7 +371,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyMicrophoneDescription.
   ///
   /// In en, this message translates to:
-  /// **'Microphone access is used only while the Real-Time Pitch Diagnostic is active. Raw audio and pitch estimates remain transient and local, are never saved or uploaded, and stop when you leave the screen or the app enters the background.'**
+  /// **'The Guitar Tuner uses microphone access only while it is open, starting when you enter the screen. Raw audio and pitch estimates are processed transiently on this device, are never saved or uploaded, and stop when you leave the tuner or the app enters the background.'**
   String get privacyMicrophoneDescription;
 
   /// No description provided for @privacyNoCollectionTitle.
@@ -347,7 +389,7 @@ abstract class AppLocalizations {
   /// No description provided for @privacyFutureChanges.
   ///
   /// In en, this message translates to:
-  /// **'This privacy information must be reviewed before production tuner, recording, advertising, analytics, account, cloud, or backend features are released.'**
+  /// **'Tunathic does not store microphone recordings, create accounts, show ads, run analytics, sell data, or share app data. This information will be updated if the app\'s behavior changes.'**
   String get privacyFutureChanges;
 
   /// No description provided for @comingSoon.
@@ -499,6 +541,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{percent}% volume'**
   String volumePercent(int percent);
+
+  /// The volume readout beside the slider. Short because it sits in a narrow numeric column; the full volumePercent string carries the meaning for screen readers.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}%'**
+  String volumePercentShort(int percent);
 
   /// No description provided for @openBpmTapForMetronome.
   ///
@@ -656,11 +704,808 @@ abstract class AppLocalizations {
   /// **'Chord Library'**
   String get chordLibrary;
 
+  /// No description provided for @chordLibraryIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Build chords from music theory and explore validated guitar shapes offline.'**
+  String get chordLibraryIntro;
+
+  /// No description provided for @chordSearchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord search'**
+  String get chordSearchLabel;
+
+  /// No description provided for @chordSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try C, Cm, Cmaj7, F#m, or Bb7'**
+  String get chordSearchHint;
+
+  /// No description provided for @searchAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get searchAction;
+
+  /// No description provided for @unsupportedChordSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a supported chord symbol such as Cmaj7 or F#m.'**
+  String get unsupportedChordSearch;
+
+  /// No description provided for @rootNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Root note'**
+  String get rootNoteLabel;
+
+  /// No description provided for @chordQualityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord quality'**
+  String get chordQualityLabel;
+
+  /// No description provided for @chordSymbolLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord symbol'**
+  String get chordSymbolLabel;
+
+  /// No description provided for @chordTonesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord tones'**
+  String get chordTonesLabel;
+
+  /// No description provided for @guitarShapesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Guitar shapes'**
+  String get guitarShapesLabel;
+
+  /// No description provided for @primaryShapeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected shape'**
+  String get primaryShapeLabel;
+
+  /// No description provided for @alternateShapesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Available shapes'**
+  String get alternateShapesLabel;
+
+  /// No description provided for @fingeringLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fingering'**
+  String get fingeringLabel;
+
+  /// No description provided for @noChordShapeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No curated guitar shape'**
+  String get noChordShapeTitle;
+
+  /// No description provided for @noChordShapeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The chord is theoretically valid, but this offline library does not currently include a verified shape for it.'**
+  String get noChordShapeDescription;
+
+  /// No description provided for @startingFretValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting fret {fret}'**
+  String startingFretValue(int fret);
+
+  /// No description provided for @openPositionShape.
+  ///
+  /// In en, this message translates to:
+  /// **'Open position'**
+  String get openPositionShape;
+
+  /// No description provided for @movableEShape.
+  ///
+  /// In en, this message translates to:
+  /// **'Movable E shape'**
+  String get movableEShape;
+
+  /// No description provided for @movableAShape.
+  ///
+  /// In en, this message translates to:
+  /// **'Movable A shape'**
+  String get movableAShape;
+
+  /// No description provided for @compactShape.
+  ///
+  /// In en, this message translates to:
+  /// **'Compact voicing'**
+  String get compactShape;
+
+  /// No description provided for @beginnerDifficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get beginnerDifficulty;
+
+  /// No description provided for @intermediateDifficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get intermediateDifficulty;
+
+  /// No description provided for @advancedDifficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get advancedDifficulty;
+
+  /// No description provided for @omittedTonesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Intentionally omitted: {tones}.'**
+  String omittedTonesDescription(String tones);
+
+  /// No description provided for @rootlessVoicingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Rootless voicing.'**
+  String get rootlessVoicingDescription;
+
+  /// No description provided for @triadCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Triads'**
+  String get triadCategory;
+
+  /// No description provided for @seventhChordCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Seventh chords'**
+  String get seventhChordCategory;
+
+  /// No description provided for @extendedChordCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Extended chords'**
+  String get extendedChordCategory;
+
+  /// No description provided for @qualityMajor.
+  ///
+  /// In en, this message translates to:
+  /// **'Major'**
+  String get qualityMajor;
+
+  /// No description provided for @qualityMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor'**
+  String get qualityMinor;
+
+  /// No description provided for @qualityDiminished.
+  ///
+  /// In en, this message translates to:
+  /// **'Diminished'**
+  String get qualityDiminished;
+
+  /// No description provided for @qualityAugmented.
+  ///
+  /// In en, this message translates to:
+  /// **'Augmented'**
+  String get qualityAugmented;
+
+  /// No description provided for @qualitySus2.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspended 2'**
+  String get qualitySus2;
+
+  /// No description provided for @qualitySus4.
+  ///
+  /// In en, this message translates to:
+  /// **'Suspended 4'**
+  String get qualitySus4;
+
+  /// No description provided for @qualityMajor7.
+  ///
+  /// In en, this message translates to:
+  /// **'Major 7'**
+  String get qualityMajor7;
+
+  /// No description provided for @qualityDominant7.
+  ///
+  /// In en, this message translates to:
+  /// **'Dominant 7'**
+  String get qualityDominant7;
+
+  /// No description provided for @qualityMinor7.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor 7'**
+  String get qualityMinor7;
+
+  /// No description provided for @qualityMinorMajor7.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor major 7'**
+  String get qualityMinorMajor7;
+
+  /// No description provided for @qualityDiminished7.
+  ///
+  /// In en, this message translates to:
+  /// **'Diminished 7'**
+  String get qualityDiminished7;
+
+  /// No description provided for @qualityHalfDiminished7.
+  ///
+  /// In en, this message translates to:
+  /// **'Half-diminished (m7b5)'**
+  String get qualityHalfDiminished7;
+
+  /// No description provided for @quality6.
+  ///
+  /// In en, this message translates to:
+  /// **'Major 6'**
+  String get quality6;
+
+  /// No description provided for @qualityMinor6.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor 6'**
+  String get qualityMinor6;
+
+  /// No description provided for @qualityAdd9.
+  ///
+  /// In en, this message translates to:
+  /// **'Add 9'**
+  String get qualityAdd9;
+
+  /// No description provided for @qualityMinorAdd9.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor add 9'**
+  String get qualityMinorAdd9;
+
+  /// No description provided for @quality9.
+  ///
+  /// In en, this message translates to:
+  /// **'Dominant 9'**
+  String get quality9;
+
+  /// No description provided for @qualityMajor9.
+  ///
+  /// In en, this message translates to:
+  /// **'Major 9'**
+  String get qualityMajor9;
+
+  /// No description provided for @qualityMinor9.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor 9'**
+  String get qualityMinor9;
+
+  /// No description provided for @quality11.
+  ///
+  /// In en, this message translates to:
+  /// **'Dominant 11'**
+  String get quality11;
+
+  /// No description provided for @qualityMinor11.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor 11'**
+  String get qualityMinor11;
+
+  /// No description provided for @quality13.
+  ///
+  /// In en, this message translates to:
+  /// **'Dominant 13'**
+  String get quality13;
+
+  /// No description provided for @lowEString.
+  ///
+  /// In en, this message translates to:
+  /// **'Low E string'**
+  String get lowEString;
+
+  /// No description provided for @aString.
+  ///
+  /// In en, this message translates to:
+  /// **'A string'**
+  String get aString;
+
+  /// No description provided for @dString.
+  ///
+  /// In en, this message translates to:
+  /// **'D string'**
+  String get dString;
+
+  /// No description provided for @gString.
+  ///
+  /// In en, this message translates to:
+  /// **'G string'**
+  String get gString;
+
+  /// No description provided for @bString.
+  ///
+  /// In en, this message translates to:
+  /// **'B string'**
+  String get bString;
+
+  /// No description provided for @highEString.
+  ///
+  /// In en, this message translates to:
+  /// **'High E string'**
+  String get highEString;
+
+  /// No description provided for @mutedMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Muted'**
+  String get mutedMarker;
+
+  /// No description provided for @openMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get openMarker;
+
+  /// No description provided for @fretOnlyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Fret {fret}'**
+  String fretOnlyValue(int fret);
+
+  /// No description provided for @fretAndFingerValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Fret {fret}, finger {finger}'**
+  String fretAndFingerValue(int fret, int finger);
+
+  /// No description provided for @guitarStringMutedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'{stringName} muted.'**
+  String guitarStringMutedDescription(String stringName);
+
+  /// No description provided for @guitarStringOpenDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'{stringName} open.'**
+  String guitarStringOpenDescription(String stringName);
+
+  /// No description provided for @guitarStringFrettedDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'{stringName} fret {fret}.'**
+  String guitarStringFrettedDescription(String stringName, int fret);
+
+  /// No description provided for @guitarStringFingerDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'{stringName} fret {fret}, finger {finger}.'**
+  String guitarStringFingerDescription(String stringName, int fret, int finger);
+
+  /// No description provided for @barreDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Barre at fret {fret}, from {fromString} through {toString}, finger {finger}.'**
+  String barreDescription(
+    int fret,
+    String fromString,
+    String toString,
+    int finger,
+  );
+
+  /// No description provided for @chordDiagramSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{chordSymbol} guitar chord diagram. {details}'**
+  String chordDiagramSemantics(String chordSymbol, String details);
+
   /// No description provided for @scaleLibrary.
   ///
   /// In en, this message translates to:
   /// **'Scale Library'**
   String get scaleLibrary;
+
+  /// No description provided for @scaleLibraryIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Build scales from reusable music theory and explore their notes, degree formulas, and relationships offline.'**
+  String get scaleLibraryIntro;
+
+  /// No description provided for @scaleSearchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scale search'**
+  String get scaleSearchLabel;
+
+  /// No description provided for @scaleSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try C major, F# minor, D Dorian, or A minor pentatonic'**
+  String get scaleSearchHint;
+
+  /// No description provided for @unsupportedScaleSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an exact supported scale such as C major or D Dorian.'**
+  String get unsupportedScaleSearch;
+
+  /// No description provided for @scaleTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Scale'**
+  String get scaleTypeLabel;
+
+  /// No description provided for @scaleNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get scaleNotesLabel;
+
+  /// No description provided for @scaleFormulaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Degree formula'**
+  String get scaleFormulaLabel;
+
+  /// No description provided for @scaleCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get scaleCategoryLabel;
+
+  /// No description provided for @scaleAliasesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Also known as'**
+  String get scaleAliasesLabel;
+
+  /// No description provided for @scaleRelationshipsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Relationships'**
+  String get scaleRelationshipsLabel;
+
+  /// No description provided for @relativeMinorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Relative minor'**
+  String get relativeMinorLabel;
+
+  /// No description provided for @relativeMajorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Relative major'**
+  String get relativeMajorLabel;
+
+  /// No description provided for @parentMajorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent major'**
+  String get parentMajorLabel;
+
+  /// No description provided for @modeDegreeValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode {degree} of the parent major scale'**
+  String modeDegreeValue(int degree);
+
+  /// No description provided for @ascendingMelodicMinorNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The melodic minor formula shown is the ascending form.'**
+  String get ascendingMelodicMinorNote;
+
+  /// No description provided for @scaleSummarySemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}. Notes: {notes}. Degree formula: {formula}.'**
+  String scaleSummarySemantics(String name, String notes, String formula);
+
+  /// No description provided for @scaleMajor.
+  ///
+  /// In en, this message translates to:
+  /// **'Major'**
+  String get scaleMajor;
+
+  /// No description provided for @scaleNaturalMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Natural Minor'**
+  String get scaleNaturalMinor;
+
+  /// No description provided for @scaleHarmonicMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Harmonic Minor'**
+  String get scaleHarmonicMinor;
+
+  /// No description provided for @scaleMelodicMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Melodic Minor'**
+  String get scaleMelodicMinor;
+
+  /// No description provided for @scaleDorian.
+  ///
+  /// In en, this message translates to:
+  /// **'Dorian'**
+  String get scaleDorian;
+
+  /// No description provided for @scalePhrygian.
+  ///
+  /// In en, this message translates to:
+  /// **'Phrygian'**
+  String get scalePhrygian;
+
+  /// No description provided for @scaleLydian.
+  ///
+  /// In en, this message translates to:
+  /// **'Lydian'**
+  String get scaleLydian;
+
+  /// No description provided for @scaleMixolydian.
+  ///
+  /// In en, this message translates to:
+  /// **'Mixolydian'**
+  String get scaleMixolydian;
+
+  /// No description provided for @scaleLocrian.
+  ///
+  /// In en, this message translates to:
+  /// **'Locrian'**
+  String get scaleLocrian;
+
+  /// No description provided for @scaleMajorPentatonic.
+  ///
+  /// In en, this message translates to:
+  /// **'Major Pentatonic'**
+  String get scaleMajorPentatonic;
+
+  /// No description provided for @scaleMinorPentatonic.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor Pentatonic'**
+  String get scaleMinorPentatonic;
+
+  /// No description provided for @scaleBlues.
+  ///
+  /// In en, this message translates to:
+  /// **'Blues'**
+  String get scaleBlues;
+
+  /// No description provided for @scaleCategoryMajorMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Major / Minor'**
+  String get scaleCategoryMajorMinor;
+
+  /// No description provided for @scaleCategoryModes.
+  ///
+  /// In en, this message translates to:
+  /// **'Modes'**
+  String get scaleCategoryModes;
+
+  /// No description provided for @scaleCategoryPentatonicBlues.
+  ///
+  /// In en, this message translates to:
+  /// **'Pentatonic / Blues'**
+  String get scaleCategoryPentatonicBlues;
+
+  /// No description provided for @scaleCategoryOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get scaleCategoryOther;
+
+  /// No description provided for @scaleAliasIonian.
+  ///
+  /// In en, this message translates to:
+  /// **'Ionian'**
+  String get scaleAliasIonian;
+
+  /// No description provided for @scaleAliasAeolian.
+  ///
+  /// In en, this message translates to:
+  /// **'Aeolian'**
+  String get scaleAliasAeolian;
+
+  /// No description provided for @degreeOneSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'one'**
+  String get degreeOneSpoken;
+
+  /// No description provided for @degreeFlatTwoSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'flat two'**
+  String get degreeFlatTwoSpoken;
+
+  /// No description provided for @degreeTwoSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'two'**
+  String get degreeTwoSpoken;
+
+  /// No description provided for @degreeFlatThreeSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'flat three'**
+  String get degreeFlatThreeSpoken;
+
+  /// No description provided for @degreeThreeSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'three'**
+  String get degreeThreeSpoken;
+
+  /// No description provided for @degreeFourSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'four'**
+  String get degreeFourSpoken;
+
+  /// No description provided for @degreeSharpFourSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'sharp four'**
+  String get degreeSharpFourSpoken;
+
+  /// No description provided for @degreeFlatFiveSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'flat five'**
+  String get degreeFlatFiveSpoken;
+
+  /// No description provided for @degreeFiveSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'five'**
+  String get degreeFiveSpoken;
+
+  /// No description provided for @degreeFlatSixSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'flat six'**
+  String get degreeFlatSixSpoken;
+
+  /// No description provided for @degreeSixSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'six'**
+  String get degreeSixSpoken;
+
+  /// No description provided for @degreeFlatSevenSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'flat seven'**
+  String get degreeFlatSevenSpoken;
+
+  /// No description provided for @degreeSevenSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'seven'**
+  String get degreeSevenSpoken;
+
+  /// No description provided for @interactiveFretboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Interactive Fretboard'**
+  String get interactiveFretboard;
+
+  /// No description provided for @fretboardIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore chord tones and scale notes across a standard-tuned guitar neck.'**
+  String get fretboardIntro;
+
+  /// No description provided for @fretboardModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get fretboardModeLabel;
+
+  /// No description provided for @chordMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord'**
+  String get chordMode;
+
+  /// No description provided for @scaleMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scale'**
+  String get scaleMode;
+
+  /// No description provided for @displayModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Labels'**
+  String get displayModeLabel;
+
+  /// No description provided for @noteNames.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get noteNames;
+
+  /// No description provided for @degreesIntervals.
+  ///
+  /// In en, this message translates to:
+  /// **'Degrees / intervals'**
+  String get degreesIntervals;
+
+  /// No description provided for @visibleFretRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Visible fret range'**
+  String get visibleFretRange;
+
+  /// No description provided for @fretRangeValue.
+  ///
+  /// In en, this message translates to:
+  /// **'0–{fret}'**
+  String fretRangeValue(int fret);
+
+  /// No description provided for @fretboardOrientationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'High E is shown at the top; low E is shown at the bottom. Scroll horizontally to see later frets.'**
+  String get fretboardOrientationHint;
+
+  /// No description provided for @fretboardSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} fretboard, frets zero through {fret}. Root notes {root} highlighted. High E is at the top and low E is at the bottom.'**
+  String fretboardSemantics(String name, int fret, String root);
+
+  /// No description provided for @selectedPositionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected position'**
+  String get selectedPositionTitle;
+
+  /// No description provided for @selectedNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get selectedNoteLabel;
+
+  /// No description provided for @degreeIntervalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Degree / interval'**
+  String get degreeIntervalLabel;
+
+  /// No description provided for @stringLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'String'**
+  String get stringLabel;
+
+  /// No description provided for @fretLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fret'**
+  String get fretLabel;
+
+  /// No description provided for @tapHighlightedNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a highlighted note for pitch, string, fret, and relationship details.'**
+  String get tapHighlightedNoteHint;
+
+  /// No description provided for @viewOnFretboard.
+  ///
+  /// In en, this message translates to:
+  /// **'View on Fretboard'**
+  String get viewOnFretboard;
 
   /// No description provided for @circleOfFifths.
   ///
@@ -668,11 +1513,190 @@ abstract class AppLocalizations {
   /// **'Circle of Fifths'**
   String get circleOfFifths;
 
-  /// No description provided for @intervalTrainer.
+  /// No description provided for @circleOfFifthsIntro.
   ///
   /// In en, this message translates to:
-  /// **'Interval Trainer'**
-  String get intervalTrainer;
+  /// **'Explore key signatures, relative keys, neighboring fifths and fourths, and diatonic harmony offline.'**
+  String get circleOfFifthsIntro;
+
+  /// No description provided for @keyMajor.
+  ///
+  /// In en, this message translates to:
+  /// **'Major'**
+  String get keyMajor;
+
+  /// No description provided for @keyMinor.
+  ///
+  /// In en, this message translates to:
+  /// **'Minor'**
+  String get keyMinor;
+
+  /// No description provided for @parallelMajorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Parallel major'**
+  String get parallelMajorLabel;
+
+  /// No description provided for @parallelMinorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Parallel minor'**
+  String get parallelMinorLabel;
+
+  /// No description provided for @keySignatureLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Key signature'**
+  String get keySignatureLabel;
+
+  /// No description provided for @alteredNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Altered notes'**
+  String get alteredNotesLabel;
+
+  /// No description provided for @enharmonicEquivalentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enharmonic equivalent'**
+  String get enharmonicEquivalentLabel;
+
+  /// No description provided for @sharpCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 sharp} other{{count} sharps}}'**
+  String sharpCount(int count);
+
+  /// No description provided for @flatCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 flat} other{{count} flats}}'**
+  String flatCount(int count);
+
+  /// No description provided for @noSharpsOrFlats.
+  ///
+  /// In en, this message translates to:
+  /// **'No sharps or flats'**
+  String get noSharpsOrFlats;
+
+  /// No description provided for @fifthNeighborLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fifth'**
+  String get fifthNeighborLabel;
+
+  /// No description provided for @fourthNeighborLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Fourth'**
+  String get fourthNeighborLabel;
+
+  /// No description provided for @diatonicChordsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Diatonic chords'**
+  String get diatonicChordsLabel;
+
+  /// No description provided for @triadsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Triads'**
+  String get triadsLabel;
+
+  /// No description provided for @seventhChordsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Seventh chords'**
+  String get seventhChordsLabel;
+
+  /// No description provided for @viewScale.
+  ///
+  /// In en, this message translates to:
+  /// **'View Scale'**
+  String get viewScale;
+
+  /// No description provided for @circleOrientationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'C major is at 12 o\'clock. Move clockwise by fifths and counter-clockwise by fourths.'**
+  String get circleOrientationHint;
+
+  /// No description provided for @circleLargeTextOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Circle order'**
+  String get circleLargeTextOrder;
+
+  /// No description provided for @selectedKeyIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected key'**
+  String get selectedKeyIndicator;
+
+  /// No description provided for @relativeKeyIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Relative key'**
+  String get relativeKeyIndicator;
+
+  /// No description provided for @fifthNeighborIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Clockwise fifth neighbor'**
+  String get fifthNeighborIndicator;
+
+  /// No description provided for @fourthNeighborIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Counter-clockwise fourth neighbor'**
+  String get fourthNeighborIndicator;
+
+  /// No description provided for @tapChordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a chord to open it in Chord Library.'**
+  String get tapChordHint;
+
+  /// No description provided for @relationshipUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available in the supported key-signature range'**
+  String get relationshipUnavailable;
+
+  /// No description provided for @circleSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Circle of Fifths. {selected} selected. Relative key {relative}. Clockwise neighbor {fifth}. Counter-clockwise neighbor {fourth}.'**
+  String circleSemantics(
+    String selected,
+    String relative,
+    String fifth,
+    String fourth,
+  );
+
+  /// No description provided for @circleKeySemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}. {relationship}.'**
+  String circleKeySemantics(String name, String relationship);
+
+  /// No description provided for @keySignatureSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{description}. Altered notes: {notes}.'**
+  String keySignatureSemantics(String description, String notes);
+
+  /// No description provided for @diatonicChordSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{roman}, {chord}. Opens Chord Library.'**
+  String diatonicChordSemantics(String roman, String chord);
+
+  /// No description provided for @musicTheory.
+  ///
+  /// In en, this message translates to:
+  /// **'Music Theory'**
+  String get musicTheory;
 
   /// No description provided for @earTraining.
   ///
@@ -1178,6 +2202,12 @@ abstract class AppLocalizations {
   /// **'Manual'**
   String get manualMode;
 
+  /// No description provided for @chromaticMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Chromatic'**
+  String get chromaticMode;
+
   /// No description provided for @targetStringLabel.
   ///
   /// In en, this message translates to:
@@ -1219,6 +2249,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Stop tuning'**
   String get stopTuning;
+
+  /// No description provided for @resumeTuning.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume listening'**
+  String get resumeTuning;
 
   /// No description provided for @retryMicrophone.
   ///
@@ -1343,7 +2379,7 @@ abstract class AppLocalizations {
   /// No description provided for @tunerStoppedMessage.
   ///
   /// In en, this message translates to:
-  /// **'Tap Start when you are ready to tune.'**
+  /// **'Listening paused.'**
   String get tunerStoppedMessage;
 
   /// No description provided for @tunerRequestingPermissionMessage.
@@ -1361,13 +2397,13 @@ abstract class AppLocalizations {
   /// No description provided for @tunerWaitingForSignalMessage.
   ///
   /// In en, this message translates to:
-  /// **'Listening. Play one string.'**
+  /// **'Listening… Play one note.'**
   String get tunerWaitingForSignalMessage;
 
   /// No description provided for @tunerUnstableSignalMessage.
   ///
   /// In en, this message translates to:
-  /// **'Signal is unstable. Let one string ring clearly.'**
+  /// **'Listening… no stable pitch yet.'**
   String get tunerUnstableSignalMessage;
 
   /// No description provided for @tunerStablePitchMessage.
@@ -1376,16 +2412,10 @@ abstract class AppLocalizations {
   /// **'Pitch detected.'**
   String get tunerStablePitchMessage;
 
-  /// No description provided for @tunerNoSignalMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'No reliable signal. Play one string.'**
-  String get tunerNoSignalMessage;
-
   /// No description provided for @tunerPermissionDeniedMessage.
   ///
   /// In en, this message translates to:
-  /// **'Microphone permission is needed to tune.'**
+  /// **'Microphone permission required.'**
   String get tunerPermissionDeniedMessage;
 
   /// No description provided for @tunerMicrophoneUnavailableMessage.
@@ -1399,6 +2429,833 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pitch processing stopped. Try again.'**
   String get tunerProcessingErrorMessage;
+
+  /// No description provided for @tunerModeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Detection'**
+  String get tunerModeLabel;
+
+  /// No description provided for @tunerSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuning settings'**
+  String get tunerSettingsTitle;
+
+  /// No description provided for @tunerSettingsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Open tuning settings'**
+  String get tunerSettingsTooltip;
+
+  /// No description provided for @tuningSystemLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuning system'**
+  String get tuningSystemLabel;
+
+  /// No description provided for @tunerAutomaticTargetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tunathic picks the closest string while you play. Switch to Manual to lock one.'**
+  String get tunerAutomaticTargetHint;
+
+  /// No description provided for @tunerChromaticTargetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Any note you play is named against your reference pitch. No tuning preset is used.'**
+  String get tunerChromaticTargetHint;
+
+  /// No description provided for @tunerChromaticTargetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chromatic'**
+  String get tunerChromaticTargetLabel;
+
+  /// No description provided for @tunerTargetPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for a string'**
+  String get tunerTargetPending;
+
+  /// No description provided for @tunerActiveTargetSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuning to {note}, string {position}'**
+  String tunerActiveTargetSemantics(String note, int position);
+
+  /// No description provided for @referencePitchValue.
+  ///
+  /// In en, this message translates to:
+  /// **'A4 = {value} Hz'**
+  String referencePitchValue(String value);
+
+  /// No description provided for @referencePitchSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Reference pitch A4, {value} hertz'**
+  String referencePitchSemantics(String value);
+
+  /// No description provided for @decreaseReferencePitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower the reference pitch'**
+  String get decreaseReferencePitch;
+
+  /// No description provided for @increaseReferencePitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Raise the reference pitch'**
+  String get increaseReferencePitch;
+
+  /// No description provided for @resetReferencePitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to A4 = 440 Hz'**
+  String get resetReferencePitch;
+
+  /// No description provided for @tunerMicrophonePermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission required'**
+  String get tunerMicrophonePermissionTitle;
+
+  /// No description provided for @tunerMicrophoneUnavailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone unavailable'**
+  String get tunerMicrophoneUnavailableTitle;
+
+  /// No description provided for @tunerProcessingErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pitch analysis stopped'**
+  String get tunerProcessingErrorTitle;
+
+  /// No description provided for @beginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get beginner;
+
+  /// No description provided for @intermediate.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get intermediate;
+
+  /// No description provided for @advanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get advanced;
+
+  /// No description provided for @musicTheoryTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn music theory from beginner to advanced.'**
+  String get musicTheoryTagline;
+
+  /// No description provided for @theoryHubIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Nine categories, from single notes to guitar-specific theory. Everything works offline.'**
+  String get theoryHubIntro;
+
+  /// No description provided for @theorySearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search lessons, intervals, and chords'**
+  String get theorySearchHint;
+
+  /// No description provided for @theorySearchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Search lessons'**
+  String get theorySearchLabel;
+
+  /// No description provided for @theoryClearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get theoryClearSearch;
+
+  /// No description provided for @theoryLevelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get theoryLevelLabel;
+
+  /// No description provided for @theoryLevelAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get theoryLevelAll;
+
+  /// No description provided for @theoryCategoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get theoryCategoriesTitle;
+
+  /// No description provided for @theoryFavorites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get theoryFavorites;
+
+  /// No description provided for @theoryFavoritesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Star a lesson to keep it here.'**
+  String get theoryFavoritesEmpty;
+
+  /// No description provided for @theoryRecentlyViewed.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently viewed'**
+  String get theoryRecentlyViewed;
+
+  /// No description provided for @theoryAddFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites'**
+  String get theoryAddFavorite;
+
+  /// No description provided for @theoryRemoveFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favorites'**
+  String get theoryRemoveFavorite;
+
+  /// No description provided for @theoryTryIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Try it'**
+  String get theoryTryIt;
+
+  /// No description provided for @theoryNextLesson.
+  ///
+  /// In en, this message translates to:
+  /// **'Next lesson'**
+  String get theoryNextLesson;
+
+  /// No description provided for @theoryPreviousLesson.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous lesson'**
+  String get theoryPreviousLesson;
+
+  /// No description provided for @theoryLessonCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 lesson} other{{count} lessons}}'**
+  String theoryLessonCount(int count);
+
+  /// No description provided for @theoryResultCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No lessons found} =1{1 lesson found} other{{count} lessons found}}'**
+  String theoryResultCount(int count);
+
+  /// No description provided for @theoryNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No lessons match “{query}”.'**
+  String theoryNoResults(String query);
+
+  /// No description provided for @theoryNoResultsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Try a note name, an interval such as m3, or a chord symbol.'**
+  String get theoryNoResultsHint;
+
+  /// No description provided for @theoryOpenInChordLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Chord Library'**
+  String get theoryOpenInChordLibrary;
+
+  /// No description provided for @theoryOpenInScaleLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Scale Library'**
+  String get theoryOpenInScaleLibrary;
+
+  /// No description provided for @theoryOpenCircle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Circle'**
+  String get theoryOpenCircle;
+
+  /// No description provided for @theoryOpenInteractiveFretboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Interactive Fretboard'**
+  String get theoryOpenInteractiveFretboard;
+
+  /// No description provided for @theoryOpenMetronome.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Metronome'**
+  String get theoryOpenMetronome;
+
+  /// No description provided for @theoryOpenBpmTap.
+  ///
+  /// In en, this message translates to:
+  /// **'Open BPM Tap'**
+  String get theoryOpenBpmTap;
+
+  /// No description provided for @theoryOpenGuitarTuner.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Guitar Tuner'**
+  String get theoryOpenGuitarTuner;
+
+  /// No description provided for @theoryNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get theoryNotesLabel;
+
+  /// No description provided for @theoryFormulaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Formula'**
+  String get theoryFormulaLabel;
+
+  /// No description provided for @theorySemitonesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Semitones'**
+  String get theorySemitonesLabel;
+
+  /// No description provided for @theoryQualityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Quality'**
+  String get theoryQualityLabel;
+
+  /// No description provided for @theoryShorthandLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Shorthand'**
+  String get theoryShorthandLabel;
+
+  /// No description provided for @theoryAlsoSpelledLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Also spelled'**
+  String get theoryAlsoSpelledLabel;
+
+  /// No description provided for @theoryGuitarShapeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Guitar shape'**
+  String get theoryGuitarShapeLabel;
+
+  /// No description provided for @theoryFretboardLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'On the fretboard'**
+  String get theoryFretboardLabel;
+
+  /// No description provided for @theoryOpenStringsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Open strings'**
+  String get theoryOpenStringsLabel;
+
+  /// No description provided for @theoryNoteValuesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note values'**
+  String get theoryNoteValuesLabel;
+
+  /// No description provided for @theoryKeySignaturesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Key signatures'**
+  String get theoryKeySignaturesLabel;
+
+  /// No description provided for @theoryDiatonicChordsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chords in {key}'**
+  String theoryDiatonicChordsLabel(String key);
+
+  /// No description provided for @theoryBeatsValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{beats} beats'**
+  String theoryBeatsValue(String beats);
+
+  /// No description provided for @theoryFretRangeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Frets {first}–{last}'**
+  String theoryFretRangeLabel(int first, int last);
+
+  /// No description provided for @theoryStringFret.
+  ///
+  /// In en, this message translates to:
+  /// **'String {string}, fret {fret}'**
+  String theoryStringFret(String string, int fret);
+
+  /// No description provided for @theoryIntervalShapeSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{interval} shape: root on string {rootString} at fret {rootFret}, target on string {targetString} at fret {targetFret}.'**
+  String theoryIntervalShapeSemantics(
+    String interval,
+    String rootString,
+    int rootFret,
+    String targetString,
+    int targetFret,
+  );
+
+  /// No description provided for @theoryFretboardSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Fretboard diagram for {subject}, frets {first} to {last}. {notes}'**
+  String theoryFretboardSemantics(
+    String subject,
+    int first,
+    int last,
+    String notes,
+  );
+
+  /// No description provided for @theoryLessonSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{title}, {level}. {summary}'**
+  String theoryLessonSemantics(String title, String level, String summary);
+
+  /// No description provided for @theoryCategorySemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, {count}. {description}'**
+  String theoryCategorySemantics(String name, String count, String description);
+
+  /// No description provided for @theoryCategoryMusicalNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Musical Notes'**
+  String get theoryCategoryMusicalNotes;
+
+  /// No description provided for @theoryCategoryMusicalNotesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Note names, sharps, flats, enharmonics, octaves, and pitch notation.'**
+  String get theoryCategoryMusicalNotesDescription;
+
+  /// No description provided for @theoryCategoryIntervals.
+  ///
+  /// In en, this message translates to:
+  /// **'Intervals'**
+  String get theoryCategoryIntervals;
+
+  /// No description provided for @theoryCategoryIntervalsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Every distance inside the octave, its sound, and its shape on the guitar.'**
+  String get theoryCategoryIntervalsDescription;
+
+  /// No description provided for @theoryCategoryChords.
+  ///
+  /// In en, this message translates to:
+  /// **'Chords'**
+  String get theoryCategoryChords;
+
+  /// No description provided for @theoryCategoryChordsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Triads, sevenths, suspensions, extensions, inversions, and voicings.'**
+  String get theoryCategoryChordsDescription;
+
+  /// No description provided for @theoryCategoryScales.
+  ///
+  /// In en, this message translates to:
+  /// **'Scales'**
+  String get theoryCategoryScales;
+
+  /// No description provided for @theoryCategoryScalesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Major, minor, pentatonic, blues, and the seven modes.'**
+  String get theoryCategoryScalesDescription;
+
+  /// No description provided for @theoryCategoryCircleOfFifths.
+  ///
+  /// In en, this message translates to:
+  /// **'Circle of Fifths'**
+  String get theoryCategoryCircleOfFifths;
+
+  /// No description provided for @theoryCategoryCircleOfFifthsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Key signatures, relative and parallel keys, and modulation.'**
+  String get theoryCategoryCircleOfFifthsDescription;
+
+  /// No description provided for @theoryCategoryFretboardTheory.
+  ///
+  /// In en, this message translates to:
+  /// **'Fretboard Theory'**
+  String get theoryCategoryFretboardTheory;
+
+  /// No description provided for @theoryCategoryFretboardTheoryDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Note locations, octave and interval shapes, movable patterns, and CAGED.'**
+  String get theoryCategoryFretboardTheoryDescription;
+
+  /// No description provided for @theoryCategoryRhythm.
+  ///
+  /// In en, this message translates to:
+  /// **'Rhythm'**
+  String get theoryCategoryRhythm;
+
+  /// No description provided for @theoryCategoryRhythmDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Tempo, note values, rests, dots, triplets, swing, and time signatures.'**
+  String get theoryCategoryRhythmDescription;
+
+  /// No description provided for @theoryCategoryHarmony.
+  ///
+  /// In en, this message translates to:
+  /// **'Harmony'**
+  String get theoryCategoryHarmony;
+
+  /// No description provided for @theoryCategoryHarmonyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Tonic, dominant, subdominant, cadences, and Roman numerals.'**
+  String get theoryCategoryHarmonyDescription;
+
+  /// No description provided for @theoryCategoryGuitarTheory.
+  ///
+  /// In en, this message translates to:
+  /// **'Guitar Theory'**
+  String get theoryCategoryGuitarTheory;
+
+  /// No description provided for @theoryCategoryGuitarTheoryDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Tunings, capo, transposition, chord building, and scale positions.'**
+  String get theoryCategoryGuitarTheoryDescription;
+
+  /// No description provided for @repertoire.
+  ///
+  /// In en, this message translates to:
+  /// **'Repertoire'**
+  String get repertoire;
+
+  /// No description provided for @repertoireEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No songs yet'**
+  String get repertoireEmptyTitle;
+
+  /// No description provided for @repertoireEmptyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Add lyrics with their chords, then transpose them and let the sheet scroll while both hands stay on the guitar.'**
+  String get repertoireEmptyDescription;
+
+  /// No description provided for @addSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Add song'**
+  String get addSong;
+
+  /// No description provided for @newSongTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New song'**
+  String get newSongTitle;
+
+  /// No description provided for @editSongTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit song'**
+  String get editSongTitle;
+
+  /// No description provided for @editSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get editSong;
+
+  /// No description provided for @songTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get songTitleLabel;
+
+  /// No description provided for @songArtistLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Artist'**
+  String get songArtistLabel;
+
+  /// No description provided for @songContentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Lyrics'**
+  String get songContentLabel;
+
+  /// No description provided for @songContentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Just the lyrics is enough. After saving you can tap any word to put a chord on it. Pasted charts with chords above the lyrics, and [Am] brackets, also work.'**
+  String get songContentHint;
+
+  /// No description provided for @songTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a title.'**
+  String get songTitleRequired;
+
+  /// No description provided for @saveSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get saveSong;
+
+  /// No description provided for @deleteSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete song'**
+  String get deleteSong;
+
+  /// No description provided for @deleteSongPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {songTitle}? Songs are stored only on this device and cannot be recovered.'**
+  String deleteSongPrompt(String songTitle);
+
+  /// No description provided for @deleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteAction;
+
+  /// No description provided for @cancelAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelAction;
+
+  /// No description provided for @chartConverted.
+  ///
+  /// In en, this message translates to:
+  /// **'Chords above the lyrics were converted automatically.'**
+  String get chartConverted;
+
+  /// No description provided for @searchSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'Search songs'**
+  String get searchSongs;
+
+  /// No description provided for @noMatchingSongs.
+  ///
+  /// In en, this message translates to:
+  /// **'No songs match your search.'**
+  String get noMatchingSongs;
+
+  /// No description provided for @emptySongContent.
+  ///
+  /// In en, this message translates to:
+  /// **'This song has no lyrics yet. Use Edit to add them.'**
+  String get emptySongContent;
+
+  /// No description provided for @transposeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Transpose'**
+  String get transposeLabel;
+
+  /// No description provided for @transposeDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Transpose down one semitone'**
+  String get transposeDown;
+
+  /// No description provided for @transposeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Transpose up one semitone'**
+  String get transposeUp;
+
+  /// No description provided for @transposeReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset to the written key'**
+  String get transposeReset;
+
+  /// No description provided for @transposeSemitones.
+  ///
+  /// In en, this message translates to:
+  /// **'Transposed {value} semitones'**
+  String transposeSemitones(int value);
+
+  /// No description provided for @accidentalStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accidentals'**
+  String get accidentalStyle;
+
+  /// No description provided for @accidentalAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get accidentalAuto;
+
+  /// No description provided for @accidentalSharps.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharps'**
+  String get accidentalSharps;
+
+  /// No description provided for @accidentalFlats.
+  ///
+  /// In en, this message translates to:
+  /// **'Flats'**
+  String get accidentalFlats;
+
+  /// No description provided for @autoScroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-scroll'**
+  String get autoScroll;
+
+  /// No description provided for @startAutoScroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Start auto-scroll'**
+  String get startAutoScroll;
+
+  /// No description provided for @stopAutoScroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop auto-scroll'**
+  String get stopAutoScroll;
+
+  /// No description provided for @scrollSpeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll speed'**
+  String get scrollSpeed;
+
+  /// No description provided for @scrollSpeedValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed {level} of {max}'**
+  String scrollSpeedValue(int level, int max);
+
+  /// No description provided for @songChordsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Chords'**
+  String get songChordsLabel;
+
+  /// No description provided for @editChords.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit chords'**
+  String get editChords;
+
+  /// No description provided for @doneEditingChords.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get doneEditingChords;
+
+  /// No description provided for @editChordsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a word to put a chord on it, or tap a chord to change or remove it. Use + for a chord with no word under it, such as an intro or an instrumental break.'**
+  String get editChordsHint;
+
+  /// No description provided for @addChordAtLineEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a chord after the last word of this line'**
+  String get addChordAtLineEnd;
+
+  /// No description provided for @addChordOnEmptyLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a chord on this empty line'**
+  String get addChordOnEmptyLine;
+
+  /// No description provided for @changeChord.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the {chord} chord'**
+  String changeChord(String chord);
+
+  /// No description provided for @chordPickerTitleNoWord.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord'**
+  String get chordPickerTitleNoWord;
+
+  /// No description provided for @chordPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Chord on \"{word}\"'**
+  String chordPickerTitle(String word);
+
+  /// No description provided for @chordPickerRoot.
+  ///
+  /// In en, this message translates to:
+  /// **'Root'**
+  String get chordPickerRoot;
+
+  /// No description provided for @chordPickerQuality.
+  ///
+  /// In en, this message translates to:
+  /// **'Quality'**
+  String get chordPickerQuality;
+
+  /// No description provided for @chordsUsedInSong.
+  ///
+  /// In en, this message translates to:
+  /// **'Used in this song'**
+  String get chordsUsedInSong;
+
+  /// No description provided for @removeChord.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove chord'**
+  String get removeChord;
+
+  /// No description provided for @placeChordOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Put a chord on {word}'**
+  String placeChordOn(String word);
+
+  /// No description provided for @changeChordOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the {chord} chord on {word}'**
+  String changeChordOn(String chord, String word);
+
+  /// No description provided for @privacyRepertoireTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your songs stay on this device'**
+  String get privacyRepertoireTitle;
+
+  /// No description provided for @privacyRepertoireDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Songs you add to the Repertoire, including their lyrics, chords, and transposition settings, are stored locally on this device. They are not uploaded, sent to GUNDEV, or shared.'**
+  String get privacyRepertoireDescription;
 }
 
 class _AppLocalizationsDelegate

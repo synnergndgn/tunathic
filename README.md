@@ -2,12 +2,12 @@
 
 **Tune. Train. Create.**
 
-Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is currently at **Phase 2D — Final Guitar Tuner UI**: BPM Tap, Metronome, and a production-facing monophonic Guitar Tuner are implemented, with final real-guitar validation and tuning polish still tracked explicitly.
+Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDEV. The repository is at **Phase 5B — Repertoire and Internal Test Release**. The validated Guitar Tuner, BPM Tap, native Oboe Metronome, Repertoire, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and Music Theory are being prepared for Google Play Internal Testing.
 
 ## Current contents
 
 - Material 3 light, dark, and system themes
-- Responsive dashboard for ten planned guitar tools
+- Responsive dashboard for twelve planned guitar tools
 - English source localization and Turkish support
 - Persisted theme and language preferences
 - Centralized GoRouter navigation
@@ -15,26 +15,83 @@ Tunathic is a commercial, Android-first Flutter music toolkit published by GUNDE
 - Abstracted preferences and logging
 - Friendly application and route error presentation
 - Functional BPM Tap with a robust rolling tempo estimate
-- Functional foreground metronome with 20–300 BPM, four time signatures, first-beat accent, volume, and visual beat feedback
+- Native Oboe-timed foreground metronome with 20–300 BPM, four time signatures, first-beat accent, live volume/tempo/signature updates, and visual-only beat callbacks
 - Explicit microphone-permission flow and continuous mono PCM16 input boundary
 - Local transient signal-level and stream diagnostics with lifecycle-safe cleanup
 - Pure Dart YIN pitch detection from 40–1,200 Hz with typed confidence/no-pitch results
 - Bounded 4,096/2,048-sample real-time analysis with newest-frame backpressure, pitch stabilization, and stale clearing
 - A4 = 440 Hz MIDI, sharp note-name, octave, and signed-cents conversion tested offline
 - Automatic and manual Guitar Tuner modes with seven common tunings, target-string hysteresis, a cents indicator, persisted tuner preferences, and one-shot in-tune haptics
+- Pure Dart pitch-class, enharmonic spelling, interval, chord-formula, chord-construction, and exact chord-symbol parsing
+- Offline Chord Library with all 12 roots, 22 useful qualities,
+  formula-derived tones, exact search, and complete 264/264 practical
+  root/quality coverage
+- 402 project-owned structured guitar shapes across open, movable E, movable A,
+  and compact families, with curated and generated provenance
+- Deterministic development-time coverage statistics plus automated pitch,
+  required-tone, root/rootless, declared-omission, fret-span, finger,
+  diagram-window, barre, and duplicate validation
+- Responsive theme-aware chord diagrams drawn from data, with useful ordering,
+  difficulty/position metadata, and complete English/Turkish fingering,
+  omission, barre, and screen-reader descriptions
+- Pure Dart structural scale degrees, formulas, aliases, construction, relative keys, and modal parent-major relationships
+- Offline Scale Library with 12-root browsing, 12 unique scale definitions, exact English/Turkish search, formula-derived notes, and accessible degree formulas
+- Pure Dart standard-tuning fret derivation from open strings through fret 24, with octave/MIDI identity and reusable chord/scale projection
+- Interactive Fretboard with Chord/Scale modes, note or structural degree labels, root distinction, 12/15/18/24-fret ranges, synchronized horizontal scrolling, position markers, and inline note details
+- Prefilled **View on Fretboard** navigation from both Chord Library and Scale Library
+- Pure Dart major/natural-minor keys, standard key signatures, relative and
+  parallel relationships, structural Circle-of-Fifths ordering, scale-derived
+  diatonic triads and seventh chords, and reusable Roman numerals
+- Interactive Circle of Fifths with outer major and inner relative-minor rings,
+  practical enharmonic switching, selected/relative/fifth/fourth cues,
+  signature and chord details, and an accessible large-text ordered fallback
+- Prefilled **View Scale**, **View on Fretboard**, and diatonic-chord navigation
+  from Circle of Fifths
+- Offline Music Theory hub: 64 lessons across nine categories, from note names
+  to CAGED, each with worked examples built by the shared theory engine, plus
+  offline search, favourites, recently read lessons, a beginner-to-advanced
+  progression, and "Try it" links that open the example in the matching tool
+- Offline Repertoire for songs you write or paste yourself, stored on the device
+  as ChordPro text, with title/artist search, editing, and deletion
+- One-time conversion of pasted chords-above-lyrics charts into chords attached
+  to their syllables, so transposition can never break the alignment
+- Chord editing without typing brackets: write the lyrics alone, then tap a word
+  to place a chord, tap a chord to change or remove it, and reuse the song's own
+  chords in a single tap. A chord picked while the chart is transposed is stored
+  in the song's written key
+- Chords that land with nothing to sing are placed with a `+` past the end of a
+  line or on an empty line, which is how intros and instrumental breaks are
+  written; those chords stay tappable for changes and removal
+- -11…+11 semitone transposition with key-aware automatic accidentals and
+  explicit sharp/flat overrides, applied to slash chords and to suffixes the
+  chord-quality model does not cover
+- Hands-free auto-scroll at ten steady speed levels that stops at the end of the
+  sheet, yields to a manual drag, and remembers its speed per song
+- The display stays on while a song sheet is open, using the standard
+  keep-screen-on window flag: no extra permission, foreground only, released as
+  soon as you leave the sheet
 - Persisted metronome settings and explicit BPM transfer from BPM Tap
 - Grouped responsive dashboard and polished Settings hierarchy
 - Localized About and Privacy screens with standard open-source license access
 - Actual package-version display and persisted global haptic preference
 - Centralized elevation and motion tokens alongside the existing design system
-- Minimal GitHub Actions formatting, analysis, and test verification
+- Reproducible Flutter 3.44.0 GitHub Actions formatting, analysis, test, and debug-build verification
 - Unit and widget tests
 
-Guitar Tuner is available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. The current work adds no audio-file recording, background capture, sample or pitch-history persistence, upload, advertising, analytics, account, or backend behavior and does not claim Play Store readiness.
+Guitar Tuner, Metronome, BPM Tap, Repertoire, Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and Music Theory are available from the dashboard. Debug builds retain the Phase 2C engineering diagnostic behind a separate debug-only route. All reference, Music Theory, and Repertoire tools are fully offline and add no audio, microphone, account, analytics, network, advertising, or backend behavior.
+
+Tunathic ships no song content. The Repertoire stores only the lyrics and chords
+you enter yourself, on your own device, and offers no import, export, sharing,
+or catalog.
+
+Ear Training, Chord Finder, and Capo Calculator remain localized,
+non-interactive Coming Soon items.
+
+The Metronome's audio callback owns click timing; Flutter never schedules audible beats. Displayed BPM is quarter-note BPM, so 6/8 emits six eighth-note pulses. See the [engine decision](docs/METRONOME_ENGINE_DECISION.md) for the rejected package spike, Oboe rationale, lifecycle, diagnostics, and current physical-validation status.
 
 ## Requirements
 
-- Flutter stable with its bundled Dart stable SDK
+- Flutter 3.44.0 stable with its bundled Dart 3.12.0 SDK
 - Android SDK and accepted Android SDK licenses
 - An Android emulator or physical Android device for runtime verification
 
@@ -53,6 +110,12 @@ flutter analyze
 flutter test
 ```
 
+Print Chord Library development coverage statistics with:
+
+```sh
+dart run tool/chord_shape_coverage.dart
+```
+
 ## Project identity
 
 - Product: Tunathic – Guitar Toolkit
@@ -68,5 +131,12 @@ The Android application ID is a permanent product identifier and must not be cha
 - [Current milestone](docs/CURRENT_MILESTONE.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [Metronome engine decision](docs/METRONOME_ENGINE_DECISION.md)
+- [Release hardening audit](docs/RELEASE_HARDENING_AUDIT.md)
+- [Closed test release checklist](docs/closed_test_release_checklist.md)
+- [Android release signing](docs/android_release_signing.md)
+- [Privacy policy](docs/PRIVACY_POLICY.md), published at <https://gundev.dev/gizlilik/tunathic>
+- [Data Safety draft](docs/data_safety_draft.md)
+- [Store listing draft](docs/store_listing.md)
 - [Design direction](design/README.md)
 - [Repository rules](AGENTS.md)

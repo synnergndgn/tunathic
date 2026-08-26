@@ -1,0 +1,79 @@
+<!--
+  Adaptive-icon foreground: the Tunathic analog tuner movement.
+
+  Same geometry as the store listing icon
+  (design/store/icon/tunathic_icon_a_instrument_face.svg), but recomposed for a
+  launcher. The store icon fills a square and its scale arc reaches nearly the
+  full width; a circular launcher mask would cut the arc's ends off, so the
+  whole movement is recentred and scaled down into the adaptive safe zone.
+
+  The group transform does that in one step. VectorDrawable applies scale about
+  the pivot first and translate afterwards, so the -15.81 shift is the -25.5
+  recentring pre-multiplied by the 0.62 scale. That puts the movement's optical
+  centre on the canvas centre and its outermost points — the arc ends — about
+  139 units from it, against the 170-unit safe radius (the central 72/108 dp
+  circle on this 512 grid). 0.72 also fits, but it fills 94% of the safe circle
+  and reads crowded under a round mask; 0.62 leaves the mark at roughly 80% of
+  the visible area, which is where a launcher icon normally sits.
+
+  Flat fills only, no gradients: at 48 dp none of the store icon's enamel
+  shading survives, and a flat foreground is what the monochrome variant is
+  derived from.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <group
+        android:pivotX="256"
+        android:pivotY="256"
+        android:scaleX="0.62"
+        android:scaleY="0.62"
+        android:translateY="-15.81">
+
+        <!-- Scale arc: the icon's silhouette at every size. -->
+        <path
+            android:strokeColor="#302822"
+            android:strokeWidth="17"
+            android:pathData="M41.1,306.2 A226,226 0 0 1 470.9,306.2" />
+
+        <!-- The in-tune band, cut into the scale on zero. -->
+        <path
+            android:strokeColor="#35734C"
+            android:strokeWidth="25"
+            android:pathData="M216.7,151.9 A226,226 0 0 1 295.3,151.9" />
+
+        <!-- Major ticks. The store icon's minor ticks are dropped here: below
+             about 64 dp they turn to mush without adding information. -->
+        <path
+            android:strokeColor="#302822"
+            android:strokeWidth="15"
+            android:pathData="M63.9,309.9 L101.9,325.9" />
+        <path
+            android:strokeColor="#302822"
+            android:strokeWidth="15"
+            android:pathData="M137.2,212.5 L160.8,244.9" />
+        <path
+            android:strokeColor="#302822"
+            android:strokeWidth="15"
+            android:pathData="M374.8,212.5 L351.2,244.9" />
+        <path
+            android:strokeColor="#302822"
+            android:strokeWidth="15"
+            android:pathData="M448.1,309.9 L410.1,325.9" />
+
+        <!-- Needle, parked on zero. -->
+        <path
+            android:fillColor="#C85818"
+            android:pathData="M236,382 L248,216 Q256,202 264,216 L276,382 Z" />
+
+        <!-- Pivot cap. -->
+        <path
+            android:fillColor="#B7A18D"
+            android:pathData="M211,376 a45,45 0 1,0 90,0 a45,45 0 1,0 -90,0 Z" />
+        <path
+            android:fillColor="#C85818"
+            android:pathData="M236,376 a20,20 0 1,0 40,0 a20,20 0 1,0 -40,0 Z" />
+    </group>
+</vector>

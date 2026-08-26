@@ -6,6 +6,8 @@ import 'package:tunathic/app/settings/app_settings.dart';
 import 'package:tunathic/core/app_info/application_info.dart';
 import 'package:tunathic/core/haptics/app_haptics.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
+import 'package:tunathic/features/tuner/application/tuning_reference_preferences.dart';
+import 'package:tunathic/features/tuner/domain/tuning_reference.dart';
 
 import 'support/fakes.dart';
 
@@ -32,8 +34,10 @@ void main() {
       await tester.pumpWidget(_testApp());
       await tester.pumpAndSettle();
 
-      final firstToolCard = tester.getSize(find.byType(Card).first);
-      expect(firstToolCard.width, closeTo(layout.cardWidth, 0.1));
+      final firstToolModule = tester.getSize(
+        find.byKey(const Key('dashboardTool-music-theory')),
+      );
+      expect(firstToolModule.width, closeTo(layout.cardWidth, 0.1));
       expect(tester.takeException(), isNull);
     });
   }
@@ -46,35 +50,46 @@ void main() {
       await tester.tap(find.byKey(const Key('openSettings')));
       await tester.pumpAndSettle();
 
-      await tester.scrollUntilVisible(
+      await _reveal(
+        tester,
         find.byKey(const Key('settingsVersion')),
-        240,
-        scrollable: _scrollableInside('settingsScroll'),
+        'settingsScroll',
       );
       expect(find.text('9.8.7+42'), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('settingsAbout')));
       await tester.pumpAndSettle();
       expect(find.text('Tunathic – Guitar Toolkit'), findsOneWidget);
+      await _reveal(
+        tester,
+        find.byKey(const Key('aboutVersion')),
+        'aboutScroll',
+      );
       expect(find.byKey(const Key('aboutVersion')), findsOneWidget);
-      expect(find.text('Version: 9.8.7+42'), findsOneWidget);
+      expect(find.text('9.8.7+42'), findsOneWidget);
 
-      await tester.scrollUntilVisible(
+      await _reveal(
+        tester,
         find.byKey(const Key('aboutPrivacy')),
-        220,
-        scrollable: _scrollableInside('aboutScroll'),
+        'aboutScroll',
       );
       await tester.tap(find.byKey(const Key('aboutPrivacy')));
       await tester.pumpAndSettle();
       expect(find.text('Privacy'), findsOneWidget);
+      expect(find.text('Your songs stay on this device'), findsOneWidget);
+      await _reveal(
+        tester,
+        find.text('Microphone pitch analysis stays local'),
+        'privacyScroll',
+      );
       expect(
         find.text('Microphone pitch analysis stays local'),
         findsOneWidget,
       );
-      await tester.scrollUntilVisible(
+      await _reveal(
+        tester,
         find.text('No accounts, ads, analytics, or backend'),
-        220,
-        scrollable: _scrollableInside('privacyScroll'),
+        'privacyScroll',
       );
       expect(
         find.text('No accounts, ads, analytics, or backend'),
@@ -88,10 +103,10 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('openSettings')));
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(
+    await _reveal(
+      tester,
       find.byKey(const Key('settingsLicenses')),
-      240,
-      scrollable: _scrollableInside('settingsScroll'),
+      'settingsScroll',
     );
 
     await tester.tap(find.byKey(const Key('settingsLicenses')));
@@ -117,41 +132,92 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('openSettings')));
     await tester.pumpAndSettle();
-    await tester.drag(
-      _scrollableInside('settingsScroll'),
-      const Offset(0, -1200),
+    await _reveal(
+      tester,
+      find.byKey(const Key('settingsAbout')),
+      'settingsScroll',
     );
-    await tester.pumpAndSettle();
-    await tester.ensureVisible(find.byKey(const Key('settingsAbout')));
-    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('settingsAbout')));
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
 
-    for (var index = 0; index < 3; index++) {
-      await tester.drag(
-        _scrollableInside('aboutScroll'),
-        const Offset(0, -1200),
-      );
-      await tester.pumpAndSettle();
-    }
-    await tester.ensureVisible(find.byKey(const Key('aboutPrivacy')));
-    await tester.pumpAndSettle();
+    await _reveal(tester, find.byKey(const Key('aboutPrivacy')), 'aboutScroll');
     await tester.tap(find.byKey(const Key('aboutPrivacy')));
     await tester.pumpAndSettle();
     expect(find.text('Privacy'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('Settings edits the reference pitch and stores it', (
+    tester,
+  ) async {
+    final store = MemoryPreferencesStore();
+    await tester.pumpWidget(_testApp(store: store));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('openSettings')));
+    await tester.pumpAndSettle();
+
+    await _reveal(
+      tester,
+      find.byKey(const Key('tunerReferenceSelector')),
+      'settingsScroll',
+    );
+    expect(find.text('A4 = 440 Hz'), findsWidgets);
+
+    await tester.tap(find.byKey(const Key('tunerReferenceDecrease')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('A4 = 439 Hz'), findsWidgets);
+    expect(
+      store.values[TuningReferencePreferences.referenceKey],
+      isNotNull,
+      reason: 'the choice has to survive a restart',
+    );
+    expect(
+      TuningReference.parse(
+        store.values[TuningReferencePreferences.referenceKey],
+      ).a4FrequencyHz,
+      439,
+    );
+
+    await tester.tap(find.byKey(const Key('tunerReferenceReset')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('A4 = 440 Hz'), findsWidgets);
+    expect(
+      TuningReference.parse(
+        store.values[TuningReferencePreferences.referenceKey],
+      ),
+      TuningReference.standard,
+    );
+  });
+}
+
+/// Scrolls [finder] into view and settles, so a following tap hits the widget
+/// where it actually ended up.
+Future<void> _reveal(
+  WidgetTester tester,
+  Finder finder,
+  String scrollKey,
+) async {
+  await tester.scrollUntilVisible(
+    finder,
+    220,
+    scrollable: _scrollableInside(scrollKey),
+  );
+  await tester.pumpAndSettle();
 }
 
 Finder _scrollableInside(String key) => find
     .descendant(of: find.byKey(Key(key)), matching: find.byType(Scrollable))
     .first;
 
-Widget _testApp() {
+Widget _testApp({MemoryPreferencesStore? store}) {
   return ProviderScope(
     overrides: [
-      preferencesStoreProvider.overrideWithValue(MemoryPreferencesStore()),
+      preferencesStoreProvider.overrideWithValue(
+        store ?? MemoryPreferencesStore(),
+      ),
       initialAppSettingsProvider.overrideWithValue(const AppSettings()),
       initialApplicationInfoProvider.overrideWithValue(
         const ApplicationInfo(version: '9.8.7', buildNumber: '42'),

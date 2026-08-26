@@ -1,0 +1,6 @@
+# Copy this file to android/key.properties only after an upload key is created.
+# The real key.properties and keystore must remain outside Git.
+storeFile=C:/secure/path/tunathic-upload.jks
+storePassword=REPLACE_WITH_LOCAL_SECRET
+keyAlias=tunathic-upload
+keyPassword=REPLACE_WITH_LOCAL_SECRET

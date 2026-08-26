@@ -9,6 +9,7 @@ import 'package:tunathic/features/tuner_audio/audio/tuner_audio_input.dart';
 import 'package:tunathic/features/tuner_audio/presentation/tuner_audio_controller.dart';
 import 'package:tunathic/features/tuner_pitch/domain/musical_note.dart';
 import 'package:tunathic/features/tuner_pitch/domain/pitch_estimate.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 
 import 'support/fakes.dart';
 import 'support/tuner_audio_fakes.dart';
@@ -29,6 +30,15 @@ void main() {
       ),
       findsOneWidget,
     );
+    // The pitch readouts sit above the privacy note, and the list unbuilds
+    // what has scrolled away, so they are checked on the way down.
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('tunerRawFrequency')),
+      300,
+      scrollable: _scrollableInside('tunerAudioScroll'),
+    );
+    expect(find.textContaining('Detected note'), findsWidgets);
+    expect(find.textContaining('Detected frequency'), findsWidgets);
     await tester.scrollUntilVisible(
       find.text('Private by design'),
       300,
@@ -36,8 +46,6 @@ void main() {
     );
     expect(find.text('Private by design'), findsOneWidget);
     expect(find.textContaining('Raw microphone data'), findsOneWidget);
-    expect(find.textContaining('Detected note'), findsWidgets);
-    expect(find.textContaining('Detected frequency'), findsWidgets);
     expect(find.byKey(const Key('tunerNeedle')), findsNothing);
   });
 
@@ -100,7 +108,7 @@ void main() {
     );
     await tester.ensureVisible(find.byKey(const Key('stopTunerAudioCapture')));
     await tester.pumpAndSettle();
-    final stopButton = tester.widget<OutlinedButton>(
+    final stopButton = tester.widget<SkeuoButton>(
       find.byKey(const Key('stopTunerAudioCapture')),
     );
     expect(stopButton.onPressed, isNotNull);
@@ -112,7 +120,7 @@ void main() {
     });
     await tester.pump();
     expect(audioInput.stopCount, 1);
-    final startButton = tester.widget<FilledButton>(
+    final startButton = tester.widget<SkeuoButton>(
       find.byKey(const Key('startTunerAudioCapture')),
     );
     expect(startButton.onPressed, isNotNull);
@@ -216,13 +224,7 @@ void main() {
     final audioInput = FakeTunerAudioInput();
     await tester.pumpWidget(_testApp(audioInput));
     await tester.pumpAndSettle();
-    await tester.drag(
-      _scrollableInside('dashboardScroll'),
-      const Offset(0, -1200),
-    );
-    await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Guitar Tuner'));
-    await tester.pumpAndSettle();
+    // The tuner leads the dashboard, so it is reachable without scrolling.
     await tester.tap(find.text('Guitar Tuner'));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('openTunerDiagnostics')));
@@ -265,7 +267,6 @@ Widget _testApp(
       pitchDetectionExecutorProvider.overrideWithValue(
         pitchExecutor ?? FakePitchDetectionExecutor(),
       ),
-      stopMetronomeBeforeCaptureProvider.overrideWithValue(() async {}),
       hapticFeedbackOutputProvider.overrideWithValue(
         FakeHapticFeedbackOutput(),
       ),

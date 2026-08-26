@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500"
+     role="img" aria-label="Tunathic feature graphic: ivory instrument faceplate">
+  <title>Tunathic feature graphic: Faceplate (tr-TR)</title>
+  <desc>Concept A. The whole 1024x500 is one ivory enamel faceplate: hardware
+  screws at the corners, the wordmark and tagline engraved on the left, and the
+  app's own tuner module recessed into the right half with the standard-tuning
+  string chips above the dial. No alpha, no rounded corners: Google Play wants
+  an opaque 24-bit image at this size.
+
+  Turkish variant: swap the three text nodes marked LOCALISE below for
+  "GITAR ARAC SETI", "Akort Et. Calis. Uret." and
+  "Akort - Metronom - Akor - Gam - Teori". Nothing else changes.</desc>
+
+  <defs>
+    <linearGradient id="plate" x1="0" y1="0" x2="0.75" y2="1">
+      <stop offset="0"    stop-color="#FFFDF8"/>
+      <stop offset="0.55" stop-color="#F8F1E7"/>
+      <stop offset="1"    stop-color="#EADCC8"/>
+    </linearGradient>
+
+    <pattern id="grain" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="none"/>
+      <line x1="0" y1="0.5" x2="6" y2="0.5" stroke="#6B4A32" stroke-opacity="0.04" stroke-width="1"/>
+    </pattern>
+
+    <radialGradient id="lamp" cx="0.35" cy="0.30" r="0.9">
+      <stop offset="0"   stop-color="#B9E4C7"/>
+      <stop offset="0.5" stop-color="#35734C"/>
+      <stop offset="1"   stop-color="#1E4630"/>
+    </radialGradient>
+
+    <radialGradient id="screw" cx="0.34" cy="0.30" r="0.85">
+      <stop offset="0"   stop-color="#FFFFFF"/>
+      <stop offset="0.5" stop-color="#C3AE99"/>
+      <stop offset="1"   stop-color="#6B5748"/>
+    </radialGradient>
+
+    <linearGradient id="module" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0"    stop-color="#FFFDF9"/>
+      <stop offset="0.45" stop-color="#F6EEE2"/>
+      <stop offset="1"    stop-color="#E8DAC6"/>
+    </linearGradient>
+
+    <radialGradient id="dialFace" cx="0.5" cy="0.92" r="1.05">
+      <stop offset="0"    stop-color="#FFFFFF" stop-opacity="0.75"/>
+      <stop offset="0.60" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="1"    stop-color="#6B4A32" stop-opacity="0.13"/>
+    </radialGradient>
+
+    <linearGradient id="chip" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFEFB"/>
+      <stop offset="1" stop-color="#EFE5D7"/>
+    </linearGradient>
+
+    <radialGradient id="pivot" cx="0.32" cy="0.28" r="0.85">
+      <stop offset="0"    stop-color="#FFFFFF"/>
+      <stop offset="0.42" stop-color="#D6C0A8"/>
+      <stop offset="0.78" stop-color="#A98F76"/>
+      <stop offset="1"    stop-color="#4A3B31"/>
+    </radialGradient>
+    <radialGradient id="pivotCore" cx="0.34" cy="0.30" r="0.85">
+      <stop offset="0"    stop-color="#FFD9BE"/>
+      <stop offset="0.45" stop-color="#C85818"/>
+      <stop offset="1"    stop-color="#7A2F0C"/>
+    </radialGradient>
+    <linearGradient id="needle" gradientUnits="userSpaceOnUse"
+                    x1="772" y1="284" x2="802" y2="404">
+      <stop offset="0"    stop-color="#E1842F"/>
+      <stop offset="0.35" stop-color="#C85818"/>
+      <stop offset="1"    stop-color="#8E3A0D"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1024" height="500" fill="url(#plate)"/>
+  <rect width="1024" height="500" fill="url(#grain)"/>
+
+  <!-- Faceplate edge -->
+  <rect x="14" y="14" width="996" height="472" rx="10"
+        fill="none" stroke="#C9B39C" stroke-width="2.5"/>
+  <rect x="18" y="18" width="988" height="464" rx="7"
+        fill="none" stroke="#FFFFFF" stroke-opacity="0.9" stroke-width="1.5"/>
+
+  <!-- Corner hardware -->
+  <g>
+    <circle cx="48" cy="48" r="11" fill="url(#screw)"/>
+    <line x1="41" y1="48" x2="55" y2="48" stroke="#4A3B31" stroke-opacity="0.5" stroke-width="2.5"/>
+    <circle cx="976" cy="48" r="11" fill="url(#screw)"/>
+    <line x1="969" y1="48" x2="983" y2="48" stroke="#4A3B31" stroke-opacity="0.5" stroke-width="2.5"/>
+    <circle cx="48" cy="452" r="11" fill="url(#screw)"/>
+    <line x1="41" y1="452" x2="55" y2="452" stroke="#4A3B31" stroke-opacity="0.5" stroke-width="2.5"/>
+    <circle cx="976" cy="452" r="11" fill="url(#screw)"/>
+    <line x1="969" y1="452" x2="983" y2="452" stroke="#4A3B31" stroke-opacity="0.5" stroke-width="2.5"/>
+  </g>
+
+  <!-- LEFT: engraved brand block -->
+  <circle cx="96" cy="146" r="12" fill="#35734C" fill-opacity="0.16"/>
+  <circle cx="96" cy="146" r="8" fill="url(#lamp)"/>
+  <!-- LOCALISE 1 -->
+  <text x="120" y="153" fill="#A84312"
+        font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        font-size="18" font-weight="700" letter-spacing="4.5">GİTAR ARAÇ SETİ</text>
+
+  <text x="84" y="262" fill="#302822"
+        font-family="'Segoe UI Semibold', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        font-size="92" font-weight="800" letter-spacing="-2.5">Tunathic</text>
+
+  <!-- LOCALISE 2 -->
+  <text x="88" y="312" fill="#C85818"
+        font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        font-size="27" font-weight="700" letter-spacing="2.5">Akort Et. Çalış. Üret.</text>
+
+  <line x1="88" y1="344" x2="300" y2="344" stroke="#C9B39C" stroke-width="2"/>
+  <line x1="88" y1="346.5" x2="300" y2="346.5" stroke="#FFFFFF" stroke-opacity="0.9" stroke-width="1.5"/>
+
+  <!-- LOCALISE 3 -->
+  <text x="88" y="382" fill="#6B5748"
+        font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        font-size="21" font-weight="600" letter-spacing="0.4">Akort · Metronom · Akor · Gam · Teori</text>
+
+  <!-- RIGHT: the tuner module, recessed into the plate -->
+  <rect x="608" y="48" width="358" height="404" rx="10" fill="#5A3A24" fill-opacity="0.16"/>
+  <rect x="612" y="52" width="350" height="396" rx="8" fill="url(#module)"/>
+  <rect x="612" y="52" width="350" height="396" rx="8"
+        fill="none" stroke="#B99F88" stroke-width="2"/>
+  <rect x="616" y="56" width="342" height="388" rx="5"
+        fill="none" stroke="#FFFFFF" stroke-opacity="0.8" stroke-width="1.5"/>
+
+  <text x="632" y="92" fill="#A84312"
+        font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
+        font-size="15" font-weight="700" letter-spacing="3.5">STANDART AKORT</text>
+
+  <!-- Standard-tuning string chips, exactly the app's manual target strip -->
+  <g font-family="Consolas, 'SF Mono', 'Roboto Mono', 'Courier New', monospace"
+     font-size="17" font-weight="700" fill="#302822" text-anchor="middle">
+    <rect x="632" y="106" width="45" height="40" rx="4" fill="url(#chip)" stroke="#C9B39C" stroke-width="1.5"/>
+    <text x="654.5" y="132">E2</text>
+    <rect x="685" y="106" width="45" height="40" rx="4" fill="url(#chip)" stroke="#C9B39C" stroke-width="1.5"/>
+    <text x="707.5" y="132">A2</text>
+    <rect x="738" y="106" width="45" height="40" rx="4" fill="url(#chip)" stroke="#C9B39C" stroke-width="1.5"/>
+    <text x="760.5" y="132">D3</text>
+    <rect x="791" y="106" width="45" height="40" rx="4" fill="url(#chip)" stroke="#C9B39C" stroke-width="1.5"/>
+    <text x="813.5" y="132">G3</text>
+    <rect x="844" y="106" width="45" height="40" rx="4" fill="url(#chip)" stroke="#C9B39C" stroke-width="1.5"/>
+    <text x="866.5" y="132">B3</text>
+    <rect x="897" y="106" width="45" height="40" rx="4" fill="url(#chip)" stroke="#C9B39C" stroke-width="1.5"/>
+    <text x="919.5" y="132">E4</text>
+  </g>
+
+  <!-- The movement -->
+  <path d="M649,400 A138,138 0 0 1 925,400 Z" fill="#F1E7D9"/>
+  <path d="M649,400 A138,138 0 0 1 925,400 Z" fill="url(#dialFace)"/>
+
+  <path d="M655.7,357.4 A138,138 0 0 1 918.3,357.4" fill="none"
+        stroke="#302822" stroke-width="11"/>
+  <path d="M764.6,263.8 A138,138 0 0 1 809.4,263.8" fill="none"
+        stroke="#35734C" stroke-width="16" stroke-linecap="butt"/>
+
+  <g stroke="#302822" stroke-width="9" stroke-linecap="butt">
+    <line x1="666.2" y1="360.8" x2="691.9" y2="369.1"/>
+    <line x1="712.3" y1="297.3" x2="728.2" y2="319.1"/>
+    <line x1="861.7" y1="297.3" x2="845.8" y2="319.1"/>
+    <line x1="907.8" y1="360.8" x2="882.1" y2="369.1"/>
+  </g>
+
+  <path d="M777,404 L784,292 Q787,283 790,292 L797,404 Z"
+        fill="#5A3A24" fill-opacity="0.22" transform="translate(4,5)"/>
+  <path d="M777,404 L784,292 Q787,283 790,292 L797,404 Z" fill="url(#needle)"/>
+
+  <circle cx="790" cy="404" r="28" fill="#5A3A24" fill-opacity="0.22"/>
+  <circle cx="787" cy="400" r="27" fill="url(#pivot)"/>
+  <circle cx="787" cy="400" r="27" fill="none" stroke="#302822" stroke-opacity="0.4" stroke-width="1.5"/>
+  <circle cx="787" cy="400" r="12" fill="url(#pivotCore)"/>
+</svg>

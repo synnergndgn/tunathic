@@ -1,8 +1,8 @@
 # Tunathic Design Direction
 
-Tunathic should feel premium, precise, modern, minimal, musician-focused, readable, and dark-mode friendly.
+Tunathic should feel like a premium analog music tool: precise, musician-focused, readable, and tactile without becoming ornamental.
 
-The initial palette combines deep charcoal surfaces, electric blue actions, soft cyan accents, and off-white text. Color, type, spacing, and radius values belong in centralized tokens so screens remain consistent. Interfaces should favor clarity over decoration: restrained radii, limited motion, and no unnecessary gradients or glass effects.
+The current palette combines warm ivory and cream enamel surfaces, orange actions, muted copper trim, and warm charcoal text. Recessed readouts, short bevel gradients, restrained shadows, and compact radii create physical depth without glass effects or excessive decoration. Color, type, spacing, radius, elevation, and motion values belong in centralized tokens so screens remain consistent.
 
 ## Phase 1C token audit
 
@@ -22,3 +22,11 @@ Files in `references/` are inspiration only. They may inform broad visual qualit
 - `references/` stores approved visual inspiration.
 - `wireframes/` stores product-owned layout explorations.
 - `brand/` stores product-owned identity assets and guidance.
+- `store/` stores the Google Play asset masters and the scripts that render
+  them. `store/out/` is generated: change the SVG or the script, never the PNG.
+  The direction, concepts, copy and capture plan live in
+  `docs/store_assets/`.
+
+Note that `AppRadii` no longer keeps corners at 6 and 10 logical pixels: the
+scale is now 2/3/4 with 6 for a device edge, and nothing in the system is
+pill-shaped. Store assets follow the tighter scale.

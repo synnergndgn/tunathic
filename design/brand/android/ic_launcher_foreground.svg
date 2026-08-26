@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"
+     role="img" aria-label="Tunathic adaptive icon foreground">
+  <title>Tunathic adaptive icon — foreground layer</title>
+  <desc>The analog tuner movement, recentred and scaled to 0.72 so its outermost points sit 156 units from centre, inside the 170-unit adaptive safe radius. Master for android/app/src/main/res/drawable/ic_launcher_foreground.xml; the two must stay in step.</desc>
+  <g transform="translate(0,-15.81) translate(256,256) scale(0.62) translate(-256,-256)">
+    <path d="M41.1,306.2 A226,226 0 0 1 470.9,306.2" fill="none" stroke="#302822" stroke-width="17"/>
+    <path d="M216.7,151.9 A226,226 0 0 1 295.3,151.9" fill="none" stroke="#35734C" stroke-width="25"/>
+    <g fill="none" stroke="#302822" stroke-width="15">
+      <path d="M63.9,309.9 L101.9,325.9"/>
+      <path d="M137.2,212.5 L160.8,244.9"/>
+      <path d="M374.8,212.5 L351.2,244.9"/>
+      <path d="M448.1,309.9 L410.1,325.9"/>
+    </g>
+    <path d="M236,382 L248,216 Q256,202 264,216 L276,382 Z" fill="#C85818"/>
+    <circle cx="256" cy="376" r="45" fill="#B7A18D"/>
+    <circle cx="256" cy="376" r="20" fill="#C85818"/>
+  </g>
+</svg>

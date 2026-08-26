@@ -7,6 +7,7 @@ import 'package:tunathic/core/preferences/preferences_store.dart';
 import 'package:tunathic/features/bpm_tap/presentation/bpm_tap_controller.dart';
 import 'package:tunathic/features/metronome/application/metronome_controller.dart';
 import 'package:tunathic/features/metronome/domain/metronome_config.dart';
+import 'package:tunathic/shared/widgets/studio/skeuo_button.dart';
 
 import 'support/fakes.dart';
 import 'support/metronome_fakes.dart';
@@ -16,9 +17,8 @@ void main() {
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
-    final audio = FakeMetronomeAudioOutput();
-    final scheduler = FakeMetronomeScheduler();
-    await tester.pumpWidget(_testApp(audio: audio, scheduler: scheduler));
+    final engine = FakeMetronomeEngine();
+    await tester.pumpWidget(_testApp(engine: engine));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Metronome'));
@@ -48,18 +48,19 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Stop'), findsOneWidget);
 
-    scheduler.fire();
+    engine.emitBeat(beatNumber: 1, accented: true);
     await tester.pump();
-    expect(audio.plays.single.accented, isTrue);
-
     await tester.scrollUntilVisible(
-      find.byKey(const Key('signature-3/4')),
-      180,
+      find.byKey(const Key('metronomeStatus')),
+      -220,
       scrollable: _scrollableInside('metronomeScroll'),
     );
+    expect(find.text('Current beat: 1 of 4'), findsOneWidget);
+
+    await _reveal(tester, find.byKey(const Key('signature-3/4')));
     await tester.tap(find.byKey(const Key('signature-3/4')));
     await tester.pump();
-    final threeFour = tester.widget<ChoiceChip>(
+    final threeFour = tester.widget<SkeuoButton>(
       find.byKey(const Key('signature-3/4')),
     );
     expect(threeFour.selected, isTrue);
@@ -67,11 +68,11 @@ void main() {
     await tester.tap(find.byKey(const Key('metronomeReset')));
     await tester.pumpAndSettle();
 
-    final fourFour = tester.widget<ChoiceChip>(
+    final fourFour = tester.widget<SkeuoButton>(
       find.byKey(const Key('signature-4/4')),
     );
     expect(fourFour.selected, isTrue);
-    expect(scheduler.isRunning, isFalse);
+    expect(engine.isRunning, isFalse);
 
     await tester.pumpWidget(const SizedBox());
     semantics.dispose();
@@ -91,8 +92,7 @@ void main() {
 
     await tester.pumpWidget(
       _testApp(
-        audio: FakeMetronomeAudioOutput(),
-        scheduler: FakeMetronomeScheduler(),
+        engine: FakeMetronomeEngine(),
         settings: const AppSettings(locale: AppLocale.turkish),
       ),
     );
@@ -124,8 +124,7 @@ void main() {
     var elapsed = Duration.zero;
     await tester.pumpWidget(
       _testApp(
-        audio: FakeMetronomeAudioOutput(),
-        scheduler: FakeMetronomeScheduler(),
+        engine: FakeMetronomeEngine(),
         initialConfig: const MetronomeConfig(bpm: 90),
         elapsedTime: () => elapsed,
       ),
@@ -174,12 +173,59 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('navigating back stops and releases a running metronome', (
+  testWidgets('accent control updates engine state', (tester) async {
+    final engine = FakeMetronomeEngine();
+    await tester.pumpWidget(_testApp(engine: engine));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Metronome'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('metronomeAccent')),
+      220,
+      scrollable: _scrollableInside('metronomeScroll'),
+    );
+
+    final accentSwitch = tester.widget<SkeuoSwitch>(
+      find.byKey(const Key('metronomeAccent')),
+    );
+    expect(accentSwitch.value, isTrue);
+
+    await tester.tap(find.byKey(const Key('metronomeAccent')));
+    await tester.pump();
+
+    expect(
+      tester
+          .widget<SkeuoSwitch>(find.byKey(const Key('metronomeAccent')))
+          .value,
+      isFalse,
+    );
+  });
+
+  testWidgets('engine start failure shows localized retry UI', (tester) async {
+    final engine = FakeMetronomeEngine()..failInitialization = true;
+    await tester.pumpWidget(_testApp(engine: engine));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Metronome'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('metronomeStartStop')),
+      220,
+      scrollable: _scrollableInside('metronomeScroll'),
+    );
+
+    await tester.tap(find.byKey(const Key('metronomeStartStop')));
+    await tester.pumpAndSettle();
+    await _reveal(tester, find.text('Metronome audio unavailable'));
+
+    expect(find.text('Metronome audio unavailable'), findsOneWidget);
+    expect(find.text('Retry audio'), findsOneWidget);
+  });
+
+  testWidgets('navigation rebuild does not stop a running metronome', (
     tester,
   ) async {
-    final audio = FakeMetronomeAudioOutput();
-    final scheduler = FakeMetronomeScheduler();
-    await tester.pumpWidget(_testApp(audio: audio, scheduler: scheduler));
+    final engine = FakeMetronomeEngine();
+    await tester.pumpWidget(_testApp(engine: engine));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Metronome'));
     await tester.pumpAndSettle();
@@ -190,16 +236,66 @@ void main() {
     );
     await tester.tap(find.byKey(const Key('metronomeStartStop')));
     await tester.pumpAndSettle();
-    expect(scheduler.isRunning, isTrue);
+    expect(engine.isRunning, isTrue);
 
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    expect(scheduler.isRunning, isFalse);
-    expect(audio.disposeCount, greaterThanOrEqualTo(1));
+    expect(engine.isRunning, isTrue);
+    expect(engine.disposeCount, 0);
 
     await tester.pumpWidget(const SizedBox());
   });
+
+  testWidgets('re-entering after navigation preserves the active run', (
+    tester,
+  ) async {
+    final engine = FakeMetronomeEngine();
+    await tester.pumpWidget(_testApp(engine: engine));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Metronome'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('metronomeStartStop')),
+      220,
+      scrollable: _scrollableInside('metronomeScroll'),
+    );
+    await tester.tap(find.byKey(const Key('metronomeStartStop')));
+    await tester.pumpAndSettle();
+    expect(engine.isRunning, isTrue);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Metronome'));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.byKey(const Key('metronomeBpm')), findsOneWidget);
+    expect(engine.isRunning, isTrue);
+    expect(engine.startCount, 1);
+
+    await tester.scrollUntilVisible(
+      find.byKey(const Key('metronomeStartStop')),
+      220,
+      scrollable: _scrollableInside('metronomeScroll'),
+    );
+    expect(tester.takeException(), isNull);
+    expect(engine.isRunning, isTrue);
+
+    await tester.pumpWidget(const SizedBox());
+  });
+}
+
+/// Scrolls [finder] into view inside the metronome list and settles, so a
+/// following tap hits the widget where it ended up.
+Future<void> _reveal(WidgetTester tester, Finder finder) async {
+  await tester.scrollUntilVisible(
+    finder,
+    220,
+    scrollable: _scrollableInside('metronomeScroll'),
+  );
+  await tester.pumpAndSettle();
 }
 
 Finder _scrollableInside(String key) => find
@@ -207,8 +303,7 @@ Finder _scrollableInside(String key) => find
     .first;
 
 Widget _testApp({
-  required FakeMetronomeAudioOutput audio,
-  required FakeMetronomeScheduler scheduler,
+  required FakeMetronomeEngine engine,
   AppSettings settings = const AppSettings(),
   MetronomeConfig initialConfig = const MetronomeConfig(),
   Duration Function()? elapsedTime,
@@ -218,8 +313,7 @@ Widget _testApp({
       preferencesStoreProvider.overrideWithValue(MemoryPreferencesStore()),
       initialAppSettingsProvider.overrideWithValue(settings),
       initialMetronomeConfigProvider.overrideWithValue(initialConfig),
-      metronomeAudioOutputProvider.overrideWithValue(audio),
-      metronomeSchedulerProvider.overrideWithValue(scheduler),
+      metronomeEngineProvider.overrideWithValue(engine),
       if (elapsedTime != null)
         bpmTapElapsedTimeProvider.overrideWithValue(elapsedTime),
     ],

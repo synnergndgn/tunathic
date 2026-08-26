@@ -1,8 +1,16 @@
 import 'dart:math' as math;
 
+import 'package:tunathic/features/tuner/domain/tuning_reference.dart';
+
 enum TunerMode {
+  /// Tunathic picks the closest string of the active preset.
   automatic('automatic'),
-  manual('manual');
+
+  /// The player locks one string of the active preset.
+  manual('manual'),
+
+  /// No preset at all: whatever note is played is named and measured.
+  chromatic('chromatic');
 
   const TunerMode(this.id);
 
@@ -51,7 +59,15 @@ final class TuningStringTarget {
 
   int get octave => midiNote ~/ 12 - 1;
 
+  /// The target at concert pitch. Use [frequencyHzFor] when the player has
+  /// chosen a different reference.
   double get frequencyHz => TunerPitchMath.frequencyForMidi(midiNote);
+
+  double frequencyHzFor(TuningReference reference) =>
+      TunerPitchMath.frequencyForMidi(
+        midiNote,
+        referenceFrequencyHz: reference.a4FrequencyHz,
+      );
 }
 
 final class TuningPreset {
@@ -210,6 +226,8 @@ final class TunerUiConfiguration {
     this.targetSwitchConfirmations = 2,
     this.noPitchTargetClearCount = 8,
     this.inTuneHapticConfirmations = 3,
+    this.centsDisplayThreshold = 1,
+    this.frequencyDisplayThresholdHz = 0.1,
   }) : assert(inTuneThresholdCents > 0),
        assert(nearThresholdCents >= inTuneThresholdCents),
        assert(visualRangeCents >= nearThresholdCents),
@@ -217,7 +235,9 @@ final class TunerUiConfiguration {
        assert(maximumAutomaticTargetDistanceCents > 0),
        assert(targetSwitchConfirmations > 0),
        assert(noPitchTargetClearCount > 0),
-       assert(inTuneHapticConfirmations > 0);
+       assert(inTuneHapticConfirmations > 0),
+       assert(centsDisplayThreshold > 0),
+       assert(frequencyDisplayThresholdHz > 0);
 
   final double inTuneThresholdCents;
   final double nearThresholdCents;
@@ -227,6 +247,11 @@ final class TunerUiConfiguration {
   final int targetSwitchConfirmations;
   final int noPitchTargetClearCount;
   final int inTuneHapticConfirmations;
+
+  /// Minimum movement worth publishing to the presentation layer.
+  /// Detection and haptic confirmation still process every estimate.
+  final double centsDisplayThreshold;
+  final double frequencyDisplayThresholdHz;
 
   TunerAccuracy accuracyFor(double cents) {
     final distance = cents.abs();

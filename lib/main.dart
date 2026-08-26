@@ -10,9 +10,12 @@ import 'package:tunathic/core/logging/app_logger.dart';
 import 'package:tunathic/core/preferences/preferences_store.dart';
 import 'package:tunathic/features/metronome/application/metronome_controller.dart';
 import 'package:tunathic/features/metronome/application/metronome_preferences.dart';
+import 'package:tunathic/features/tuner/application/tuning_reference_controller.dart';
+import 'package:tunathic/features/tuner/application/tuning_reference_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  registerNativeLicenses();
 
   final logger = DebugAppLogger();
   final preferencesStore = SharedPreferencesStore();
@@ -23,6 +26,10 @@ Future<void> main() async {
   );
   final initialApplicationInfo = await loadInitialApplicationInfo(
     PackageApplicationInfoLoader(),
+    logger,
+  );
+  final initialTuningReference = await loadInitialTuningReference(
+    preferencesStore,
     logger,
   );
 
@@ -51,6 +58,9 @@ Future<void> main() async {
         ),
         initialMetronomeConfigProvider.overrideWithValue(
           initialMetronomeConfig,
+        ),
+        initialTuningReferenceProvider.overrideWithValue(
+          initialTuningReference,
         ),
       ],
       child: const TunathicApp(),

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#FFFDF8</color>
+    <!-- Matches StudioTheme.backdropTop so the launch window and the first
+         Flutter frame are the same surface. -->
+    <color name="studio_backdrop">#FFFDF8</color>
+</resources>

@@ -1,0 +1,57 @@
+<!--
+  Themed-icon (monochrome) layer.
+
+  The system tints this to one colour, so anything that relies on colour to
+  separate two shapes is lost. That rules out reusing the foreground directly:
+  its green in-tune band sits on the charcoal arc and would read as a lump
+  rather than a marking, and the brass pivot would merge into the orange core.
+
+  What survives as a silhouette is the movement itself — the arc, its major
+  ticks, the needle and the pivot — so that is all this draws. Geometry and the
+  group transform are identical to ic_launcher_foreground.xml, which is what
+  keeps the themed icon recognisably the same mark.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512"
+    android:tint="?attr/colorControlNormal">
+    <group
+        android:pivotX="256"
+        android:pivotY="256"
+        android:scaleX="0.62"
+        android:scaleY="0.62"
+        android:translateY="-15.81">
+
+        <path
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="17"
+            android:pathData="M41.1,306.2 A226,226 0 0 1 470.9,306.2" />
+
+        <path
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="15"
+            android:pathData="M63.9,309.9 L101.9,325.9" />
+        <path
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="15"
+            android:pathData="M137.2,212.5 L160.8,244.9" />
+        <path
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="15"
+            android:pathData="M374.8,212.5 L351.2,244.9" />
+        <path
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="15"
+            android:pathData="M448.1,309.9 L410.1,325.9" />
+
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M236,382 L248,216 Q256,202 264,216 L276,382 Z" />
+
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M211,376 a45,45 0 1,0 90,0 a45,45 0 1,0 -90,0 Z" />
+    </group>
+</vector>

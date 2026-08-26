@@ -5,30 +5,89 @@ permalink: /privacy/
 ---
 # Tunathic Privacy Policy Draft
 
-**Status:** Product draft for the application through Phase 2D. Live pitch analysis remains local and transient. This is not a final store-publishing policy and contains no invented legal contact details.
+**Publication status:** Publication-ready draft. Replace every
+`[USER INPUT REQUIRED]` field and obtain appropriate legal review before
+hosting or submitting this policy.
 
-Tunathic – Guitar Toolkit is published by GUNDEV. The current application is designed to operate offline and keep its practice data on the user's device.
+**Effective date:** [USER INPUT REQUIRED: effective date]
 
-## Current data behavior
+Tunathic – Guitar Toolkit ("Tunathic") is published by GUNDEV. This policy
+explains how the current Android application handles information.
 
-- BPM Tap sessions exist only in application memory. Tap timestamps and estimates are not saved as session history or uploaded.
-- Theme, language, haptic-feedback, Metronome, and Guitar Tuner preset/mode/manual-string preferences are stored locally on the device.
-- Microphone permission is requested only after the user explicitly starts the Real-Time Pitch Diagnostic.
-- Microphone capture and analysis run only while that diagnostic is active in the foreground and stop on user request, backgrounding, route exit, capture failure, or analysis failure.
-- Raw PCM and normalized samples are processed locally through a bounded overlapping analysis window. They are not recorded to a file, retained as history, uploaded, or transmitted.
-- Raw and stabilized pitch estimates, automatic targets, cents results, short smoothing history, signal statistics, performance durations, and aggregate counters are transient values. They are reset with the session and are not persisted or transmitted.
-- Local debug diagnostics may contain requested or reported format, aggregate counters, lifecycle reasons, and technical failures. They never contain raw bytes or sample values.
-- No account is required.
-- The application contains no advertising or analytics SDK.
-- Tunathic has no application backend in this release.
-- The application sends no app data to GUNDEV servers.
+## Summary
 
-Android displays system microphone indicators and controls permission according to the operating system. Platform services and the app-distribution provider may process technical information under their own policies; Tunathic does not add remote collection in this diagnostic.
+Tunathic is an offline-focused guitar toolkit. The current release does not
+require an account, contain advertising or analytics, or send app data to
+GUNDEV or other third parties.
 
-## Future changes
+## Microphone and audio processing
 
-This draft must be reviewed and updated before production tuner functionality, recording, advertising, analytics, accounts, cloud synchronization, purchases, a Tunathic backend, or any changed audio retention or transfer behavior is released.
+The Guitar Tuner asks for microphone permission only after the user starts the
+tuner. Microphone audio is processed on the device to estimate pitch.
 
-## Publication status
+Raw audio, PCM samples, pitch estimates, smoothing state, and signal statistics
+are transient. Tunathic does not record them to a file, retain them as history,
+upload them, or share them. Capture stops when the user stops the tuner, leaves
+the tuner, the app moves to the background, or capture or analysis fails.
+Android may show its system microphone indicator and controls microphone
+permission.
 
-This document describes the current implementation but does not claim Play Store readiness. Final publication requires legal review, effective-date and policy-hosting decisions, Android data-safety declarations, and any other store-required disclosures.
+## Information stored locally
+
+Tunathic stores a small set of preferences on the device, including theme,
+language, haptic feedback, Metronome settings, and Guitar Tuner preset, mode,
+and manual-string choices. BPM Tap session timing is kept only in memory and is
+not retained as practice history.
+
+Chord Library, Scale Library, Interactive Fretboard, Circle of Fifths, and
+Metronome content and audio assets are bundled with the application and work
+without a Tunathic server.
+
+Local preferences remain until the user changes them, clears the app's storage,
+or uninstalls the app. Transient audio and live tool state are discarded when
+their session ends.
+
+## External collection, sharing, and network behavior
+
+The current release:
+
+- has no user accounts or sign-in;
+- has no advertising, analytics, crash-reporting, tracking, or cloud-sync SDK;
+- has no Tunathic backend and makes no application network requests;
+- does not collect device identifiers or location;
+- does not sell personal information; and
+- does not share app data with third parties.
+
+The app-distribution provider and the Android operating system may independently
+process technical information under their own terms and privacy policies.
+Tunathic does not add remote collection to that platform behavior.
+
+## Permissions
+
+Tunathic requests Android's microphone (`RECORD_AUDIO`) permission solely for
+the foreground Guitar Tuner behavior described above. The release application
+does not request location, contacts, camera, storage or media, Bluetooth
+scanning, phone or SMS, notification, advertising ID, exact alarm, or
+background-service permissions.
+
+## Children's privacy
+
+Tunathic is a general-audience music utility and is not designed to collect
+personal information from children. Because the current release does not
+provide accounts or external data collection, it does not knowingly collect
+personal information from children. The publisher must make the final Google
+Play target-audience selection and review any Families Policy obligations
+before publication.
+
+## Changes to this policy
+
+This policy must be reviewed whenever the application's permissions, storage,
+network behavior, data practices, or available features change. A revised
+policy should identify its new effective date.
+
+## Contact
+
+[USER INPUT REQUIRED: public privacy contact email or HTTPS contact page]
+
+[USER INPUT REQUIRED only if legally required: publisher legal identity and
+postal address]

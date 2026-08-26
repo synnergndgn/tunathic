@@ -1,16 +1,163 @@
 # Architecture
 
-Tunathic uses a pragmatic feature-first Flutter structure. Phase 2D adds a production Guitar Tuner product layer over the validated Phase 2A–2C capture, detector, and real-time pipeline while keeping capture, buffering, detection, stabilization, target selection, persistence, lifecycle, and presentation responsibilities separate.
+Tunathic uses a pragmatic feature-first Flutter structure. Phase 3E completes
+the existing Chord Library's practical guitar-voicing coverage through
+project-owned generated and curated data, deterministic auditing, and stronger
+validation while preserving the physically validated Guitar Tuner, BPM Tap,
+native Oboe Metronome, Scale Library, Interactive Fretboard, and Circle of
+Fifths behavior.
 
 ## Folder responsibilities
 
 - `lib/app/` owns application composition: bootstrap, router, persisted application settings, and Material themes.
-- `lib/core/` owns app-wide technical boundaries for logging, preferences, package information, and haptic output.
-- `lib/features/` groups user-facing areas. Dashboard, Settings, About, and Privacy compose the application shell. BPM Tap separates pure estimation logic from presentation state. Metronome separates configuration and beat sequencing, scheduling and orchestration, audio output, persistence, and presentation. Tuner Audio separates its input boundary and package adapter, immutable PCM/frame domain types, pure statistics, capture orchestration, and diagnostic UI. Tuner Pitch contains only Flutter-independent configuration, results, musical-note conversion, the detector boundary, and DSP. Tuner Realtime owns bounded window assembly, backpressure, stabilization, hysteresis, stale timing, and transient diagnostics. Tuner owns immutable tuning definitions, target selection, tuner preferences, product orchestration, and production presentation. Other unfinished tools share one placeholder presentation.
+- `lib/core/` owns app-wide technical boundaries for logging, preferences,
+  package information, haptic output, and pure reusable music-theory identity
+  and construction.
+- `lib/features/` groups user-facing areas. Dashboard, Settings, About, and
+  Privacy compose the application shell. Chord Library owns guitar-specific
+  shapes, validation, offline data, diagram rendering, and browsing
+  presentation while importing the theory core. Scale Library owns exact
+  localized search vocabulary and scale-reference presentation while formulas,
+  construction, and relationships remain in the theory core. Interactive
+  Fretboard owns route state, controls, selection details, responsive scrolling,
+  and project-owned neck painting while all pitch derivation remains in the
+  theory core. Circle of Fifths owns responsive interaction, detail
+  presentation, accessibility, and project-owned circular painting while key
+  and harmony relationships remain in the theory core. BPM Tap separates pure
+  estimation logic from presentation state. Metronome separates configuration
+  and beat sequencing, scheduling and orchestration, audio output, persistence,
+  and presentation. Tuner Audio separates its input boundary and package
+  adapter, immutable PCM/frame domain types, pure statistics, capture
+  orchestration, and diagnostic UI. Tuner Pitch contains only
+  Flutter-independent configuration, results, musical-note conversion, the
+  detector boundary, and DSP. Tuner Realtime owns bounded window assembly,
+  backpressure, stabilization, hysteresis, stale timing, and transient
+  diagnostics. Tuner owns immutable tuning definitions, target selection,
+  tuner preferences, product orchestration, and production presentation. Other
+  unfinished tools share one placeholder presentation.
 - `lib/shared/` contains reusable interface elements that are not specific to one feature. Foundation contains the friendly error view.
 - `lib/l10n/` contains source ARB files and generated Flutter localization classes.
 
-No UI component imports `shared_preferences`, calls the microphone package, or contains audio conversion or DSP. Platform-facing playback is isolated behind `MetronomeAudioOutput`; microphone input is isolated behind `TunerAudioInput`; offline pitch analysis is isolated behind `PitchDetector`. Current tools operate offline, and neither BPM Tap sessions nor microphone samples are persisted.
+No UI component imports `shared_preferences`, calls the microphone package, calls the wakelock package, invokes native audio channels, or contains audio conversion or DSP. Platform-facing playback is isolated behind `MetronomeEngine`; microphone input is isolated behind `TunerAudioInput`; offline pitch analysis is isolated behind `PitchDetector`. Current tools operate offline, and neither BPM Tap sessions nor microphone samples are persisted.
+
+## Music-theory domain
+
+`lib/core/music_theory/` has no Flutter, Riverpod, localization, storage, audio,
+or platform import. `PitchClass` is the modulo-12 identity; `SpelledPitchClass`
+is a diatonic letter plus natural, sharp, or flat accidental. C# and Db
+therefore share pitch identity without losing their different display
+spellings.
+
+`NoteSpelling` advances the expected diatonic letter for an interval and selects
+a single accidental that reaches the target pitch class. This separates pitch
+arithmetic from naming and produces spellings such as F-A-C, Bb-D-F, and
+F#-A-C#-E. Phase 3A falls back to a readable enharmonic spelling when double
+accidentals would otherwise be required.
+
+`TheoryInterval` stores stable identity, semitones, diatonic steps, and a short
+label. Separate augmented-fourth and diminished-fifth values share six
+semitones but retain structural meaning. Compound ninth, eleventh, and
+thirteenth values support the current chord vocabulary.
+
+`ChordQuality` stores a stable nonlocalized ID, notation symbol, category, and
+ordered interval formula. `ChordConstructor` derives all tones from that
+formula. `ChordSymbolParser` is an exact local parser for supported roots and
+suffixes; it does not introduce a second chord representation.
+
+`ScaleDegree` stores structural identity, notation symbol, semitone distance,
+and diatonic steps. This keeps `#4` distinct from `b5` even though both reduce
+to pitch class six. `ScaleDefinition` stores stable nonlocalized IDs, categories,
+ordered degree formulas, aliases, and optional major-mode degree metadata.
+Major/Ionian and Natural Minor/Aeolian share one formula each through aliases
+rather than duplicated scale data.
+
+`ScaleConstructor` delegates each structural degree to `NoteSpelling`, so
+scale construction reuses the same pitch arithmetic and diatonic spelling as
+chords. `ScaleRelationships` derives relative major/minor roots and modal parent
+major roots without root-specific tables. Current coverage is Major, Natural
+Minor, Harmonic Minor, ascending Melodic Minor, all seven major modes, Major
+and Minor Pentatonic, and Blues.
+
+`MusicalKey` combines a spelled tonic with major or natural-minor tonality and
+a spelling preference. `KeySignature` stores a signed fifths count from -7
+through +7 and derives accidental type, count, stable identity, and ordered
+altered notes. A compact canonical major-key lookup owns the standard
+signature boundary; natural-minor signatures resolve through the existing
+relative-major helper. F# and Gb therefore retain distinct signatures without
+creating distinct modulo-12 pitch identities.
+
+`CircleOfFifths` owns twelve structural positions in clockwise-fifth order,
+including practical alternate spellings at F#/Gb and Db/C#. Each position
+aligns one major key with its relative natural minor. Circle and key helpers
+derive fifth, fourth, relative, parallel, clockwise-neighbor, and
+counter-clockwise-neighbor relationships deterministically.
+
+`DiatonicHarmonyConstructor` constructs the selected key's scale, stacks thirds
+from each degree, classifies the resulting triad or seventh pattern, and
+delegates chord spelling to `ChordConstructor`. `RomanNumeral` retains scale
+degree, quality, and seventh state while deriving case, diminished or
+half-diminished marker, and suffix. These types contain no localized display
+strings or progression recommendations.
+
+`GuitarTuning` represents strings structurally, ordered low to high. The current
+`standard` value stores E2/A2/D3/G3/B3/E4 and open MIDI values. A
+`GuitarStringTuning` derives every fret by adding its offset to the open MIDI
+note, then derives octave and pitch class; custom tunings can later supply
+different structural data without changing that algorithm.
+
+`FretboardProjection` delegates chord tones to `ChordConstructor` and scale
+tones to `ScaleConstructor`. Its relation map keeps the constructed spelling,
+root state, and structural interval or scale-degree symbol for each member
+pitch class. `GuitarFretboard.project` combines that map with a tuning and
+validated fret range to produce immutable `FretPosition` values. It is
+synchronous, deterministic, and Flutter-independent.
+
+The tuner retains its MIDI/octave/frequency/cents live-pitch types because those
+models solve a different, physically validated capture problem. Future safe
+consolidation requires explicit tuner regression evidence rather than moving
+transient tuner state into music theory.
+
+## Guitar chord shapes
+
+`GuitarChordShape` stores six low-E-to-high-E string states, optional finger
+numbers, diagram start, category, difficulty, rootless status, declared
+interval omissions, curated/generated provenance, project source, and barre
+ranges. Muted, open, and fretted strings are structural states, not magic
+display text or images.
+
+The 402-shape project-owned dataset combines 36 curated open shapes, six curated
+compact shapes, 228 movable E-family shapes, and 132 movable A-family shapes.
+Common E/A barres and extension voicings are generated from reviewed structured
+templates; curated open strings are never blindly transposed. Generated and
+curated shapes pass identical validation. Provenance is explicit: 42 shapes are
+curated and 360 are generated.
+
+`GuitarShapeCoverageAudit` deterministically evaluates all 12 pitch classes
+against all 22 `ChordQuality` values. It reports shape count, families, lowest
+position, and alternative availability for each of the 264 combinations plus
+aggregate percentage and quality/family totals. The development tool at
+`tool/chord_shape_coverage.dart` prints the same report. Final validated
+coverage is 264/264 (100.00%); the previous 162-shape dataset covered 80/264
+(30.30%).
+
+`GuitarShapeValidator` derives every sounding pitch from standard tuning,
+rejects formula-foreign tones, and requires all non-omitted formula tones.
+Four-or-more-note formulas may explicitly omit a perfect fifth; eleventh and
+thirteenth formulas may also declare the ninth omitted. The root may be omitted
+only on an explicitly rootless shape. Thirds, sevenths, altered fifths, and
+highest extensions remain defining tones. Declared omissions must belong to
+the formula, be policy-allowed, be unique, and actually be absent.
+
+Structural validation also covers string count, fret/state consistency, fret
+bounds, finger range and same-fret reuse, a four-fret maximum span, diagram
+window, barre fret/range/finger/coverage, duplicate IDs, and effectively
+duplicate root/quality fingerings. The first public dataset remains entirely
+rooted, although a deterministic test retains explicit rootless support.
+
+The diagram is a project-owned `CustomPainter`. Theme colors support contrast,
+while muted/open glyphs, geometry, finger numbers, starting-fret text, visible
+fingering instructions, and one combined semantic image keep meaning
+independent of color.
 
 ## State management
 
@@ -20,13 +167,15 @@ Riverpod provides scoped dependency injection and reactive application settings.
 
 `BpmTapController` owns the in-memory tap session, monotonic elapsed-time reads, manual reset, and inactivity timer. The BPM Tap widget only observes immutable state and forwards tap or reset actions. Its elapsed-time provider can be replaced in tests, keeping controller behavior deterministic without a platform clock dependency.
 
-`MetronomeController` owns immutable runtime state and coordinates the scheduler, audio boundary, and preferences. Widgets forward user actions and render state. Playback stops when the app loses foreground focus and does not resume automatically. Leaving the screen synchronously invalidates pending start work, stops the scheduler, and releases audio without mutating Riverpod during widget teardown; a later screen entry normalizes the retained runtime state before rendering.
+`MetronomeController` owns immutable runtime state and coordinates `MetronomeEngine`, diagnostics, Tuner exclusion, and preferences. Widgets forward user actions and render state. Native run IDs reject callbacks after Stop or restart. Playback stops when the app loses foreground focus and does not resume automatically. Leaving the screen invalidates pending start work and releases the native stream; a later screen entry normalizes retained presentation state before rendering.
 
 `TunerAudioController` owns the capture state machine and creates its audio input through an injectable factory. It requests permission only in response to Start, releases Metronome audio before capture, rejects duplicate operations, subscribes to frames and configuration changes, and owns all cleanup. It feeds normalized frame-owned samples into `RealtimePitchPipeline`; the UI observes only immutable scalar snapshots and never receives PCM bytes. Controller operation versions and pipeline generations invalidate delayed permission, detector, stop, and restart work. Backgrounding stops capture and analysis, and foregrounding never restarts them automatically.
 
-`GuitarTunerController` listens to immutable `TunerAudioState` and owns only product behavior: persisted preset/mode/manual-string settings, automatic target selection, target-relative cents, accuracy bands, signal messaging, and stable in-tune haptics. It delegates Start, Stop, lifecycle, and route release to `TunerAudioController`. Widgets never read preferences, select targets, calculate cents, or trigger haptics from animation frames.
+`GuitarTunerController` listens to immutable `TunerAudioState` and owns only product behavior: persisted preset/mode/manual-string settings, automatic target selection, target-relative cents, accuracy bands, visible permission/error state, and stable in-tune haptics. It delegates capture and lifecycle work to `TunerAudioController`. Detection and haptics still consume every estimate, while presentation publication is suppressed for repeated silent/invalid snapshots and sub-threshold movement (1 cent and 0.1 Hz). Widgets never read preferences, select targets, calculate cents, or trigger haptics from animation frames.
 
 The production controller keeps an existing stabilized pitch visible while the realtime pipeline reports a short `unstableSignal` gap with retained stabilizer history. In Automatic mode it also refuses to present a candidate more than 200 cents from the active tuning's selected string; this product-level guard prevents a release-tail A1/55 Hz estimate from being shown while A2 is the valid target. The last accepted display pitch may bridge up to eight new detector results, but retained or rejected data is not counted as fresh evidence for haptic feedback. Sustained invalid input or the realtime 350 ms stale deadline still clears the visible pitch. Manual mode remains deliberately ungated so a selected string can show a large tuning error.
+
+The production tuner has no start/stop or no-signal surface. Opening it requests listening; silence leaves the instrument display neutral, and only permission/capture/analysis failures add a status panel. The main screen keeps the compact Automatic/Manual control and, in Manual mode, the target-string strip. Chromatic/preset selection and A4 reference controls live at `/tools/guitar-tuner/settings`. The analog meter caches its static dial in a separate repaint boundary, so needle animation repaints only the moving layer.
 
 ## Navigation
 
@@ -39,6 +188,24 @@ GoRouter provides one central route table:
 - `/tools/bpm-tap` displays the functional BPM Tap screen.
 - `/tools/metronome` displays the functional Metronome screen.
 - `/tools/guitar-tuner` displays the production Guitar Tuner.
+- `/tools/guitar-tuner/settings` displays tuning-system and A4 reference controls.
+- `/tools/chord-library` displays the offline Chord Library.
+- `/tools/scale-library` displays the offline Scale Library.
+- `/tools/interactive-fretboard` displays the offline Interactive Fretboard;
+  project-owned query state safely preconfigures chord or scale mode, root, and
+  definition while malformed or absent parameters use sensible defaults.
+- `/tools/circle-of-fifths` displays the offline interactive major/minor
+  circle, key signatures, relationships, scale notes, and diatonic harmony.
+  Its actions use project-owned query state to preconfigure Scale Library,
+  Chord Library, and Scale-mode Interactive Fretboard; direct and malformed
+  library routes retain their existing C Major defaults.
+- `/tools/interval-trainer` displays offline visual interval identification and
+  target-note construction.
+- `/tools/repertoire` lists the songs stored on this device,
+  `/tools/repertoire/new` and `/tools/repertoire/:songId/edit` open the editor,
+  and `/tools/repertoire/:songId` opens the performance view. A song identifier
+  that no longer exists resolves to the localized not-found message rather than
+  an empty sheet.
 - `/debug/tuner-diagnostics` displays Phase 2C engineering diagnostics only in debug builds.
 - `/tools/:toolId` resolves every other unfinished known tool to its Coming Soon placeholder.
 
@@ -46,23 +213,107 @@ Unknown paths and tool identifiers display a friendly localized not-found screen
 
 The Metronome opens BPM Tap with an explicit result contract. BPM Tap returns only a valid whole-number estimate when the user chooses Apply; the metronome validates the 20–300 BPM range and then updates and persists its tempo. Ordinary dashboard use of BPM Tap has no Apply action.
 
-The dashboard groups stable tool definitions into Practice, Theory and Reference, and Training. Metronome, BPM Tap, and Guitar Tuner are production-facing tools and receive stronger surface treatment. Navigation uses pushes for drill-in screens so Android back naturally returns to the previous context. Unknown routes continue to use the localized not-found screen.
+The dashboard groups stable tool definitions into Practice, Theory and Reference,
+and Training. Metronome, BPM Tap, Guitar Tuner, Repertoire, Chord Library, Scale Library,
+Interactive Fretboard, Circle of Fifths, and Music Theory are production-facing tools and receive stronger
+surface treatment. Navigation uses
+pushes for drill-in screens so Android back naturally returns to the previous
+context. Unknown routes continue to use the localized not-found screen.
+
+## Repertoire
+
+The Repertoire is the only feature that stores user-authored content. Its
+domain layer is pure Dart: `ChordProParser` turns bracket text into a
+renderable sheet of lyric fragments with attached chords, `ChordSheetImporter`
+converts a pasted chords-above-lyrics chart into that same bracket form at save
+time, and `SongSheet` transposes a whole chart while keeping one accidental
+style. Conversion is decided per line rather than per document: a line that
+already carries bracket chords is left alone, so pasting a plain second verse
+into a song whose first verse was converted still converts the new part. Attaching chords to syllables rather than columns is what
+makes transposition safe: a chord printed as `Bb` and transposed to `B` can no
+longer drag the alignment of the line with it.
+
+Chord symbols in charts are far more varied than the modeled chord qualities,
+so `ChordSymbolParser.tryParseWritten` keeps the suffix verbatim and interprets
+only the root and optional slash bass. Its suffix alphabet is deliberately
+narrow so ordinary words that begin with a note letter are not mistaken for
+chords when a pasted chart is scanned for chord lines.
+
+Chords can also be placed without typing brackets. The parser records where
+every chord, lyric fragment, and line sits in the stored text, so the
+performance view can turn each word, the end of each line, and each empty line
+into a target, and `SongChordEditor` can insert, append, replace, or remove a
+bracket as a plain string edit at that position. Line ends and empty lines are
+what make intros and instrumental breaks expressible; appending separates
+adjacent chords so a chord-only line stays readable as text. Tapping a word and
+typing a bracket by hand therefore produce identical content. Because the view
+may be transposed while editing, a chord chosen from the picker is converted
+back to the song's written key before it is stored; transposition itself never
+rewrites the text, so recorded positions stay valid.
+
+`RepertoireRepository` owns the only storage access, encoding the song list as
+JSON through `PreferencesStore`; unreadable storage is logged and reported as an
+empty repertoire rather than failing. `RepertoireController` owns the list and
+every mutation, including per-song transposition and scroll speed. The
+performance view drives auto-scroll from a `Ticker` through the pure
+`AutoScrollSpeed` rate model, stops at the end of the sheet, and yields as soon
+as the performer drags. The feature adds no audio, microphone, network,
+account, analytics, or backend dependency.
+
+## Music Theory
+
+Music Theory is a reference and learning hub rather than a new theory engine.
+It adds no musical rules of its own: every worked example is a structural value
+handed to the shared `core/music_theory` engine at build time, so a lesson's
+notes, chord tones, Roman numerals, key signatures, and fretboard projections
+are produced by the same code the Chord Library, Scale Library, Interactive
+Fretboard, and Circle of Fifths already use. A lesson cannot drift from the
+tool it links to, because neither stores the answer.
+
+A lesson is structure plus addressed prose. `TheoryLesson` holds a category, a
+level, language-neutral search aliases, and an ordered list of `TheoryBlock`
+values; prose blocks carry a content identifier instead of a string. Interface
+chrome stays in the generated ARB localizations, while lesson bodies live in
+one content map per language under `content/`, because a translator editing 600
+long-form entries wants a readable file and the hub wants to prove both
+languages cover the whole catalog. A test asserts that every identifier a
+lesson references resolves in English and Turkish, that both languages define
+the same set, and that nothing was left as its own identifier.
+
+`IntervalShapes` is the one piece of derivation the hub owns, and it is derived
+rather than drawn: given an interval and a tuning it searches for the closest
+playable two-note shape, preferring a neighbouring string over a long reach on
+one string. The diagram widget then renders markers it is handed and decides
+nothing musical.
+
+"Try it" actions are structural too. `TheoryAction` carries roots, qualities,
+and scale definitions; `AppRoutes.theoryAction` turns them into the query each
+released library already parses, so no lesson knows a URL.
+
+`TheoryProgressRepository` owns the only storage access, encoding starred and
+recently read lesson identifiers as JSON through `PreferencesStore`. Stored
+identifiers are pruned against the catalog on load, so a retired lesson cannot
+leave a dead entry. The feature adds no audio, microphone, network, account,
+analytics, or backend dependency, and the catalog is a compile-time constant,
+so opening the hub costs no I/O.
 
 ## Application information and licenses
 
-`ApplicationInfoLoader` isolates `package_info_plus` from widgets. Bootstrap reads the installed package version once and overrides `initialApplicationInfoProvider`; Settings, About, and the license page consume the application-owned immutable value. Tests inject arbitrary versions without a platform channel. The product version is `0.2.0+1`, representing a pre-1.0 application with Foundation plus three working tools.
+`ApplicationInfoLoader` isolates `package_info_plus` from widgets. Bootstrap reads the installed package version once and overrides `initialApplicationInfoProvider`; Settings, About, and the license page consume the application-owned immutable value. Tests inject arbitrary versions without a platform channel. The product version is `0.7.3+13`, representing the tuner performance and control simplification pass plus tuner display and metronome stability fixes for closed testing with the shipped tool set intact.
 
 Open-source notices use Flutter’s standard `showLicensePage`, which reads Flutter’s license registry and presents package licenses with the app name, actual version, and legalese. No custom license database or duplicate route is maintained.
 
 ## Metronome timing and beat model
 
-`BeatSequence` is pure Dart. It advances and wraps a one-based beat number for 2/4, 3/4, 4/4, and 6/8, marking only beat one as accented when the preference is enabled. Displayed BPM uses a quarter-note reference, and click duration is `quarter-note duration × 4 ÷ denominator`. In 6/8 this produces six eighth-note clicks per measure: at 120 BPM each click is 250 milliseconds apart. Dotted-quarter interpretation is out of scope.
+`MetronomeTimeSignature` models 2/4, 3/4, 4/4, and 6/8 with explicit numerator and denominator. Displayed BPM uses a quarter-note reference, and pulse duration is `quarter-note duration × 4 ÷ denominator`. In 6/8 this produces six eighth-note clicks per measure: at 120 BPM each click is 250 milliseconds apart. Dotted-quarter interpretation is out of scope.
 
-`AnchoredMetronomeScheduler` uses a monotonic clock and one-shot timers. Its clock and timer factory are replaceable in deterministic tests. Each deadline is calculated from the original anchor instead of chaining the previous timer completion, limiting cumulative drift. The next timer is armed before controller state or audio work begins. A callback delayed by less than one interval retains the original next deadline; deadlines already reached during a longer stall are skipped rather than played in a catch-up burst. BPM or denominator changes cancel the previous timer and re-anchor the single scheduler.
+`MetronomeEngine` separates initialize/start/stop/dispose, live configuration, running state, beat events, engine information, and native stop diagnostics from the controller. `NativeMetronomeEngine` is the only production implementation. It loads the two bundled WAV assets once and delegates to a Kotlin channel plus C++ Oboe engine.
 
-The scheduler callback carries its intended deadline, actual callback time, lateness, and skipped count to `MetronomeController`. In debug builds, the controller records those values with beat number, BPM, and audio-request pending/completed/failed state through `AppLogger`. Per-beat logging is compiled out of release builds. Audio playback futures are deliberately not awaited by the scheduler, so platform-channel completion cannot postpone arming the next deadline. Visual state and the audio request use the same beat number, although visual rendering may follow the request by a few milliseconds.
+The Oboe low-latency data callback owns the output sample clock, fractional frames-per-pulse accumulation, beat progression, accent selection, gain, and click rendering. It uses the device's natural output rate, resamples the project assets during initialization, applies a 3 ms terminal fade, and writes no file/network/Flutter work in the callback. Oboe uses AAudio on supported devices and OpenSL ES on older supported Android releases. Shared output with media/sonification attributes preserves normal system mixing; Tunathic does not request global audio focus.
 
-This foreground design is maintainable and testable but not sample-accurate: Dart scheduling, platform-channel transit, Android audio buffering, and device hardware all contribute latency. A native scheduled-audio engine would be required for stronger real-time guarantees.
+BPM updates preserve the fraction remaining to the next pulse. Signature updates preserve pulse phase and make the next pulse beat 1. Neither update restarts the stream. Configuration revisions discard queued visual callbacks from a previous configuration, and run IDs discard callbacks after Stop or restart.
+
+Native beat events contain rendered output-frame position and a monotonic callback timestamp. They update current beat and animation only; they never trigger sound. Debug builds log engine implementation/API, sample rate and buffer properties, requested changes, first Flutter callback latency, callback interval/deviation, detectable callback gaps, native x-runs, and engine errors. Callback cadence is explicitly not claimed as acoustic timing.
 
 ## Tuner audio capture boundary
 
@@ -162,9 +413,9 @@ Target-relative cents use `1200 × log2(detectedFrequency / targetFrequency)`. T
 
 ## Audio playback and assets
 
-`audioplayers` 6.8.1 is used because its maintained, multiplatform API includes `AudioPool` preloading and Android low-latency playback for short, repetitive effects. The discontinued `soundpool` package was rejected. Separate regular and accented pools are created once before the first beat, reused throughout the screen session, and released when the screen is disposed or audio fails. Each pool prewarms three players and can grow to four. This small amount of extra capacity provides headroom when 6/8 at 300 BPM requests a click every 100 milliseconds and a previous platform request is still being reclaimed. Android audio context is configured for sonification.
+Oboe 1.10.0 provides the Android low-latency callback and device-version abstraction. It is integrated as an Android Prefab/CMake dependency, isolated below `MetronomeEngine`, and carries no Flutter-facing API. The Apache-2.0 license is bundled and registered with Flutter's license page.
 
-The click WAV files are original project assets generated deterministically by `tool/generate_metronome_clicks.dart`; they are short decaying synthesized tones and contain no third-party recording. The script records the exact generation parameters and can reproduce the checked-in assets.
+The click WAV files are original project assets generated deterministically by `tool/generate_metronome_clicks.dart`; they are 40/55 ms decaying mono PCM16 tones, remain below full scale, and contain no third-party recording. The script records the exact generation parameters and can reproduce the checked-in assets. Native playback never schedules a manual stop.
 
 ## BPM estimation
 
@@ -178,6 +429,26 @@ Known algorithm limitations are intentional: the tool estimates only whole-numbe
 
 Flutter's generated localization infrastructure uses English `app_en.arb` as the source and Turkish `app_tr.arb` as the second supported language. The selected language can follow the device or be fixed to English or Turkish. Unsupported device languages fall back to English.
 
+Theory IDs, musical chord symbols, note symbols, and degree formulas are
+deliberately nonlocalized. Chord quality names, categories, selector labels,
+empty states, difficulty, per-string fingering, barre descriptions, intentional
+omissions, rootless status, search feedback, and diagram semantics are
+localized at the Chord Library presentation boundary.
+
+Scale names, categories, alias names, relationships, search guidance, and
+spoken degree semantics are localized at the Scale Library presentation
+boundary. Exact search owns a small explicit English/Turkish vocabulary outside
+the pure core; it does not turn localized display strings into theory identity.
+
+Interactive Fretboard control, orientation, selection-detail, navigation, and
+semantic-summary text is localized in the same ARB sources. Note, chord, and
+degree notation remains standard and is never translated.
+
+Circle of Fifths key descriptions, relationship labels, signature counts,
+navigation actions, orientation guidance, and accessibility summaries are
+localized at the presentation boundary. Note names, accidentals, chord
+symbols, and Roman numerals remain standard notation.
+
 ## Preferences abstraction
 
 `PreferencesStore` is the small asynchronous key-value boundary used by application settings. Its production implementation uses `SharedPreferencesAsync`, while tests use an in-memory implementation. Shared Preferences is sufficient for this small set of non-sensitive scalar settings and is smaller and easier to maintain than introducing a database. The asynchronous API avoids stale cache behavior across isolates and engine instances.
@@ -186,7 +457,7 @@ The stored values are theme mode, optional locale code, default-on haptic feedba
 
 ## Theme system
 
-The application uses Material 3 with light, dark, and system modes. Centralized theme files define the deep-charcoal, electric-blue, soft-cyan, and off-white palette plus spacing, typography, restrained radii, two elevation levels, and limited motion durations. Feature widgets consume the active `ThemeData`, `ColorScheme`, and shared tokens instead of duplicating design constants. Only available dashboard tools use subtle raised elevation; Phase 1C adds no decorative animation, gradients, or glass effects.
+The application uses Material 3 with light, dark, and system modes. Centralized theme files define warm ivory and cream surfaces, orange and copper accents, warm charcoal text, restrained radii, tactile elevation, typography, spacing, and limited motion durations. `StudioTheme` and the shared studio widgets provide enamel faceplates, recessed readouts, short bevel gradients, analog-style meters, and consistent state panels without moving storage or audio logic into UI code. Feature widgets consume the active `ThemeData`, `ColorScheme`, and shared tokens instead of duplicating design constants; the optional dark mode is a warm workshop palette rather than a near-black or neon theme.
 
 Shared maximum widths produce readable phone, large-phone, and tablet columns. Core screens remain vertically scrollable, Wrap replaces rigid rows where selections can expand, and tests exercise narrow 360-pixel layouts with large text. Availability, selection, running state, and accented beats retain text or semantic meaning rather than relying on color alone.
 
@@ -200,17 +471,66 @@ Shared maximum widths produce readable phone, large-phone, and tablet columns. C
 - `go_router` supplies centralized declarative navigation, path parsing, and route-level error handling.
 - `flutter_localizations` and the SDK-compatible `intl` version generate and support English and Turkish localization.
 - `shared_preferences` persists scalar application, metronome, and tuner settings behind application-owned abstractions.
-- `audioplayers` preloads and plays the two bundled metronome clicks through low-latency Android audio pools.
+- Oboe 1.10.0 supplies the Android low-latency output callback and AAudio/OpenSL ES compatibility layer behind `MetronomeEngine`.
 - `record` 7.1.1 supplies continuous PCM16 microphone streaming and the Android `AudioRecord` bridge behind `TunerAudioInput`; it is used for transient capture, never file recording.
 - `package_info_plus` supplies the installed version and build number behind `ApplicationInfoLoader`; platform metadata cannot be read reliably from `pubspec.yaml` at runtime.
+- `wakelock_plus` 1.7.0 keeps the display on behind `ScreenWakeLock` while a Repertoire sheet is open. A performer reading chords does not touch the device, so the display timeout would otherwise blank the sheet mid-song. On Android the package sets the standard `FLAG_KEEP_SCREEN_ON` window flag, which needs no permission, contributes no manifest permission, and applies only while Tunathic is in the foreground. The evaluated alternative was a small platform channel around the same flag; it would duplicate the package's per-platform lifecycle handling with no product gain.
 
 No pitch-analysis, FFT, DSP, scientific-computing, database, analytics, advertising, account, backend, or purchase package is included. Pitch detection and the real-time buffer/stabilizer use only Dart SDK math, async, and typed-data libraries.
 
+Phases 3A through 3E add no dependency. Pitch arithmetic, formulas, search
+parsing, relationships, shape validation, diagrams, fret derivation, and
+reference presentation use Dart and Flutter primitives. The circle uses
+`CustomPainter` and Material controls rather than chart, notation, or
+third-party music-theory packages.
+
 ## Testing approach
 
-Unit tests cover preference parsing and persistence, BPM estimation, metronome beat progression, wrapping, accents, time signatures, tempo interval calculation, lifecycle stopping, failure recovery, reset, and duplicate-start prevention. Controller tests replace clocks, audio, and scheduling with deterministic fakes. Widget tests verify both functional dashboard tools, English and Turkish content, scaled compact layouts, metronome controls, and BPM Tap result transfer. Fakes implement the same application-owned boundaries used by production code.
+Music-theory tests cover all 12 pitch classes, signed modulo transposition,
+enharmonic identity and spelling, interval semitones and structural labels, all
+22 formulas, common/altered/suspended/extended chord construction, sharp/flat
+keys, boundary crossings, and exact supported search syntax.
 
-Scheduler tests use fake monotonic time and fake one-shot timers; they do not wait on wall-clock time. They cover exact callbacks, mild and multi-interval lateness, original-deadline retention, skipped deadlines, no catch-up bursts, re-anchoring, and rapid stop/start. Controller tests additionally cover 4/4-to-6/8 reconfiguration, debug timing records, duplicate-start prevention, audio failure, and pending audio futures that do not block later beat callbacks.
+Scale-theory tests cover structural degrees, all required scale formulas and
+aliases, all 12 roots, requested sharp/flat examples, relative keys, modal
+parents and degrees, pentatonic/blues construction, and exact English/Turkish
+search acceptance and rejection. Scale Library widget tests cover dashboard
+opening, root/definition changes, notes and formulas, relative/modal
+relationships, localization, themes, combined semantics, 2× text, and 360,
+412, 600, 900, and 1280 logical-pixel widths.
+
+Fretboard pure tests cover standard tuning, all six open strings, MIDI/octave
+transposition through fret 24, valid ranges, requested chord/scale projections,
+root and non-member behavior, structural labels, and practical enharmonics.
+Route tests cover direct, chord-prefilled, scale-prefilled, and malformed
+states. Widget tests cover dashboard and both library paths, controls,
+note/degree rendering, 12/24-fret scrolling, note details, localization,
+themes, combined semantics, 2× text, and 360, 412, 600, 900, and 1280 logical
+pixels.
+
+Key/harmony pure tests cover all twelve circle positions, fifth/fourth
+direction and wraparound, relative and representable parallel keys, practical
+enharmonics, canonical signatures and accidental order, required major/minor
+triads and seventh chords, half-diminished behavior, and structural Roman
+numerals. Circle widget tests cover dashboard access, major/minor and
+relationship selection, signature and harmony updates, enharmonic context, all
+three library handoffs, localization, themes, combined and per-control
+semantics, 2× text, and 360, 412, 600, 900, and 1280 logical-pixel widths.
+
+Chord coverage tests audit all 264 root/quality combinations, exact quality and
+family totals, complete coverage, lowest position, family availability,
+alternatives for common qualities, and representative everyday and extended
+chords. Chord-shape tests validate all 402 shapes plus rooted and rootless
+voicings, intentional omissions, defining tones, malformed strings, frets,
+fingers, spans, barres, and duplicate detection. Widget tests cover dashboard
+opening, root/quality changes, formula-derived tones, diagram rendering,
+multiple alternatives, representative extended exact searches, high positions,
+barres, omission semantics, English/Turkish, light/dark themes, combined
+semantics, 2× text, and 360, 412, 600, 900, and 1280 logical-pixel widths.
+
+Unit tests cover preference parsing and persistence, BPM estimation, metronome denominator semantics, tempo interval calculation, lifecycle stopping, failure recovery, reset, and duplicate-start prevention. Controller tests replace `MetronomeEngine` with a deterministic fake, so unit/widget tests never load Oboe or require Android.
+
+Metronome controller tests cover initialize-once, start/stop/restart, duplicate and rapid operations, 20 repeated Start/Stop cycles, stale callbacks after Stop/restart, BPM limits and rapid live changes, 2/4, 3/4, 4/4, and 6/8 callback order, deterministic signature transition, volume/accent persistence, initialization/start/runtime/update failures, recovery, backgrounding, route release, provider disposal, Tuner transition, and callback diagnostics. Widget tests cover start/stop, BPM, signature, current beat, accent, error/retry, English/Turkish, narrow/large-text layout, BPM Tap transfer, and navigation cleanup.
 
 Application-shell tests cover haptic persistence and enabled/disabled behavior, dashboard grouping and availability, injected package versions, About and Privacy navigation, standard license entry, theme and language regression, large text, narrow layout, BPM Tap and Metronome regressions, corrected 6/8 timing, and Metronome cleanup on back navigation. GitHub Actions repeats dependency resolution, formatting verification, analysis, and tests for pushes and pull requests to `main` without secrets or deployment steps.
 
@@ -224,9 +544,33 @@ Production Tuner tests cover all preset MIDI sequences and frequencies, target-r
 
 ## Known limitations
 
+- Music spelling supports naturals, single sharps, and single flats. A complete
+  double-accidental notation engine is intentionally out of scope.
+- Chord Library has complete practical root/quality coverage for its current
+  registry, but no inversions, slash chords, altered dominants, custom tunings,
+  left-handed diagram transform, favorites, playback, or arbitrary runtime
+  voicing generation.
+- Exact chord search has no fuzzy matching. Favorites remain deferred until a
+  structured cross-reference-tool persistence requirement exists.
+- Scale Library uses ascending Melodic Minor and a deliberately focused scale
+  catalog. It has no playback, custom formulas, or fuzzy search, and its
+  single-accidental spelling fallback is not a complete academic notation
+  engine.
+- Interactive Fretboard currently supports standard tuning and one
+  player-facing/right-handed orientation. It projects pitch membership rather
+  than CAGED boxes, scale positions, chord shapes, inversions, or playable
+  voicings. Custom tuning UI, left-handed mode, playback, CAGED, interval
+  practice, and ear-training behavior are not implemented.
+- Circle of Fifths covers major and natural-minor keys with standard -7…+7
+  signatures. It does not implement staff notation, double-accidental keys,
+  harmonic/melodic-minor key behavior, modes as keys, progressions,
+  substitutions, playback, songwriting workflows, interval training, or ear
+  training. Large text uses an ordered control list so notation is not
+  compressed into an unreadable radial layout.
+
 - BPM Tap, the foreground Metronome, and Guitar Tuner are functional. The tuner still requires broader real-guitar and device-matrix validation before it is release-complete.
-- Metronome playback is not sample-accurate, does not run in the background, and supports no subdivisions, swing, custom rhythms, or custom accent patterns.
-- Rare audible stuttering was observed on a physical Android device in the original Phase 1B build. Debug instrumentation can now distinguish Dart scheduler lateness, skipped deadlines, and overlapping platform audio requests, but repeat physical-device validation is required before declaring the symptom resolved. No physical Android target was connected during automated validation of this hotfix.
+- Metronome click placement is owned by the native output sample clock, but end-to-end acoustic latency varies by device and route. The feature does not run in the background and supports no subdivisions, swing, custom rhythms, dotted-quarter 6/8, or custom accent patterns.
+- The original Dart-timed build exhibited audible stuttering on a physical Android device. The old scheduler/audio-pool path is removed, but the replacement cannot be declared physically reliable until profile/release listening, 20 Start/Stop cycles, a 10-minute endurance run, and the required BPM/signature matrix pass on hardware.
 - Haptic response varies with Android hardware and system settings.
 - The privacy policy is a product draft and the application is not Play Store ready.
 - Microphone capture is foreground-only, transient, local, and was physically validated separately in Phase 2A. There is no file recording or content database.

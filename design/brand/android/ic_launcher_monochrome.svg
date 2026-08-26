@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"
+     role="img" aria-label="Tunathic adaptive icon monochrome layer">
+  <title>Tunathic adaptive icon — monochrome layer</title>
+  <desc>The movement as a single-colour silhouette for themed icons. The in-tune band and the pivot core are dropped: tinted to one colour they stop reading as markings. Master for ic_launcher_monochrome.xml.</desc>
+  <g transform="translate(0,-15.81) translate(256,256) scale(0.62) translate(-256,-256)">
+    <path d="M41.1,306.2 A226,226 0 0 1 470.9,306.2" fill="none" stroke="#FFFFFF" stroke-width="17"/>
+    <g fill="none" stroke="#FFFFFF" stroke-width="15">
+      <path d="M63.9,309.9 L101.9,325.9"/>
+      <path d="M137.2,212.5 L160.8,244.9"/>
+      <path d="M374.8,212.5 L351.2,244.9"/>
+      <path d="M448.1,309.9 L410.1,325.9"/>
+    </g>
+    <path d="M236,382 L248,216 Q256,202 264,216 L276,382 Z" fill="#FFFFFF"/>
+    <circle cx="256" cy="376" r="45" fill="#FFFFFF"/>
+  </g>
+</svg>

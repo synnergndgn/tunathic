@@ -1,10 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
+    <!-- Predictive back. No route in the app intercepts the back gesture -
+         there is no PopScope anywhere - so every back is a plain pop and the
+         system can animate it. Without this the platform logs
+         "OnBackInvokedCallback is not enabled for the application" and falls
+         back to the pre-Android-13 behaviour. -->
     <application
         android:label="Tunathic"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"
