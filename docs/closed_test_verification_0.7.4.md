@@ -84,7 +84,8 @@ Settings → Open-source licenses.
 
 ## Deferred to 0.7.5, deliberately
 
-Neither blocks Closed Test.
+Neither blocked Closed Test. **Both landed in 0.7.5 (15)** — see
+`docs/release_notes_0.7.5.md`.
 
 1. **Launcher icon still shows the tuning fork.** The store icon is now the
    analog dial, so the listing and the home screen disagree. Steps are in

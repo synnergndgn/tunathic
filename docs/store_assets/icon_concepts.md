@@ -139,28 +139,23 @@ tap-through on a light Play surface — its contrast advantage is real.
 **C** was the "do nothing" option: safe, already half shipped in the launcher,
 but it does not close the gap between the store and the new app.
 
-### Open follow-up: the launcher still shows the fork
+### Done in 0.7.5: the launcher shows the dial too
 
-Now that the store icon is the dial, the listing and the home screen show two
-different marks. `android/app/src/main/res/drawable/ic_launcher_foreground.xml`
-and every `mipmap-*/ic_launcher.png` still carry the tuning fork.
+0.7.4 shipped the dial to the store while the launcher still carried the fork,
+so the listing and the home screen showed two different marks. 0.7.5 closes it.
+What that took:
 
-Closing that gap is a separate, deliberate change, because it swaps the icon on
-existing users' home screens and needs its own release:
+1. The dial was recomposed rather than reused. The store framing fills a square,
+   and a circular launcher mask would clip the scale arc's ends.
+2. The foreground scales to 0.62 with a -15.81 translate. The fork it replaced
+   sat at 0.92, which put its half diagonal at about 168 px against a 170 px
+   safe radius — it fitted, but only just, and read oversized on a device.
+3. `monochrome` got its own drawable. Tinted to one colour, the green in-tune
+   band merges into the charcoal arc and the brass pivot into the orange core,
+   so the themed layer keeps only arc, ticks, needle and pivot.
+4. Every `mipmap-*` density was regenerated from `ic_launcher_legacy.svg`, the
+   API 24-25 fallback that no launcher masks.
+5. `design/brand/README.md` now documents the dial as the app icon and marks the
+   fork files legacy.
 
-1. Redraw the dial as an adaptive foreground. It must survive the circular
-   launcher mask, so it needs its own composition — the store icon's dial fills
-   a square, and a circle would clip the scale arc's ends.
-2. Bring the foreground down to roughly 0.62–0.68 of the viewport. The current
-   fork sits at 0.92, which puts its half diagonal at ≈168 px against the
-   safe-zone radius of 170 px: it fits, but only just, and it reads noticeably
-   larger than a normal launcher icon on a device.
-3. `monochrome` points at the same drawable, and the dial has no single-path
-   silhouette, so the themed-icon variant needs its own simplified drawable —
-   arc, needle and pivot as solid shapes, no gradients.
-4. Regenerate every `mipmap-*` density from that master.
-5. Update `design/brand/README.md`, which still documents the tuning fork as
-   the Tunathic mark.
 
-Until that lands, the store icon and the launcher icon disagree. That is
-survivable for one release but should not become permanent.

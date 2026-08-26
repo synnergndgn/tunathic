@@ -1,7 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"
-     role="img" aria-label="Tunathic adaptive icon foreground">
-  <title>Tunathic adaptive icon — foreground layer</title>
-  <desc>The analog tuner movement, recentred and scaled to 0.72 so its outermost points sit 156 units from centre, inside the 170-unit adaptive safe radius. Master for android/app/src/main/res/drawable/ic_launcher_foreground.xml; the two must stay in step.</desc>
+     role="img" aria-label="Tunathic launcher icon, legacy raster source">
+  <title>Tunathic launcher icon — legacy raster source</title>
+  <desc>Background and foreground composed into one square, for the mipmap-*/ic_launcher.png fallbacks that API 24-25 uses instead of the adaptive icon. Those devices apply no mask, so the icon carries its own full-bleed plate. Render with design/store/render_svg.py.</desc>
+  <rect width="512" height="512" fill="#FFFDF8"/>
   <g transform="translate(0,-15.81) translate(256,256) scale(0.62) translate(-256,-256)">
     <path d="M41.1,306.2 A226,226 0 0 1 470.9,306.2" fill="none" stroke="#302822" stroke-width="17"/>
     <path d="M216.7,151.9 A226,226 0 0 1 295.3,151.9" fill="none" stroke="#35734C" stroke-width="25"/>
