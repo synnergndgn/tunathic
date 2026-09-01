@@ -57,3 +57,6 @@ app.*.map.json
 
 # Raw and composed Play captures, produced per release from a specific build.
 /build/store_capture/
+
+# Local Flutter/Dart tool state and telemetry (per-machine client id).
+/.dart_tool_state/
